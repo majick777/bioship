@@ -1,0 +1,3 @@
+// This is the 3rd party templates directory. Theme content templates are in /content/
+// Alternative /woocommerce/ directory used if created: /templates/woocommerce/
+// See http://bioship.space/documentation/ or /admin/docs.php for more information.

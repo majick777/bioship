@@ -1,0 +1,372 @@
+
+# Header
+# Navigation Bar
+# Typography
+# Tables
+# Widgets
+# WP Blog
+# Styled Buttons
+# Tabs
+# Toggles
+# Callouts
+# Comments
+# WP Gallery
+# Misc
+
+
+// STRUCTURE //
+// Right Sidebar		body.sidebar-right #wrap #sidebar 
+// Right Sidebar Widget		body.sidebar-right #wrap #sidebar .widget-container
+// Content if Right Sidebar	body.sidebar-right #wrap #content
+// Left Sidebar			body.sidebar-left #wrap #sidebar 
+// Left Sidebar Widget		body.sidebar-left #wrap #sidebar .widget-container 
+// Content if Left Sidebar	body.sidebar-left #wrap #content 
+
+
+// HEADER
+// Header			#header 
+// Header Inner			#header .inner 
+// Header Extras 		#header .header_extras 
+// Site Title 			h1#site-title 
+// Site Title Link		h1#site-title a, 
+// Site Title Link Hover 	#header h1#site-title a:hover
+// Header Tagline  		#header span.site-desc 
+
+
+// NAVBAR //
+// Navigation Bar		#navigation 
+// NavBar Item List		#navigation ul
+// NavBar List Item 		#navigation ul li 
+// NavBar List Item Link	#navigation ul li a 
+// NavBar Item Link Hover	#navigation ul li:hover a, #navigation ul li a:hover 
+//				#navigation ul li:hover li a 
+// NavBar Active List Item	#navigation ul li.active a 
+
+
+// SUB NAVBAR 
+
+#navigation ul.sub-menu, #navigation ul.children 
+#navigation ul.sub-menu li, #navigation ul.children li 
+#navigation ul.sub-menu li a, #navigation ul.children li a 
+#navigation ul.sub-menu li a:hover, #navigation ul.children li a:hover 
+
+
+// FOOTER //
+
+#footer 
+#footer.noborder 
+#footer #credits 
+
+.themeauthor,
+.themeauthor a:link,
+.themeauthor a:hover,
+.themeauthor a:visited 
+
+#footermenu 
+#footermenu ul 
+#footermenu li 
+#footermenu li a 
+#footermenu li.menu-item-last span 
+
+
+// TYPOGRAPHY //
+
+h1, h2, h3, h4, h5 
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a
+h1
+h2
+h3
+h4
+h5
+h6 
+.subheader { color: #777; }
+.normal {font-weight: normal;}
+.bolder {font-weight: bolder;}
+
+p 
+p img 
+p.lead 
+
+em 
+strong 
+small
+hr
+
+// BLOCKUOTES //
+blockquote
+blockquote p
+blockquote
+blockquote cite
+blockquote cite:before
+blockquote cite a
+blockquote cite a:visited
+
+// LINKS //
+a
+a:visited
+a:hover
+a:focus
+p a
+p a:visited
+
+
+// LISTS //
+ul
+ol
+ol, 
+ul.square
+ul.circle
+ul.disc
+ul ul, ul ol, ol ol, ol ul 
+ul ul li, ul ol li, ol ol li, ol ul li 
+ul.large li 
+li p 
+abbr,acronym 
+cite 
+q 
+
+
+// ALIGNMENT //
+.alignright
+.alignleft
+.aligncenter
+.full-width 
+
+
+// IMAGES // 
+img.scale-with-grid
+.entry-content img
+.entry-summary img, 
+.comment-content img
+.widget img
+.wp-caption
+
+// CAPTIONS
+.wp-caption
+.wp-caption img
+.wp-caption p.wp-caption-text
+.wp-caption.alignleft
+.wp-caption.alignright
+
+// TABLES //
+
+table
+table th
+table td
+
+
+
+// WIDGETS //
+li.widget-container
+.widget-container ul ul
+.widget-container select
+.widget_search #s
+.widget_search label span
+.widget-container
+.widget-container ul
+.widget-title
+input#searchsubmit
+.widget-container a:link
+.widget-container a:visited
+.widget-container a:active
+.widget-container a:hover
+.widget-container .entry-meta
+#wp_tag_cloud div
+
+#sidebar .widget_recent_entries ul,
+#sidebar .widget_categories ul,
+#sidebar .widget_archive ul,
+#sidebar .widget_recent_comments ul,
+#sidebar .widget_meta ul
+#sidebar .widget_recent_entries li,
+#sidebar .widget_categories li,
+#sidebar .widget_archive li,
+#sidebar .widget_recent_comments li,
+#sidebar .widget_meta li {
+	border-bottom: 1px solid #eee;
+}
+
+
+// SEARCH FORM //
+#searchform input#s 
+#searchform #searchsubmit
+#content #searchform label
+
+
+/* WP Calendar Widget */
+
+#wp-calendar
+#wp-calendar td
+#wp-calendar td.pad
+#wp-calendar td#today
+#wp-calendar caption
+#wp-calendar th
+
+/* WP RSS Widget */
+
+.widget_rss a.rsswidget
+.widget_rss a.rsswidget:hover
+.widget_rss .widget-title img
+
+
+
+/* MENUS */
+
+		li.page_item,li.menu-item
+		li.page_item a,li.menu-item a
+		li.page_item a:hover,li.menu-item a:hover
+		
+/* SUBMENUS //
+
+		li.page_item li a,li.menu-item li a
+		li.page_item li a:hover,li.menu-item li a:hover
+		li.page_item a:hover,li.menu-item a:hover
+		
+
+/* WP Blog Styles */
+
+.sticky
+.entry-meta,.entry-utility
+.cat-links,.comments-link,.meta-sep,.entry-utility
+.post
+.post.single
+a.more-link
+.skeleton_relatedposts h4
+.skeleton_relatedposts ul
+.skeleton_relatedposts ul li
+
+
+// Buttons //
+
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+a.button, .button a
+a.button:hover, .button a:hover
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+a.button:hover,
+.button a:hover
+button:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+input[type="button"]:active,
+a.button:active
+a.button span.btn_caption
+
+
+// COMMENTS //
+
+#respond
+#respond input[type=text]
+#respond textarea
+#comments
+body.dark #comments
+#comments h2 
+#comments h6
+#comments .comment-meta
+#comments .commentlist
+#comments .commentlist ul
+#comments .commentlist li
+#comments .commentlist li li
+#comments .commentlist li li .comment-meta
+#comments .commentlist li li li 
+#comments .commentlist li li li .comment-meta
+#comments .commentlist li li li li 
+#comments .commentlist li li li li .comment-meta
+#comments .commentlist li li li li li 
+#comments .commentlist li li li li li .comment-meta
+#comments .single-comment
+#comments .comment-author
+#comments .comment-author cite
+#comments .vcard
+#comments .vcard img.avatar
+#comments .vcard
+
+
+// PINGBACKS //
+#comments .commentlist li.pingback,
+#comments .commentlist li.pingback ul,
+#comments .commentlist li.pingback ul li,
+#comments .commentlist li.pingback .vcard
+#comments .commentlist li.pingback p
+#comments .commentlist li.pingback h6
+
+
+
+/* WP Gallery */
+
+.gallery
+.gallery .gallery-row
+.gallery .gallery-item
+.gallery .gallery-item img,
+.gallery .gallery-item img.thumbnail 
+.gallery-caption
+
+
+
+// PAGINATION //
+
+
+/* Single Posts and Attachment Pages */
+
+#nav-below 
+#nav-below a
+
+.nav-prev
+.nav-next
+
+/* Multi-Page Navigation */
+
+.page-link
+.page-link a
+
+
+/*  wp-pagenavi */
+.wp-pagenavi
+.wp-pagenavi span.pages
+.wp-pagenavi a, .wp-pagenavi span.current
+.wp-pagenavi a.previouspostslink,
+.wp-pagenavi a.nextpostslink 
+.pages
+.pages a
+.pages span.newer,
+.pages span.older 
+p.paged 
+
+
+#navigation span.current
+
+
+/* Numbered Pagination */
+
+.pagination
+.pagination span, .pagination a:link
+.pagination a:hover,
+.pagination .current
+
+
+/* Post Pagination Links */
+
+.post_pagination
+.prevpost
+.nextpost
+
+/* pagination links */
+
+.prevpost a,.nextpost a
+.prevpost a:hover,.nextpost a:hover
+
+
+// MISC //
+
+/* Apply CSS class of "guest" to hide menu items from logged-in users */
+body.logged-in li.guest
+
+
+label,legend
+input[type="checkbox"] {display: inline; }
+

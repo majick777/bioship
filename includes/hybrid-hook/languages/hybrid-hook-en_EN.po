@@ -1,0 +1,128 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Hybrid Hook Plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-17 12:11-0600\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Justin Tadlock <justin@justintadlock.com>\n"
+"Language-Team:  <justin@justintadlock.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-KeywordsList: _e;__;esc_attr_e;esc_attr__;esc_html_e;esc_html__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+
+#: ../meta-boxes.php:21
+msgid "About"
+msgstr ""
+
+#: ../meta-boxes.php:24
+msgid "Like this plugin?"
+msgstr ""
+
+#: ../meta-boxes.php:27
+msgid "Support"
+msgstr ""
+
+#: ../meta-boxes.php:51
+msgid "Version:"
+msgstr ""
+
+#: ../meta-boxes.php:54
+msgid "Description:"
+msgstr ""
+
+#: ../meta-boxes.php:68
+msgid "Here's how you can give back:"
+msgstr ""
+
+#: ../meta-boxes.php:71
+msgid "Hybrid Hook on the WordPress plugin repository"
+msgstr ""
+
+#: ../meta-boxes.php:71
+msgid "Give the plugin a good rating."
+msgstr ""
+
+#: ../meta-boxes.php:72
+msgid "Donate via PayPal"
+msgstr ""
+
+#: ../meta-boxes.php:72
+msgid "Donate a few dollars."
+msgstr ""
+
+#: ../meta-boxes.php:73
+msgid "Justin Tadlock's Amazon Wish List"
+msgstr ""
+
+#: ../meta-boxes.php:73
+msgid "Get me something from my wish list."
+msgstr ""
+
+#: ../meta-boxes.php:85
+#, php-format
+msgid "Support for this plugin is provided via the support forums at %1$s. If you need any help using it, please ask your support questiosn there."
+msgstr ""
+
+#: ../meta-boxes.php:85
+msgid "Theme Hybrid Support Forums"
+msgstr ""
+
+#: ../meta-boxes.php:85
+msgid "Theme Hybrid"
+msgstr ""
+
+#: ../meta-boxes.php:105
+msgid "Use this box to add <abbr title=\"Hypertext Markup Language\">HTML</abbr> and/or shortcodes."
+msgstr ""
+
+#: ../meta-boxes.php:107
+msgid "<abbr title=\"Hypertext Markup Language\">HTML</abbr> entered into this box will be filtered because you do not have the <code>unfiltered_html</code> capability."
+msgstr ""
+
+#: ../meta-boxes.php:114
+msgid "Priority (<code>10</code> is default)."
+msgstr ""
+
+#: ../meta-boxes.php:119
+msgid "Execute <acronym title=\"Hypertext Preprocessor\">PHP</acronym>?"
+msgstr ""
+
+#: ../settings.php:26
+msgid "Hybrid Hook Settings"
+msgstr ""
+
+#: ../settings.php:26
+msgid "Hybrid Hook"
+msgstr ""
+
+#: ../settings.php:115
+msgid "Hybrid Hook Plugin Settings"
+msgstr ""
+
+#: ../settings.php:117
+#, php-format
+msgid "The theme you're currently using is incompatible with this plugin. Hybrid Hook was designed to work with the %s theme."
+msgstr ""
+
+#: ../settings.php:117
+msgid "Hybrid WordPress Theme"
+msgstr ""
+
+#: ../settings.php:117
+msgid "Hybrid"
+msgstr ""
+
+#: ../settings.php:119
+msgid "Settings saved."
+msgstr ""
+
+#: ../settings.php:134
+msgid "Update Settings"
+msgstr ""
+

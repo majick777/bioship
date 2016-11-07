@@ -1,0 +1,37 @@
+
+						// ---------------------- //
+						/* GRID SYSTEM COMPARISON */
+						// ---------------------- //
+
+
+		BioShip Theme	 Skeleton 	960 Grid								 Twitter
+		 Framework	Boilerplate 	 System		Blueprint	Foundation				Bootstrap				
+			
+Grid Columns	12/16/20/24	   16		12 or 16	   24		  12					   12*
+
+Units		    em		   px		   px		   px		   %					    %
+			
+Container	.container	.container	.container_12	.container	.row				.container, .row
+		or .row				.container_16							.container-fluid
+						
+Grid Column	.spanX	 	.spanX		.grid_X  	.span-X         .small-X.column			.col-xs-X,.col-sm-X
+		.{xxx}.columns	.{xxx}.columns					.medium-X.column		.col-md-X,.col-lg-X
+		     								.large-X.column
+		     
+Offset Left	.offsetleftX	.offsetX	.prefix_X	.prepend-X	.small-offset-X			.col-xs-offset-X,.col-sm-offset-X	
+		margin-left	padding-left	padding-left    padding-left	.medium-offset-X		.col-md-offset-x,.col-lg-offset-X	
+										.large-offset-X				   margin-left				
+										    margin-left
+
+Offset Right	.offsetrightX	  n/a		.suffix_X	.append-X		n/a				     n/a
+		margin-right			padding-right	padding-right
+
+Pull		.shiftleftX	  n/a		.pull_X		.pull-X		.pull-X,.small-pull-X		.col-xs-pull-X,.col-sm-pull-X
+		-margin-left			  -left		-margin-left	.medium-pull-X,.large-pull-X	.col-md-pull-X,.col-lg-pull-X
+											right				    right
+															    
+Push		.shiftrightX	  n/a		.push_X		.push-X		.push-X,.small-push-X		.col-xs-push-X,.col-sm-push-X		
+		-margin-right			  left		*margins*	.medium-push-X,.large-push-X	.col-md-push-X,.col-lg-push-X
+											left				   left
+															    
+Extra Ref: https://scotch.io/tutorials/cheat-sheet-for-comparing-bootstrap-and-foundation-css-classes

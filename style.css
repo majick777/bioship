@@ -1,0 +1,116 @@
+/*
+Theme Name: BioShip
+Theme URI: http://bioship.space
+Details URI: http://bioship.space/news/
+Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
+Version: 1.9.6
+Status: publish
+Author: DreamJester
+Author URI: http://dreamjester.net
+Tags: fluid-layout, responsive-layout, one-column, two-columns, three-columns, four-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
+License: GPL
+License URI: http://www.opensource.org/licenses/gpl-license.php
+Requires at least: 3.4
+*/
+
+/* ---------------------------------- */
+/* Skeleton Styles already enqueued   */
+/* @import url("css/skeleton.css");   */
+/* ---------------------------------- */
+
+/* @group BioShip Styles */
+
+/* Sidebar Styles */
+
+#header, #footer, #navigation {width:100%;}
+body.sidebar-left #wrap #sidebar {float: left;}
+body.sidebar-right #wrap #sidebar {float: right;}
+body.subsidebar-left #wrap #subsidebar {float: left;}
+body.subsidebar-right #wrap #subsidebar {float: right;}
+#sidebar .widget-container, #subsidebar .widget-container {margin-left: 10px; margin-right: 10px;}
+body.sidebar-left.subsidebar-right #wrap #content {float: left;}
+body.sidebar-right.subsidebar-left #wrap #content {float: right;}
+#sidebar-primary, #sidebar-subsidiary {margin-top: -10px;}
+body #wrap #content.nosidebar {float: none;} /* 1.8.0 fix */
+
+.mobilebutton {display:none;} #mainmenubutton {text-align:center;}
+body .mobilebutton a.button {padding: 5px !important; font-size: 13px !important;}
+
+/* Fix some small Skeleton font sizes */
+
+.themeauthor, .themeauthor a:link, .themeauthor a:hover, .themeauthor a:visited
+.wp-caption p.wp-caption-text, .widget-container .entry-meta, .entry-terms, .entry-utility,
+.tag-links, .cat-links, .comments-link, .meta-sep, .gallery-caption, .wp-pagenavi span.pages
+.pages span.newer, .pages span.older, .pagination, #footer #credits {font-size:12px;}
+
+/* Remove some Skeleton border lines */
+
+table td, body table th {border: 0; padding:5px;}
+body .entry-meta, body .entry-utility {margin-bottom:0; padding-bottom:0; border-bottom: 0;}
+
+/* More Style Fixes... (...to merge?) */
+
+#header {margin:0px;}
+#sidebar-header {float: right;}
+#wrap {margin-top:15px; margin-bottom:30px;}
+#header .inner {padding-top:0px; padding-bottom:0px;}
+#site-logo {float: left;}
+h1#site-title-text a {text-decoration: none;}
+h1#site-title-text, #site-description {margin-bottom: 10px;}
+#navigation ul {border-left: 0px; border-right: 0px;}
+h2.entry-title {margin-top:0px;}
+h3.entry-subtitle {margin-top:-5px; margin-bottom:25px;}
+#content .entry-summary {margin-top: 15px; margin-bottom: 15px;}
+.widget-container {padding-top:0px;}
+.thumbnail.aligncenter {text-align:center;}
+#comments {margin-top: 40px;}
+#comments .commentlist {padding-left:10px;}
+.comment .comment-author, .comment .comment-meta, .comment .comment-reply, .comment .comment-edit 
+	{float:left; margin-right:30px; line-height:1.8em;}
+.comment .comment-edit.button a, .comment .comment-reply.button a {margin:0;}
+.comment .comment-author-meta {font-weight:bold;}
+
+/* ---------------------------------- */
+
+/* Random Stylish Bits */
+
+body .vcard {border:0px; padding:0px;}
+form.search-form {overflow: hidden;}
+.loop-nav .prev, #nav-below .nav-prev {float: left; margin-left:5px;}
+.loop-nav .next, #nav-below .nav-next {float: right; margin-right:5px;}
+.loop-nav .prev, .loop-nav .next, #nav-below .nav-next, #nav-below .nav-prev {display: inline-block; font-weight: bold;}
+#respond textarea {width:100%;}
+p.form-submit {text-align:right; margin-right:10px;}
+#themecredits {text-align:right; margin-right:10px;}
+
+
+/* Infinite Scroll Support */
+span.infinite-loader {url('../images/infinite-loader.gif');}
+
+/* ---------------------------------- */
+
+/* @end */
+
+
+/* Font-Face -  This is the proper syntax for an @font-face file
+   Just create a "fonts" folder at the root, copy your FontName 
+   into the code below and remove comment brackets. 		*/
+
+/*	
+	@font-face {
+		font-family: 'FontName';
+		src: url('fonts/FontName.eot');
+		src: url('fonts/FontName.eot?iefix') format('eot'),
+		     url('fonts/FontName.woff') format('woff'),
+		     url('fonts/FontName.ttf') format('truetype'),
+		     url('fonts/FontName.svg#webfontZam02nTh') format('svg');
+		font-weight: normal;
+		font-style: normal; 
+	}
+*/
+
+/* ========================= */
+/* Child Theme Custom Styles */
+/* ========================= */
+/*   Ya gots da style brah?  */
+

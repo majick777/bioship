@@ -1,0 +1,51 @@
+/**
+ * CSS for the plugin settings page.
+ */
+.appearance_page_hybrid-hook-settings .form-table th {
+	width: 20%;
+	font-weight: bold;
+	}
+.appearance_page_hybrid-hook-settings .metabox-holder .column-1 {
+	float: left;
+	width: 66%;
+	}
+.appearance_page_hybrid-hook-settings .metabox-holder .column-2 {
+	float: right;
+	width: 32%;
+	}
+.appearance_page_hybrid-hook-settings .hook-editor {
+	overflow: hidden;
+	}
+.appearance_page_hybrid-hook-settings p.submit {
+	clear: both;
+	}
+.appearance_page_hybrid-hook-settings textarea {
+	width: 99.5%;
+	}
+.appearance_page_hybrid-hook-settings .postbox .inside p, 
+.appearance_page_hybrid-hook-settings .postbox .inside label, 
+.appearance_page_hybrid-hook-settings .postbox .inside li, 
+.appearance_page_hybrid-hook-settings .postbox .inside a,
+.appearance_page_hybrid-hook-settings .postbox .inside label {
+	font-size: 11px;
+	line-height: 175%;
+	}
+.appearance_page_hybrid-hook-settings .postbox form {
+	line-height: 150%;	
+	}
+.appearance_page_hybrid-hook-settings div.inside ul {
+	margin-left: 20px;
+	}
+.appearance_page_hybrid-hook-settings div.inside ul li {
+	list-style: square;
+	line-height:16px;
+	}
+.appearance_page_hybrid-hook-settings div.inside .alignleft {
+	width: 45%;
+	float: left;
+	}
+.appearance_page_hybrid-hook-settings div.inside .alignright {
+	width: 45%;
+	float: right;
+	text-align: right;
+	}

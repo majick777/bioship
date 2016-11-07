@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Hybrid Hook Widgets Plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-06-10 13:44+0900\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Justin Tadlock <justin@justintadlock.com>\n"
+"Language-Team:  <justin@justintadlock.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: hybrid-hook-widgets.php:62
+msgid "Hook: Before HTML "
+msgstr ""
+
+#: hybrid-hook-widgets.php:63
+msgid "Hook: After HTML"
+msgstr ""
+
+#: hybrid-hook-widgets.php:64
+msgid "Hook: Before Header"
+msgstr ""
+
+#: hybrid-hook-widgets.php:65
+msgid "Hook: Header"
+msgstr ""
+
+#: hybrid-hook-widgets.php:66
+msgid "Hook: After Header"
+msgstr ""
+
+#: hybrid-hook-widgets.php:67
+msgid "Hook: Before Container"
+msgstr ""
+
+#: hybrid-hook-widgets.php:68
+msgid "Hook: After Container"
+msgstr ""
+
+#: hybrid-hook-widgets.php:69
+msgid "Hook: Before Footer"
+msgstr ""
+
+#: hybrid-hook-widgets.php:70
+msgid "Hook: Footer"
+msgstr ""
+
+#: hybrid-hook-widgets.php:71
+msgid "Hook: After Footer"
+msgstr ""
+
+#: hybrid-hook-widgets.php:72
+msgid "Hook: Comment Form"
+msgstr ""
+

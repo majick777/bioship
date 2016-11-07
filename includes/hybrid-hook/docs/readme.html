@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>A guide to the Hybrid Hook plugin</title>
+
+<style type="text/css">body{width:750px;margin:36px auto 60px auto;font:16px/25px Georgia,Times,'Times New Roman',serif}a:link,a:visited{color:#2f6eb9;text-decoration:none}a:hover,a:active{text-decoration:underline}h1,h2,h3,h4,h5,h6{margin:40px 0 30px 0;color:#000;font-weight:bold;font-family:Arial,sans-serif}h1{margin-top:80px;font-size:2.2em}code{padding:0 3px;background:#eee}pre code{padding:0}pre{padding:9px;background:#eee;border:1px solid #ccc}ul{list-style:square}p.first{font-size:21px}p.second{font-size:15px}ul.space li{margin-bottom:10px}.section{overflow:hidden}.columns-2{float:left;width:350px;margin:0 0 21px 25px}.columns-3{float:left;width:230px;margin:0 0 21px 20px}.warning, .alert {padding: 6px 9px;background: #fffbbc;border: 1px solid #E6DB55;}</style>
+
+</head>
+<body>
+
+<h1>A guide to Hybrid Hook</h1>
+
+<p class="first"><em>Hybrid Hook</em> was created to make it easy for average users to plug custom code into their site without having to learn how the hooks system (Plugin API) works in WordPress.</p>
+
+<p class="second">This plugin adds an additional theme settings paged named <em>Hybrid Hook</em> under the <em>Appearance</em> menu in the admin.  You can use it to input custom <abbr title="Hypertext Markup Language">HTML</abbr>, <abbr title="Hypertext Preprocessor">PHP</abbr>, JavaScript, and even shortcodes.  You don't have to dig into those theme files just to add a little extra content to your blog.  You can use this plugin to add content anywhere.</p>
+
+<h2>How to install the plugin</h2>
+
+<ol>
+	<li>Uzip the <code>hybrid-hook.zip</code> folder.</li>
+	<li>Upload the <code>hybrid-hook</code> folder to your <code>/wp-content/plugins</code> directory.</li>
+	<li>In your WordPress admin, head over to the <em>Plugins</em> section.</li>
+	<li>Activate <em>Hybrid Hook</em>.</li>
+</ol>
+
+<h2>How to use the plugin</h2>
+
+<p>Once you've activated the plugin, a new menu item labeled <em>Hybrid Hook</em> will be under your <em>Appearance/Themes</em> menu in your WordPress admin.  This item will only be shown to users with the <code>edit_theme_options</code> capability (the Administrator role in default WordPress installations).</p>
+
+<p>On the <em>Hybrid Hook Settings</em> page, you'll be presented with several meta boxes, one for each available action hook.  Within each meta box, there'll be three settings:</p>
+
+<ul>
+	<li><strong>Textarea:</strong>  This is where you input your custom code.  You can add <abbr title="Hypertext Markup Language">HTML</abbr>, <abbr title="Hypertext Preprocessor">PHP</abbr>, JavaScript, and shortcodes here.</li>
+	<li><strong>Priority:</strong>  This is when your code will be fired on the action hook.  It's useful for adding things before/after the default actions fired by <em>Hybrid</em>.  Typically, it's best to just leave this at the default of <code>10</code>.</li>
+	<li><strong>Execute <abbr title="Hypertext Preprocessor">PHP</abbr>?:</strong>  If you added <abbr title="Hypertext Preprocessor">PHP</abbr> code to your textarea, you need to select this option for the code to be executed.</li>
+</ul>
+
+<p>That's pretty much it.  Just remember that you're responsible for the code you add to your site.</p>
+
+<p class="alert">Note that most <abbr title="Hypertext Markup Language">HTML</abbr> is stripped and <abbr title="Hypertext Preprocessor">PHP</abbr> won't be executed if the user inputting the code doesn't have the <code>unfiltered_html</code> capability (Administrators have this capability on a default WordPress install).  This is a safety precaution to make sure users without permission don't add stuff they shouldn't add.</p>
+
+<h2>Plugin support</h2>
+
+<p>I run a WordPress community called <a href="http://themehybrid.com" title="Theme Hybrid">Theme Hybrid</a>, which is where I fully support all of my WordPress projects, including plugins.  You can sign up for an account to get plugin support for a small yearly fee ($25 <abbr title="United States Dollars">USD</abbr> at the time of writing).</p>
+
+<p>I know.  I know.  You might not want to pay for support, but just consider it a donation to the project.  To continue making cool, <abbr title="GNU General Public License">GPL</abbr>-licensed plugins and having the time to support them, I must pay the bills.</p>
+
+<h2>Copyright &amp; license</h2>
+
+<p><em>Hybrid Hook</em> is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html" title="GNU GPL">GNU General Public License</a>, version 2 (<abbr title="GNU General Public License">GPL</abbr>).</p>
+
+<p>This plugin is copyrighted to <a href="http://justintadlock.com" title="Justin Tadlock">Justin Tadlock</a>.</p>
+
+<p>2008&thinsp;&ndash;&thinsp;2011 &copy; Justin Tadlock</p>
+
+</body>
+</html>

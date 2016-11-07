@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>A guide to the Hybrid Hook Widgets plugin</title>
+
+<link rel="stylesheet" href="readme.css" type="text/css" media="screen" />
+
+</head>
+<body>
+
+<h1>A guide to Hybrid Hook Widgets</h1>
+
+<p><em>Hybrid Hook Widgets</em> is a plugin that creates new widget areas for the <em>Hybrid</em> theme and attaches them to the theme's action hooks.  Basically, it allows you to add widgets pretty much anywhere.</p>
+
+<p>Typically, to add extra stuff to the theme, you must use one of <em>Hybrid's</em> action hooks.  This can be quite confusing to some users.  This plugin was created mainly for those users without much <acronym title="Extensible Hypertext Markup Language">XHTML</acronym> and <acronym title="Hypertext Preprocessor">PHP</acronym> knowledge.  It allows them to take advantage of <em>Hybrid's</em> advanced hook system without the need to understand how it works.  Of course, even advanced users can take advantage of this, especially when dealing with client work.</p>
+
+<h2>How to install the plugin</h2>
+
+<ol>
+	<li>Uzip the <code>hybrid-hook-widgets.zip</code> folder.</li>
+	<li>Upload the <code>hybrid-hook-widgets</code> folder to your <code>/wp-content/plugins</code> directory.</li>
+	<li>In your WordPress dashboard, head over to the <em>Plugins</em> section.</li>
+	<li>Activate <em>Hybrid Hooks Widgets</em>.</li>
+</ol>
+
+<h2>Using the plugin</h2>
+
+<p>This plugin is pretty simple to use.  Just head over to your <em>Widgets</em> panel while in your WordPress admin.  You'll notice several additional widget areas for you to use.  When a widget is placed within a particular widget area, it will show on the front end of your site:</p>
+
+<ul>
+	<li>
+		<strong>Hook: Before HTML</strong><br />
+		Located just inside the <code>&lt;body></code> tag and before all other content.
+	</li>
+	<li>
+		<strong>Hook: After HTML</strong><br />
+		Located just before the closing <code>&lt;/body></code> tag and after all other content.
+	</li>
+	<li>
+		<strong>Hook: Before Header</strong><br />
+		Located before the theme's header area.
+	</li>
+	<li>
+		<strong>Hook: Header</strong><br />
+		Located within the theme's header area.
+	</li>
+	<li>
+		<strong>Hook: After Header</strong><br />
+		Located after the theme's header area.
+	</li>
+	<li>
+		<strong>Hook: Before Container</strong><br />
+		Located just before the main content area.
+	</li>
+	<li>
+		<strong>Hook: After Container</strong><br />
+		Located just after the main widget areas (Primary and Secondary).
+	</li>
+	<li>
+		<strong>Hook: Before Footer</strong><br />
+		Located before the theme's footer area.
+	</li>
+	<li>
+		<strong>Hook: Footer</strong><br />
+		Located within the theme's footer area.
+	</li>
+	<li>
+		<strong>Hook: Before HTML</strong><br />
+		Located after the theme's footer area.
+	</li>
+	<li>
+		<strong>Hook: Comment Form</strong><br />
+		Located at the end of the comment form.
+	</li>
+</ul>
+
+<h2>Some notes about usage</h2>
+
+<p>Because this plugin isn't necessarily supported within the theme or its child themes, there may be some times when things look a little wonky.  This is perfectly normal and expected.  This is caused by two issues:</p>
+
+<ol>
+	<li>No <acronym title="Cascading Style Sheets">CSS</acronym> rules are written specifically for this plugin's widget areas.</li>
+	<li>The child theme has other features that push the widget area out of view.</li>
+</ol>
+
+<p>The biggest thing here is the <acronym title="Cascading Style Sheets">CSS</acronym>.  More than likely, you'll have to write some custom style rules to make the widget areas appear as you'd like.  That's just how it is, but diving into your child theme's <code>style.css</code> file beats the heck out of having to dive into both your <code>style.css</code> and <code>functions.php</code> files.</p>
+
+<p>To read more about the action hooks within the <em>Hybrid</em> theme, please read the <a href="http://themehybrid.com/themes/hybrid/hooks" title="Hybrid theme hooks">hooks reference</a>.</p>
+
+<h2>Plugin support</h2>
+
+<p>I run a WordPress community called <a href="http://themehybrid.com" title="Theme Hybrid">Theme Hybrid</a>, which is where I fully support all of my WordPress projects, including plugins.  You can sign up for an account to get plugin support for a small yearly fee ($25 <acronym title="United States Dollars">USD</acronym> at the time of writing).</p>
+
+<p>I know.  I know.  You might not want to pay for support, but just consider it a donation to the project.  To continue making cool, <acronym title="GNU General Public License">GPL</acronym>-licensed plugins and having the time to support them, I must pay the bills.</p>
+
+<h2>Copyright &amp; license</h2>
+
+<p><em>Series</em> is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html" title="GNU GPL">GNU General Public License</a>, version 2 (<acronym title="GNU General Public License">GPL</acronym>).</p>
+
+<p>This plugin is copyrighted to <a href="http://justintadlock.com" title="Justin Tadlock">Justin Tadlock</a>.</p>
+
+<p>2009 &copy; Justin Tadlock</p>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+
+/* Skeleton Mobile Layout */
+
+/* #Media Queries
+================================================== */
+
+
+@media only screen and (min-width: 768px) {
+	 #subsidebar {display:block !important;}
+}
+
+@media only screen and (max-width: 767px) {
+
+	/* Mobile SubSidebar Button */
+	#subsidebar {display:none; max-width:50%;}	
+	#subsidebarbutton {float:right; display:block; margin-left:0px; margin-right:10px;}
+	#subsidebarbuttonsmall {display:none;}
+	
+}
+
+
+@media only screen and (min-width: 640px) {
+	#sidebar {display:block !important;}
+}
+
+@media only screen and (max-width: 639px) {
+
+	/* Mobile Sidebar Button */
+	#sidebar {display:none;}
+	#sidebar {float:left !important; max-width:90%;}
+	#subsidebar {float:right !important; max-width:90%;}
+	#sidebarbutton {float:left; display:block; margin-left:10px; margin-right:0px;}
+	#subsidebarbuttonsmall {display:none;}
+	
+	/* Content Widths */
+	#wrap #navigation {width: 96% !important;}
+	#wrap #content {width: 96% !important;}
+	#sidebar .widget-container, #subsidebar .widget-container 
+		{margin-left: 5px; margin-right:5px;}
+
+}
+
+@media only screen and (min-width: 480px) {
+	#mainmenu {display:block !important;}
+}
+
+/* Mobile/Browser */
+@media only screen and (max-width: 479px) {
+
+	#wrap #content {width: 100%;} /* !important */
+	
+	/* Sidebar Buttons */
+	
+	#sidebarbutton, #subsidebarbutton {display:inline-block;}
+	
+	/* Mobile Navigation */
+	
+	#mainmenu {display:none;}
+	#mainmenubutton {display:inline-block; width:33%; margin-top:5px;}
+	#mainmenushow, #mainmenuhide {margin:0 auto;}
+	
+	#wrap #navigation {margin: 10px 0px; text-align:center;}
+	#wrap #navigation ul li {margin-left:20px;}
+
+	#wrap #navigation ul, #wrap #navigation ul li, #wrap #navigation ul li a {
+		/* float: none; */ background: transparent; border: none;
+		box-shadow:none; -moz-box-shadow:none; -webkit-box-shadow:none;	behavior:none;
+	}
+
+	#wrap #navigation ul li a, #wrap #navigation ul li.active a,
+	#wrap #navigation ul li a:hover, #wrap #navigation ul li:hover a {
+		border: none; padding: 2px 0; line-height: 150%;
+		background: transparent; background-image: none;
+	}
+
+	/* Initial reset and hide sublevels in mobile view */
+
+	#wrap #navigation ul.sub-menu,#navigation ul.children,
+	#wrap #navigation ul.sub-menu li,#navigation ul.children li,
+	#wrap #navigation ul.sub-menu li:hover,#navigation ul.children li:hover,
+	#wrap #navigation ul.sub-menu li a,#navigation ul.children li a,
+	#wrap #navigation ul.sub-menu li a:hover,#navigation ul.children li a:hover {
+		display: none; position: relative; left: 0px; line-height: 100%;
+		padding: 0; margin: 0; height: auto; background-image: none;
+		background: none; border: none; border-style: none; box-shadow:none;		
+	}
+
+	/* Declare new padding for submenu items */
+
+	#wrap #navigation ul.sub-menu li a,#navigation ul.children li a,
+	#wrap #navigation ul.sub-menu li a:hover,#navigation ul.children li a:hover {
+		padding: 4px 0px 4px 10px;
+	}
+
+	/* Show on hover */
+
+	#wrap #navigation li:hover ul.sub-menu,#navigation li:hover ul.children,
+	#wrap #navigation li:hover ul.sub-menu li,#navigation li:hover ul.children li,
+	#wrap #navigation li:hover ul.sub-menu li a,#navigation li:hover ul.children li a {
+		display: inline-block;
+	}
+	
+	
+	/* other styles */
+
+	#wrap .products li,.products li.first,.products li.last {
+		float: left; clear: both; margin: 20px 0px 20px 0px; width: 100%;
+	}
+	
+	#wrap #breadcrumb {display: none;}
+
+	#sidebar .widget-container, #subsidebar .widget-container 
+		{margin-left: 2px; margin-right:2px;}
+
+}
+
+/* Smaller Mobiles */
+@media only screen and (max-width: 399px) {
+
+	#sidebarbutton {display:none;}
+	#sidebarbuttonsmall {float:left; display:block; margin-left:10px; margin-right:0px;}
+	#subsidebarbutton {display:none;}
+	#subsidebarbuttonsmall {float:right; display:block; margin-left:0px; margin-right:10px;}
+
+}
+
+
+/* Mobile Landscape/Browser */
+@media only screen and (min-width: 480px) and (max-width: 767px) {}
+
+/* Anything smaller than standard 960 */
+/*
+@media only screen and (max-width: 959px) {
+	#header #site-title a {font-size: 28px;}
+	#header .site-desc {font-size: 18px; line-height: 1;}
+	#header .inner {padding-bottom: 0;}
+} */
+
+/* iPad Portrait/Browser */
+/* @media only screen and (min-width: 768px) and (max-width: 991px) {} */
+
+/* iPad Portrait Only */
+@media only screen and (min-width: 768px) and (max-width: 991px) and (max-device-width: 1000px) {}
+
+/* Mobile Only */
+@media only screen and (max-width: 767px) and (max-device-width: 1000px) {}
+
+/* Mobile Landscape Only */
+@media only screen and (min-width: 480px) and (max-width: 767px) and (max-device-width: 1000px) {}
+
+

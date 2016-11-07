@@ -1,0 +1,374 @@
+= 1.9.8 =
+- Hotfix: check for logoresize page element in init.js
+
+= 1.9.7 =
+- Hotfix: missing argument 2 for filter warning breaking headers
+
+= 1.9.6 =
+- * Bugfix Update *
+- Docs: Grid System documentation completed
+- Fixed: grid.php overflow bug by recalculating wrap width total
+- Fixed: grid.php offset left class rule selector typo
+- Fixed: muscle.php some mismatching WP to Open Graph locales 
+- Fixed: skin.php login and inline admin styles output exit bug
+- Fixed: skin.php missing fallback to main background for wp-login
+- Fixed: skin.php missing number input type for input styles
+- Fixed: options.php background repeat option array typo
+- Fixed: javascript logo resize on pageload for smaller screens
+- Fixed: theme options header size for smaller screen widths
+
+= 1.9.5 =
+- * Final Public Beta *
+- Docs: Child Theme and Framework documentation completed
+- Docs: Metabox and Sidebar documentation completed
+- Improved: Grid System layout value filtering
+- Improved: theme settings autobackup/restore process
+- Improved: perpost metabox display tables and sections
+- Standardized: global vthemeoptions is now vthemesettings
+- Standardized: global vdisplayoverrides is now vthemedisplay
+- Option: Standalone Content Grid Columns Default Value
+- Option: load Dynamic Editor Styles to match theme settings
+- Option: disable Emoji scripts and styles loading
+- Added: Percentage Content Grids for 12/16/20/24 Columns
+- Added: PerPost Sidebar Overrides Interface
+- Added: PerPost CSS Styles QuickSave button
+- Added: optional Archive Template Subdirectory to hierarchy
+- Added: optional alternative template directory for WooCommerce
+- Filter: alternative WooCommerce template directory
+- Filter: separated sidebar hide and no output filters
+- Changed: default javascript directory name to scripts
+- Updated: Options to Titan Framework settings transfer
+- Updated: Kirki Customizer Libary to 2.3.5
+- Optimized: Content Grid compatibility classes
+- Fixed: Post Type(s) Detection (to not use is_single)
+- Fixed: insane settings saving bug on some old installs
+- Fixed: Body Login class prefix to Admin Login Styles
+- Fixed: dashes in Theme Mods slug for Autospace Main Menu
+- Fixed: new child theme install destination directories
+- Fixed: matching jQuery handle for CDN fallback script
+- Fixed: remove unused CodeMirror scripts from Kirki load
+- Fixed: theme settings user backup restore button action
+- Fixed: apply_filters typo for archive content template
+- Fixed: Matchmedia.js file hierarchy call argument
+- Removed: [off] from sidebar labels (styling sufficient)
+- Removed: old force update code for insane saving bug
+
+= 1.9.0 =
+- * Public Release Candidate *
+- skull.php: moved skull functions from functions.php
+- Optimized: Precalculate Filtered Theme Layout State
+- Improved: Sidebar Template Hierarchy System
+- Improved: Sidebar Registration, Order and Labelling
+- Improved: Pass Filtered Theme Layout to grid.php
+- Improved: Theme Options Page Colour Scheme
+- Improved: standard vtheme prefix for theme globals
+- Improved: Layout Sections and Hook Global
+- Added: first/last/odd/even Widget Style Classes
+- Added: more documentation... about halfways there
+- Fixed: duplicate ID for new site-description attribute
+- Fixed: allow blank (empty) Sidebars via filtering
+
+= 1.8.5 =
+- * Customizer Completion *
+- docs.php: Dynamic Documentation Display (prototype)
+- Added: Customizer Sidebar Controls (width, left/right)
+- Added: Customizer Dynamic CSS Live Preview
+- Added: Customizer Typography Live Preview (Titan)
+- Added: Customizer Background Images Live Preview
+- Added: Customizer Logo Image/Text Live Preview
+- Added: Customizer Hover Selectors Live Preview
+- Added: Customizer Button Gradients Live Preview
+- Added: Customizer Sanitization fallbacks
+- Added: Header Title Text and Description Filters
+- Added: Import Theme Options via File Upload Method
+- Added: Custom CSS QuickSave Button to Theme Options
+- Added: Archive and Search Sidebar Widget Area
+- Added: Universal get Post Types helper function
+- Added: Base Template (header/footer/loop) Hierarchies
+- Improved: Better CSS Hero Selector Declarations
+- Improved: Header Background Image Size Caching
+- Improved: Minor comments.php template tweaks
+- Improved: Selective Theme Options import allowed
+- Optimized: Conditional loading of superfish.js
+- Optimized: Re-indexed Layout Hook/Label Reference
+- Optimized: Much cleaner core loop templates
+- Option: Category/Taxonomy/Tag/Author/404 Sidebars
+- Option: Main Navigation Menu Styling Options
+- Option: Resize Header Logo Image on Window Resize
+- Option: AutoSpace Main Navigation Items
+- Option: Input text and background colour selection
+- Option: Apply Button Colours to WooCommerce Buttons
+- Option: Apply Buttons to Comment Edit/Reply Links
+- Option: Hybrid Breadcrumbs for Post/Archive Types
+- Option: use File Modified Time for Cachebusting
+- Option: RSS Feed Excerpt Length
+- Option: Full Content RSS Feeds for Pages
+- Option: Login Form Background Colour
+- Metabox Option: hide page navi or breadcrumb trail
+- Metabox Option: hide header menu or footer menu
+- Metabox Option: no wrapper margins (full width screen)
+- Moved: Login Options tab to Skin Layer (styling)
+- Moved: admin.php, customizer.php, tracer.php to /admin/
+- Removed: Default Navigation Styling from skeleton.css
+- Removed: Grid Compatibility Classes from Template Columns
+- Removed duplicate All Options global variable
+- Renamed: /child-source/ directory to /child/ 
+- Renamed: /css/ directory to /styles/
+- Renamed: loop-hybrid.php is now loop-index.php
+- Fixed: Options Framework Customizer Section bug
+- Fixed: Options Framework/Titan Multicheck Conflict
+- Fixed: Customizer Multicheck array saving (yeesh)
+- Fixed: Theme Options Sidebar Save Button Event
+- Fixed: Admin Theme Menu links for Theme Test Drive
+- Fixed: nonce checks for options restore/import/revert
+- Fixed: Login Page Logo and Login Form Styling
+- Fixed: Page Navigation filters and display logic
+- Fixed: Export Theme Options in XML format
+- Fixed: Theme Options Sidebar Save Submit Selectors
+- Fixed: Customizer Transport Refresh for Live Preview
+- Fixed: Kirki control script URL misconfig bug
+- Fixed: Extra Font selection array key bug
+- Fixed: PerPost Thumbnail display override
+- Fixed: Site Icon and Startup image bugs
+- Fixed: Match WP jQuery version for Google CDN option
+
+= 1.8.0 =
+- * Major Beta Overhaul *
+- customizer.php - Customizer Support Added (yeesh!)
+-- added Kirki Customizer Control Library (helpful)
+- csshero.js: CSS Hero Theme Declaration Support!
+- Update: Hybrid Core Library to version 3!
+-- loop-meta.php: use get_the_archive_title/description
+-- options: removed old Hybrid Core 2 extensions
+- Update: Titan Framework Options Conversion!
+-- (maintains back-compatibility with Options Framework)
+-- revamped Titan admin page to single page with layers
+- Update: TGM Plugin Activation (to namespaced version)
+- Update: Added Foundation 6.2 loading support integration
+- Started: Microthemer Scaffold Declarations Support
+- Moved: All Theme Options Interface functions to admin.php
+- Moved: Child Theme Widget save/restore to admin.php
+- Moved: PerPost Theme Option Metabox UI to admin.php
+- Optimized: streamlined PerPost options to reduce queries
+- Optimized: revamped Grid (margins to inner padding)
+- Optimized: revamped sidebar display conditional logic
+- Optimized: mobile button media display queries
+- Optimized: mobile button functions (now jQuery)
+- Optimized: improved file search hierarchy (+SSL Fix)
+- Option: to Add Excerpt Support to Pages
+- Option: Flexibility (polyfill) for IE8+9 Flexbox Support
+- Option: to echo HTML Element Comment Wrappers or not
+- Changed: % to # for Meta Format Tags (Titan conflict)
+- Changed: Option to Filter to Load Theme Function Tracer
+- Added: use WP Filesystem for Child Theme Creation
+- Added: Frontpage and Home (Blog) Sidebars/Subsidebars
+- Added: Theme Info section to Theme Options page
+- Added: Theme Tools - Backup/Restore/Import/Export Interface
+- Added: Media Handler for Attachments and Post Formats
+- Added: Full width 'Banner' display positions
+- Added: extra Customizer Control libararies
+- Added: #content CSS class name filter
+- Added: alpha omega grid classes to #content
+- Added: Labels to Hook array for future feature
+- Added: post content to top of 'Blog' (Page for Posts)
+- Added: extra action hook for top of front page 'Blog'
+- Added: AJAX Load More plugin Repeater to templates
+- Fixed: SSL Recheck for Parent/Child URI Resources
+- Fixed: CSS targeting to inside elements for typography
+- Fixed: manage_options to edit_theme_options capability
+- Fixed: some more missing translation wrappers
+- Fixed: more undefined indexes and variable warnings
+- Fixed: jQuery handle for Google CDN and fallback
+- Fixed: admin resource URLs for Options Framework
+- Fixed: meta format author display name fallbacks
+
+= 1.5.5 = 
+- Fixed: Text Domain translation strings for Theme Check
+- Fixed: css #content column targeting in grid.php
+- Fixed: remove mobile buttons to match perpost options
+- Deprecated: muscle.php unworking post revision limit method
+
+= 1.5.0 =
+- * First Public Beta Release Version *
+- Updated: Hybrid Core v2.0.2 to v2.0.4 (minor bugfixes)
+- Updated: TGM Plugin Activation v2.4.0 to v2.5.2
+- Updated: Formalize form element styling CSS to v1.2
+- Updated: Overhauled thumbnail handling functions
+- Updated: Lots of minor code and style improvements
+- grid.php - new dynamic stylesheet for em based grid loading!
+- index.php - now supports CPT header and footer templates
+- skeleton.php - moved templating functions from functions.php
+- admin.php - moved admin-only functions from functions.php
+- skin.php - can now be called directly (uses Shortinit)
+- options.php - settings page functions are now pluggable
+- author-bio.php - moved template functions to functions.php
+- content.php - moved thumbnail functions to functions.php
+- content.php - added more template action hooks to fire
+- content.php - added bio box top or bottom position calls
+- comments.php - moved to /content/ and hierarchy filter added
+- templates.php - added to Child Theme (small Template Guide)
+- hooks.php - changed layout.php guide for use with Hybrid Hook
+- Added: Mobile Buttons for main menu, sidebar and subsidebar
+- Added: Hybrid Hook extension for adding content to hooks
+- Added: Theme Tracer for template and function tracking 
+- Added: Thumbnail Size Override to the PerPost Metabox
+- Added: Browser/Mobile detection CSS filters for skin.php
+- Added: Theme Update available display to Theme Options page
+- Added: Extend layer tab to Theme Options for extensions
+- Added: Import/Export Theme Options as XML (no UI yet)
+- Added: filters to sidebar and layout to support CPT sidebars
+- Added: YouTube fullscreen video background option (via filters.php)
+- Added: Dashboard updates notice with Theme News Feed widget 
+- Added: missing div comments and new lines for source readability
+- Added: Woocommerce template hierarchy override filters
+- Added: Some missing Muscle admin options filters
+- Added: Theme icon next to Theme Options in Admin Bar
+- Added: Meta replacement values for page/category parents
+- Added: Filters for all hooked layout (priority) positions
+- Added: Class filters for header, sidebars, content, footer
+- Added: Fallback to local jQuery for Google jQuery CDN failure
+- Fixed: use of getimagesize in skin.php for no allow_fopen_url
+- Fixed: bug in subsidebar option ID for background colour 
+- Fixed: default Wordpress admin menu CSS for Wordpress 4.0
+- Fixed: WP version comparisons to use version_compare
+- Fixed: a bunch of undefined index notices caught by debugger
+- Fixed: thumbnail display option in content.php for Hybrid
+- Fixed: comments template filter for parent theme fallback
+- Fixed: PrefixFree and Google Fonts CORS conflict
+- Fixed: whitespace conversion in Custom Font names
+- Fixed: button styles now properly override Skeleton styles
+- Fixed: Child Theme creation menus and menu locations
+- Fixed: Child Theme Options page shows parent update available
+- Fixed: Translations function now applied to all options texts
+- Fixed: Titan Admin Page Current Option Tab Selection Saving
+- Fixed: Smooth Scrolling JS Bug for jQuery 1.12 (WP 4.5)
+- Option: Number of dynamic Grid Columns: 12, 16, 20 or 24!
+- Option: 960 Grid System / Blueprint class compatibility
+- Option: Multiple Media Query Breakpoints for dynamic Grid
+- Option: Open Graph Protocol plugin default image options
+- Option: Combine Core CSS to single file option
+- Option: default thumbnail alignment class options
+- Option: missing load FitVids option to Muscle Scripts tab
+- Option: missing load Formalize option to Skin CSS tab
+- Option: missing option for Smooth Scrolling Hash Links
+- Option: Experimental Foundation loader options
+- Option: timestamps to options array for backups/exports/imports
+- Option: top or bottom author bio box position and filters
+- Option: to show Theme Options link in admin bar or not
+- Option: Options saves current option tab not just layer filter
+- Option: missing option for no logo at all on wp-login.php page
+- Option: for displaying Page Navigation for different post types
+- Changed: default thumbnail size to 250 square for social sharing
+- Changed: thumbnails and bio boxes are now called by action hooks
+- Fixed: Hack to Appearance Theme Options submenu display position
+- Deprecated: root page.php - index.php now handles all post types
+- Deprecated: Browser Body Class function (page cache unfriendly)
+
+= 1.4.5 =
+- Pre-Release Conversion Testing Version
+- Theme Updater! Added WShadow Theme Upgrade Checker 
+- Added: Manual Backup/Restore of Theme Options
+- Added: login page specific background image option
+- Added: option for default Gravatar URL image handling
+- Fixed: Theme Testdrive Theme Options Saving Bug (madness!)
+- Fixed: post type selection and filtering of main RSS Feed 
+- Fixed: is_search() check in content.php and aside.php page templates
+- Fixed: admin login logo path size check on subdirectory installs
+- Fixed: typo in skeleton_entry_footer_meta function
+- Fixed: category list replacement value in post/page meta
+- Improved: Home Blog Include/Exclude Category Option
+
+= 1.4.0 =
+- Added: CSS replacement values for theme image directory URLs
+- Added: Title Font and Font Stack example display pages
+- Added: button text filters to Theme My Login templates
+- Added: load PrefixFree Support (Javascript) option
+- Added: load NWMatcher CSS Selector (Javascript) option
+- Added: load NWEvents Event Manager (Javascript) option
+- Added: load CSS.Supports (Javascript) option
+- Added: default Gravatar replacement option (gravatar.png)
+
+= 1.3.5 =
+- Added Post and List Thumbnail Size Selection
+- Added default Thumbnail Cropping Options
+- Added: Admin Logo to Theme My Login forms option
+- Added: overrideable Child Theme logo image
+- Option: Autoload for Extra Custom Fonts (via Google Fonts)
+- Option: Cleaner Admin Bar (removes Wordpress links)
+- Fixed: Wordpress admin area display tweaks
+- Fixed: Hybrid image size post editor conflict
+
+= 1.3.0 =
+- Added: One-Click Child Theme Installation!
+- Added: layout.php to Child Theme (page elements)
+- Added: CSS/JS Cache Busting options
+- Improved: Theme Test Drive Compatibility
+
+= 1.2.5 =
+- Added: filters.php to Child Theme (value filters)
+- Added: Form Button Colour Options
+- Added: Theme My Login Image Button support
+- Fixed: CSS stylesheets and dependencies
+
+= 1.2.0 =
+- General bugfixes and improvements
+- Dual Header Background and Header Logo
+- Added majority of Muscle functions
+- Improved Skeleton and Skin functions
+
+= 1.1.0 =
+- Major theme development and coding work
+- Modifications *WAY* too numerous to note here!
+- Convert Skeleton to Skin/Muscle/Skeleton
+
+= 1.0.0 =
+- Converted from Skeleton Child to Parent Theme
+
+= 0.1.0 =
+- * Minor Update and Fix List *
+- Fix StickyKit on sidebars and Mobile Queries conflict
+- MetaBox QuickSave for Display / Override Options
+- Retest Widget Transfers on Activation/Deactivation
+- Retest Pagination Display for Post/Archive Types
+- Recheck Editor Styles against core Theme Styles
+- Check Image URL(s) on Save: not found to Admin Notice?
+- Resource Logging: any files not found to Admin Notice?
+
+= 0.0.5 =
+- ** Major Update and Testing List **
+- ReTest MultiSite Compatibility
+- Test/Improve Post Format Media Templates
+-- Test Hybrid Post Format Filter extension
+- Test Import/Export while Theme Test Driving
+- Check Translation Support (for WMPL)
+- Pass Wordpress.org Theme Check
+
+= 0.0.3 =
+- ** Customizer List **
+- Test Grid Option Changes in Live Preview
+- Sidebar Controls (allow top/bottom position)
+- ? PerPost Theme Options context panel
+- ? Titan Font Text Shadow Options
+- ? Custom Control for Media Upload *OR* URL
+
+= 0.0.2 =
+- ** Planned Option List **
+- Select CPTs to Display Theme Options Metabox on
+- Author Bio Display Position on Author Archives
+- Options Framework: rgba colour picker control?
+- ? Set Image Quality Filter wp_editor_set_quality
+- ? Disable Hybrid Schema.Org Attribute Markup 
+- ? Separate Admin Style CSS Loading Mode
+- ? Foundation Grid-only Loading
+- ? Titan control for Media Upload *OR* URL
+
+= 0.0.1 =
+- ** Planned Feature List **
+- Theme Settings Revisions Custom Post Type
+- Floating/Fixed 'Back to Top' scroll button
+- Allow for Paged Templates in Hierarchy
+- Selective Foundation 6 Loading Support
+- ? Colour Presets (to match Wordpress.Org tags)
+- ? Bootstrap Grid Compatibility Classes
+- ? Microthemer Scaffold Declarations
+- ? Theme Security/Upgrade Notice Alerts
