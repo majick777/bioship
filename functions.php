@@ -102,7 +102,7 @@
 
 // set Framework Version
 // ---------------------
-$vbioshipversion = '1.9.7'; define('BIOSHIPVERSION', $vbioshipversion);
+$vbioshipversion = '1.9.8'; define('BIOSHIPVERSION', $vbioshipversion);
 
 // set WordQuest Theme 'plugin' Info
 // ---------------------------------
@@ -885,17 +885,18 @@ if (!function_exists('skeleton_titan_theme_options')) {
 	global $vthemeoptions, $vthemename;
 
 	// loop the options array and convert Titan to theme options array
-	// TODO: cache current theme options using savetime as key?
+	// TODO: maybe cache current theme options using savetime as key?
 	$vcheckboxes = array(); $vmulticheck = array();
 	foreach ($vthemeoptions as $voption => $voptionvalue) {
 		if ( ($voptionvalue['type'] != 'heading') && ($voptionvalue['type'] != 'info') ) {
 			if (!isset($voptionvalue['id'])) {
-				if (THEMEDEBUG) {echo "<!-- Whoops! Option defintion error found: "; print_r($voptionvalue); echo " -->";}
+				if (THEMEDEBUG) {echo "<!-- Whoops! Option definition error found: "; print_r($voptionvalue); echo " -->";}
 			} else {$voptionkey = $voptionvalue['id'];}
 
 			// set to default for any unset options
 			if (!isset($voptionvalues[$voptionkey])) {
-				if (isset($voptionvalues['std'])) {$voptionvalues[$voptionkey] = $voptionvalue['std'];}
+				// 1.9.8: fix to mapping of default options for empty settings
+				if (isset($voptionvalue['std'])) {$vthemesettings[$voptionkey] = $voptionvalue['std'];}
 			}
 
 			// fix for serialized suboption values
@@ -935,7 +936,8 @@ if (!function_exists('skeleton_titan_theme_options')) {
 
 			// convert attachment IDs to actual image/upload URL
 			if ($voptionvalue['type'] == 'upload') {
-				if (is_numeric($vthemesettings[$voptionkey])) {
+				// 1.9.8: add check for empty options to avoid warning
+				if ( (isset($vthemesettings[$voptionkey])) && (is_numeric($vthemesettings[$voptionkey])) ) {
 					$vimage = wp_get_attachment_image_src($vthemesettings[$voptionkey],'full');
 					$vthemesettings[$voptionkey] = $vimage[0];
 				}
@@ -1406,7 +1408,6 @@ function skeleton_hybrid_attr_footer($vattributes) {$vattributes['id'] = 'mainfo
 $vskull = skeleton_file_hierarchy('file','skull.php');
 require_once($vskull);
 
-
 // ================
 // === SKELETON ===
 // ================
@@ -1683,7 +1684,8 @@ if (!function_exists('skin_enqueue_styles')) {
 // -------------------------
 if (!function_exists('skin_enqueue_admin_styles')) {
  function skin_enqueue_admin_styles() {
-	global $vthemesettings, $vthemedirs;
+ 	// 1.9.8: fix add missing global vcsscachebust here
+	global $vthemesettings, $vthemedirs, $vcsscachebust;
 
 	// Dynamic Admin Stylesheet
 	// ------------------------
@@ -1726,7 +1728,8 @@ if (!function_exists('skin_enqueue_admin_styles')) {
 			if ($vthemesettings['stylesheetcachebusting'] == 'filemtime') {
 				$vcsscachebust = date('ymdHi',filemtime($vformalize['file']));
 			}
-			wp_enqueue_style('formalize',$vformalize['url'], $vmaindep, $vcsscachebust, 'screen, projection');
+			// 1.9.8: fix to remove unneeded dependency
+			wp_enqueue_style('formalize',$vformalize['url'], array(), $vcsscachebust, 'screen, projection');
 		}
 	}
 
@@ -1800,8 +1803,9 @@ if (!function_exists('skin_typography_loader')) {
 	}
 
 	// 1.9.0: updated to match new separate text display options
-	if ($vthemesettings['header_text']['sitetitle'] == '1') {$vfonts['headline'] = $vthemesettings['headline_typography'];}
-	if ($vthemesettings['header_text']['sitedescription'] == '1') {$vfonts['tagline'] = $vthemesettings['tagline_typography'];}
+	// 1.9.8: fix to key typo: use header_texts not header_text
+	if ($vthemesettings['header_texts']['sitetitle'] == '1') {$vfonts['headline'] = $vthemesettings['headline_typography'];}
+	if ($vthemesettings['header_texts']['sitedescription'] == '1') {$vfonts['tagline'] = $vthemesettings['tagline_typography'];}
 
 	// print_r($vfonts); // debug point
 

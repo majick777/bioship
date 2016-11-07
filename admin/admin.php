@@ -2843,7 +2843,7 @@ if (!function_exists('admin_theme_metabox')) {
 	echo "<tr><td>Hide Footer</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_footer' value='1'";
 		if ($vdisplay['footer']) {echo " checked";}  echo "></td></tr>";
 
-	// TODO: general layour displays:
+	// TODO: general layout displays:
 	// Header Logo / Title Text / Description / Extras
 	// Footer Extras / Site Credits
 
@@ -3312,20 +3312,21 @@ if (function_exists('tgmpa')) {
 	// TESTME: this is done separately via Titan Checker now, but this calls
 	// TGMPA separately as well as a new instance - which may or may not be desirable?
 
-	// make Titan Framework plugin required for Wordpress.org installs
-	// this also makes it available to install via Customizer link
-	// add_filter('tgm_plugins_array','titan_framework_check_if_required');
-	// function titan_framework_check_if_required($vplugins) {
-	//	$vtitan = skeleton_file_hierarchy('file','titan-framework.php',array('includes/titan','titan'));
-	//	if ( (!class_exists('TitanFramework')) && (!$vtitan) ) {
-	//		$vplugins[] = array(
-	//			'name' 		=> 'Titan Framework',
-	//			'slug' 		=> 'titan-framework',
-	//			'required' 	=> true
-	//		);
-	//	}
-	//	return $vplugins;
-	// }
+	// 1.9.8: recommend Titan Framework plugin for Wordpress.org installs
+	add_filter('tgm_plugins_array','admin_tgm_titan_framework_check');
+	if (!function_exists('admin_tgm_titan_framework_check')) {
+		function admin_tgm_titan_framework_check($vplugins) {
+			$vthemeupdater = skeleton_file_hierarchy('file','theme-update-checker.php',array('includes'));
+			if (!$vthemeupdater) {
+				$vplugins[] = array(
+					'name' 		=> 'Titan Framework',
+					'slug' 		=> 'titan-framework',
+					'required' 	=> false
+				);
+			}
+			return $vplugins;
+		}
+	}
 
 	// TGMPA seems to need at least WP 3.7...
 	if (!version_compare($wp_version,'3.7','<')) { //'>
@@ -3333,8 +3334,6 @@ if (function_exists('tgmpa')) {
 		// TGMPA Theme Options Page - Notice Display Workaround
 		// to use the plugin recommendation notice on the theme options page
 		// whether it has already been dismissed by the user or not :-)
-
-		// TODO: retest this code for Titan Options page
 
 		if (isset($_REQUEST['page'])) {
 			// 1.8.0: allow for Titan Framework admin page URL
@@ -3397,6 +3396,12 @@ if (function_exists('tgmpa')) {
 					),
 
 					array(
+						'name'				=> 'Better WordPress Minify',
+						'slug'				=> 'bwp-minify',
+						'required' 			=> false,
+					),
+
+					array(
 					 	'name'      		=> 'Open Graph Protocol Framework',
 					 	'slug'      		=> 'open-graph-protocol-framework',
 					 	'required'  		=> false,
@@ -3437,13 +3442,14 @@ if (function_exists('tgmpa')) {
 					// -------------------------
 					// TODO: maybe bundle these instead?
 
-					array(
-						'name'      		=> 'AutoSave Net',
-						'slug'      		=> 'autosave-net',
-						'required'  		=> true,
-						'source'			=> 'http://wordquest.org/downloads/packages/autosave-net.zip',
-						'external_url' 		=> 'http://wordquest.org/plugins/autosave-net/'
-					),
+					// 1.9.8: remove as yet unreleased plugin
+					// array(
+					//	'name'      		=> 'AutoSave Net',
+					//	'slug'      		=> 'autosave-net',
+					//	'required'  		=> false,
+					//	'source'			=> 'http://wordquest.org/downloads/packages/autosave-net.zip',
+					//	'external_url' 		=> 'http://wordquest.org/plugins/autosave-net/'
+					// ),
 
 					array(
 						'name'      		=> 'Content Sidebars',
@@ -3452,14 +3458,6 @@ if (function_exists('tgmpa')) {
 						'source'			=> 'http://wordquest.org/downloads/packages/content-sidebars.zip',
 						'external_url' 		=> 'http://wordquest.org/plugins/content-sidebars/'
 					),
-
-					// array(
-					//	'name'      		=> 'FreeStyler',
-					//	'slug'      		=> 'freestyler',
-					//	'required'  		=> false,
-					//	'source'			=> 'http://wordquest.org/downloads/packages/freestyler.zip',
-					//	'external_url' 		=> 'http://wordquest.org/plugins/freestyler/'
-					// ),
 
 				);
 

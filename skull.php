@@ -113,7 +113,8 @@ if (!function_exists('skeleton_widgets_init')) {
 	$vlabels['subhomepage']['name'] = __('Home (Blog) SubSidebar','bioship');
 	$vlabels['homepage']['desc'] = $vlabels['subhomepage']['desc'] = __('Shown only on Home (Blog) Page','bioship');
 
-	$vlabels['archive']['name'] = $von.__('Archive Sidebar','bioship');
+	// 1.9.8: remove old unused variable
+	$vlabels['archive']['name'] = __('Archive Sidebar','bioship');
 	$vlabels['subarchive']['name'] = __('Archive Page SubSidebar','bioship');
 	$vlabels['archive']['desc'] = $vlabels['subarchive']['desc'] = __('Shown only on Archive Pages','bioship');
 
@@ -526,7 +527,8 @@ if (!function_exists('skeleton_set_sidebar_layout')) {
 		if (THEMEDEBUG) {echo "<!-- Sidebar Context: ".$vcontext." -->";}
 
 		// 1.8.5: repeat same for subsidebar options
-		$vfrontpagesidebar = false; $vhomepagesidebar = false; $vsearchsidebar = false; $vnotfoundsidebar = false;
+		// 1.9.8: fix to first line of subsidebar variable flags
+		$vfrontpagesubsidebar = false; $vhomepagesubsidebar = false; $vsearchsubsidebar = false; $vnotfoundsubsidebar = false;
 		$varchivesubsidebar = false; $vcategorysubsidebar = false; $vtaxonomysubsidebar = false;
 		$vtagsubsidebar = false; $vauthorsubsidebar = false; $vdatesubsidebar = false;
 		$vsubsets = $vthemesettings['subsidebars'];
@@ -1329,7 +1331,8 @@ if (!function_exists('skeleton_get_header')) {
 
 	// if (THEMEHYBRID) {hybrid_get_header($vheader); return;}
 	// 1.8.5: custom implementation like hybrid_get_header
-	do_action('get_header', $vheader);
+	// 1.9.8: remove second unused variable vheader
+	do_action('get_header');
 	$vtemplates = array();
 
 	// filter to allow for custom overrides
@@ -1388,7 +1391,8 @@ if (!function_exists('skeleton_get_footer')) {
 
 	// if (THEMEHYBRID) {hybrid_get_footer($vfooter); return;}
 	// 1.8.5: custom implementation like hybrid_get_footer
-	do_action('get_footer', $vfooter);
+	// 1.9.8: remove unused second variable vfooter
+	do_action('get_footer');
 	$vtemplates = array();
 
 	// filter to allow for custom overrides
@@ -2145,7 +2149,7 @@ if (!function_exists('skeleton_get_theme_includes')) {
 	$vstyledirectory = str_replace("\\","/",get_stylesheet_directory());
 	$vtemplatedirectory = str_replace("\\","/",get_template_directory());
 
-	$i = 0; // loop included files
+	$vi = 0; // loop included files
 	foreach ($vincludedfiles as $vincludedfile) {
 		// normalize include path for match
 		$vincludedfile = str_replace("\\","/",$vincludedfile);
@@ -2155,7 +2159,7 @@ if (!function_exists('skeleton_get_theme_includes')) {
 			if ($vstyledirectory == $vtemplatedirectory) {unset($vincludedfiles[$vi]);}
 			else {
 				// check if included file is in template directory
-				if (substr($vincludedfile,0,strlen($templatedir)) != $templatedir) {unset($vincludedfiles[$i]);}
+				if (substr($vincludedfile,0,strlen($templatedir)) != $templatedir) {unset($vincludedfiles[$vi]);}
 				else {
 					// strip template directory from include path
 					$vpathinfo = pathinfo(str_replace(dirname($templatedir),'',$vincludedfile));
@@ -2167,9 +2171,9 @@ if (!function_exists('skeleton_get_theme_includes')) {
 			// strip stylesheet dir from include path
 			$vpathinfo = pathinfo(str_replace(dirname($vstyledirectory),'',$vincludedfile));
 			// add filename.php => pathinfo array to the template array
-			$vthemeincludes[$pathinfo['basename']] = $vpathinfo;
+			$vthemeincludes[$vpathinfo['basename']] = $vpathinfo;
 		}
-		$i++;
+		$vi++;
 	}
 	return $vthemeincludes;
  }
