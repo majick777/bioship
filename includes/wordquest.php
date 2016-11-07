@@ -103,7 +103,7 @@ if (!function_exists('wqhelper_admin_loader')) {
 	if (is_callable($wqfunctions[$vfunc])) {
 		$wqfunctions[$vfunc]($vfunctionname); // $wqcaller = $wqfunctions[$vfunctionname];
 	} elseif (function_exists($vfunc)) {call_user_func($vfunc,$vfunctionname);}
-	// echo "***"; print_r($wqcaller); echo "***";
+	echo "<!-- WQ CALLER: "; print_r($wqcaller); echo " -->";
 
  	// 1.5.0: set up any admin notices via helper version
  	// 1.6.0: ...use caller function directly for this
@@ -118,12 +118,11 @@ if (!function_exists('wqhelper_admin_loader')) {
 // ----------------------------------
 // 1.6.0: some lovely double abstraction here!
 $vfuncname = 'wqhelper_caller_'.$wqhv;
-if (!is_callable($wqfunctions[$vfunctionname])) {
+if (!is_callable($wqfunctions[$vfuncname])) {
 	$wqfunctions[$vfuncname] = function($vfunc) {
-		global $wqfunctions; global $wqcaller;
-		$wqcaller = $vfunctionname;
+		global $wqfunctions, $wqcaller;
 		if (!is_callable($wqcaller)) {
-			$wqfunctions[$vfunctionname] = $wqcaller = function($vfunction,$vargs = null) {
+			$wqcaller = function($vfunction,$vargs = null) {
 				global $wordquesthelper, $wqfunctions;
 				$vfunc = $vfunction.'_'.$wordquesthelper;
 				if (is_callable($wqfunctions[$vfunc])) {return $wqfunctions[$vfunc]($vargs);}
@@ -195,14 +194,14 @@ if (!function_exists('wqhelper_process_rss_feed')) {function wqhelper_process_rs
 // Add Wordquest Styles to Admin Footer
 // ------------------------------------
 if (!has_action('admin_footer','wqhelper_admin_styles')) {add_action('admin_footer','wqhelper_admin_styles');}
-if (!function_exists('wqhelper_admin_styles')) {function wqhelper_admin_styles() {
+if (!function_exists('wqhelper_admin_styles')) {function wqhelper_admin_styles($vargs = null) {
 	remove_action('admin_footer','wordquest_admin_styles');
  	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);} }
 
 // Add Wordquest Scripts to Admin Footer
 // -------------------------------------
 if (!has_action('admin_footer','wqhelper_admin_scripts')) {add_action('admin_footer','wqhelper_admin_scripts');}
-if (!function_exists('wqhelper_admin_scripts')) {function wqhelper_admin_scripts() {
+if (!function_exists('wqhelper_admin_scripts')) {function wqhelper_admin_scripts($vargs = null) {
 	remove_action('admin_footer','wordquest_admin_scripts');
  	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);} }
 
@@ -249,7 +248,7 @@ if (!function_exists('wqhelper_update_sidebar_options')) {
 // ------------------
 // (for settings pages)
 $vfuncname = 'wqhelper_admin_notice_boxer_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
 	$wqfunctions[$vfuncname] = function() {
 
 	// count admin notices
@@ -277,7 +276,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // -----------------------------
 // 1.5.0: prototype, does nothing yet
 $vfuncname = 'wqhelper_admin_notices_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
 	$wqfunctions[$vfuncname] = function() {
  	global $wordquestplugins;
  	foreach ($wordquestplugins as $wqplugin) {
@@ -306,7 +305,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Get WordQuest Plugins Info
 // --------------------------
 $vfuncname = 'wqhelper_get_plugin_info_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
 	$wqfunctions[$vfuncname] = function() {
 	// 1.5.0: get plugin info (maximum twice daily)
 	// $vplugininfo = trim(get_transient('wordquest_plugin_info'));
@@ -335,7 +334,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Version Specific Admin Page
 // ---------------------------
 $vfuncname = 'wqhelper_admin_page_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
 	$wqfunctions[$vfuncname] = function() {
 
 	global $wordquesthelper, $wordquestplugins;
@@ -428,7 +427,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Version Specific Plugins Column
 // -------------------------------
 $vfuncname = 'wqhelper_admin_plugins_column_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
 	$wqfunctions[$vfuncname] = function($vargs) {
 
 	global $wordquesthelper, $wordquestplugins;
@@ -790,7 +789,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Version Specific Feed Column
 // ----------------------------
 $vfuncname = 'wqhelper_admin_feeds_column_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function($vargs) {
 
 	echo '<div id="feedcolumn">';
@@ -852,7 +851,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Version Specific Admin Styles
 // -----------------------------
 $vfuncname = 'wqhelper_admin_styles_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 	// Hide Wordquest plugin freemius submenu items if top level admin menu not open
 	echo "<style>#toplevel_page_wordquest a.wp-first-item:after {content: ' Alliance';}
@@ -869,7 +868,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Version Specific Admin Script
 // -----------------------------
 $vfuncname = 'wqhelper_admin_scripts_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
  	// wordquest admin submenu icon and styling fix
 	echo "<script>function wordquestsubmenufix(slug,iconurl,current) {
@@ -897,7 +896,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Install a WordQuest Plugin
 // --------------------------
 $vfuncname = 'wqhelper_install_plugin_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 	if (current_user_can('manage_options')) {
 
@@ -951,7 +950,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Main Floatbox Function
 // ----------------------
 $vfuncname = 'wqhelper_sidebar_floatbox_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function($vargs) {
 
 	// echo "****"; print_r($vargs); echo "*****"; // debug point
@@ -982,7 +981,8 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 	}
 
 	// 1.5.0: get/convert to single array of plugin sidebar options
-	$pluginoptions = get_option($vpre.'_sidebar_options');
+	// 1.6.0: fix to sidebar options variable
+	$sidebaroptions = get_option($vpre.'_sidebar_options');
 	if ( ($sidebaroptions == '') || (!is_array($sidebaroptions)) ) {
 		$sidebaroptions['adsboxoff'] = get_option($vpre.'_ads_box_off'); delete_option($vpre.'_ads_box_off');
 		$sidebaroptions['donationboxoff'] = get_option($vpre.'_donation_box_off'); delete_option($vpre.'_donation_box_off');
@@ -1171,7 +1171,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Paypal Donations
 // ----------------
 $vfuncname = 'wqhelper_sidebar_paypal_donations_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function($vargs) {
 
 	$vpre = $vargs[0]; $vpluginslug = $vargs[1];
@@ -1428,7 +1428,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Testimonial Box
 // ---------------
 $vfuncname = 'wqhelper_sidebar_testimonial_box_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function($vargs) {
 
 	global $current_user; $current_user = wp_get_current_user();
@@ -1478,7 +1478,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // ---------------------
 // !! caller exception !! uses form matching version function
 $vfuncname = 'wqhelper_update_sidebar_options_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 	$vpre = $_REQUEST['sidebarprefix'];
 	if (current_user_can('manage_options')) {
@@ -1515,8 +1515,8 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Float Menu Javascript
 // ---------------------
 $vfuncname = 'wqhelper_sidebar_floatmenuscript_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
-$wqfunctions[$vfuncname] = function() {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
+ $wqfunctions[$vfuncname] = function() {
 
 	return "
 	<style>.floatbox {position:absolute;width:250px;top:30px;right:15px;z-index:100;}</style>
@@ -1767,7 +1767,7 @@ if ( (preg_match('|index.php|i', $vrequesturi))
 // Load the Dashboard Feeds
 // ------------------------
 $vfuncname = 'wqhelper_add_dashboard_feed_widget_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 	global $wp_meta_boxes, $current_user;
 	if ( (current_user_can('manage_options')) || (current_user_can('install_plugins')) ) {
@@ -1789,7 +1789,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // WordQuest Dashboard Feed Javascript
 // -----------------------------------
 $vfuncname = 'wqhelper_dashboard_feed_javascript_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 	echo "<script language='javascript' type='text/javascript'>
 	function doloadfeedcat(namespace,siteurl) {
@@ -1806,7 +1806,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // WordQuest Dashboard Feed Widget
 // -------------------------------
 $vfuncname = 'wqhelper_dashboard_feed_widget_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 
 	echo "<style>.feedlink {text-decoration:none;} .feedlink:hover {text-decoration:underline;}</style>";
@@ -1907,7 +1907,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Plugin Review Network Feed Widget
 // ---------------------------------
 $vfuncname = 'wqhelper_pluginreview_feed_widget_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 
 	echo "<style>.feedlink {text-decoration:none;} .feedlink:hover {text-decoration:underline;}</style>";
@@ -1978,7 +1978,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Load Category Feed
 // ------------------
 $vfuncname = 'wqhelper_load_feed_category_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function() {
 
 	$vnamespace = $_GET['namespace'];
@@ -2010,7 +2010,7 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // Process RSS Feed
 // ----------------
 $vfuncname = 'wqhelper_process_rss_feed_'.$wqhv;
-if (!is_callable($wqfunctions[$vfuncname])) {
+if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
  $wqfunctions[$vfuncname] = function($vargs) {
 
 	$vrss = $vargs[0]; $vfeeditems = $vargs[1]; $vprocessed = '';
@@ -2040,5 +2040,8 @@ if (!is_callable($wqfunctions[$vfuncname])) {
 // CLOSE VERSION COMPARE WRAPPER FOR PHP 5.3 REQUIRED
 // --------------------------------------------------
 }
+
+// debug point
+// print_r($wqfunctions);
 
 ?>
