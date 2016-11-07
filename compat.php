@@ -14,8 +14,9 @@
 // Functions
 // ---------
 
-if (function_exists(muscle_get_overrides)) {function muscle_get_display_overrides() {return muscle_get_overrides();} }
-else {function muscle_get_overrides() {return muscle_get_display_overrides();} }
+// 1.9.8: removed this as spitting weird constant error
+// if (function_exists(muscle_get_overrides)) {function muscle_get_display_overrides() {return muscle_get_overrides();} }
+// else {function muscle_get_overrides() {return muscle_get_display_overrides();} }
 if (function_exists('muscle_adminbar_theme_options')) {function admin_adminbar_theme_options() {muscle_adminbar_theme_options();} }
 else {function muscle_adminbar_theme_options() {admin_adminbar_theme_options();} }
 if (function_exists('muscle_adminbar_replace_howdy')) {function admin_adminbar_replace_howdy() {muscle_adminbar_replace_howdy();} }
@@ -43,7 +44,7 @@ add_filter('admin_adminbar_menu_icon','themecompat_adminbar_menu_icon');
 function themecompat_adminbar_menu_icon($vicon) {return apply_filters('options_adminbar_menu_icon',$vicon);}
 
 add_filter('admin_adminbar_theme_options_title','themecompat_adminbar_theme_options_title');
-function themecompat_adminbar_theme_options_title($vtitle) {return apply_filters('muscle_adminbar_theme_options_title',$vicon);}
+function themecompat_adminbar_theme_options_title($vtitle) {return apply_filters('muscle_adminbar_theme_options_title',$vtitle);}
 
 add_filter('admin_adminbar_theme_options_icon','themecompat_adminbar_theme_options_icon');
 function themecompat_adminbar_theme_options_icon($vurl) {return apply_filters('muscle_adminbar_theme_options_icon',$vurl);}
