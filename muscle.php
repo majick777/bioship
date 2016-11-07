@@ -130,8 +130,14 @@ if (!function_exists('muscle_get_templating_overrides')) {
 		if (!isset($vthemeoverride[$voverridekey])) {$vthemeoverride[$voverridekey] = '';}
 	}
 
+	// 1.9.8: fix to define some as yet unused override keys
+	$vthemeoverride['footerwidgets'] = '';
+	$vthemeoverride['footer1'] = ''; $vthemeoverride['footer2'] = '';
+	$vthemeoverride['footer3'] = ''; $vthemeoverride['footer4'] = '';
+
 	// check thumbnail size force off option
-	if (get_post_meta($vpostid,'_thumbnailsize',true) == 'off') {$vthemeoverride['image'] == 'off';}
+	// 1.9.8: fix to undefined vpostid variable
+	if (get_post_meta($vresource,'_thumbnailsize',true) == 'off') {$vthemeoverride['image'] == 'off';}
 
 	// TODO: add filter example to filters.php
 	$vthemeoverride = apply_filters('muscle_templating_overrides',$vthemeoverride);
@@ -162,7 +168,8 @@ if (!is_admin()) {
 		// Full Width Container Override
 		// -----------------------------
 		// 1.8.5: added full width container option (no wrap margins)
-		if ($voverride['fullwidth'] == '1') {$vstyles .= '#wrap.container {width: 100% !important;}'.PHP_EOL;}
+		// 1.9.8: fix to override key from fullwidth to wrapper
+		if ($voverride['wrapper'] == '1') {$vstyles .= '#wrap.container {width: 100% !important;}'.PHP_EOL;}
 
 		// Main Theme Areas
 		// ----------------

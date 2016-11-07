@@ -1850,14 +1850,15 @@ if (!function_exists('skeleton_get_entry_meta')) {
 				$vauthoranchor = '<a href="'.$vauthorurl.'" title="'.$vauthorpoststitle.'">'.$vauthordisplay.'</a>';
 				$vauthorlink = skeleton_author_posts_link($vauthorurl);
 
+				// 1.9.8: fix to use vauthordisplay not old vauthor variable
 				$vformat = str_replace('%AUTHORLINK%',$vauthorlink,$vformat);
 				$vformat = str_replace('%AUTHORURL%',$vauthorurl,$vformat);
 				$vformat = str_replace('%AUTHOR%',$vauthoranchor,$vformat);
-				$vformat = str_replace('%AUTHORNAME%',$vauthor,$vformat);
+				$vformat = str_replace('%AUTHORNAME%',$vauthordisplay,$vformat);
 				$vformat = str_replace('#AUTHORLINK#',$vauthorlink,$vformat);
 				$vformat = str_replace('#AUTHORURL#',$vauthorurl,$vformat);
 				$vformat = str_replace('#AUTHOR#',$vauthoranchor,$vformat);
-				$vformat = str_replace('#AUTHORNAME#',$vauthor,$vformat);
+				$vformat = str_replace('#AUTHORNAME#',$vauthordisplay,$vformat);
 			}
 		}
 
