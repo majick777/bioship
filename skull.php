@@ -2016,7 +2016,7 @@ if (!function_exists('skeleton_icons')) {
 // Apple Touch Icon Sizes
 // ----------------------
 // ref: https://mathiasbynens.be/notes/touch-icons
-if ($vthemesettings['appleiconsizes'] == '1') {
+if ( (isset($vthemesettings['appleiconsizes'])) && ($vthemesettings['appleiconsizes'] == '1') ) {
 	if (function_exists('skeleton_apple_icon_sizes')) {
 	 add_filter('skeleton_apple_icons','skeleton_apple_icon_sizes');
 	 // 1.8.5: fix to missing function argument
@@ -2063,7 +2063,7 @@ if ($vthemesettings['appleiconsizes'] == '1') {
 
 // Apple Startup Images
 // --------------------
-if ($vthemesettings['startupimages'] == '1') {
+if ( (isset($vthemesettings['startupimages'])) && ($vthemesettings['startupimages'] == '1') ) {
 	if (!function_exists('skeleton_startup_images')) {
 	 add_filter('skeleton_startup_images','skeleton_apple_startup_images');
 	 function skeleton_apple_startup_images() {
