@@ -62,8 +62,8 @@ if (strstr($_SERVER['REQUEST_URI'],'skin.php')) {
 	// get_stylesheet_directory (themes.php)
 
 	// templates and dependencies
-	define('ABSPATH', $wp_root_path);
-	define('WPINC', 'wp-includes');
+	if (!defined('ABSPATH')) {define('ABSPATH', $wp_root_path);}
+	if (!defined('WPINC')) {define('WPINC', 'wp-includes');}
 
 	// Include files required for initialization.
 	// 1.8.0: use DIRECTORY_SEPARATOR constant
@@ -344,6 +344,8 @@ if ($vthemetestdrive) {$vtheme = $vthemetestdrive;}
 // TODO: maybe use improved debug switching from functions.php?
 if (!$vincluded) {
 	if (!defined('THEMEDEBUG')) {
+		// 1.9.8: fix for undefined vthemekey variable
+		$vthemekey = preg_replace("/\W/","_",strtolower($vtheme['Name']));
 		$vthemedebug = get_option($vthemekey.'_theme_debug');
 		if ($vthemedebug == '1') {$vthemedebug = true;} else {$vthemedebug = false;}
 		if (isset($_REQUEST['themedebug'])) {
@@ -461,7 +463,7 @@ if (is_ssl()) {$vpieurl = str_replace('http://','https://',$vpieurl);} // force 
 $vtypographies = array('body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
 	'navmenu', 'navsubmenu', 'sidebar', 'subsidebar', 'content', 'footer', 'button');
 // 1.8.5: add headline typography CSS in any case to support customizer live preview logo/text switching
-$vtypographies[] = 'headline'; $vtypographies[] = 'tagline';
+$vtypographies[] = 'headline'; $vtypographies[] = 'tagline'; $vtypographyrules = '';
 
 foreach ($vtypographies as $vtype) {
 
@@ -564,7 +566,7 @@ else {
 $vbuttonrules .= '	'.$vbuttonfontrules.PHP_EOL;
 
 // 1.8.5: added woocommerce button selector option
-if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemoptions['woocommercebuttons'] == '1') ) {
+if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemesettings['woocommercebuttons'] == '1') ) {
 	$woocommerceselectors = implode(', ',$woocommercebuttons);
 	$vbuttons .= ', '.PHP_EOL.$woocommerceselectors.' ';
 }
@@ -601,7 +603,7 @@ else {
 }
 
 // 1.8.5: added woocommerce hover button selector option
-if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemoptions['woocommercebuttons'] == '1') ) {
+if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemesettings['woocommercebuttons'] == '1') ) {
 	$woohoverbuttons = array();
 	foreach ($woocommercebuttons as $woocommercebutton) {$woohoverbuttons[] = $woocommercebutton.':hover';}
 	$woohoverselectors = implode(', ',$woohoverbuttons);
@@ -968,8 +970,9 @@ if ( (defined('SHORTINIT')) && (!function_exists('php_browser_info')) ) {
 	$vplugin = 'php-browser-detection/php-browser-detection.php';
 	// 1.8.5: fix for undefined is_plugin_active function
 	$vactiveplugins = get_option('active_plugins');
-	if ( (file_exists(WP_PLUGIN_DIR.'/'.$vplugin)) && (in_array($vplugin,$vactiveplugins)) ) {
-		include(WP_PLUGIN_DIR.'/'.$vplugin);
+	$vpluginpath = WP_CONTENT_DIR.'/plugins/'.$vplugin;
+	if ( (file_exists($vpluginpath)) && (in_array($vplugin,$vactiveplugins)) ) {
+		include($vpluginpath);
 	}
 }
 
