@@ -1,8 +1,9 @@
 = 1.9.8 =
 - Fix: add check for logoresize page element in init.js
 - Fix: map default options if empty (on theme activation)
-- Fix: fix to some undefined variable warnings
+- Fix: fix to numerous undefined variable warnings
 - Fix: to TMGPA plugin recommendations array
+- Update: fixes to WordQuest Helper file errors
 
 = 1.9.7 =
 - Hotfix: missing argument 2 for filter warning breaking headers
