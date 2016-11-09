@@ -43,32 +43,30 @@ if (strstr($_SERVER['REQUEST_URI'],'grid.php')) {
 	if (!defined('ABSPATH')) {define('ABSPATH', $wp_root_path);}
 	if (!defined('WPINC')) {define('WPINC', 'wp-includes');}
 	if (!defined('THEMETRACE')) {define('THEMETRACE',false);}
-	if (!defined('DIRSEP')) {define('DIRSEP',DIRECTORY_SEPARATOR);}
 
 	// Include files required for initialization.
 	// 1.8.0: use DIRECTORY_SEPARATOR constant
-	// 1.9.8: use short DIRSEP constant
 
-	include(ABSPATH.WPINC.DIRSEP.'version.php');
-	include(ABSPATH.WPINC.DIRSEP.'general-template.php');
-	include(ABSPATH.WPINC.DIRSEP.'link-template.php');
-	$restapi = ABSPATH.WPINC.DIRSEP.'rest-api.php';
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'version.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'general-template.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'link-template.php');
+	$restapi = ABSPATH.WPINC.DIRECTORY_SEPARATOR.'rest-api.php';
 	if (file_exists($restapi)) {include($restapi);} // 1.6.0
 
 	// theme class and dependencies
-	include(ABSPATH.WPINC.DIRSEP.'kses.php');
-	include(ABSPATH.WPINC.DIRSEP.'shortcodes.php');
-	include(ABSPATH.WPINC.DIRSEP.'formatting.php');
-	include(ABSPATH.WPINC.DIRSEP.'class-wp-theme.php');
-	include(ABSPATH.WPINC.DIRSEP.'theme.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'kses.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'shortcodes.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'formatting.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'class-wp-theme.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'theme.php');
 
 	// current_user_can (capabilities.php, pluggable.php, user.php, post.php)
-	include(ABSPATH.WPINC.DIRSEP.'capabilities.php');
-	include(ABSPATH.WPINC.DIRSEP.'pluggable.php');
-	include(ABSPATH.WPINC.DIRSEP.'user.php');
-	$userclass = ABSPATH.WPINC.DIRSEP.'class-wp-user.php';
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'capabilities.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'pluggable.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'user.php');
+	$userclass = ABSPATH.WPINC.DIRECTORY_SEPARATOR.'class-wp-user.php';
 	if (file_exists($userclass)) {include($userclass);} // 1.6.0
-	include(ABSPATH.WPINC.DIRSEP.'post.php');
+	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'post.php');
 
 	// Theme functions.php : skeleton_themedrive_determine_theme (copied)
 	// Theme functions.php : skeleton_file_hierarchy (replaced)
@@ -131,6 +129,14 @@ $vtheme = wp_get_theme();
 $vthemetestdrive = skeleton_themedrive_determine_theme();
 if ($vthemetestdrive) {$vtheme = $vthemetestdrive;}
 
+// include Skull Functions
+// -----------------------
+$vthemesettings = array(); // prevents undefined index warnings here
+if (!function_exists('skeleton_word_to_number')) {include(dirname(__FILE__).DIRECTORY_SEPARATOR.'skeleton.php');}
+// 1.9.5: include skull.php (moved functions)
+// for skeleton_get_content_width, skeleton_get_content_padding_width
+if (!function_exists('skeleton_get_content_width')) {include(dirname(__FILE__).DIRECTORY_SEPARATOR.'skull.php');}
+
 // get Theme Options
 // -----------------
 $vthemedisplayname = $vtheme['Name'];
@@ -151,29 +157,6 @@ if ( (!$voptionsload) || (!$vthemesettings) ) {
 	$vthemename = preg_replace("/\W/","-",strtolower($vthemedisplayname));
 	$vthemesettings = maybe_unserialize(get_option($vthemename.'_options'));
 }
-
-// set Debug Option
-// ----------------
-if (!defined('THEMEDEBUG')) {
-	$vthemekey = preg_replace("/\W/","_",strtolower($vtheme['Name']));
-	$vthemedebug = get_option($vthemekey.'_theme_debug');
-	if ($vthemedebug == '1') {$vthemedebug = true;} else {$vthemedebug = false;}
-	if (isset($_REQUEST['themedebug'])) {
-		$vdebugrequest = $_REQUEST['themedebug'];
-		// note: no on/off switching allowed here
-		if ( ($vdebugrequest == '2') || ($vdebugrequest == 'yes') ) {$vthemedebug = true;}
-		if ( ($vdebugrequest == '3') || ($vdebugrequest == 'no') ) {$vthemedebug = false;}
-	}
-	define('THEMEDEBUG',$vthemedebug);
-}
-
-// include Skeleton and Skull Functions
-// ------------------------------------
-$vthemesettings = array(); // prevents undefined index warnings here
-if (!function_exists('skeleton_word_to_number')) {include(dirname(__FILE__).DIRSEP.'skeleton.php');}
-// 1.9.5: include skull.php (moved functions)
-// for skeleton_get_content_width, skeleton_get_content_padding_width
-if (!function_exists('skeleton_get_content_width')) {include(dirname(__FILE__).DIRSEP.'skull.php');}
 
 // ===============
 // set Grid Values
@@ -281,11 +264,9 @@ if (isset($_REQUEST['contentspacing'])) {
 // Grid Compatibility Classes
 // --------------------------
 // 1.9.5: added maybe unserialize and convert cross-framework options for multicheck
-if (isset($vthemesettings['gridcompatibility'])) {
-	$gridcompatibility = maybe_unserialize($vthemesettings['gridcompatibility']);
-} // not filtered
+$gridcompatibility = maybe_unserialize($vthemesettings['gridcompatibility']); // not filtered
 global $gridcompat; $gridcompat = array('960gridsystem'=>'','blueprint'=>'');
-if ( (isset($gridcompatibility)) && (is_array($gridcompatibility)) ) {
+if (is_array($gridcompatibility)) {
 	if ( (isset($gridcompatibility['960gridsystem'])) && ($gridcompatibility['960gridsystem'] == '1') ) {$gridcompat['960gridsystem'] = '1';}
 	if ( (isset($gridcompatibility['blueprint'])) && ($gridcompatibility['blueprint'] == '1') ) {$gridcompat['blueprint'] = '1';}
 	if (in_array('960gridsystem',$gridcompatibility)) {$gridcompat['960gridsystem'] = '1';}
@@ -594,7 +575,6 @@ function skeleton_grid_css_rules($totalwidth,$mobile,$offset) {
 
 	// Header for this Media Width Size
 	$rules = PHP_EOL.'	/* Column Width Rules based on '.$totalwidth.'px ('.$totalwidthem.'em) */'.PHP_EOL.PHP_EOL;
-	$contentrules = '';
 
 	// Set numbered column widths array in em
 	for ($i = 1; $i < ($totalcolumns+1); $i++) {
@@ -672,8 +652,7 @@ function skeleton_grid_css_rules($totalwidth,$mobile,$offset) {
 		if ($i > 1) {$contentwidthruleb .= 's';}
 		$innercontentwidthruleb = $contentwidthruleb.' .inner';
 		// 1.8.5: allow for a 'one.columns' plural typo
-		// 1.9.8: fix to innercontentwidthruleb variable
-		if ($i == 1) {$contentwidthruleb .= ', one.columns'; $innercontentwidthruleb .= ', .one.columns .inner';}
+		if ($i == 1) {$contentwidthruleb .= ', one.columns'; $contentinnerwidthruleb .= ', .one.columns .inner';}
 		$contentwidthrules[$i] = $contentwidthrulea.$contentwidthruleb;
 		$innercontentwidthrules[$i] = $innercontentwidthrulea.$innercontentwidthruleb;
 
@@ -916,8 +895,8 @@ function skeleton_grid_css_rules($totalwidth,$mobile,$offset) {
 
 // Get Breakpoints
 // ---------------
-if (isset($vthemesettings['breakpoints'])) {$breakpoints = $vthemesettings['breakpoints'];}
-else {$breakpoints = '320, 400, 480, 640, 768, 959, 1140, 1200';} // defaults
+$breakpoints = $vthemesettings['breakpoints'];
+if ($breakpoints == '') {$breakpoints = '320, 400, 480, 640, 768, 959, 1140, 1200';} // defaults
 // $breakpoints = apply_filters('skeleton_media_breakpoints',$breakpoints); // not filtered
 
 if ($breakpoints == '0') {$numbreakpoints = 0;} // forced off, no breakpoints

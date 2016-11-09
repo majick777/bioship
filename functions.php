@@ -643,7 +643,7 @@ define('THEMECHILD',$vthemechild); define('THEMEPARENT',$vthemetemplate);
 // ?themedebug=3 or ?themedebug=no 		- debug mode off for this pageload (overrides)
 
 if (!defined('THEMEDEBUG')) {
-	$vthemekey = preg_replace("/\W/","_",strtolower($vthemedisplayname));
+	$vthemekey = preg_replace("/\W/","_",strtolower($vthemename));
 	$vthemedebug = get_option($vthemekey.'_theme_debug');
 	if ($vthemedebug == '1') {$vthemedebug = true;} else {$vthemedebug = false;}
 	if (isset($_REQUEST['themedebug'])) {
