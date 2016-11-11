@@ -5,17 +5,23 @@
 // = Theme Framework =
 // ===================
 
-// For more detailed information see BioShip Documentation
-// available online at http://bioship.space/documentation/
+// BioShip HomePage: http://bioship.space
+// Support and Features: http://wordquest.org/support/bioship/
+// GitHub Repository: https://github.com/majick777/bioship/
+
+// For more detailed information see BioShip Documentation:
+// Available online at http://bioship.space/documentation/
 // and offline by loading /wp-content/themes/bioship/admin/docs.php
 
 // Mini Theme History
 // ------------------
 // Known Minimum Requirement: WordPress 3.4 (wp_get_theme)
-// Original Development from: WordPress ~3.8 (from memory)
+// Original Development from: WordPress ~3.8
 // Public Beta Version Available from: WordPress ~4.0
 // Public Release Candidate Available: WordPress ~4.5
 // Second Public Beta Available from: WordPress ~4.6
+// Hotfixed Public Version: WordPress ~4.7
+// Latest Update News: http://bioship.space/news/
 
 // -------------------------------
 // === functions.php Structure ===
@@ -1333,7 +1339,8 @@ else {
 	$vhybrid = false; define('THEMEHYBRID',false);
 
 	// Enable Shortcodes in Widget Text/Titles (as loading Hybrid Core adds this)
-	add_filter('widget_text','do_shortcode');
+	// 1.9.8: add has_filter check
+	if (!has_filter('widget_text','do_shortcode')) {add_filter('widget_text','do_shortcode');}
 
 	// Include only necessary Hybrid functions
 	// ---------------------------------------

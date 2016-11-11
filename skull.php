@@ -1672,7 +1672,8 @@ if (!function_exists('skeleton_setup')) {
 			}
 
 			// Content Typography
-			$vtypography = false;
+			// 1.9.8: set empty undefined variables
+			$vtypography = false; $vtyporules = ''; $vstyles = '';
 			if (isset($vthemesettings['content_typography'])) {$vtypography = $vthemesettings['content_typography'];}
 			elseif (isset($vthemesettings['body_typography'])) {$vtypography = $vthemesettings['body_typography'];}
 
@@ -1730,7 +1731,9 @@ if (!function_exists('skeleton_setup')) {
 
 			// TODO: add any other relevant style rules? eg. buttons ?
 
-			$mceInit['content_style'] .= ' '.$vstyles.' ';
+			// 1.9.8: addded check if array key exists
+			if (isset($mceInit['content_style'])) {$mceInit['content_style'] .= ' '.$vstyles.' ';}
+			else {$mceInit['content_style'] = $vstyles;}
 
 			return $mceInit;
 		 }
