@@ -79,7 +79,8 @@ if (!function_exists('muscle_get_display_overrides')) {
 	if ( (is_numeric($vresource)) && ( ($vthemedisplay == '') || (!is_array($vthemedisplay)) ) ) {
 		$vthemedisplay = array();
 		foreach ($vdisplaykeys as $vdisplaykey) {
-			$vthemedisplay[$vdisplaykey] = get_post_meta($vpostid,'_hide'.$vdisplaykey,true);
+			// 1.9.8: fix from vpostid to vresource variable
+			$vthemedisplay[$vdisplaykey] = get_post_meta($vresource,'_hide'.$vdisplaykey,true);
 			if ( (!$vthemedisplay[$vdisplaykey]) || ($vthemedisplay[$vdisplaykey] == '') ) {$voverride[$vdisplaykey] = '0';}
 		}
 		delete_post_meta($vresource,'_displayoverrides');
@@ -326,12 +327,14 @@ if (!function_exists('muscle_default_gravatar')) {
 // --------------------
 // most super useful widget, especially when used with shortcodes
 // (so that if the shortcode returns empty the widget is not displayed)
+// ref: https://wordpress.org/plugins/hackadelic-discreet-text-widget/
 // 1.8.5: removed option, always on by default
-// if ($vthemesettings['discreetwidget'] == '1') {
-	if (!function_exists('muscle_discreet_text_widget')) {
-	 add_action('widgets_init', 'muscle_discreet_text_widget');
-	 function muscle_discreet_text_widget() {
-		if (THEMETRACE) {skeleton_trace('F','muscle_discreet_text_widget',__FILE__);}
+if (!function_exists('muscle_discreet_text_widget')) {
+ add_action('widgets_init', 'muscle_discreet_text_widget');
+ function muscle_discreet_text_widget() {
+	if (THEMETRACE) {skeleton_trace('F','muscle_discreet_text_widget',__FILE__);}
+	// 1.9.8: added class check (for no conflict with content sidebars plugin)
+	if (!class_exists('DiscreetTextWidget')) {
 		class DiscreetTextWidget extends WP_Widget_Text {
 			function DiscreetTextWidget() {
 				$vwidgetops = array('classname' => 'discreet_text_widget', 'description' => __('Arbitrary text or HTML, only shown if not empty.','bioship'));
@@ -339,29 +342,25 @@ if (!function_exists('muscle_default_gravatar')) {
 				$this->WP_Widget('discrete_text', __('Discreet Text','bioship'), $vwidgetops, $vcontrolops);
 			}
 			function widget($vargs,$vinstance) {
-				// TODO: test replacing usage of extract here!
-				extract($vargs, EXTR_SKIP);
-				// $vbeforewidget = $vargs['before_widget'];
-				// $vafterwidget = $vargs['after_widget'];
-				// $vbeforetitle = $vargs['before_title'];
-				// $vaftertitle = $vargs['after_title'];
+				// 1.9.8: removed usage of extract here
+				// extract($vargs, EXTR_SKIP);
 
 				$vtext = apply_filters('widget_text', $vinstance['text']);
 				if (empty($vtext)) {return;}
 
-				echo $before_widget;
+				echo $vargs['before_widget'];
 				$vtitle = apply_filters('widget_title', empty($vinstance['title']) ? '' : $vinstance['title']);
-				if (!empty($vtitle)) {echo $before_title.$vtitle.$after_title;}
+				if (!empty($vtitle)) {echo $vargs['before_title'].$vtitle.$vargs['after_title'];}
 				echo '<div class="textwidget">';
 				echo $vinstance['filter'] ? wpautop($vtext) : $vtext;
 				echo '</div>';
-				echo $after_widget;
+				echo $vargs['after_widget'];
 			}
 		}
 		return register_widget("DiscreetTextWidget");
-	 }
 	}
-// }
+ }
+}
 
 // Fullscreen Video Background!
 // ----------------------------
@@ -373,7 +372,8 @@ if (!function_exists('muscle_default_gravatar')) {
 $vvideobackground = '';
 if (isset($vthemesettings['videobackground'])) {$vvideobackground = $vthemesettings['videobackground'];}
 if (apply_filters('muscle_videobackground_type',$vvideobackground) == 'youtube') {
-	if (!function_exists()) {
+	// 1.9.8: fix to function_exists check (missing argument)
+	if (!function_exists('muscle_video_background')) {
 	 add_action('skeleton_before_navbar','muscle_video_background');
 	 function muscle_video_background() {
 		if (THEMETRACE) {skeleton_trace('F','muscle_video_background',__FILE__);}
