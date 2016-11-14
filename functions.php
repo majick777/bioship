@@ -1554,6 +1554,8 @@ if (!function_exists('skin_enqueue_styles')) {
 
 		// Grid URL for Customizer Preview
 		// -------------------------------
+		// 1.9.8: fix to declare pagenow global
+		global $pagenow;
 		if ( (is_customize_preview()) && ($pagenow != 'customize.php') ) {
 
 			// For Customizer Preview Load in Header/Footer
