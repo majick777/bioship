@@ -700,7 +700,7 @@ if ($vadminstyles) {
 
 	// 1.9.0: admin Widget page sidebar class styles
 	echo "/* Widget Sidebars */
-	.sidebar-on {background-color:#F0F0FF;} .sidebar-on h2 {font-size: 14pt;}
+	.sidebar-on {background-color:#F0F0FF;} .sidebar-on h2 {font-size: 13pt;}
 	.sidebar-off {background-color:#F3F9FF;} .sidebar-off h2 {font-weight: normal; font-size: 10pt;}".PHP_EOL.PHP_EOL;
 
 

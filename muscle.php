@@ -336,15 +336,17 @@ if (!function_exists('muscle_discreet_text_widget')) {
 	// 1.9.8: added class check (for no conflict with content sidebars plugin)
 	if (!class_exists('DiscreetTextWidget')) {
 		class DiscreetTextWidget extends WP_Widget_Text {
-			function DiscreetTextWidget() {
+			function __construct() {
 				$vwidgetops = array('classname' => 'discreet_text_widget', 'description' => __('Arbitrary text or HTML, only shown if not empty.','bioship'));
 				$vcontrolops = array('width' => 400, 'height' => 350);
-				$this->WP_Widget('discrete_text', __('Discreet Text','bioship'), $vwidgetops, $vcontrolops);
+				// 1.9.8: fix to deprecated class construction method
+				call_user_func(array(get_parent_class(get_parent_class($this)), '__construct'), 'discrete_text', __('Discreet Text','csidebars'), $vwidgetops, $vcontrolops);
+				// parent::__construct('discrete_text', __('Discreet Text','bioship'), $vwidgetops, $vcontrolops);
+				// $this->WP_Widget('discrete_text', __('Discreet Text','bioship'), $vwidgetops, $vcontrolops);
 			}
 			function widget($vargs,$vinstance) {
 				// 1.9.8: removed usage of extract here
 				// extract($vargs, EXTR_SKIP);
-
 				$vtext = apply_filters('widget_text', $vinstance['text']);
 				if (empty($vtext)) {return;}
 
@@ -1464,7 +1466,8 @@ if ($vthemesettings['removeupdatenotice'] == '1') {
 	 add_action('init','muscle_remove_update_notice');
 	 function muscle_remove_update_notice() {
 	 	if (THEMETRACE) {skeleton_trace('F','muscle_remove_update_notice',__FILE__);}
-		get_currentuserinfo();
+	 	// 1.9.8: replaced deprecated function get_currentuserinfo
+		global $current_user; wp_get_current_user();
 		if (!current_user_can('update_plugins')) {
 			add_action( 'init', create_function( '$a', "remove_action( 'init', 'wp_version_check' );" ), 2 );
 			add_filter( 'pre_option_update_core', create_function( '$a', "return null;" ) );

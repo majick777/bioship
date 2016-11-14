@@ -513,8 +513,8 @@ if (!function_exists('admin_adminbar_replace_howdy')) {
  add_filter('admin_bar_menu','admin_adminbar_replace_howdy',25);
  function admin_adminbar_replace_howdy($wp_admin_bar) {
 	if (THEMETRACE) {skeleton_trace('F','admin_adminbar_replace_howdy',__FILE__,func_get_args());}
-
-	global $current_user; get_currentuserinfo();
+	// 1.9.8: replaced deprecated function get_currentuserinfo();
+	global $current_user; wp_get_current_user();
 	$vusername = $current_user->user_login;
 	$vmyaccount = $wp_admin_bar->get_node('my-account');
 	// 1.5.5: fixed translation for Theme Check
@@ -3108,12 +3108,14 @@ if (!function_exists('admin_update_metabox_options')) {
  function admin_update_metabox_options() {
 	if (THEMETRACE) {skeleton_trace('F','admin_update_metabox_options',__FILE__);}
 
-	global $post; $vpostid = $post->ID;
+	// 1.9.8: return if post is empty
+	global $post; if (!is_object($post)) {return;}
+	$vpostid = $post->ID;
 
 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {return $vpostid;}
 
 	// 1.8.0: cleaner save logic here
-	if ( (!current_user_can('edit_posts')) || (!current_user_can('edit_post',$vpostid)) ) {return $postid;}
+	if ( (!current_user_can('edit_posts')) || (!current_user_can('edit_post',$vpostid)) ) {return $vpostid;}
 
 	// 1.8.0: grouped display overrides to array
 	// 1.8.5: added headernav, footernav, breadcrumbs, pagenavi
@@ -3163,8 +3165,8 @@ if (!function_exists('admin_update_metabox_options')) {
 		if ($voptionvalue != '') {add_post_meta($vpostid,$voption,$voptionvalue,true);}
 	}
 
-	// for manually writing debug file on save
-	$vmetasavedebug = false; $vmetasavedebug = true;
+	// for manually writing a post options debug file on save
+	$vmetasavedebug = false; // $vmetasavedebug = true;
 	if ($vmetasavedebug) {
 		$vdebuginfo = "Override".PHP_EOL; foreach ($voverride as $vkey => $vvalue) {$vdebuginfo .= $vkey.':'.$vvalue.PHP_EOL;}
 		$vdebuginfo .= "Display".PHP_EOL; foreach ($vdisplay as $vkey => $vvalue) {$vdebuginfo .= $vkey.':'.$vvalue.PHP_EOL;}

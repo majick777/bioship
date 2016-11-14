@@ -315,10 +315,10 @@ if (THEMEDEBUG) {
 	print_r($vthemehooks['hooks']);
 
 	echo "Hooked Functions: ".PHP_EOL;
-	print_r($vthemehook['functions']);
+	print_r($vthemehooks['functions']);
 
 	echo "Section / Hook Labels".PHP_EOL;
-	print_r($vthemehook['labels']);
+	print_r($vthemehooks['labels']);
 
 	echo "-->".PHP_EOL;
 }

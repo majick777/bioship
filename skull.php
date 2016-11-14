@@ -962,7 +962,8 @@ if (!function_exists('skeleton_content_width')) {
 	function skeleton_content_width() {
 	  	if (THEMETRACE) {skeleton_trace('F','skeleton_content_width',__FILE__);}
 
-		global $post, $vthemesettings, $vthemelayout, $vthemesidebars;
+		// 1.9.8: added missing global theme override declaration
+		global $post, $vthemesettings, $vthemelayout, $vthemesidebars, $vthemeoverride;
 		$vsidebar = $vthemesidebars['sidebar'];
 		$vsubsidebar = $vthemesidebars['subsidebar'];
 
@@ -1034,7 +1035,8 @@ if (!function_exists('skeleton_content_width')) {
 		if (THEMEDEBUG) {echo "<!-- Content Columns: ".$vnumcontentcols." (".$vcontentcolumns.") -->";}
 
 		// ...probably not a good filter to use in practice
-		$columns = apply_filters('skeleton_content_columns_override',$columns);
+		// 1.9.8: fix to changed variable name
+		$vcontentcolumns = apply_filters('skeleton_content_columns_override',$vcontentcolumns);
 		return $vcontentcolumns;
 	}
 }

@@ -250,9 +250,10 @@ if (!function_exists('options_customize_register_controls')) {
 		foreach ($fonts as $fontstack => $display) {
 			// format: array['fontkey'] = array('label'=>'font', 'stack'=>'stack'));
 			// ? looks like fontkey should be the first 'font' in the stack for Kirki ?
-			$vfontstacks[$vfontstack] = array('label' => $vdisplay, 'stack' => $vfontstack);
+			// 1.9.8: fix to fontstack and label variable typos
+			$fontstacks[$fontstack] = array('label' => $display, 'stack' => $fontstack);
 		}
-	 	return $vfontstacks;
+	 	return $fontstacks;
 	}
 
 	// Filter the Kirki Google Fonts
@@ -726,7 +727,9 @@ if (!function_exists('options_customize_load_control_options')) {
 					// note Kirki extra options: output, js_vars, required?
 					// but Kirki documentation is still a bit sketchy on their usage
 					// 1.8.5: fix for 'type' conflict - as already set by Kirki config
-					unset($vsettingsargs['type']); unset($vsettingsargs['capability']);
+					// 1.9.8: only unset if array index is already set
+					if (isset($vsettingargs['type'])) {unset($vsettingargs['type']);}
+					if (isset($vsettingargs['capability'])) {unset($vsettingargs['capability']);}
 					$vargs = array_merge($vsettingargs,$vcontrolargs);
 					// 1.9.5: do not use settingsprefix for Kirki 2.3.5 update
 					if (class_exists('Kirki_Scripts_Loading')) {$vargs['setting'] = $vthisoption['id'];}
@@ -1422,97 +1425,98 @@ function fallback_sanitize_hex($color) {
 // Translate Kirki Labels
 // ----------------------
 // 1.8.5: added this filter
+// 1.9.8: fixed missing quotes on text domain
 if (!function_exists('options_customizer_i10n')) {
  function options_customizer_i10n() {
 	add_filter( 'kirki/bioship/l10n', function( $l10n ) {
 
-		$l10n['background-color']      = esc_attr__( 'Background Color', bioship );
-		$l10n['background-image']      = esc_attr__( 'Background Image', bioship );
-		$l10n['no-repeat']             = esc_attr__( 'No Repeat', bioship );
-		$l10n['repeat-all']            = esc_attr__( 'Repeat All', bioship );
-		$l10n['repeat-x']              = esc_attr__( 'Repeat Horizontally', bioship );
-		$l10n['repeat-y']              = esc_attr__( 'Repeat Vertically', bioship );
-		$l10n['inherit']               = esc_attr__( 'Inherit', bioship );
-		$l10n['background-repeat']     = esc_attr__( 'Background Repeat', bioship );
-		$l10n['cover']                 = esc_attr__( 'Cover', bioship );
-		$l10n['contain']               = esc_attr__( 'Contain', bioship );
-		$l10n['background-size']       = esc_attr__( 'Background Size', bioship );
-		$l10n['fixed']                 = esc_attr__( 'Fixed', bioship );
-		$l10n['scroll']                = esc_attr__( 'Scroll', bioship );
-		$l10n['background-attachment'] = esc_attr__( 'Background Attachment', bioship );
-		$l10n['left-top']              = esc_attr__( 'Left Top', bioship );
-		$l10n['left-center']           = esc_attr__( 'Left Center', bioship );
-		$l10n['left-bottom']           = esc_attr__( 'Left Bottom', bioship );
-		$l10n['right-top']             = esc_attr__( 'Right Top', bioship );
-		$l10n['right-center']          = esc_attr__( 'Right Center', bioship );
-		$l10n['right-bottom']          = esc_attr__( 'Right Bottom', bioship );
-		$l10n['center-top']            = esc_attr__( 'Center Top', bioship );
-		$l10n['center-center']         = esc_attr__( 'Center Center', bioship );
-		$l10n['center-bottom']         = esc_attr__( 'Center Bottom', bioship );
-		$l10n['background-position']   = esc_attr__( 'Background Position', bioship );
-		$l10n['background-opacity']    = esc_attr__( 'Background Opacity', bioship );
-		$l10n['on']                    = esc_attr__( 'ON', bioship );
-		$l10n['off']                   = esc_attr__( 'OFF', bioship );
-		$l10n['all']                   = esc_attr__( 'All', bioship );
-		$l10n['cyrillic']              = esc_attr__( 'Cyrillic', bioship );
-		$l10n['cyrillic-ext']          = esc_attr__( 'Cyrillic Extended', bioship );
-		$l10n['devanagari']            = esc_attr__( 'Devanagari', bioship );
-		$l10n['greek']                 = esc_attr__( 'Greek', bioship );
-		$l10n['greek-ext']             = esc_attr__( 'Greek Extended', bioship );
-		$l10n['khmer']                 = esc_attr__( 'Khmer', bioship );
-		$l10n['latin']                 = esc_attr__( 'Latin', bioship );
-		$l10n['latin-ext']             = esc_attr__( 'Latin Extended', bioship );
-		$l10n['vietnamese']            = esc_attr__( 'Vietnamese', bioship );
-		$l10n['hebrew']                = esc_attr__( 'Hebrew', bioship );
-		$l10n['arabic']                = esc_attr__( 'Arabic', bioship );
-		$l10n['bengali']               = esc_attr__( 'Bengali', bioship );
-		$l10n['gujarati']              = esc_attr__( 'Gujarati', bioship );
-		$l10n['tamil']                 = esc_attr__( 'Tamil', bioship );
-		$l10n['telugu']                = esc_attr__( 'Telugu', bioship );
-		$l10n['thai']                  = esc_attr__( 'Thai', bioship );
-		$l10n['serif']                 = _x( 'Serif', 'font style', bioship );
-		$l10n['sans-serif']            = _x( 'Sans Serif', 'font style', bioship );
-		$l10n['monospace']             = _x( 'Monospace', 'font style', bioship );
-		$l10n['font-family']           = esc_attr__( 'Font Family', bioship );
-		$l10n['font-size']             = esc_attr__( 'Font Size', bioship );
-		$l10n['font-weight']           = esc_attr__( 'Font Weight', bioship );
-		$l10n['line-height']           = esc_attr__( 'Line Height', bioship );
-		$l10n['font-style']            = esc_attr__( 'Font Style', bioship );
-		$l10n['letter-spacing']        = esc_attr__( 'Letter Spacing', bioship );
-		$l10n['top']                   = esc_attr__( 'Top', bioship );
-		$l10n['bottom']                = esc_attr__( 'Bottom', bioship );
-		$l10n['left']                  = esc_attr__( 'Left', bioship );
-		$l10n['right']                 = esc_attr__( 'Right', bioship );
-		$l10n['color']                 = esc_attr__( 'Color', bioship );
-		$l10n['add-image']             = esc_attr__( 'Add Image', bioship );
-		$l10n['change-image']          = esc_attr__( 'Change Image', bioship );
-		$l10n['remove']                = esc_attr__( 'Remove', bioship );
-		$l10n['no-image-selected']     = esc_attr__( 'No Image Selected', bioship );
-		$l10n['select-font-family']    = esc_attr__( 'Select a font-family', bioship );
-		$l10n['variant']               = esc_attr__( 'Variant', bioship );
-		$l10n['subsets']               = esc_attr__( 'Subset', bioship );
-		$l10n['size']                  = esc_attr__( 'Size', bioship );
-		$l10n['height']                = esc_attr__( 'Height', bioship );
-		$l10n['spacing']               = esc_attr__( 'Spacing', bioship );
-		$l10n['ultra-light']           = esc_attr__( 'Ultra-Light 100', bioship );
-		$l10n['ultra-light-italic']    = esc_attr__( 'Ultra-Light 100 Italic', bioship );
-		$l10n['light']                 = esc_attr__( 'Light 200', bioship );
-		$l10n['light-italic']          = esc_attr__( 'Light 200 Italic', bioship );
-		$l10n['book']                  = esc_attr__( 'Book 300', bioship );
-		$l10n['book-italic']           = esc_attr__( 'Book 300 Italic', bioship );
-		$l10n['regular']               = esc_attr__( 'Normal 400', bioship );
-		$l10n['italic']                = esc_attr__( 'Normal 400 Italic', bioship );
-		$l10n['medium']                = esc_attr__( 'Medium 500', bioship );
-		$l10n['medium-italic']         = esc_attr__( 'Medium 500 Italic', bioship );
-		$l10n['semi-bold']             = esc_attr__( 'Semi-Bold 600', bioship );
-		$l10n['semi-bold-italic']      = esc_attr__( 'Semi-Bold 600 Italic', bioship );
-		$l10n['bold']                  = esc_attr__( 'Bold 700', bioship );
-		$l10n['bold-italic']           = esc_attr__( 'Bold 700 Italic', bioship );
-		$l10n['extra-bold']            = esc_attr__( 'Extra-Bold 800', bioship );
-		$l10n['extra-bold-italic']     = esc_attr__( 'Extra-Bold 800 Italic', bioship );
-		$l10n['ultra-bold']            = esc_attr__( 'Ultra-Bold 900', bioship );
-		$l10n['ultra-bold-italic']     = esc_attr__( 'Ultra-Bold 900 Italic', bioship );
-		$l10n['invalid-value']         = esc_attr__( 'Invalid Value', bioship );
+		$l10n['background-color']      = esc_attr__( 'Background Color', 'bioship' );
+		$l10n['background-image']      = esc_attr__( 'Background Image', 'bioship' );
+		$l10n['no-repeat']             = esc_attr__( 'No Repeat', 'bioship' );
+		$l10n['repeat-all']            = esc_attr__( 'Repeat All', 'bioship' );
+		$l10n['repeat-x']              = esc_attr__( 'Repeat Horizontally', 'bioship' );
+		$l10n['repeat-y']              = esc_attr__( 'Repeat Vertically', 'bioship' );
+		$l10n['inherit']               = esc_attr__( 'Inherit', 'bioship' );
+		$l10n['background-repeat']     = esc_attr__( 'Background Repeat', 'bioship' );
+		$l10n['cover']                 = esc_attr__( 'Cover', 'bioship' );
+		$l10n['contain']               = esc_attr__( 'Contain', 'bioship' );
+		$l10n['background-size']       = esc_attr__( 'Background Size', 'bioship' );
+		$l10n['fixed']                 = esc_attr__( 'Fixed', 'bioship' );
+		$l10n['scroll']                = esc_attr__( 'Scroll', 'bioship' );
+		$l10n['background-attachment'] = esc_attr__( 'Background Attachment', 'bioship' );
+		$l10n['left-top']              = esc_attr__( 'Left Top', 'bioship' );
+		$l10n['left-center']           = esc_attr__( 'Left Center', 'bioship' );
+		$l10n['left-bottom']           = esc_attr__( 'Left Bottom', 'bioship' );
+		$l10n['right-top']             = esc_attr__( 'Right Top', 'bioship' );
+		$l10n['right-center']          = esc_attr__( 'Right Center', 'bioship' );
+		$l10n['right-bottom']          = esc_attr__( 'Right Bottom', 'bioship' );
+		$l10n['center-top']            = esc_attr__( 'Center Top', 'bioship' );
+		$l10n['center-center']         = esc_attr__( 'Center Center', 'bioship' );
+		$l10n['center-bottom']         = esc_attr__( 'Center Bottom', 'bioship' );
+		$l10n['background-position']   = esc_attr__( 'Background Position', 'bioship' );
+		$l10n['background-opacity']    = esc_attr__( 'Background Opacity', 'bioship' );
+		$l10n['on']                    = esc_attr__( 'ON', 'bioship' );
+		$l10n['off']                   = esc_attr__( 'OFF', 'bioship' );
+		$l10n['all']                   = esc_attr__( 'All', 'bioship' );
+		$l10n['cyrillic']              = esc_attr__( 'Cyrillic', 'bioship' );
+		$l10n['cyrillic-ext']          = esc_attr__( 'Cyrillic Extended', 'bioship' );
+		$l10n['devanagari']            = esc_attr__( 'Devanagari', 'bioship' );
+		$l10n['greek']                 = esc_attr__( 'Greek', 'bioship' );
+		$l10n['greek-ext']             = esc_attr__( 'Greek Extended', 'bioship' );
+		$l10n['khmer']                 = esc_attr__( 'Khmer', 'bioship' );
+		$l10n['latin']                 = esc_attr__( 'Latin', 'bioship' );
+		$l10n['latin-ext']             = esc_attr__( 'Latin Extended', 'bioship' );
+		$l10n['vietnamese']            = esc_attr__( 'Vietnamese', 'bioship' );
+		$l10n['hebrew']                = esc_attr__( 'Hebrew', 'bioship' );
+		$l10n['arabic']                = esc_attr__( 'Arabic', 'bioship' );
+		$l10n['bengali']               = esc_attr__( 'Bengali', 'bioship' );
+		$l10n['gujarati']              = esc_attr__( 'Gujarati', 'bioship' );
+		$l10n['tamil']                 = esc_attr__( 'Tamil', 'bioship' );
+		$l10n['telugu']                = esc_attr__( 'Telugu', 'bioship' );
+		$l10n['thai']                  = esc_attr__( 'Thai', 'bioship' );
+		$l10n['serif']                 = _x( 'Serif', 'font style', 'bioship' );
+		$l10n['sans-serif']            = _x( 'Sans Serif', 'font style', 'bioship' );
+		$l10n['monospace']             = _x( 'Monospace', 'font style', 'bioship' );
+		$l10n['font-family']           = esc_attr__( 'Font Family', 'bioship' );
+		$l10n['font-size']             = esc_attr__( 'Font Size', 'bioship' );
+		$l10n['font-weight']           = esc_attr__( 'Font Weight', 'bioship' );
+		$l10n['line-height']           = esc_attr__( 'Line Height', 'bioship' );
+		$l10n['font-style']            = esc_attr__( 'Font Style', 'bioship' );
+		$l10n['letter-spacing']        = esc_attr__( 'Letter Spacing', 'bioship' );
+		$l10n['top']                   = esc_attr__( 'Top', 'bioship' );
+		$l10n['bottom']                = esc_attr__( 'Bottom', 'bioship' );
+		$l10n['left']                  = esc_attr__( 'Left', 'bioship' );
+		$l10n['right']                 = esc_attr__( 'Right', 'bioship' );
+		$l10n['color']                 = esc_attr__( 'Color', 'bioship' );
+		$l10n['add-image']             = esc_attr__( 'Add Image', 'bioship' );
+		$l10n['change-image']          = esc_attr__( 'Change Image', 'bioship' );
+		$l10n['remove']                = esc_attr__( 'Remove', 'bioship' );
+		$l10n['no-image-selected']     = esc_attr__( 'No Image Selected', 'bioship' );
+		$l10n['select-font-family']    = esc_attr__( 'Select a font-family', 'bioship' );
+		$l10n['variant']               = esc_attr__( 'Variant', 'bioship' );
+		$l10n['subsets']               = esc_attr__( 'Subset', 'bioship' );
+		$l10n['size']                  = esc_attr__( 'Size', 'bioship' );
+		$l10n['height']                = esc_attr__( 'Height', 'bioship' );
+		$l10n['spacing']               = esc_attr__( 'Spacing', 'bioship' );
+		$l10n['ultra-light']           = esc_attr__( 'Ultra-Light 100', 'bioship' );
+		$l10n['ultra-light-italic']    = esc_attr__( 'Ultra-Light 100 Italic', 'bioship' );
+		$l10n['light']                 = esc_attr__( 'Light 200', 'bioship' );
+		$l10n['light-italic']          = esc_attr__( 'Light 200 Italic', 'bioship' );
+		$l10n['book']                  = esc_attr__( 'Book 300', 'bioship' );
+		$l10n['book-italic']           = esc_attr__( 'Book 300 Italic', 'bioship' );
+		$l10n['regular']               = esc_attr__( 'Normal 400', 'bioship' );
+		$l10n['italic']                = esc_attr__( 'Normal 400 Italic', 'bioship' );
+		$l10n['medium']                = esc_attr__( 'Medium 500', 'bioship' );
+		$l10n['medium-italic']         = esc_attr__( 'Medium 500 Italic', 'bioship' );
+		$l10n['semi-bold']             = esc_attr__( 'Semi-Bold 600', 'bioship' );
+		$l10n['semi-bold-italic']      = esc_attr__( 'Semi-Bold 600 Italic', 'bioship' );
+		$l10n['bold']                  = esc_attr__( 'Bold 700', 'bioship' );
+		$l10n['bold-italic']           = esc_attr__( 'Bold 700 Italic', 'bioship' );
+		$l10n['extra-bold']            = esc_attr__( 'Extra-Bold 800', 'bioship' );
+		$l10n['extra-bold-italic']     = esc_attr__( 'Extra-Bold 800 Italic', 'bioship' );
+		$l10n['ultra-bold']            = esc_attr__( 'Ultra-Bold 900', 'bioship' );
+		$l10n['ultra-bold-italic']     = esc_attr__( 'Ultra-Bold 900 Italic', 'bioship' );
+		$l10n['invalid-value']         = esc_attr__( 'Invalid Value', 'bioship' );
 
 		return $l10n;
 

@@ -598,9 +598,13 @@ if (!function_exists('skeleton_set_sidebar')) {
 	// 1.9.0: use new themesidebars global
 	$vsidebars = $vthemesidebars['sidebars'];
 	$vcontext = $vthemesidebars['sidebarcontext'];
-	$vsubcontext = $vthemsidebars['subsidebarcontext'];
+	// 1.9.8: fix to variable typo here
+	$vsubcontext = $vthemesidebars['subsidebarcontext'];
 
- 	if (!is_array($vthemesidebars['output'])) {$vthemesidebars['output'] = array('','','','');}
+	// 1.9.8: fix to undefined index warning
+ 	if ( (!isset($vthemesidebars['output'])) || (!is_array($vthemesidebars['output'])) ) {
+ 		$vthemesidebars['output'] = array('','','','');
+ 	}
  	$vleftsidebar = $vsidebars[0];			$vleftoutput = $vthemesidebars['output'][0];
  	$vsubleftsidebar = $vsidebars[1];		$vsubleftoutput = $vthemesidebars['output'][1];
  	$vsubrightsidebar = $vsidebars[2];		$vsubrightoutput = $vthemesidebars['output'][2];
