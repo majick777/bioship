@@ -1594,11 +1594,22 @@ function bioship_docs_debug_guide($vwrap) {
 	$vhtml .= "Simply search for 'Included Template Files' (Debug Info Description) in the page source when debug mode is active.<br>";
 	$vhtml .= "You will find a list of all files included between the <i>wp_loaded</i> and <i>wp_footer</i> action hooks in the page footer.<br>";
 
-	// $vhtml .= "<h3>Theme Function Tracer</h3>";
+	// $vhtml .= "<h3>Theme Debug Tracer</h3>";
 
-	// $vhtml .= "A Theme Function Tracer has been developed for full theme function argument tracing.<br>";
-	// $vhtml .= "This allows you to see the flow of all arguments passed through the theme as it runs.<br>";
+	// $vhtml .= "A Theme Function Tracer has been developed for theme template, function, and function argument tracing.<br>";
+	// $vhtml .= "This allows you to see the flow of all template and function calls parsed by the theme as it runs.<br>";
+	// $vhtml .= "By default trace information is output to your themes /debug/ directory (relative to parent or child.)<br>";
 	// $vhtml .= "<b>Note</b>: you need the user <i>manage_options</i> capability to do a theme function trace.<br><br>";
+
+	// TODO: table display for these querystring options
+	// $vhtml .= "?themetrace=1 or ?themetrace=yes";
+	// $vhtml .= "&trace=resourcetype"; // functions, templates, filters, all
+	// $vhtml .= "&tracecalls=1 or &tracecalls=yes";
+	// $vhtml .= "&traceargs=1 or &traceargs=yes";
+	// $vhtml .= "&tracedisplay=1 or &tracedisplay=yes";
+	// $vhtml .= "&tracefunc=functionname";
+	// $vhtml .= "&tracefilter=filtername";
+	// $vhtml .= "&instance=instanceid";
 
 	// $vhtml .= "<h4>Heavy Debugging</h4>";
 	// $vhtml .= "Of course, you can always use good old: <pre>var_dump(debug_backtrace());</pre> in your code somewhere.<br>";

@@ -2,6 +2,8 @@
 
 /* Footer Widget Areas */
 
+if (THEMETRACE) {skeleton_trace('T','Footer Widget Area Template',__FILE__);}
+
 // Count the active widgets to determine column sizes
 // $footerwidgets = is_active_sidebar('footer-widget-area-1') + is_active_sidebar('footer-widget-area-2')
 //				  + is_active_sidebar('footer-widget-area-3') + is_active_sidebar('footer-widget-area-4');

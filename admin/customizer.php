@@ -286,15 +286,15 @@ if (!function_exists('options_customize_register_controls')) {
 		$vpreviewnotice .= sprintf( __( 'You are customizing %s' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
 		$vpreviewnotice .= '</span>';
 
-	    $config['description']  = apply_filters('options_customizer_description', $vpreviewnotice);
-	    $config['logo_image']   = apply_filters('options_customizer_logo_image',$vlogoimage);
-	    $config['color_accent'] = apply_filters('options_customizer_color_accent','#99BBDD');
-	    $config['color_back']   = apply_filters('options_customizer_color_back','#E0E0EE');
-	    $config['width']        = apply_filters('options_customizer_panel_width','20%');
+	    $config['description']  = skeleton_apply_filters('options_customizer_description', $vpreviewnotice);
+	    $config['logo_image']   = skeleton_apply_filters('options_customizer_logo_image',$vlogoimage);
+	    $config['color_accent'] = skeleton_apply_filters('options_customizer_color_accent','#99BBDD');
+	    $config['color_back']   = skeleton_apply_filters('options_customizer_color_back','#E0E0EE');
+	    $config['width']        = skeleton_apply_filters('options_customizer_panel_width','20%');
 	    return $config;
 	}
 
-	// Load KIrki I10n Filter
+	// Load Kirki I10n Filter
 	// ----------------------
 	// 1.8.5: added this filter
 	options_customizer_i10n();
@@ -860,7 +860,7 @@ if (!function_exists('options_customize_text_script')) {
 	#customize-info .customize-help-toggle {margin-top: 70px;}";
 
 	// 1.8.5: added a style rule filter here
-	$vstyles = apply_filters('options_customizer_extra_styles',$vstyles);
+	$vstyles = skeleton_apply_filters('options_customizer_extra_styles',$vstyles);
 	echo "<style>".$vstyles."</style>".PHP_EOL;
 
 	// this is the default Customizer title message
@@ -891,11 +891,11 @@ if (!function_exists('options_customize_text_script')) {
 	$vcustomizermessage = $vmessage.$vcustommessage;
 
 	// filters for description and extra title section text
-	$vcustomizermessage = apply_filters('options_customizer_description',$vcustomizermessage);
+	$vcustomizermessage = skeleton_apply_filters('options_customizer_description',$vcustomizermessage);
 	$vpreviewnotice = '<span class="preview-notice" style="float:right; max-width:60%;">';
 	$vpreviewnotice .= sprintf( __( 'You are customizing %s' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
 	$vpreviewnotice .= '</span>';
-	$vextratext = apply_filters('options_customizer_titletext',$vpreviewnotice);
+	$vextratext = skeleton_apply_filters('options_customizer_titletext',$vpreviewnotice);
 
 	// jQuery to update the customizer message
 	echo "<script>jQuery(document).ready(function($) {

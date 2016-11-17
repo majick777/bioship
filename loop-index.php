@@ -1,8 +1,9 @@
 <?php
 
 /* BioShip Hybrid Content Loop */
-
 /* based on Hybrid Base template */
+
+if (THEMETRACE) {skeleton_trace('T',__('Loop Index Template','bioship'),__FILE__);}
 
 // Note: For consistency the improved Hybrid template/attribute functions
 // are included and used whether full Hybrid Core library is active or not.
@@ -19,24 +20,25 @@ echo '<main '.hybrid_get_attr('content').'>';
 
 	// If viewing a multi-post page
 	if ( !is_front_page() && !is_singular() && !is_404() ) {
-
 		// Loads the content/loop-meta.php template
 		// 1.5.0: change from locate_template
 		skeleton_locate_template('content/loop-meta.php', true);
-
 	}
 
 	// 1.6.0: for front page 'blog' only, call top content action hook
 	if ( (is_front_page()) &&  (get_option('show_on_front') == 'posts') ) {
 		// no default here, just hook a function to use it
-		do_action('skeleton_front_page_top_html');
+		// 1.9.8: shorten action name from skeleton_front_page_top_html
+		do_action('skeleton_front_page_top');
+		rewind_posts(); // ah to be sure to sure
 	}
 
 	// 1.6.0: for home 'blog' page only, to show page content above posts
 	// ref: http://zeo.my/wordpress-display-the-contents-of-static-page-posts-page/
 	if ( (is_home()) && (get_option('show_on_front') == 'page') ) {
 		// 1.8.5: moved to skeleton.php and use action hook
-		do_action('skeleton_home_page_top_html');
+		// 1.9.8: shorten action name from skeleton_home_page_top_html
+		do_action('skeleton_home_page_top');
 		rewind_posts(); // ah to be sure to sure
 	}
 

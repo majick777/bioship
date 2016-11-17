@@ -38,7 +38,7 @@ if (!function_exists('add_action')) {exit;}
 if (!function_exists('skeleton_register_nav_menus')) {
  add_action('init','skeleton_register_nav_menus');
  function skeleton_register_nav_menus() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_register_nav_menus',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings;
 
@@ -73,7 +73,7 @@ if (!function_exists('skeleton_register_nav_menus')) {
 // 1.8.5: added this helper
 if (!function_exists('skeleton_register_sidebar')) {
  function skeleton_register_sidebar($vid,$vsettings,$vclass='') {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_register_sidebar',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	// 1.9.0: added class argument for widgets page
 	register_sidebar(array(
@@ -91,11 +91,37 @@ if (!function_exists('skeleton_register_sidebar')) {
 
 // Register Sidebars
 // -----------------
+
+// 1.9.6: add widget page message regarding lowercase titles meaning inactive
+add_action('widgets_admin_page','skeleton_widget_page_message');
+if (!function_exists('skeleton_widget_page_message')) {
+ function skeleton_widget_page_message() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	$vmessage = __('Note: Inactive Theme Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars tab', 'bioship');
+	echo "<div class='message'>".$vmessage."</div>";
+ }
+}
+
+// 1.9.8: add active and inactive sidebars with different priorities
+add_action('widgets_init','skeleton_widgets_init_active');
+add_action('widgets_init','skeleton_widgets_init_inactive',12);
+if (!function_exists('skeleton_widgets_init_active')) {
+ function skeleton_widgets_init_active() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	skeleton_widgets_init(true);
+ }
+}
+if (!function_exists('skeleton_widgets_init_inactive')) {
+ function skeleton_widgets_init_inactive() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	skeleton_widgets_init(false);
+ }
+}
+
 // 1.8.5: use skeleton_register_sidebar to reduce code bloat
 if (!function_exists('skeleton_widgets_init')) {
- add_action('widgets_init','skeleton_widgets_init');
- function skeleton_widgets_init() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_widgets_init',__FILE__);}
+ function skeleton_widgets_init($vactive=true) {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemesettings; $vts = $vthemesettings;
 
@@ -184,7 +210,7 @@ if (!function_exists('skeleton_widgets_init')) {
 	$vsidebarwrappers['afterwidget'] = '</div>';
 	$vsidebarwrappers['beforetitle'] = '<h3 class="widget-title">';
 	$vsidebarwrappers['aftertitle'] = '</h3>';
-	$vsidebarwrappers = apply_filters('skeleton_sidebar_widget_wrappers',$vsidebarwrappers);
+	$vsidebarwrappers = skeleton_apply_filters('skeleton_sidebar_widget_wrappers',$vsidebarwrappers);
 
 	// loop labels and add sidebar wrappers
 	foreach ($vlabels as $vid => $vsettings) {
@@ -194,7 +220,7 @@ if (!function_exists('skeleton_widgets_init')) {
 		$vlabels[$vid]['aftertitle'] = $vsidebarwrappers['aftertitle'];
 	}
 	// 1.8.5: allow for sidebar label/setting filtering
-	$vlabels = apply_filters('skeleton_sidebar_settings',$vlabels);
+	$vlabels = skeleton_apply_filters('skeleton_sidebar_settings',$vlabels);
 
 
 	// check Sidebar Options
@@ -297,32 +323,26 @@ if (!function_exists('skeleton_widgets_init')) {
 	// print_r($vallwidgets);
 
 	// 1.8.5: split on and off declarations for display
-	if (count($vsidebarson) > 0) {
+	// 1.9.8: declare active and inactive with different priorities
+	if ( ($vactive) && (count($vsidebarson) > 0) ) {
 		foreach ($vsidebarson as $vsidebarid) {
 			if ( (is_admin()) && (is_active_sidebar($vsidebarid)) ) {
 				// add widget count to sidebar label
-				$vsidebarwidgets = count($vallwidgets[$vsidebarid]);
-				$vlabels[$vsidebarid]['name'] .= ' ('.$vsidebarwidgets.')';
+				$vwidgetcount = count($vallwidgets[$vsidebarid]);
+				$vlabels[$vsidebarid]['name'] .= ' ('.$vwidgetcount.')';
 			}
 			skeleton_register_sidebar($vsidebarid,$vlabels[$vsidebarid],'on');
 		}
 	}
-	if (count($vsidebarsoff) > 0) {
+	if ( (!$vactive) && (count($vsidebarsoff) > 0) ) {
 		foreach ($vsidebarsoff as $vsidebarid) {
 			if ( (is_admin()) && (is_active_sidebar($vsidebarid)) ) {
 				// add widget count to sidebar label
-				$vsidebarwidgets = count($vallwidgets[$vsidebarid]);
-				$vlabels[$vsidebarid]['name'] .= ' ('.$vsidebarwidgets.')';
+				$vwidgetcount = count($vallwidgets[$vsidebarid]);
+				$vlabels[$vsidebarid]['name'] .= ' ('.$vwidgetcount.')';
 			}
 			skeleton_register_sidebar($vsidebarid,$vlabels[$vsidebarid],'off');
 		}
-	}
-
-	// 1.9.6: add widget page message regarding lowercase titles meaning inactive
-	add_action('widgets_admin_page','skeleton_widget_page_message');
-	function skeleton_widget_page_message() {
-		$vmessage = __('Note: Inactive Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars ', 'bioship');
-		echo "<div class='message'>".$vmessage."</div>";
 	}
 
  }
@@ -335,11 +355,11 @@ if (!function_exists('skeleton_widgets_init')) {
 // Widget Shortcodes
 // -----------------
 // override to maybe remove shortcode filter from Widget Text
-$vwidgettextshortcodes = apply_filters('muscle_widget_text_shortcodes',true);
+$vwidgettextshortcodes = skeleton_apply_filters('muscle_widget_text_shortcodes',true);
 if (!$vwidgettextshortcodes) {remove_filter('widget_text','do_shortcode');}
 
 // add shortcode filter to Widget Titles (and maybe override)
-$vwidgettextshortcodes = apply_filters('muscle_widget_title_shortcodes',true);
+$vwidgettextshortcodes = skeleton_apply_filters('muscle_widget_title_shortcodes',true);
 if ($vwidgettextshortcodes) {add_filter('widget_title','do_shortcode');}
 
 // LAYOUT LOADER
@@ -350,7 +370,7 @@ if ($vwidgettextshortcodes) {add_filter('widget_title','do_shortcode');}
 add_action('wp','skeleton_load_layout');
 if (!function_exists('skeleton_load_layout')) {
  function skeleton_load_layout() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_load_layout',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	global $vthemelayout, $vthemesidebars, $vthemedisplay, $vthemeoverride;
 
 	// 1.9.5: initialize theme display and templating overrides
@@ -385,7 +405,7 @@ if (!function_exists('skeleton_load_layout')) {
 // TODO: match up more options like /wp-includes/template-loader.php
 if (!function_exists('skeleton_set_page_context')) {
  function skeleton_set_page_context() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_set_page_context',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	// 1.9.0: use new themelayout global
 	global $vthemelayout;
 
@@ -415,12 +435,12 @@ if (!function_exists('skeleton_set_page_context')) {
 // 1.8.5: added this setup helper
 if (!function_exists('skeleton_set_max_width')) {
  function skeleton_set_max_width() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_set_max_width',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	global $vthemesettings, $vthemelayout;
  	$vthemelayout['maxwidth'] = $vthemesettings['layout'];
  	if ($vthemelayout['maxwidth'] == '') {$vthemelayout['maxwidth'] = '960';}
 
- 	$vmaxwidth = apply_filters('skeleton_layout_width',$vthemelayout['maxwidth']);
+ 	$vmaxwidth = skeleton_apply_filters('skeleton_layout_width',$vthemelayout['maxwidth']);
  	if ( ($vmaxwidth) && (is_numeric($vmaxwidth)) ) {
  		// TESTME: maybe set a minimum max-width?
  		// if ($vmaxwidth > 320) {
@@ -434,11 +454,11 @@ if (!function_exists('skeleton_set_max_width')) {
 // set Grid Columns
 // ----------------
 function skeleton_set_grid_columns() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_set_grid_columns',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $vthemesettings, $vthemelayout;
 
 	$vgridcolumns = $vthemesettings['gridcolumns'];
-	$vcolumns = apply_filters('skeleton_grid_columns',$vgridcolumns);
+	$vcolumns = skeleton_apply_filters('skeleton_grid_columns',$vgridcolumns);
 	if ($vcolumns != $vgridcolumns) {
 		$vgridvalues = array('twelve','sixteen','twenty','twentyfour'); // valid values
 		if (is_numeric($vcolumns)) {$vcolumns = skeleton_number_to_word($vcolumns);}
@@ -454,7 +474,7 @@ function skeleton_set_grid_columns() {
 	// 1.9.5: set content grid columns separately
 	if (isset($vthemesettings['contentgridcolumns'])) {$vcontentgridcolumns = $vthemesettings['contentgridcolumns'];}
 	else {$vcontentgridcolumns = $vgridcolumns;}
-	$vcolumns = apply_filters('skeleton_content_grid_columns',$vcontentgridcolumns);
+	$vcolumns = skeleton_apply_filters('skeleton_content_grid_columns',$vcontentgridcolumns);
 	if ($vcolumns != $vcontentgridcolumns) {
 		$vgridvalues = array('twelve','sixteen','twenty','twentyfour'); // valid values
 		if (is_numeric($vcolumns)) {$vcolumns = skeleton_number_to_word($vcolumns);}
@@ -474,7 +494,7 @@ function skeleton_set_grid_columns() {
 // 1.8.0: added new sidebar templating setup
 if (!function_exists('skeleton_set_sidebar_layout')) {
  function skeleton_set_sidebar_layout() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_set_sidebar_layout',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings, $vthemelayout, $vthemesidebars, $vthemeoverride;
 
@@ -566,7 +586,7 @@ if (!function_exists('skeleton_set_sidebar_layout')) {
 	// 1.8.5: added filter value validation check
 	$vsidebarpositions = array('left','right'); // valid values
 	$vsidebarposition = $vthemesettings['page_layout'];
-	$vcheckposition = apply_filters('skeleton_sidebar_position',$vsidebarposition);
+	$vcheckposition = skeleton_apply_filters('skeleton_sidebar_position',$vsidebarposition);
 	if ( (is_string($vcheckposition)) && (in_array($vcheckposition,$vsidebarpositions)) ) {$vsidebarposition = $vcheckposition;}
 	// 1.9.5: allow for metabox override
 	if ( (isset($vthemeoverride['sidebarposition'])) && ($vthemeoverride['sidebarposition'] != '') ) {$vsidebarposition = $vthemeoverride['sidebarposition'];}
@@ -576,7 +596,7 @@ if (!function_exists('skeleton_set_sidebar_layout')) {
 	// 1.8.5: added filter value validation check
 	$vsubsidebarpositions = array('internal','external','opposite'); // valid values
 	$vsubsidebarposition = $vthemesettings['subsidiaryposition']; // internal/external/opposite
-	$vchecksubposition = apply_filters('skeleton_subsidebar_position',$vsubsidebarposition);
+	$vchecksubposition = skeleton_apply_filters('skeleton_subsidebar_position',$vsubsidebarposition);
 	if ( (is_string($vchecksubposition)) && (in_array($vchecksubposition,$vsidebarpositions)) ) {$vsubsidebarposition = $vchecksubposition;}
 	// 1.9.5: allow for metabox override
 	if ( (isset($vthemeoverride['subsidebarposition'])) && ($vthemeoverride['subsidebarposition'] != '') ) {$vsubsidebarposition = $vthemeoverride['subsidebarposition'];}
@@ -586,12 +606,12 @@ if (!function_exists('skeleton_set_sidebar_layout')) {
 	// 1.8.5: added filter value validation check
 	$vsidebarmodes = array('off','postsonly','pagesonly','unified','dual'); // valid values
 	$vsidebarmode = $vthemesettings['sidebarmode'];
-	$vcheckmode = apply_filters('skeleton_sidebar_mode',$vsidebarmode);
+	$vcheckmode = skeleton_apply_filters('skeleton_sidebar_mode',$vsidebarmode);
 	if ( (is_string($vcheckmode)) && (in_array($vcheckmode,$vsidebarmodes)) ) {$vsidebarmode = $vcheckmode;}
 	$vthemesidebars['sidebarmode'] = $vsidebarmode;
 
 	$vsubsidebarmode = $vthemesettings['subsidiarysidebar'];
-	$vchecksubmode = apply_filters('skeleton_subsidebar_mode',$vsubsidebarmode);
+	$vchecksubmode = skeleton_apply_filters('skeleton_subsidebar_mode',$vsubsidebarmode);
 	if ( (is_string($vchecksubmode)) && (in_array($vchecksubmode,$vsidebarmodes)) ) {$vsubsidebarmode = $vchecksubmode;}
 	$vthemesidebars['subsidebarmode'] = $vsubsidebarmode;
 
@@ -618,12 +638,12 @@ if (!function_exists('skeleton_set_sidebar_layout')) {
 	// -----------------------------
 
 	// back compat: maintain old fullwidth filter name
-	$vfullwidth = apply_filters('skeleton_fullwidth_filter',false);
+	$vfullwidth = skeleton_apply_filters('skeleton_fullwidth_filter',false);
 	if ($vfullwidth) {$vsidebar = false; $vsubsidebar = false;}
 
 	// apply individual sidebar output conditional filters
-	$vsidebar = apply_filters('skeleton_sidebar_output',$vsidebar);
-	$vsubsidebar = apply_filters('skeleton_subsidebar_output',$vsubsidebar);
+	$vsidebar = skeleton_apply_filters('skeleton_sidebar_output',$vsidebar);
+	$vsubsidebar = skeleton_apply_filters('skeleton_subsidebar_output',$vsubsidebar);
 
 	if (THEMEDEBUG) {
 		echo "<!-- Sidebar States: ";
@@ -729,7 +749,7 @@ if (!function_exists('skeleton_set_sidebar_layout')) {
 
 	// Check Template Position Override
 	// --------------------------------
-	$voverrides = apply_filters('skeleton_sidebar_layout_override',$vsidebars);
+	$voverrides = skeleton_apply_filters('skeleton_sidebar_layout_override',$vsidebars);
 
 	// 1.9.0: apply overrides if validated
 	if ( ($voverrides != $vsidebars) && (is_array($voverrides)) && (count($voverrides) == 4) ) {
@@ -832,14 +852,14 @@ if (!function_exists('skeleton_set_sidebar_layout')) {
 // ------------------------
 if (!function_exists('skeleton_set_sidebar_columns')) {
  function skeleton_set_sidebar_columns() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_set_sidebar_columns',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings, $vthemesidebars;
 
 	// get filtered sidebar column width
 	$vsidebarcolumns = $vthemesettings['sidebar_width'];
 	if ($vsidebarcolumns == '') {$vsidebarcolumns = 'four';}
-	$vcolumns = apply_filters('skeleton_sidebar_columns',$vsidebarcolumns);
+	$vcolumns = skeleton_apply_filters('skeleton_sidebar_columns',$vsidebarcolumns);
 
 	// 1.9.5: allow for metabox override
 	if ( (isset($vthemeoverride['sidebarcolumns'])) && ($vthemeoverride['sidebarcolumns'] != '') ) {
@@ -865,14 +885,14 @@ if (!function_exists('skeleton_set_sidebar_columns')) {
 // ---------------------------
 if (!function_exists('skeleton_set_subsidebar_columns')) {
  function skeleton_set_subsidebar_columns() {
-  	if (THEMETRACE) {skeleton_trace('F','skeleton_set_subsidebar_columns',__FILE__);}
+  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
  	global $vthemesettings, $vthemesidebars, $vthemeoverride;
 
 	// get filtered subsidebar column width
 	$vsubsidebarcolumns = $vthemesettings['subsidiarycolumns'];
 	if ($vsubsidebarcolumns == '') {$vsubsidebarcolumns = 'zero';}
-	$vcolumns = apply_filters('skeleton_subsidebar_columns',$vsubsidebarcolumns);
+	$vcolumns = skeleton_apply_filters('skeleton_subsidebar_columns',$vsubsidebarcolumns);
 
 	// 1.9.5: allow for metabox override
 	if ( (isset($vthemeoverride['subsidebarcolumns'])) && ($vthemeoverride['subsidebarcolumns'] != '') ) {
@@ -899,7 +919,7 @@ if (!function_exists('skeleton_set_subsidebar_columns')) {
 // 1.8.5: moved load action to skeleton_load_layout
 if (!function_exists('skeleton_set_content_width')) {
  function skeleton_set_content_width() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_set_content_width',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	global $vthemelayout;
  	// 1.8.5: do main content setup here
 	$vcontentwidth = skeleton_get_content_width();
@@ -907,7 +927,7 @@ if (!function_exists('skeleton_set_content_width')) {
 	// 1.9.5: moved here from skeleton_get_content_width
 	$vpaddingwidth = skeleton_get_content_padding_width($vcontentwidth);
 	if ($vpaddingwidth > 0) {$vcontentwidth = $vcontentwidth - $vpaddingwidth;}
-	$vcontentwidth = apply_filters('skeleton_content_width',$vcontentwidth);
+	$vcontentwidth = skeleton_apply_filters('skeleton_content_width',$vcontentwidth);
 
 	// same thing but different here...
 	if (THEMEHYBRID) {hybrid_set_content_width($vcontentwidth);}
@@ -923,7 +943,7 @@ if (!function_exists('skeleton_set_content_width')) {
 // 1.8.5: moved from skeleton.php
 if (!function_exists('skeleton_get_content_width')) {
 	function skeleton_get_content_width() {
-	  	if (THEMETRACE) {skeleton_trace('F','skeleton_get_content_width',__FILE__);}
+	  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		global $vthemesettings, $vthemelayout;
 
@@ -935,7 +955,7 @@ if (!function_exists('skeleton_get_content_width')) {
 
 		// 1.8.0: bugfix for layoutwidth, not 960 default anymore
 		// $vlayoutwidth = $vthemesettings['layout']; // maximum
-		// $vlayoutwidth = apply_filters('skeleton_layout_width',$vlayoutwidth);
+		// $vlayoutwidth = skeleton_apply_filters('skeleton_layout_width',$vlayoutwidth);
 		// 1.8.5: use new layout global already set
 		$vlayoutwidth = $vthemelayout['maxwidth'];
 
@@ -943,7 +963,7 @@ if (!function_exists('skeleton_get_content_width')) {
 		$vcontentwidth = $vlayoutwidth / $vnumgridcolumns * $vcolumns;
 		if (THEMEDEBUG) {echo "<!-- Layout Max Width: ".$vlayoutwidth." - Grid Columns: ".$vnumgridcolumns." - Content Columns: ".$vcolumns." -->";}
 		// 1.9.5: set raw content width value for grid querystring
-		$vcontentwidth = apply_filters('skeleton_raw_content_width',$vcontentwidth);
+		$vcontentwidth = skeleton_apply_filters('skeleton_raw_content_width',$vcontentwidth);
 		$vthemelayout['rawcontentwidth'] = $vcontentwidth;
 
 		// 1.9.5: moved padding calculation to skeleton_set_content_width
@@ -960,7 +980,7 @@ if (!function_exists('skeleton_get_content_width')) {
 
 if (!function_exists('skeleton_content_width')) {
 	function skeleton_content_width() {
-	  	if (THEMETRACE) {skeleton_trace('F','skeleton_content_width',__FILE__);}
+	  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		// 1.9.8: added missing global theme override declaration
 		global $post, $vthemesettings, $vthemelayout, $vthemesidebars, $vthemeoverride;
@@ -974,7 +994,14 @@ if (!function_exists('skeleton_content_width')) {
 		// if (is_attachment()) {return $vthemelayout['gridcolumns'];}
 
 		// 1.8.0: full width if no sidebars (calculated in skeleton_set_sidebar_layout)
-		if ( (!$vsidebar) && (!$vsubsidebar) ) {$vcolumns = $vthemelayout['gridcolumns']; return $vcolumns;}
+		if ( (!$vsidebar) && (!$vsubsidebar) ) {
+			$vcolumns = $vthemelayout['gridcolumns'];
+			// 1.9.8: filter and set content columns globals
+			$vcolumns = skeleton_apply_filters('skeleton_content_columns_override',$vcolumns);
+			$vthemelayout['contentcolumns'] = $vcolumns;
+			$vthemelayout['numcontentcolumns'] = skeleton_word_to_number($vcolumns);
+			return $vcolumns;
+		}
 
 		// Check/fix for the total content column width
 		// 1.5.0: replaced skeleton_options here and added filters
@@ -988,7 +1015,7 @@ if (!function_exists('skeleton_content_width')) {
 		}
 
 		// get filtered content column width
-		$vcolumns = apply_filters('skeleton_content_columns',$vcontentcolumns);
+		$vcolumns = skeleton_apply_filters('skeleton_content_columns',$vcontentcolumns);
 
 		// 1.9.5: allow for metabox override
 		if ($vthemeoverride['contentcolumns'] != '') {$vcolumns = $vthemeoverride['contentcolumns'];}
@@ -1036,7 +1063,7 @@ if (!function_exists('skeleton_content_width')) {
 
 		// ...probably not a good filter to use in practice
 		// 1.9.8: fix to changed variable name
-		$vcontentcolumns = apply_filters('skeleton_content_columns_override',$vcontentcolumns);
+		$vcontentcolumns = skeleton_apply_filters('skeleton_content_columns_override',$vcontentcolumns);
 		return $vcontentcolumns;
 	}
 }
@@ -1048,7 +1075,7 @@ if (!function_exists('skeleton_content_width')) {
 // gets the padding width (not height) - supports px or em or %
 if (!function_exists('skeleton_get_content_padding_width')) {
 	function skeleton_get_content_padding_width($vcontentwidth,$vcontentpadding=false) {
-	  	if (THEMETRACE) {skeleton_trace('F','skeleton_get_content_padding_width',__FILE__,func_get_args());}
+	  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 		global $vthemesettings, $vthemelayout;
 
@@ -1056,7 +1083,7 @@ if (!function_exists('skeleton_get_content_padding_width')) {
 		if ($vcontentpadding) {$vpaddingcss = $vcontentpadding;}
 		else {
 			$vpaddingcss = $vthemesettings['contentpadding'];
-			$vpaddingcss = apply_filters('skeleton_raw_content_padding',$vpaddingcss);
+			$vpaddingcss = skeleton_apply_filters('skeleton_raw_content_padding',$vpaddingcss);
 		}
 
 		if ( ($vpaddingcss == '') || ($vpaddingcss == '0') ) {$vpaddingwidth = 0;}
@@ -1090,7 +1117,7 @@ if (!function_exists('skeleton_get_content_padding_width')) {
 		}
 
 		// 1.5.0: added a padding width filter
-		$vpaddingwidth = apply_filters('skeleton_content_padding_width',$vpaddingwidth);
+		$vpaddingwidth = skeleton_apply_filters('skeleton_content_padding_width',$vpaddingwidth);
 		$vpaddingwidth = abs(intval($vpaddingwidth));
 
 		$vthemelayout['contentpadding'] = $vpaddingwidth;
@@ -1104,7 +1131,7 @@ if (!function_exists('skeleton_get_content_padding_width')) {
 // 1.8.5: added this helper
 if (!function_exists('skeleton_get_post_types')) {
  function skeleton_get_post_types($queryobject=null) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_get_post_types',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	// if a numeric value passed, assume it is a post ID
 	if ( ($queryobject) && (is_numeric($queryobject)) ) {$queryobject = get_post($queryobject);}
@@ -1222,7 +1249,7 @@ if (!function_exists('skeleton_get_post_types')) {
 // -----------------
 // 1.8.5: use new title-tag support
 // (off by default as it renders no home tag yet?)
-$vtitletagsupport = apply_filters('skeleton_title_tag_support',0);
+$vtitletagsupport = skeleton_apply_filters('skeleton_title_tag_support',0);
 if ($vtitletagsupport) {
 	add_theme_support('title-tag');
 	// replace title tag render action to add filter
@@ -1246,9 +1273,9 @@ if ($vtitletagsupport) {
 // 1.8.5: added title tag filter function
 if (!function_exists('skeleton_render_title_tag_filtered')) {
  function skeleton_render_title_tag_filtered() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_render_title_tag_filtered',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
     ob_start(); _wp_render_title_tag(); $titletag = ob_get_contents(); ob_end_clean();
-    return apply_filters('wp_render_title_tag_filter',$titletag);
+    return skeleton_apply_filters('wp_render_title_tag_filter',$titletag);
  }
 }
 
@@ -1257,8 +1284,8 @@ if (!function_exists('skeleton_render_title_tag_filtered')) {
 add_filter('wp_render_title_tag_filter','skeleton_wp_render_title_tag');
 if (!function_exists('skeleton_wp_render_title_tag')) {
  function skeleton_wp_render_title_tag($vtitletag) {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_wp_render_title_tag',__FILE__,func_get_args());}
- 	// note: rendered default is (WP 4.4)
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+ 	// note: rendered default is (for WP 4.4):
  	// echo '<title itemprop="name">' . wp_get_document_title() . '</title>' . "\n";
  	$vtitletag = str_replace('<title>','<title itemprop="name">',$vtitletag);
 	return $vtitletag;
@@ -1270,7 +1297,7 @@ if (!function_exists('skeleton_wp_render_title_tag')) {
 // 1.8.5: moved here from header.php (wp_title only)
 if (!function_exists('skeleton_wp_title_tag')) {
  function skeleton_wp_title_tag() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_wp_title_tag',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
   	echo '<title'.' '.'itemprop="name">'; wp_title('|',true,'right'); echo '</title>'.PHP_EOL;
  }
 }
@@ -1280,7 +1307,7 @@ if (!function_exists('skeleton_wp_title_tag')) {
 // 1.8.5: no longer default, and moved filter actions to title-tag support check
 if (!function_exists('skeleton_wp_title'))  {
  function skeleton_wp_title($vtitle,$vsep) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_wp_title',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	if (is_feed()) {return $vtitle;}
 
@@ -1303,7 +1330,7 @@ if (!function_exists('skeleton_wp_title'))  {
 		$title .= " ".$vsep." ".sprintf( __('Page %s','bioship'), max($paged,$page) );
 	}
 
-	$vtitle = apply_filters('skeleton_page_title',$vtitle);
+	$vtitle = skeleton_apply_filters('skeleton_page_title',$vtitle);
 	return $vtitle;
  }
 }
@@ -1319,7 +1346,7 @@ if (!function_exists('skeleton_wp_title'))  {
 // 1.8.5: custom header template hierarchy implementation
 if (!function_exists('skeleton_get_header')) {
  function skeleton_get_header($vfilepath=false) {
-  	if (THEMETRACE) {skeleton_trace('F','skeleton_get_header',__FILE__,func_get_args());}
+  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemelayout, $vthemestyledir, $vthemetemplatedir;
 
@@ -1338,7 +1365,7 @@ if (!function_exists('skeleton_get_header')) {
 	$vtemplates = array();
 
 	// filter to allow for custom overrides
-	$vheader = apply_filters('skeleton_header_template',$vpagecontext);
+	$vheader = skeleton_apply_filters('skeleton_header_template',$vpagecontext);
 	if ( ($vheader) && (is_string($vheader)) && ($vheader != $vpagecontext) ) {
 		if ($vheaderdir) {$vtemplates[] = 'header/'.$vheader;}
 		$vtemplates[] = 'header-'.$vheader;
@@ -1354,7 +1381,7 @@ if (!function_exists('skeleton_get_header')) {
 	// for subarchive types
 	if ($vpagecontext == 'archive') {
 		// filter the sub archive context also
-		$vheaderarchive = apply_filters('skeleton_header_archive_template',$vsubpagecontext);
+		$vheaderarchive = skeleton_apply_filters('skeleton_header_archive_template',$vsubpagecontext);
 		if ( ($vheaderarchive) && (is_string($vheaderarchive)) ) {
 			// do_action('get_header', $vheaderarchive); // ???
 			if ($vheaderdir) {$vtemplates[] = 'header/'.$vheaderarchive.'.php';}
@@ -1368,7 +1395,7 @@ if (!function_exists('skeleton_get_header')) {
 	if ($vheaderdir) {$vtemplates[] = 'header/header.php';}
 	$vtemplates[] = 'header.php';
 
-	$vheadertemplates = apply_filters('skeleton_header_templates',$vtemplates);
+	$vheadertemplates = skeleton_apply_filters('skeleton_header_templates',$vtemplates);
 	if (is_array($vheadertemplates)) {$vtemplates = $vheadertemplates;}
 	skeleton_locate_template($vtemplates, true, false);
  }
@@ -1379,7 +1406,7 @@ if (!function_exists('skeleton_get_header')) {
 // 1.8.5: custom footer template hierarchy implementation
 if (!function_exists('skeleton_get_footer')) {
  function skeleton_get_footer($vfilepath=false) {
-  	if (THEMETRACE) {skeleton_trace('F','skeleton_get_footer',__FILE__,func_get_args());}
+  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemelayout, $vthemestyledir, $vthemetemplatedir;
 
@@ -1398,7 +1425,7 @@ if (!function_exists('skeleton_get_footer')) {
 	$vtemplates = array();
 
 	// filter to allow for custom overrides
-	$vfooter = apply_filters('skeleton_footer_template',$vpagecontext);
+	$vfooter = skeleton_apply_filters('skeleton_footer_template',$vpagecontext);
 	if ( ($vfooter) && (is_string($vfooter)) && ($vfooter != $vpagecontext) ) {
 		if ($vfooterdir) {$vtemplates[] = 'footer/'.$vfooter;}
 		$vtemplates[] = 'footer-'.$vfooter;
@@ -1414,7 +1441,7 @@ if (!function_exists('skeleton_get_footer')) {
 	// for subarchive types
 	if ($vpagecontext == 'archive') {
 		// filter the sub archive context also
-		$vfooterarchive = apply_filters('skeleton_footer_archive_template',$vsubpagecontext);
+		$vfooterarchive = skeleton_apply_filters('skeleton_footer_archive_template',$vsubpagecontext);
 		if ( ($vfooterarchive) && (is_string($vfooterarchive)) ) {
 			// do_action('get_footer', $vfooterarchive); // ???
 			if ($vfooterdir) {$vtemplates[] = 'footer/'.$vfooterarchive.'.php';}
@@ -1428,7 +1455,7 @@ if (!function_exists('skeleton_get_footer')) {
 	if ($vfooterdir) {$vtemplates[] = 'footer/footer.php';}
 	$vtemplates[] = 'footer.php';
 
-	$vfootertemplates = apply_filters('skeleton_footer_templates',$vtemplates);
+	$vfootertemplates = skeleton_apply_filters('skeleton_footer_templates',$vtemplates);
 	if (is_array($vfootertemplates)) {$vtemplates = $vfootertemplates;}
 	skeleton_locate_template($vtemplates, true, false);
  }
@@ -1441,7 +1468,7 @@ if (!function_exists('skeleton_get_footer')) {
 
 if (!function_exists('skeleton_get_loop')) {
  function skeleton_get_loop($vfilepath=false) {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_get_loop',__FILE__,func_get_args());}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
  	global $vthemelayout, $vthemestyledir, $vthemetemplatedir;
 
@@ -1456,7 +1483,7 @@ if (!function_exists('skeleton_get_loop')) {
  	$vtemplates = array(); $vname = '';
 
 	// filter to allow for custom override
-	$vtemplate = apply_filters('skeleton_loop_template',$vpagecontext);
+	$vtemplate = skeleton_apply_filters('skeleton_loop_template',$vpagecontext);
 	if ( ($vtemplate) && (is_string($vtemplate)) && ($vtemplate != $vpagecontext) ) {
 		$vname = $vtemplate;
 		if ($vloopdir) {$vtemplates[] = 'loop/'.$vtemplate;}
@@ -1474,8 +1501,8 @@ if (!function_exists('skeleton_get_loop')) {
 
  	// for subarchive types
  	if ($vpagecontext == 'archive') {
- 		// 1.9.5: fix to apply_filters typo!
- 		$vlooparchive = apply_filters('skeleton_loop_archive_template',$vsubpagecontext);
+ 		// 1.9.5: fix to skeleton_apply_filters typo!
+ 		$vlooparchive = skeleton_apply_filters('skeleton_loop_archive_template',$vsubpagecontext);
  		if ( ($vlooparchive) && (is_string($vlooparchive)) ) {
  			if ($vname == '') {$vname = $vlooparchive;}
  			if ($vloopdir) {$vtemplates[] = 'loop/'.$vlooparchive.'.php';}
@@ -1496,7 +1523,7 @@ if (!function_exists('skeleton_get_loop')) {
  	do_action('get_template_part_loop', 'loop', 'index');
 
 	// filter to allow for complete override
-	$vlooptemplates = apply_filters('skeleton_loop_templates',$vtemplates);
+	$vlooptemplates = skeleton_apply_filters('skeleton_loop_templates',$vtemplates);
 	if (is_array($vlooptemplates)) {$vtemplates = $vlooptemplates;}
 	skeleton_locate_template($vtemplates, true, false);
  }
@@ -1508,7 +1535,7 @@ if (!function_exists('skeleton_get_loop')) {
 // for a possible future filter/feature implementation
 if (!function_exists('skeleton_locate_template')) {
  function skeleton_locate_template($template_names, $load = false, $require_once = true) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_locate_template',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	// 1.8.5: this makes it just a passthrough function for now
 	return locate_template($template_names, $load, $require_once);
@@ -1545,7 +1572,7 @@ add_filter('comments_template','skeleton_comments_template',5);
 
 if (!function_exists('skeleton_comments_template')) {
  function skeleton_comments_template($vtemplatepath) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_comments_template',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	// 1.5.0: Change the default Comments are Closed to invisible
 	// if this is *not* done here, it somehow magically appears?! :-/
@@ -1591,12 +1618,12 @@ if (!function_exists('skeleton_comments_template')) {
 add_filter('hybrid_content_template_hierarchy', 'skeleton_archive_template_hierarchy',11);
 if (!function_exists('skeleton_archive_template_hierarchy')) {
  function skeleton_archive_template_hierarchy($vtemplates) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_split_template_hierarchy',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	// 1.9.5: only add archive template search if an archive subdirectory exists
 	if ( (is_singular()) || (is_attachment()) ) {return $vtemplates;}
 	global $vthemestyledir, $vthemetemplatedir;
-	$varchivedir = apply_filters('skeleton_archive_template_directory','archive');
-	$vcontentdir = apply_filters('skeleton_content_template_directory','content');
+	$varchivedir = skeleton_apply_filters('skeleton_archive_template_directory','archive');
+	$vcontentdir = skeleton_apply_filters('skeleton_content_template_directory','content');
 	if ( (!is_string($varchivedir)) || (!is_string($vcontentdir)) ) {return $vtemplates;}
 	if ( (!is_dir($vthemestyledir.$varchivedir)) && (!is_dir($vthemetemplatedir.$varchivedir)) ) {return $vtemplates;}
 
@@ -1617,7 +1644,8 @@ if (!function_exists('skeleton_archive_template_hierarchy')) {
 add_filter('hybrid_content_template_hierarchy','skeleton_content_template_hierarchy',10,3);
 if (!function_exists('skeleton_content_template_hierarchy')) {
  function skeleton_content_template_hierarchy($vtemplates) {
- 	$vcontentdir = apply_filters('skeleton_content_template_directory','content');
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+ 	$vcontentdir = skeleton_apply_filters('skeleton_content_template_directory','content');
  	if ( ($vcontentdir == 'content') || (!is_string($vcontentdir)) ) {return $vtemplates;}
 	foreach ($vtemplates as $vkey => $vtemplate) {
 		if (strstr($vtemplate,'content/')) {$vtemplates[$vkey] = str_replace('content/',$vcontentdir.'/',$vtemplate);}
@@ -1636,7 +1664,7 @@ add_action('after_setup_theme','skeleton_setup');
 
 if (!function_exists('skeleton_setup')) {
  function skeleton_setup() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_setup',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings, $vthemedirs;
 
@@ -1666,6 +1694,7 @@ if (!function_exists('skeleton_setup')) {
 		if (is_admin()) {add_filter('tiny_mce_before_init','skeleton_add_dynamic_editor_styles');}
 		if (!function_exists('skeleton_add_dynamic_editor_styles')) {
 		 function skeleton_add_dynamic_editor_styles($mceInit) {
+		 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 			global $vthemesettings;
 
 			// Content Background Color
@@ -1770,8 +1799,8 @@ if (!function_exists('skeleton_setup')) {
 	// 1.8.0: changed default to 200x200 as square250 already exists
 	// 1.5.0: changed default to 250x250 from 150x150
 	// for better FB sharing support, as minimum required there is 200x200
-	$vthumbnailwidth = apply_filters('skeleton_thumbnail_width',200);
-	$vthumbnailheight = apply_filters('skeleton_thumbnail_height',200);
+	$vthumbnailwidth = skeleton_apply_filters('skeleton_thumbnail_width',200);
+	$vthumbnailheight = skeleton_apply_filters('skeleton_thumbnail_height',200);
 	$vcrop = get_option('thumbnail_crop');
 	$vthumbnailcrop = $vthemesettings['thumbnailcrop'];
 	if ($vthumbnailcrop == 'nocrop') {$vcrop = false;}
@@ -1794,7 +1823,7 @@ if (!function_exists('skeleton_setup')) {
 	$vimagesizes[3] = array('name' => 'video169', 'width' => 320, 'height' => 180, 'crop' => $vcrop);
 	// 1.5.0: added open graph size 560x292
 	$vimagesizes[4] = array('name' => 'opengraph', 'width' => 560, 'height' => 292, 'crop' => $vcrop);
-	$vimagesizes = apply_filters('skeleton_image_sizes',$vimagesizes);
+	$vimagesizes = skeleton_apply_filters('skeleton_image_sizes',$vimagesizes);
 
 	if (count($vimagesizes) > 0) {
 		foreach ($vimagesizes as $vsize) {
@@ -1812,7 +1841,7 @@ if (!function_exists('skeleton_setup')) {
 if (!function_exists('skeleton_scripts')) {
  add_action('wp_enqueue_scripts', 'skeleton_scripts');
  function skeleton_scripts() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_scripts',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings, $vthemename, $vjscachebust, $vthemedirs;
 
@@ -1837,7 +1866,7 @@ if (!function_exists('skeleton_scripts')) {
         $vwpjqueryversion = $GLOBALS['wp_scripts']->registered[$vjqueryhandle]->ver;
         if (THEMEDEBUG) {echo "<!-- jQuery Version: ".$vwpjqueryversion." -->";}
 
-		$vjqueryversion = apply_filters('skeleton_google_jquery_version',$vwpjqueryversion);
+		$vjqueryversion = skeleton_apply_filters('skeleton_google_jquery_version',$vwpjqueryversion);
 		$vjquery = 'https://ajax.googleapis.com/ajax/libs/jquery/'.$vjqueryversion.'/jquery.min.js';
 		// note: test with wp_remote_fopen pointless here as comes from server not client
 
@@ -1851,7 +1880,9 @@ if (!function_exists('skeleton_scripts')) {
 		// 1.5.0: added a jQuery fallback for if Google CDN fails
 		// Ref: http://stackoverflow.com/questions/1014203/best-way-to-use-googles-hosted-jquery-but-fall-back-to-my-hosted-library-on-go
 		add_filter('script_loader_tag','skeleton_jquery_fallback', 10, 2);
-		function skeleton_jquery_fallback($vscripttag, $vhandle) {
+		if (!function_exists('skeleton_jquery_fallback')) {
+		 function skeleton_jquery_fallback($vscripttag, $vhandle) {
+			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 			// 1.8.0: fix to handle, should now be jquery-core
 			// 1.9.5: match handle for WP version here too
 			global $wp_version;
@@ -1867,6 +1898,7 @@ if (!function_exists('skeleton_scripts')) {
 				$vscripttag = str_replace('</script>',$vfallback, $vscripttag);
 			}
 			return $vscripttag;
+		 }
 		}
 	}
 
@@ -1936,8 +1968,8 @@ if (!function_exists('skeleton_meta_generator')) {
  // 1.8.5: add Hybrid filter to match
  add_filter('hybrid_meta_generator','skeleton_meta_generator');
  function skeleton_meta_generator() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_meta_generator',__FILE__);}
-	return apply_filters('skeleton_generator_meta','');
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	return skeleton_apply_filters('skeleton_generator_meta','');
  }
 }
 
@@ -1949,14 +1981,14 @@ if (!function_exists('skeleton_mobile_meta')) {
  // 1.8.5: add to wp_head hook instead of separate skeleton_mobile_meta action
  add_action('wp_head','skeleton_mobile_meta',2);
  function skeleton_mobile_meta() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_mobile_meta',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	 // TODO: test this specific-width mobile meta line effect?
 	// $vmobilemeta .= '<meta name="MobileOptimized" content="320">'.PHP_EOL;
 	$vmobilemeta = "<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->".PHP_EOL;
 	$vmobilemeta = '<meta name="HandheldFriendly" content="True">'.PHP_EOL; // i wanna hold your haaand...
 	// 1.8.5: fix to duplicate line if using Hybrid
 	if (!THEMEHYBRID) {$vmobilemeta .= '<meta name="viewport" content="width=device-width, initial-scale=1" />'.PHP_EOL;}
-	$vmobilemeta = apply_filters('skeleton_mobile_metas',$vmobilemeta);
+	$vmobilemeta = skeleton_apply_filters('skeleton_mobile_metas',$vmobilemeta);
 	echo $vmobilemeta;
  }
 }
@@ -1968,7 +2000,7 @@ if (!function_exists('skeleton_icons')) {
  add_action('admin_head','skeleton_icons');
  add_action('wp_head','skeleton_icons');
  function skeleton_icons() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_icons',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings, $vthemedirs;
 
@@ -1979,7 +2011,7 @@ if (!function_exists('skeleton_icons')) {
 	$vwineighttile = $vthemesettings['wineighttile'];
 	if ($vwineighttile == '') {$vwineighttile = skeleton_file_hierarchy('url','win8tile.png',$vthemedirs['img']);}
 	if ($vwineighttile != '') {$vappleicons = '<link rel="apple-touch-icon-precomposed" size="144x144" href="'.$vthemesettings['wineighttile'].'">'.PHP_EOL;}
-	$vicons = apply_filters('skeleton_apple_icons',$vappleicons);
+	$vicons = skeleton_apply_filters('skeleton_apple_icons',$vappleicons);
 
 	// <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices, 57x57 size -->
 	$vappletouchicon = $vthemesettings['appletouchicon'];
@@ -2009,11 +2041,11 @@ if (!function_exists('skeleton_icons')) {
 	}
 
 	// 1.8.5: moved optional startup image output here
-	$vstartupimages = apply_filters('skeleton_startup_images','');
+	$vstartupimages = skeleton_apply_filters('skeleton_startup_images','');
 	if ($vstartupimages != '') {$vicons .= $vstartupimages;}
 
 	// 1.8.5: added icon override filter
-	$vicons = apply_filters('skeleton_icons_override',$vicons);
+	$vicons = skeleton_apply_filters('skeleton_icons_override',$vicons);
 	echo $vicons;
  }
 }
@@ -2026,7 +2058,7 @@ if ( (isset($vthemesettings['appleiconsizes'])) && ($vthemesettings['appleiconsi
 	 add_filter('skeleton_apple_icons','skeleton_apple_icon_sizes');
 	 // 1.8.5: fix to missing function argument
 	 function skeleton_apple_icon_sizes($vsizes) {
-		if (THEMETRACE) {skeleton_trace('F','skeleton_apple_icon_sizes',__FILE__,func_get_args());}
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 		global $vthemedirs;
 
@@ -2072,7 +2104,7 @@ if ( (isset($vthemesettings['startupimages'])) && ($vthemesettings['startupimage
 	if (!function_exists('skeleton_startup_images')) {
 	 add_filter('skeleton_startup_images','skeleton_apple_startup_images');
 	 function skeleton_apple_startup_images() {
-		if (THEMETRACE) {skeleton_trace('F','skeleton_apple_startup_images',__FILE__);}
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		global $vthemedirs;
 
@@ -2112,14 +2144,14 @@ if ( (isset($vthemesettings['startupimages'])) && ($vthemesettings['startupimage
 // (this is a bit hacky, hopefully a real filter is available for this in future!)
 if ( (isset($_GET['csshero_action'])) && ($_GET['csshero_action'] == 'edit_page') ) {
 	// 1.9.5: added filter to optionally disable this path adjustment
-	$vcsshero = apply_filters('skeleton_adjust_css_hero_script_dir',true);
+	$vcsshero = skeleton_apply_filters('skeleton_adjust_css_hero_script_dir',true);
 	if ($vcsshero) {
 		add_action('wp_loaded','skeleton_csshero_script_dir',0);
 		if (!function_exists('skeleton_csshero_script_dir')) {
 		 function skeleton_csshero_script_dir() {
 			add_filter('stylesheet_directory_uri','skeleton_csshero_script_url',10,3);
 			function skeleton_csshero_script_url($stylesheet_dir_uri, $stylesheet, $theme_root_uri) {
-				if (THEMETRACE) {skeleton_trace('F','skeleton_csshero_script_url',__FILE__,func_get_args());}
+				if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 				global $vthemedirs;
 				$vcsshero = skeleton_file_hierarchy('url','csshero.js',$vthemedirs['js']);
 				if ($vcsshero) {$stylesheet_dir_uri = dirname($vcsshero);}
@@ -2147,7 +2179,7 @@ if (THEMEDEBUG) {
 // 1.8.5: added this debugging function
 if (!function_exists('skeleton_get_theme_includes')) {
  function skeleton_get_theme_includes() {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_get_theme_includes',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	$vincludedfiles = get_included_files();
 	// normalize theme paths for matching
@@ -2189,7 +2221,7 @@ if (!function_exists('skeleton_get_theme_includes')) {
 // 1.8.5: added this debugging function
 if (!function_exists('skeleton_check_theme_includes')) {
 	function skeleton_check_theme_includes() {
-	 	if (THEMETRACE) {skeleton_trace('F','skeleton_check_theme_includes',__FILE__);}
+	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemeincludes; $vthemeincludes = skeleton_get_theme_includes();
 	}
 }
@@ -2199,7 +2231,7 @@ if (!function_exists('skeleton_check_theme_includes')) {
 // 1.8.5: added this debugging function
 if (!function_exists('skeleton_check_theme_templates')) {
  function skeleton_check_theme_templates() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_check_theme_templates',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $vthemeincludes, $vtemplateincludes;
 	$vtemplateincludes = skeleton_get_theme_includes();
 

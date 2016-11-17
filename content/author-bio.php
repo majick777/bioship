@@ -1,5 +1,10 @@
+<?php
 
-<?php /* Author Bio Template */ ?>
+	/* Author Bio Template */
+
+	if (THEMETRACE) {skeleton_trace('T',__('Author Bio Template','bioship'),__FILE__);}
+
+?>
 
 <!-- #entry-author-info --><div id="entry-author-info">
 	<!-- #author-avatar --><div id="author-avatar">

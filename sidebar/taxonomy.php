@@ -2,6 +2,8 @@
 
 /* Taxonomy Archive Primary Sidebar */
 
+if (THEMETRACE) {skeleton_trace('T','Taxonomy Archive Sidebar Template',__FILE__);}
+
 if (is_active_sidebar('taxonomy')) { // If the sidebar has widgets
 
 	do_action('skeleton_before_sidebar'); ?>

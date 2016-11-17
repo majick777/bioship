@@ -21,7 +21,7 @@
 // This extension is maintained as a separate plugin. However, for completeness
 // the default hooks and priorities it uses are noted in this reference also.
 
-// TODO: add Page Elements for Styling Reference
+// TODO: add Page Elements for a Styling Reference?
 
 
 							// ======================================== \\
@@ -48,6 +48,10 @@ $l = array();	// translated labels array
 // 1.6.0: added labels as values to hook array
 // 1.8.5: converted to extended keyed arrays
 // 1.8.5: added label translations
+// 1.9.8: removed 'wrap_' from skeleton_content_open and skeleton_content_close
+// 1.9.8: added undeclared priority and label for excerpts
+// 1.9.8: added missing front_page and home_page definitions
+// 1.9.8: added missing media_handler and page_navi definitions
 
 /* see header.php */
 // <HTML>
@@ -71,6 +75,7 @@ $k = 'skeleton_container_open';			$s[$i][$j++] = $k;	$l[$k] = __('Wrap Container
 $k = 'skeleton_before_header';			$s[$i][$j++] = $k;	$l[$k] = __('Before Header Area','bioship');
  $f = 'skeleton_top_banner';			$p[$k][$f] = 2;		$l[$f] = __('Full Width Top Banner','bioship');
 ## 	* Content Sidebar *  							 5		## 'Login Sidebar' default top position
+ $f = 'skeleton_secondary_menu';		$p[$k][$f] = 8;		$l[$f] = __('Secondary Navigation Menu','bioship');
 
 $k = 'skeleton_header'; $j++;			$s[$i][$j++] = $k;	$l[$k] = __('Main Header','bioship');
  $f = 'skeleton_header_open';	 		$p[$k][$f] = 0;
@@ -132,8 +137,13 @@ $k ='skeleton_after_subsidebar';		$s[$i][$j++] = $k;	$l[$k] = __('After SubSideb
 /* index.php */ 						$j = 0;	$i++;		$l[$i] = __('Start Content Area','bioship');
 $k = 'skeleton_before_content';			$s[$i][$j++] = $k;	$l[$k] = __('Before Content Area','bioship');
 ##		* Content Sidebar *  		 	$p[$k][$f] = 5;		## 'Before Content Sidebar' default position
- $f = 'skeleton_content_wrap_open';		$p[$k][$f] = 10;	$l[$f] = __('Content Wrap Open','bioship');
+ $f = 'skeleton_content_open';			$p[$k][$f] = 10;	$l[$f] = __('Content Wrap Open','bioship');
+$k = 'skeleton_front_page_top';			$s[$i][$j++] = $k;	$l[$k] = __('Frontpage Only Top','bioship');
+ $f = 'skeleton_front_page_content';	$p[$k][$f] = 5;		$l[$k] = __('Frontpage Only Content','bioship');
+$k = 'skeleton_home_page_top';			$s[$i][$j++] = $k;	$l[$k] = __('Home (Blog) Only Top','bioship');
+ $f = 'skeleton_home_page_content';		$p[$k][$f] = 5;		$l[$k] = __('Home (Blog) Only Content','bioship');
 $k = 'skeleton_before_loop';			$s[$i][$j++] = $k;	$l[$k] = __('Before Any Loop','bioship');
+ $f = 'skeleton_breadcrumbs';			$p[$k][$f] = 5;		$l[$k] = __('Breadcrumbs','bioship');
 $k = 'skeleton_before_archive';			$s[$i][$j++] = $k;	$l[$k] = __('Before Any Archive Loop','bioship');
 $k = 'skeleton_before_category';		$s[$i][$j++] = $k;	$l[$k] = __('Before Category Archive Loop','bioship');
 $k = 'skeleton_before_taxonomy';		$s[$i][$j++] = $k;	$l[$k] = __('Before Taxonomy Archive Loop','bioship');
@@ -147,6 +157,8 @@ $k = 'skeleton_before_date';			$s[$i][$j++] = $k;	$l[$k] = __('Before Date Archi
 // ------------------------
 /* content/content.php */				$j = 0;	$i++;		$l[$i] = __('Start Entry Loop','bioship');
 $k = 'skeleton_before_entry'; 			$s[$i][$j++] = $k;  $l[$k] = __('Before Entry','bioship');				 // (no default)
+$k = 'skeleton_attachment_media_handler'; $s[$i][$j++] = $k; $l[$k] = __('Media Handler Action','bioship');
+ $f = 'skeleton_media_handler';			$p[$k][$f] = 5;		$l[$k] = __('Attachment Media Handler','bioship');
 
 // Entry Header
 $k = 'skeleton_entry_header';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Header Hook','bioship');
@@ -168,16 +180,15 @@ $k = 'skeleton_thumbnail';				$s[$i][$j++] = $k;  $l[$k] = __('Thumbnail or Feat
 // -------------------------------------------
 /* not is_singular() */					$j = 0;	$i++;		$l[$i] = __('Post Excerpts','bioship');
 $k = 'skeleton_before_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('Before Excerpt','bioship');			// (no default)
-//	$k = 'skeleton_the_excerpt';							// Main Excerpt Output Hook
-//   $f = 'skeleton_echo_the_excerpt';					5	// Simple Wrapper function
+$k = 'skeleton_the_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('Main Excerpt Output Hook','bioship');
+ $f = 'skeleton_echo_the_excerpt';		$p[$k][$f] = 5;		$l[$f] = __('Main Excerpt Output','bioship');
 // 		*** the_excerpt() ***							 	// WordPress core function call
 $k = 'skeleton_after_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('After Excerpt','bioship'); 			// (no default)
 
-// Entry Footer
 $k = 'skeleton_entry_footer';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Footer','bioship');
-  $f = 'skeleton_entry_footer_open'; 	$p[$k][$f] = 0;		$l[$f] = __('Bottom Meta Open','bioship');
-  $f = 'skeleton_entry_footer_meta'; 	$p[$k][$f] = 6;		$l[$f] = __('Entry Meta Bottom','bioship');
-  $f = 'skeleton_entry_footer_close';	$p[$k][$f] = 10;	$l[$f] = __('Bottom Meta Close','bioship');
+ $f = 'skeleton_entry_footer_open'; 	$p[$k][$f] = 0;		$l[$f] = __('Bottom Meta Open','bioship');
+ $f = 'skeleton_entry_footer_meta'; 	$p[$k][$f] = 6;		$l[$f] = __('Entry Meta Bottom','bioship');
+ $f = 'skeleton_entry_footer_close';	$p[$k][$f] = 10;	$l[$f] = __('Bottom Meta Close','bioship');
 
 //			 ***** OR *****
 
@@ -186,6 +197,7 @@ $k = 'skeleton_entry_footer';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Footer','b
 // =========================================
 /* is_singular() */						$j = 0;	$i++;		$l[$i] = __('Singular Content','bioship');
 $k = 'skeleton_before_singular'; 		$s[$i][$j++] = $k;	$l[$k] = __('Before Singular Content','bioship');
+ $f = 'skeleton_breadcrumbs';			$p[$k][$f] = 5;		$l[$k] = __('Breadcrumbs','bioship');
 
 // Author Bio (top)
 $k = 'skeleton_author_bio_top';			$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Top Position','bioship');
@@ -200,13 +212,7 @@ $k = 'skeleton_before_the_content';		$s[$i][$j++] = $k;	$l[$k] = __('Before the 
 //		  *** the_content() ***	 							// WordPress core function call
 $k = 'skeleton_after_the_content';		$s[$i][$j++] = $k;	$l[$k] = __('After the Content','bioship');			// (no default)
 
-// Entry Footer
-// note: these are duplicate hooks already defined above for excerpt content,
-// 		 only the position the order/position they are called from is different.
-// $k = 'skeleton_entry_footer';		$s[$i][$j++] = $k;	$l[$k] = __('Entry Footer','bioship');
-//  $f = 'skeleton_entry_footer_open'; 	$p[$k][$f] = 0;		$l[$f] = __('Bottom Meta Open','bioship');
-//  $f = 'skeleton_entry_footer_meta'; 	$p[$k][$f] = 6;		$l[$f] = __('Entry Meta Bottom','bioship');
-//  $f = 'skeleton_entry_footer_close';	$p[$k][$f] = 10;	$l[$f] = __('Bottom Meta Close','bioship');
+// Entry Footer (duplicate of excerpt entry footer above)
 
 // Author Bio (bottom)
 $k = 'skeleton_author_bio_bottom';		$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Bottom Position','bioship');
@@ -232,6 +238,8 @@ $k = 'skeleton_after_comments';			$s[$i][$j++] = $k;	$l[$k] = __('After Comments
 // ======================
 										$j = 0;	$i++;		$l[$i] = __('End Entry Loop','bioship');
 $k = 'skeleton_after_entry';			$s[$i][$j++] = $k;	$l[$k] = __('After Entry','bioship'); 			// (no default)
+$k = 'skeleton_page_navi';				$s[$i][$j++] = $k;	$l[$k] = __('Page Navigation','bioship');
+ $f = 'skeleton_page_navigation';		$p[$k][$f] = 5;		$l[$k] = __('Page Navigation','bioship');
 $k = 'skeleton_after_date';				$s[$i][$j++] = $k;	$l[$k] = __('After Date Archive Loop','bioship');
 $k = 'skeleton_after_author';			$s[$i][$j++] = $k;	$l[$k] = __('After Author Archive Loop','bioship');
  $f = 'skeleton_author_bio_bottom';		$p[$k][$f] = 0;		$l[$f] = __('Author Archive Bottom Bio','bioship');
@@ -241,7 +249,8 @@ $k = 'skeleton_after_category';			$s[$i][$j++] = $k;	$l[$k] = __('After Category
 $k = 'skeleton_after_archive';			$s[$i][$j++] = $k;	$l[$k] = __('After Any Archive Loop','bioship');
 $k = 'skeleton_after_loop';				$s[$i][$j++] = $k;	$l[$k] = __('After Any Loop','bioship');		// (no default)
 $k = 'skeleton_after_content';		 	$s[$i][$j++] = $k;	$l[$k] = __('After Content','bioship');			// (no default)
- $f = 'skeleton_content_wrap_close';	$p[$k][$f] = 0;		$l[$f] = __('Content Wrap Close','bioship');
+ $f = 'skeleton_content_close';			$p[$k][$f] = 0;		$l[$f] = __('Content Wrap Close','bioship');
+ $f = 'skeleton_clear_div';				$p[$k][$f] = 2;
 ##		* Content Sidebar *				 			  5		## 'Below Content Sidebar' Default Position
 // ----------------------------
 // END SIDEBAR AND CONTENT AREA
@@ -303,9 +312,7 @@ foreach ($vthemehooks['sections'] as $vlayoutsection) {
 // Happy space fishing.
 
 
-
 if (THEMEDEBUG) {
-
 	echo "<!-- ".PHP_EOL;
 
 	echo "Layout Sections: ".PHP_EOL;

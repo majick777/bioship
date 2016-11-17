@@ -2,6 +2,8 @@
 
 /* Search Page Subsidiary Sidebar */
 
+if (THEMETRACE) {skeleton_trace('T','Search Subsidebar Template',__FILE__);}
+
 if (is_active_sidebar('subsearch')) { // if the sidebar has widgets
 
 	do_action('skeleton_before_subsidebar'); ?>

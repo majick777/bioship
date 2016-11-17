@@ -7,6 +7,8 @@
 /* http://bioship.space/documentation/templates/ */
 /* https://developer.wordpress.org/themes/basics/template-hierarchy/ */
 
+if (THEMETRACE) {skeleton_trace('T',__('Main Index Template','bioship'),__FILE__);}
+
 /* HEADER */
 // ------ //
 // header/{context}.php, header-{context}.php, header/header.php, header.php

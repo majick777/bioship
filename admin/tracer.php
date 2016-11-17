@@ -12,71 +12,147 @@
 
 if (!function_exists('add_action')) {exit;}
 
-// Note: for heavy lifting use: var_dump(debug_backtrace());
+// Note: for heavy lifting you can use:
+// add_action('shutdown',function() {echo "<!-- ".var_dump(debug_backtrace())." -->";});
 
-// TODO: maybe add filter tracers?
-// TODO: full trace logging with function arguments
+if (!defined('THEMETRACE')) {define('THEMETRACE',true);}
+
+global $vthemetracer; $vthemetracer = array(); // holds theme trace options
+global $vthemetrace; $vthemetrace = array();   // holds theme trace data
 
 // check for load or call trace request
-if (isset($_REQUEST['tracethemeloads'])) {
-	$vthemetraceloads = $_REQUEST['tracethemeloads'];
-	// help to forget about plurals if debugging as may already be annoyed...
-	if ($vthemetraceloads == 'template') {$vthemetraceloads = 'templates';}
-	elseif ($vthemetraceloads == 'function') {$vthemetraceloads = 'functions';}
-	elseif ($vthemetraceloads == 'filter') {$vthemetraceloads = 'filters';}
-	elseif ($vthemetraceloads == '') {$vthemetraceloads = false;}
-} else {$vthemetraceloads = false;}
+if (isset($_REQUEST['trace'])) {
+	$vthemetracer['trace'] = $_REQUEST['trace'];
+	// help to forget about plurals if debugging as may already be annoyed... O_o
+	if ($vthemetracer['trace'] == 'template') {$vthemetracer['trace'] = 'templates';}
+	elseif ($vthemetracer['trace'] == 'function') {$vthemetracer['trace'] = 'functions';}
+	elseif ($vthemetracer['trace'] == 'filter') {$vthemetracer['trace'] = 'filters';}
+	elseif ($vthemetracer['trace'] == '') {$vthemetracer['trace'] = false;}
+} else {$vthemetracer['trace'] = 'all';}
 
-$vthemetracecalls = false;
-if (isset($_REQUEST['tracethemecalls'])) {
- if ($_REQUEST['tracethemecalls']) == '1') {$vthemetracecalls = true;} }
+// whether to trace number of function calls
+$vthemetracer['calls'] = false;
+if (isset($_REQUEST['tracecalls'])) {
+	if ( ($_REQUEST['tracecalls'] == '1') || ($_REQUEST['tracecalls'] == 'yes') ) {$vthemetracer['calls'] = true;}
+}
 
-$vthemefunctions = array(); $vthemetemplates = array();
-$themefunctioncalls = array(); $vthemetrace = array();
+// whether to trace function arguments
+$vthemetracer['args'] = false;
+if (isset($_REQUEST['traceargs'])) {
+	if ( ($_REQUEST['traceargs'] == '1') || ($_REQUEST['tracedisplay'] == 'yes') ) {$vthemetracer['args'] = true;}
+}
+
+// whether to trace a single function
+$vthemetracer['function'] = false;
+if ( (isset($_REQUEST['tracefunc'])) && ($_REQUEST['tracefunc'] != '') ) {$vthemetracer['function'] = $_REQUEST['tracefunc'];}
+if ( (isset($_REQUEST['tracefunction'])) && ($_REQUEST['tracefunction'] != '') ) {$vthemetracer['function'] = $_REQUEST['tracefunction'];}
+
+// whether to trace a single filter
+$vthemetracer['filter'] = false;
+if ( (isset($_REQUEST['tracefilter'])) && ($_REQUEST['tracefilter'] != '') ) {$vthemetracer['filter'] = $_REQUEST['tracefilter'];}
+
+// whether to output trace inline
+$vthemetracer['output'] = false;
+if (isset($_REQUEST['tracedisplay'])) {
+	if ( ($_REQUEST['tracedisplay'] == '1') || ($_REQUEST['tracedisplay'] == 'yes') ) {$vthemetracer['output'] = true;}
+}
+if (isset($_REQUEST['traceoutput'])) {
+	if ( ($_REQUEST['traceoutput'] == '1') || ($_REQUEST['traceoutput'] == 'yes') ) {$vthemetracer['output'] = true;}
+}
+
+// maybe set a trace instance
+$vthemetrace['instance'] = false;
+if (isset($_REQUEST['instance'])) {$vthemetracer['instance'] = $_REQUEST['instance'];}
+
+// setup empty trace arrays
+$vthemetrace['functions'] = array(); $vthemetrace['templates'] = array();
+$vthemetrace['calls'] = array(); $vthemetrace['lines'] = array();
+$vthemetrace['start'] = date('Y-m-d--H-i-s',time());
 
 // Tracer Function
 // ---------------
-function skeleton_trace($vresource,$vresourcename,$vfilepath,$vfunctionargs) {
+function skeleton_trace($vresourcetype,$vresourcename,$vfilepath,$vfunctionargs=false) {
 
-	global $vthemetraceloads, $vthemetracecalls;
-	global $vthemefunctions, $vthemetemplates;
-	global $vthemefunctioncalls, $vthemetrace;
+	global $vthemetracer, $vthemetrace, $vthemedebugdir;
 
-	if (isset($_REQUEST['tracedisplay'])) {
-	 if ($_REQUEST['tracedisplay'] == '1') {$voutputdisplay = true;} }
+	if ($vresourcetype == 'F') {$vresourcetype = 'function';}
+	elseif ($vresourcetype == 'T') {$vresourcetype = 'template';}
+	elseif ($vresourcetype == 'V') {$vresourcetype = 'filter';}
+	else {return;}
+
+	// strip base file path (not used for filters)
+	if ($vresourcetype != 'filter') {
+		$vpos = strpos($vfilepath,'themes') + strlen('themes');
+		$vfilepath = substr($vfilepath,$vpos,strlen($vfilepath));
+	}
+
+	// check for single function or filter trace
+	if ( ($vthemetracer['function']) || ($vthemetracer['filter']) ) {
+		if ( ($vresourcetype != 'function') && ($vresourcetype != 'filter') ) {return;}
+		if ( ($vresourcetype == 'function') && ($vresourcename != $vthemetracer['function']) ) {return;}
+		if ( ($vresourcetype == 'filter') && ($vresourcename != $vthemetracer['filter']) ) {return;}
+	}
 
 	if ($vresourcetype == 'function') {
-		if ($vthemetraceloads != 'templates') {
-			if (!in_array($resourcename,$vthemefunctions)) {
-				$vthemefunctions[] = $vresourcename;
-				$vtracecount = '('.count($vthemefunctions).')';
-			} else {
-				if ( ($vthemetracecalls) && ($voutputdisplay) ) {
-					echo '<!-- '.$vresourcename.' -->';
-				}
+		if ( ($vthemetracer['trace'] == 'functions') || ($vthemetracer['trace'] == 'all') ) {
+			if (!in_array($vresourcename,$vthemetrace['functions'])) {
+				$vthemetrace['functions'][] = $vresourcename;
 			}
+			if ($vthemetracer['output']) {echo '<!-- function: '.$vresourcename.' ('.$vfilepath.') -->';}
 			// keeps track of all function calls
-			$vthemefunctioncalls[] = $vresourcename;
+			$vthemetrace['calls'][] = $vresourcename;
+			$vtracecount = '('.count($vthemetrace['calls']).')';
 		}
 	}
 	elseif ($vresourcetype == 'template') {
-		if ($vthemetraceloads != 'functions') {
-			$vthemetemplates[] = $vresourcename;
-			$vtracecount = '['.count($vthemetemplates).']';
+		if ( ($vthemetracer['trace'] == 'templates') || ($vthemetracer['trace'] == 'all') ) {
+			$vthemetrace['templates'][] = $vresourcename;
+			$vtracecount = '['.count($vthemetrace['templates']).']';
+			if ($vthemetracer['output']) {echo '<!-- template: '.$vresourcename.' ('.$vfilepath.') -->';}
 		}
 	}
-	// possibly filters could be tracked too?
-	// elseif ($vresourcetype == 'filters') {}
+	elseif ($vresourcetype == 'filter') {
+		// 	TODO: possibly filter calls could be traced too?
+		if ( ($vthemetracer['trace'] == 'filters') || ($vthemetracer['trace'] == 'all') ) {
+			$vthemetrace['filters'][] = $vresourcename;
+			$vtracecount = '<'.count($vthemetrace['filters']).'>';
+			if ($vthemetracer['output']) {echo '<!-- filter: '.$vresourcename.' -->';}
+		}
+	}
 
 	// add the tracer line to the load record
-	$vtracerline = $vtracecount.'::'.$memusage.'::'.$loadtime.'::'.$vresourcetype.'::'.$vresourcename;
-	$vthemetrace[] = $vtracerline;
-	if ($voutputdisplay) {echo '<!-- '.$vtracerline.'-->';}
+	// 1.9.8: fix to tracer line
+	$vmemusage = memory_get_usage(true); $vloadtime = skeleton_timer_time();
+	$vtracerline = $vtracecount.'::'.$vmemusage.'::'.$vloadtime.'::'.$vresourcetype.'::'.$vresourcename.'::'.$vfilepath;
+	$vthemetrace['lines'][] = $vtracerline;
+	// if ($vthemetracer['output']) {echo '<!-- '.$vtracerline.'-->';}
 
+	// 1.9.8: full trace logging of function/filter arguments passed
+	if ( ($vresourcetype == 'function') || ($vresourcetype == 'filter') ) {
+		if ( ($vthemetracer['args']) && ($vfunctionargs) ) {
 
-	// TODO: full trace logging of function arguments passed
+			if ($vresourcetype == 'function') {
+				ob_start(); var_dump($vfunctionargs); $vdump = ob_get_contents(); ob_end_clean();
+				if ($vthemetracer['output']) {echo '<!-- function arguments: '.$vdump.' -->';}
+				$vdumpline = $vresourcetype.': '.$vresourcename.PHP_EOL.$vdump.PHP_EOL;
+			} elseif ($vresourcetype == 'filter') {
+				ob_start(); var_dump($vfunctionargs['in']); $vin = ob_get_contents(); ob_end_clean();
+				ob_start(); var_dump($vfunctionargs['out']); $vout = ob_get_contents(); ob_end_clean();
+				$vdumpline = $vresourcetype.': '.$vresourcename.PHP_EOL;
+				$vdumpline = 'value in: '.$vin.PHP_EOL.'value out: '.$vout;
+			}
 
-	// ...and maybe full trace logging of filter arguments passed?
+			if ($vthemetracer['instance']) {
+				if ($vthemetracer['instance'] == '') {$vdumpfile = '';} // no file writing
+				else {$vdumpfile = $vthemedebugdir.DIRSEP.'_'.$vinstance.'--traceargs.txt';}
+			} else {$vdumpfile = $vthemedebugdir.DIRSEP.$vthemetrace['start'].'--traceargs.txt';}
+
+			if ($vdumpfile != '') {
+				if (file_exists($vdumpfile)) {$vfh = @fopen($vdumpfile,'a');} else {$vfh = @fopen($vdumpfile,'w');}
+				@fwrite($vfh,$vdumpline); @fclose($vfh);
+			}
+		}
+	}
 
 }
 
@@ -84,44 +160,35 @@ function skeleton_trace($vresource,$vresourcename,$vfilepath,$vfunctionargs) {
 // ---------------
 function skeleton_trace_processsor() {
 
-	global $vthemetraceloads, $vthemetracecalls;
-	global $vthemefunctions, $vthemetemplates;
-	global $vthemefunctioncalls, $vthemetrace;
+	global $vthemetracer, $vthemetrace, $vthemedebugdir;
 
-	// echo "<!-- Theme Trace Processor Started -->";
+	if ($vthemetracer['output']) {echo "<!-- Theme Trace Processor Started -->";}
 
-	$vtimedate = date('Y-m-d--H:i:s',time());
-	if (isset($_REQUEST['instance'])) {
-		$vinstance = abs(intval(($_REQUEST['instance']));
-	if (isset($_REQUEST['tracedisplay'])) {
-	 if ($_REQUEST['tracedisplay'] == '1') {$voutputdisplay = true;} }
-
-	// set and maybe create tracer dir
-	if (is_child_theme()) {$vtracerdir = get_stylesheet_directory();}
-	else {$vtracerdir = get_template_directory();}
-	$vtracerdir .= '/traces/';
-	if (!is_dir($vtracerdir)) {umask(0000); @mkdir($vtracerdir,0644);}
-	if (!is_writeable($vtracerdir)) {unmask(0000); @chmod($vtracerdir,0644);}
+	global $vthemetimestart; $vtimedate = date('Y-m-d--H:i:s',$vthemetimestart);
+	if (isset($_REQUEST['instance'])) {$vinstance = $_REQUEST['instance'];}
 
 	// write load log
-	if ($vthemetraceloads) {
-		if ($vinstance != '') {$vtraceloadsfile = $tracerdir.'/_'.$vinstance.'--traceload.txt';}
-		else {$vtraceloadsfile = $vtracerdir.'/'.$vtimedate.'--traceload.txt';}
-		$vtracercontents = implode(PHP_EOL,$vthemetrace);
+	if ( ($vthemetracer['trace']) && (count($vthemetrace['lines']) > 0) ) {
+
+		if ($vthemetracer['instance']) {
+			if ($vthemetracer['instance'] == '') {$vtraceloadsfile = '';} // no file writing
+			else {$vtraceloadsfile = $vthemedebugdir.DIRSEP.'_'.$vinstance.'--traceload.txt';}
+		} else {$vtraceloadsfile = $vthemedebugdir.DIRSEP.$vthemetrace['start'].'--traceload.txt';}
+		$vtracercontents = implode(PHP_EOL,$vthemetrace['lines']);
 
 		// being user debug files, these should be fine to write directly
-		$vfh = @fopen($vtraceloadsfile,'w'); @fwrite($vfh,$vtracercontents); @fclose($vfh);
+		if ($vtraceloadsfile != '') {
+			$vfh = @fopen($vtraceloadsfile,'w'); @fwrite($vfh,$vtracercontents); @fclose($vfh);
+		}
 	}
 
 	// write call log
-	if ($vthemetracecalls) {
-		if ($vinstance != '') {$vtraceloadsfile = $tracerdir.'/_'.$vinstance.'--tracecalls.txt';}
-		else {$vtraceloadsfile = $vtracerdir.'/'.$vtimedate.'--tracecalls.txt';}
+	if ( ($vthemetracer['calls']) && (count($vthemetrace['calls']) > 0) ) {
 
 		// parse the tracer call log into an occurrence log
 		// ...extract occurrence data from the tracer calls
 		$vcalls = array();
-		foreach ($vthemefunctioncalls as $vtrace) {
+		foreach ($vthemetrace['calls'] as $vtrace) {
 			if (isset($vcalls[$vtrace])) {
 				$vcalls[$vtrace] = (int)$vcalls[$vtrace] + 1;
 			} else {$vcalls[$vtrace] = 1;}
@@ -130,25 +197,28 @@ function skeleton_trace_processsor() {
 
 		// gather the data into lines...
 		$voccurlines = array();
-		foreach ($vcalls as $vfunctionname => $voccurs) {
-			$voccurlines[] = $vfunctionname.'::'.$voccurs;
-		}
+		foreach ($vcalls as $vfunctionname => $voccurs) {$voccurlines[] = $vfunctionname.'::'.$voccurs;}
 
 		// write the call occurences log file
 		$voccurdata = implode(PHP_EOL,$voccurlines);
 		$voccurdata = "Theme Function Call Occurrences:".PHP_EOL.$voccurdata;
-		$vorderedtraces = implode(PHP_EOL,$vthemefunctioncalls);
-		$voccurdata .= "All Function Calls Order:".PHP_EOL.$vorderedtraces;
+		$vorderedtraces = implode(PHP_EOL,$vthemetrace['calls']);
+		$voccurdata .= PHP_EOL.PHP_EOL."All Function Calls Order:".PHP_EOL.$vorderedtraces;
+
+		if ($vthemetracer['instance']) {
+			if ($vthemetracer['instance'] == '') {$vtracecallsfile = '';} // no file writing
+			else {$vtracecallsfile = $vthemedebugdir.DIRSEP.'_'.$vinstance.'--tracecalls.txt';}
+		} else {$vtracecallsfile = $vthemedebugdir.DIRSEP.$vthemetrace['start'].'--tracecalls.txt';}
 
 		// being user debug files, these should be fine to write directly
-		$vfh = @fopen($vtracecallsfile,'w'); @fwrite($vfh,$voccurdata); @fclose($vfh);
+		if ($vtracecallsfile != '') {
+			$vfh = @fopen($vtracecallsfile,'w'); @fwrite($vfh,$voccurdata); @fclose($vfh);
+		}
 
 		// maybe output at end of screen for source viewing
-		if (isset($_REQUEST['tracedisplay'])) {
-		 if ($_REQUEST['tracedisplay'] == '1') {
-			$occurdata = str_replace('::',' : ',$occurdata);
-			echo "<!-- ".$occurdata." -->";
-		 }
+		if ($vthemetracer['output']) {
+			$voccurdata = str_replace('::',' : ',$voccurdata);
+			echo "<!-- ".$voccurdata." -->";
 		}
 	}
 }

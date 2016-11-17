@@ -2,6 +2,8 @@
 
 /** Main Post Content Template **/
 
+if (THEMETRACE) {skeleton_trace('T','Content Template',__FILE__);}
+
 // Note: For consistency the improved Hybrid template/attribute functions
 // are included and used whether full Hybrid Core library is active or not.
 
@@ -18,9 +20,8 @@ echo '<article '.hybrid_get_attr('post'),'>';
 	do_action('skeleton_before_entry');
 
 	/* Attachment / Media Handler */
-	// if (is_singular()) {
-		do_action('skeleton_attachment_media_handler');
-	// }
+	// 1.9.8: shorten action name to skeleton_media_handler
+	do_action('skeleton_media_handler');
 
 	/* Entry Header */
 	do_action('skeleton_entry_header');
