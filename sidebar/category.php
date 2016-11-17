@@ -2,6 +2,8 @@
 
 /* Category Archive Primary Sidebar */
 
+if (THEMETRACE) {skeleton_trace('T','Category Archive Sidebar Template',__FILE__);}
+
 if (is_active_sidebar('category')) { // If the sidebar has widgets
 
 	do_action('skeleton_before_sidebar'); ?>

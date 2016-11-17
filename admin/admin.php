@@ -351,7 +351,7 @@ if (!function_exists('admin_theme_options_position')) {
 			if ( ($vvalues[2] == 'options-framework') || (strstr($vvalues[2],'page=options-framework'))
 			  || ($vvalues[2] == 'theme-options') || (strstr($vvalues[2],'page=theme-options')) ) {
 				unset($submenu['themes.php'][$submenukey]);
-				$vnewposition = apply_filters('muscle_theme_options_position','1');
+				$vnewposition = skeleton_apply_filters('muscle_theme_options_position','1');
 				if (isset($submenu['themes.php'][$vnewposition])) {
 					// in trouble, need to insert and shift the array
 					$vdosplice = true; $vj = 0; $vthemesettingsvalues = $vvalues;
@@ -462,7 +462,7 @@ if (!function_exists('admin_themetestdrive_options')) {
 // ---------------------------------------
 // 1.8.5: moved here from muscle.php, option changed to filter
 if (!function_exists('admin_adminbar_theme_options')) {
- $vadminbar = apply_filters('admin_adminbar_theme_options',1);
+ $vadminbar = skeleton_apply_filters('admin_adminbar_theme_options',1);
  if ($vadminbar) {add_action('wp_before_admin_bar_render', 'admin_adminbar_theme_options');}
  function admin_adminbar_theme_options() {
 	if (THEMETRACE) {skeleton_trace('F','muscle_adminbar_theme_options',__FILE__);}
@@ -491,7 +491,7 @@ if (!function_exists('admin_adminbar_theme_options')) {
 	// default is set to \f115 Dashicon (an eye in a screen) in skin.php
 	// and can be overridden using admin_adminbar_menu_icon filter
 	$vicon = skeleton_file_hierarchy('url','theme-icon.png',$vthemedirs['img']);
-	$vicon = apply_filters('admin_adminbar_theme_options_icon',$vicon);
+	$vicon = skeleton_apply_filters('admin_adminbar_theme_options_icon',$vicon);
 	if ($vicon) {
 		$viconspan = '<span class="theme-options-icon" style="
 			float:left; width:22px !important; height:22px !important;
@@ -500,7 +500,7 @@ if (!function_exists('admin_adminbar_theme_options')) {
 	} else {$viconspan = '<span class="ab-icon"></span>';}
 
 	$vtitle = __('Theme Options','bioship');
-	$vtitle = apply_filters('admin_adminbar_theme_options_title',$vtitle);
+	$vtitle = skeleton_apply_filters('admin_adminbar_theme_options_title',$vtitle);
 	$vmenu = array('id' => 'theme-options', 'title' => $viconspan.$vtitle, 'href' => $vthemelink);
 	$wp_admin_bar->add_menu($vmenu);
  }
@@ -519,7 +519,7 @@ if (!function_exists('admin_adminbar_replace_howdy')) {
 	$vmyaccount = $wp_admin_bar->get_node('my-account');
 	// 1.5.5: fixed translation for Theme Check
 	$vnewtitle = __('Logged in as ', 'bioship').$vusername;
-	$vnewtitle = apply_filters('admin_adminbar_howdy_title',$vnewtitle);
+	$vnewtitle = skeleton_apply_filters('admin_adminbar_howdy_title',$vnewtitle);
 	$wp_admin_bar->add_node(array('id' => 'my-account','title' => $vnewtitle));
  }
 }
@@ -531,7 +531,7 @@ if (!function_exists('admin_remove_admin_footer')) {
  add_filter('admin_admin_footer_text', 'admin_remove_admin_footer');
  function admin_remove_admin_footer() {
 	if (THEMETRACE) {skeleton_trace('F','admin_remove_admin_footer',__FILE__);}
-	return apply_filters('muscle_admin_footer_text','');
+	return skeleton_apply_filters('muscle_admin_footer_text','');
  }
 }
 
@@ -1063,7 +1063,7 @@ if (isset($_REQUEST['page'])) {
 					font-size:10pt; color: #333; font-weight:bold; 	background-color: lightYellow; border: 1px solid #E6DB55;}
 				#setting-error-tgmpa button.notice-dismiss {display:none !important;} /* TGM fix */
 			".PHP_EOL;
-			$vstyles = apply_filters('options_themepage_styles',$vstyles);
+			$vstyles = skeleton_apply_filters('options_themepage_styles',$vstyles);
 			echo "<style>".$vstyles."</style>";
 		 }
 		}
@@ -2537,7 +2537,7 @@ if (!function_exists('admin_verify_file_upload')) {
 
 if (!is_child_theme()) {
 	$vsaverestorewidgets = true;
-	$vsaverestorewidgets = apply_filters('skeleton_theme_widget_backups',$vsaverestorewidgets);
+	$vsaverestorewidgets = skeleton_apply_filters('skeleton_theme_widget_backups',$vsaverestorewidgets);
 
 	if ($vsaverestorewidgets) {
 
@@ -2598,7 +2598,7 @@ else {
 	// 1.8.0: moved here from child theme functions.php (cleaner)
 	// (note: maintain function_exists wrappers for back compat)
 	$vsaverestorechildwidgets = true;
-	$vsaverestorechildwidgets = apply_filters('skeleton_childtheme_widget_backups',$vsaverestorechildwidgets);
+	$vsaverestorechildwidgets = skeleton_apply_filters('skeleton_childtheme_widget_backups',$vsaverestorechildwidgets);
 
 	if ($vsaverestorechildwidgets) {
 
@@ -2741,7 +2741,10 @@ if (!function_exists('admin_theme_metabox')) {
 	global $_wp_additional_image_sizes;
 	foreach ($image_sizes as $size_name) {
 		if ( ($size_name != 'thumbnail') && ($size_name != 'medium') && ($size_name != 'large') ) {
-			$vthumbarray[$size_name] = $size_name.' ('.$_wp_additional_image_sizes[$size_name]['width'].' x '.$_wp_additional_image_sizes[$size_name]['height'].')';
+			// 1.9.8: fix to sporadic undefined index warning (huh? size names should match?)
+			if (isset($_wp_additional_image_sizes[$size_name])) {
+				$vthumbarray[$size_name] = $size_name.' ('.$_wp_additional_image_sizes[$size_name]['width'].' x '.$_wp_additional_image_sizes[$size_name]['height'].')';
+			}
 		}
 	}
 
@@ -2847,16 +2850,17 @@ if (!function_exists('admin_theme_metabox')) {
 	// Header Logo / Title Text / Description / Extras
 	// Footer Extras / Site Credits
 
+	// 1.9.8: fix to headernav and footernav keys
 	echo "<tr height='10'><td> </td></tr>";
 	echo "<tr><td align='center'><b>Navigation Display<b></td><td></td><td align='center'>Hide</td></tr>";
 	echo "<tr><td>Main Nav Menu</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_navigation' value='1'";
 		if ($vdisplay['navigation']) {echo " checked";}  echo "></td></tr>";
 	echo "<tr><td>Secondary Nav Menu</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_secondarynav' value='1'";
 		if ($vdisplay['secondarynav']) {echo " checked";}  echo "></td></tr>";
-	echo "<tr><td>Header Nav Menu</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_secondarynav' value='1'";
-		if ($vdisplay['secondarynav']) {echo " checked";}  echo "></td></tr>";
-	echo "<tr><td>Footer Nav Menu</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_secondarynav' value='1'";
-		if ($vdisplay['secondarynav']) {echo " checked";}  echo "></td></tr>";
+	echo "<tr><td>Header Nav Menu</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_headernav' value='1'";
+		if ($vdisplay['headernav']) {echo " checked";}  echo "></td></tr>";
+	echo "<tr><td>Footer Nav Menu</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_footernav' value='1'";
+		if ($vdisplay['footernav']) {echo " checked";}  echo "></td></tr>";
 	echo "<tr><td>Breadcrumbs</td><td width='10'><td align='center'><input type='checkbox' name='_display_breadcrumb' value='1'";
 		if ($vdisplay['breadcrumb']) {echo " checked";}  echo "></td></td></tr>";
 	echo "<tr><td>Post/Page Navi</td><td width='10'></td><td align='center'><input type='checkbox' name='_display_pagenavi' value='1'";
@@ -3364,7 +3368,7 @@ if (function_exists('tgmpa')) {
 		function options_tgm_dismiss_notice_off($vconfig) {
 			// filter the theme page message
 			$vthememessage = '<h3>BioShip Theme Framework Recommended Plugins</h3><br>';
-			$vthememessage = apply_filters('tgm_theme_page_message',$vthememessage);
+			$vthememessage = skeleton_apply_filters('tgm_theme_page_message',$vthememessage);
 			$vconfig['dismissable'] = false;
 			$vconfig['dismiss_msg'] = $vthememessage;
 			return $vconfig;
@@ -3464,7 +3468,7 @@ if (function_exists('tgmpa')) {
 				);
 
 				// Filter the TGMPA plugins
-				$vplugins = apply_filters('tgm_plugins_array',$vplugins);
+				$vplugins = skeleton_apply_filters('tgm_plugins_array',$vplugins);
 
 
 				/*
@@ -3474,11 +3478,11 @@ if (function_exists('tgmpa')) {
 
 				// filter the TGM page message
 				$vtgmpagemessage = '<h3>BioShip Theme Framework - Recommended Plugins</h3><br>';
-				$vtgmpagemessage = apply_filters('tgm_plugin_page_message',$vtgmpagemessage);
+				$vtgmpagemessage = skeleton_apply_filters('tgm_plugin_page_message',$vtgmpagemessage);
 
 				// filter the bundle path
 				$vbundlespath = get_template_directory().'/plugins/';
-				$vbundlespath = apply_filters('tgm_plugin_bundles_path',$vbundlespath);
+				$vbundlespath = skeleton_apply_filters('tgm_plugin_bundles_path',$vbundlespath);
 
 				// note: id (instance) set to bioship-tgmpa to prevent conflicts
 
@@ -3560,7 +3564,7 @@ if (function_exists('tgmpa')) {
 				);
 
 				// Filter the TGMPA config
-				$vconfig = apply_filters('tgm_config_array',$vconfig);
+				$vconfig = skeleton_apply_filters('tgm_config_array',$vconfig);
 
 				// Load TGM Plugin Activation!
 				// ---------------------------

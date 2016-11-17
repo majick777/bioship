@@ -2,6 +2,8 @@
 
 /* Blank Subsidebar */
 
+if (THEMETRACE) {skeleton_trace('T','Blank Template',__FILE__);}
+
 do_action('skeleton_before_subsidebar'); ?>
 
 	<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-subsidiary -->';} ?>

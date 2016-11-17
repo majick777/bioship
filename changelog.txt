@@ -1,11 +1,14 @@
 = 1.9.8 =
-- Fix: map default options if empty (on theme activation)
-- Fix: add check for logoresize page element in init.js
-- Fix: fix to numerous undefined variable warnings
-- Fix: to TMGPA plugin recommendations array
+- Fixed: map default options if empty (on theme activation)
+- Fixed: fix to numerous undefined variable warnings
+- Fixed: add check for logoresize page element in init.js
+- Fixed: to TMGPA plugin recommendations array
+- Fixed: process shortcodes in excerpts filter option
+- Fixed: removed overflow:hidden from CSS clearfix causing height
+- Improved: tracer.php revamped outdated debug tracer
+- Improved: use templating action priorities from hooks array
 - Update: replace deprecated constructor on Discreet Text Widget
-- Update: fixes to WordQuest Helper file errors
-- Update: Discreet Text Widget (remove extract usage)
+- Update: Discreet Text Widget (deprecated constructor method)
 
 = 1.9.7 =
 - Hotfix: missing argument 2 for filter warning breaking headers

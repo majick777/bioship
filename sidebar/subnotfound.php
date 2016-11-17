@@ -2,6 +2,8 @@
 
 /* 404 Not Found Subsidiary Sidebar */
 
+if (THEMETRACE) {skeleton_trace('T','404 Subsidebar Template',__FILE__);}
+
 if (is_active_sidebar('subnotfound')) { // if the sidebar has widgets
 
 	do_action('skeleton_before_subsidebar'); ?>

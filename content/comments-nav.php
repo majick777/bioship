@@ -1,5 +1,10 @@
+<?php
 
-<?php /* Comments Navigation (via Hybrid Base) */ ?>
+	/* Comments Navigation (via Hybrid Base) */
+
+	if (THEMETRACE) {skeleton_trace('T',__('Comments Nav Template','bioship'),__FILE__);}
+
+?>
 
 <?php if ( get_option( 'page_comments' ) && 1 < get_comment_pages_count() ) : // Check for paged comments. ?>
 

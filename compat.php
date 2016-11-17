@@ -7,14 +7,14 @@
 // 1.8.5: name changed functions/filters should end up here
 
 // to keep our pluggable functions and filters overrideable...
-// name changes shall be kept to a minimum! see the mess it makes..!
+// name changes shall be kept to a minimum! (see the mess it makes..!)
 // ...on the other hand see how few are actually here after all these versions :-)
 
 
 // Functions
 // ---------
 
-// 1.9.8: removed this as spitting weird constant error
+// 1.9.8: removed this one as spitting weird constant warning?
 // if (function_exists(muscle_get_overrides)) {function muscle_get_display_overrides() {return muscle_get_overrides();} }
 // else {function muscle_get_overrides() {return muscle_get_display_overrides();} }
 if (function_exists('muscle_adminbar_theme_options')) {function admin_adminbar_theme_options() {muscle_adminbar_theme_options();} }
@@ -29,37 +29,37 @@ else {function muscle_remove_admin_footer() {admin_remove_admin_footer();} }
 // ----------------
 
 add_filter('skeleton_sidebar_position','themecompat_sidebar_position');
-function themecompat_sidebar_position($vclasses) {return apply_filters('skeleton_sidebar_position_class',$vclasses);}
+function themecompat_sidebar_position($vclasses) {return skeleton_apply_filters('skeleton_sidebar_position_class',$vclasses);}
 add_filter('skeleton_subsidebar_position','themecompat_subsidebar_position');
-function themecompat_subsidebar_position($vclasses) {return apply_filters('skeleton_subsidebar_position_class',$vclasses);}
+function themecompat_subsidebar_position($vclasses) {return skeleton_apply_filters('skeleton_subsidebar_position_class',$vclasses);}
 
 
 // Filters
 // -------
 
 add_filter('options_theme_options','themecompat_theme_options');
-function themecompat_theme_options($voptions) {return apply_filters('options_themeoptions',$voptions);}
+function themecompat_theme_options($voptions) {return skeleton_apply_filters('options_themeoptions',$voptions);}
 
 add_filter('admin_adminbar_menu_icon','themecompat_adminbar_menu_icon');
-function themecompat_adminbar_menu_icon($vicon) {return apply_filters('options_adminbar_menu_icon',$vicon);}
+function themecompat_adminbar_menu_icon($vicon) {return skeleton_apply_filters('options_adminbar_menu_icon',$vicon);}
 
 add_filter('admin_adminbar_theme_options_title','themecompat_adminbar_theme_options_title');
-function themecompat_adminbar_theme_options_title($vtitle) {return apply_filters('muscle_adminbar_theme_options_title',$vtitle);}
+function themecompat_adminbar_theme_options_title($vtitle) {return skeleton_apply_filters('muscle_adminbar_theme_options_title',$vtitle);}
 
 add_filter('admin_adminbar_theme_options_icon','themecompat_adminbar_theme_options_icon');
-function themecompat_adminbar_theme_options_icon($vurl) {return apply_filters('muscle_adminbar_theme_options_icon',$vurl);}
+function themecompat_adminbar_theme_options_icon($vurl) {return skeleton_apply_filters('muscle_adminbar_theme_options_icon',$vurl);}
 
 add_filter('admin_adminbar_howdy_title','themecompat_adminbar_howdy_title');
-function themecompat_adminbar_howdy_title($vtitle) {return apply_filters('muscle_adminbar_howdy_title',$vtitle);}
+function themecompat_adminbar_howdy_title($vtitle) {return skeleton_apply_filters('muscle_adminbar_howdy_title',$vtitle);}
 
 add_filter('admin_adminbar_remove_items','themecompat_adminbar_remove_items');
-function themecompat_adminbar_remove_items($vitems) {return apply_filters('muscle_adminbar_remove_items',$vitems);}
+function themecompat_adminbar_remove_items($vitems) {return skeleton_apply_filters('muscle_adminbar_remove_items',$vitems);}
 
 add_filter('admin_admin_footer_text','themecompat_admin_footer_text');
-function themecompat_admin_footer_text($vtext) {return apply_filters('muscle_admin_footer_text',$vtext);}
+function themecompat_admin_footer_text($vtext) {return skeleton_apply_filters('muscle_admin_footer_text',$vtext);}
 
 add_filter('skeleton_generator_meta','themecompat_generator_meta');
-function themecompat_generator_meta($vtext) {return apply_filters('muscle_generator_meta',$vtext);}
+function themecompat_generator_meta($vtext) {return skeleton_apply_filters('muscle_generator_meta',$vtext);}
 
 
 // Pre WP 3.4 Compatibilty Fix

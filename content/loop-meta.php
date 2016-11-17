@@ -1,48 +1,39 @@
+<?php
 
-<?php /* Loop Meta Description Template */ ?>
+	/* Loop Meta Description Template */
 
-<?php /* Loop Meta */ ?>
+	if (THEMETRACE) {skeleton_trace('T',__('Loop Meta Template','bioship'),__FILE__);}
 
-<?php if (THEMECOMMENTS) : ?><!-- .loop-meta --><?php endif; ?>
-<?php // TODO: archive-header for HC3, loop-meta for HC2? ?>
-<div <?php hybrid_attr('loop-meta'); ?>>
+?>
 
-	<?php /* Loop Title */ ?>
+<?php // 1.9.8: switch from .loop-meta to .archive-header
+if (THEMECOMMENTS) {echo "<!-- .archive-header -->";} ?>
+<div <?php hybrid_attr('archive-header'); ?>>
 
-	<?php
-		 // 1.8.0: replaced hybrid_loop_title (hc3 deprecated)
-		 // note: get_the_archive_title filter available
-		 if (function_exists('get_the_archive_title')) {$vlooptitle = get_the_archive_title();}
-		 elseif (function_exists('hybrid_loop_title')) {$vlooptitle = hybrid_loop_title();}
-		 else {$vlooptitle = '';} // TODO: add a fallback here?
-		 $vlooptitle = apply_filters('hybrid_loop_title',$vlooptitle);
-		 if ($vlooptitle) {
-		 	// TODO: archive-title for HC3, loop-title for HC2
-		 	if (THEMECOMMENTS) {echo "<!-- .loop-title -->";}
-		 	echo "<h2 "; hybrid_attr('loop-title'); echo ">".$vlooptitle."</h2>";
-		 	if (THEMECOMMENTS) {echo "<!-- /.loop-title -->";}
-		 }
-	?>
+<?php
 
-	<?php /* Loop Description */ ?>
+	/* Loop Title */
 
-	<?php if (!is_paged()) : // Check if we are on page/1 ?>
+	$vlooptitle = skeleton_get_loop_title();
+	if ($vlooptitle) {
+		// 1.9.8: switch from .loop-title to .archive-title
+		if (THEMECOMMENTS) {echo "<!-- .archive-title -->";}
+		echo "<h2 "; hybrid_attr('arhive-title'); echo ">".$vlooptitle."</h2>";
+		if (THEMECOMMENTS) {echo "<!-- /.archive-title -->";}
+	}
 
-		<?php
-			// $vdescription = skeleton_get_loop_description();
-			// 1.8.0: replace hybrid_get_loop_description (hc3 deprecated)
-			if (function_exists('get_the_archive_description')) {$vdescription = get_the_archive_description();}
-			elseif (function_exists('hybrid_get_loop_description')) {$vdescription = hybrid_get_loop_description();}
-			else {$vdecription = '';} // TODO: add a fallback here?
-			$vdescription = apply_filters('hybrid_loop_description',$vdescription);
-			if ($vdescription) {
-				// TODO: archive-description for HC3, loop-description for HC2
-				if (THEMECOMMENTS) {echo "<!-- .loop-description -->";}
-				echo "<div "; hybrid_attr('loop-description'); echo ">".$vdescription."</div>";
-				if (THEMECOMMENTS) {"<!-- /.loop-description -->";}
-			}
-		?>
+	/* Loop Description */
 
-	<?php endif; // End paged check ?>
+	if (!is_paged()) { // Check if we are on page/1
 
-</div><?php if (THEMECOMMENTS) : ?><!-- /.loop-meta --><?php endif; ?>
+		$vdescription = skeleton_get_loop_description();
+		if ($vdescription) {
+			// 1.9.8: switch from .loop-description to .archive-description
+			if (THEMECOMMENTS) {echo "<!-- .archive-description -->";}
+			echo "<div "; hybrid_attr('archive-description'); echo ">".$vdescription."</div>";
+			if (THEMECOMMENTS) {"<!-- /.archive-description -->";}
+		}
+	}
+?>
+
+</div><?php if (THEMECOMMENTS) {echo "<!-- /.archive-header -->";} ?>

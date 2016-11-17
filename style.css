@@ -48,7 +48,7 @@ body .mobilebutton a.button {padding: 5px !important; font-size: 13px !important
 table td, body table th {border: 0; padding:5px;}
 body .entry-meta, body .entry-utility {margin-bottom:0; padding-bottom:0; border-bottom: 0;}
 
-/* More Style Fixes... (...to merge?) */
+/* More Style Fixes... (merge with skeleton.css?) */
 
 #header {margin:0px;}
 #sidebar-header {float: right;}

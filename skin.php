@@ -686,7 +686,7 @@ if ($vadminstyles) {
 	// 1.5.0: set Theme Options default icon (as \ is stripped in Admin CSS Theme Options save)
 	// ref: https://developer.wordpress.org/resource/dashicons/
 	// and: http://calebserna.com/dashicons-cheatsheet/
-	$vicon = apply_filters('admin_adminbar_menu_icon','\\f115');
+	$vicon = pply_filters('admin_adminbar_menu_icon','\\f115');
 	echo '#wp-admin-bar-theme-options .ab-icon:before {content: "'.$vicon.'"; top:2px;}'.PHP_EOL;
 
 	// 1.8.5: added simple hybrid hook style fixes
@@ -701,7 +701,7 @@ if ($vadminstyles) {
 	// 1.9.0: admin Widget page sidebar class styles
 	echo "/* Widget Sidebars */
 	.sidebar-on {background-color:#F0F0FF;} .sidebar-on h2 {font-size: 13pt;}
-	.sidebar-off {background-color:#F3F9FF;} .sidebar-off h2 {font-weight: normal; font-size: 10pt;}".PHP_EOL.PHP_EOL;
+	.sidebar-off {background-color:#F3F3FF;} .sidebar-off h2 {font-weight: normal; font-size: 10pt;}".PHP_EOL.PHP_EOL;
 
 
 	// ------------
@@ -832,7 +832,9 @@ if ($vthemesettings['header_background_image'] != '') {
 	if (!$vimagesize) {
 		// hmmmm... no allow_url_fopen and no filepath found (and all our lovely automated code has failed)
 		// if this is happening to you, you need to set an explicit filter for this in your filters.php
+		// TODO: rethink this as filters maybe not loaded?
 		$vfilteredsize = apply_filters('muscle_skin_header_size',array());
+
 		if ( (isset($vfilteredsize[0])) && (isset($vfilteredsize[1])) ) {
 			$vimagesize[0] = intval($vimagesize[0]); $vimagesize[1] = intval($vimagesize[1]);
 		}
@@ -1020,6 +1022,7 @@ if (count($vclasses) > 0) {
 		$vthisbrowserstyles = '';
 		if (isset($vthemesettings['browser_'.$vclass])) {$vthisbrowserstyles = $vthemesettings['browser_'.$vclass];}
 		if (has_filter('muscle_browser_styles_'.$vclass)) {
+			// TODO: rethink this as filters maybe not loaded?
 			$vbrowserstyles = apply_filters('muscle_browser_styles_custom'.$vclass,$vthisbrowserstyles);
 		}
 	}

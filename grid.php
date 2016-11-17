@@ -169,6 +169,10 @@ if (!defined('THEMEDEBUG')) {
 
 // include Skeleton and Skull Functions
 // ------------------------------------
+// 1.9.8: added these passthrough functions
+if (!function_exists('skeleton_apply_filters')) {
+	function skeleton_apply_filters($vfilter,$vvalue) {return apply_filters($vfilter,$vvalue);}
+}
 $vthemesettings = array(); // prevents undefined index warnings here
 if (!function_exists('skeleton_word_to_number')) {include(dirname(__FILE__).DIRSEP.'skeleton.php');}
 // 1.9.5: include skull.php (moved functions)
@@ -348,9 +352,10 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 .one_sixth {width:16%} .five_sixth, .five_sixths {width:83%}
 
 /* Clear and Clearfix */
+// 1.9.8: fix to remove overflow:hidden from clears (causing display height to actually exist?)
 .container:after {content:"\0020"; display:block; height:0; clear:both; visibility:hidden;}
-.clearfix:before, .clearfix:after {content:"\0020"; display:block; overflow:hidden; visibility:hidden; width:0; height:0; font-size: 0; line-height: 0;}
-.clear {clear:both; display:block; overflow:hidden; visibility:hidden; width:0; height:0;}
+.clearfix:before, .clearfix:after {content:"\0020"; display:block; visibility:hidden; width:0; height:0; font-size: 0; line-height: 0;}
+.clear {clear:both; display:block; visibility:hidden; width:0; height:0;}
 .clearfix:after, .u-cf {clear:both;} .clearfix {zoom:1;}
 
 <?php

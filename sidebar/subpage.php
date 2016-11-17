@@ -2,6 +2,8 @@
 
 /* Subsidiary Page Sidebar (Dual Option) */
 
+if (THEMETRACE) {skeleton_trace('T','Page Subsidebar Template',__FILE__);}
+
 if (is_active_sidebar('subpage')) { // If the sidebar has widgets.
 
 	do_action('skeleton_before_subsidebar'); ?>

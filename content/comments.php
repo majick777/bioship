@@ -4,6 +4,8 @@
 
 /* main callback to skeleton_comments in skeleton.php */
 
+if (THEMETRACE) {skeleton_trace('T',__('Comments Template','bioship'),__FILE__);}
+
 if ( post_password_required() ) {return;}
 
 ?>
@@ -29,7 +31,7 @@ if ( post_password_required() ) {return;}
 <?php // else : // this is displayed if there are no comments so far ?>
 
 	<p class="nocomments">
-		<?php echo apply_filters('skeleton_no_comments_text',''); ?>
+		<?php echo skeleton_apply_filters('skeleton_no_comments_text',''); ?>
 	</p>
 
 <?php endif; ?>
