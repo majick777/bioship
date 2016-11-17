@@ -2,6 +2,8 @@
 
 /* Search Primary Sidebar */
 
+if (THEMETRACE) {skeleton_trace('T','Search Sidebar Template',__FILE__);}
+
 if (is_active_sidebar('search')) { // If the sidebar has widgets
 
 	do_action('skeleton_before_sidebar'); ?>

@@ -49,7 +49,12 @@ if (!function_exists('optionsframework_to_titan')) {
 	// ------------------------
 	// (since Titan by default adds ALL the Google Fonts here!)
 	add_filter('titan_websafefonts','custom_titan_websafefonts');
-	function custom_titan_websafefonts($vfonts) {return options_web_font_stacks(array());}
+	function custom_titan_websafefonts($vfonts) {
+		// 1.9.8: use global value to avoid multiple calls
+		global $vthemewebfontstacks;
+		if (!isset($vthemewebfontstacks)) {$vthemewebfontstacks = options_web_font_stacks(array());}
+		return $vthemewebfontstacks;
+	}
 
 	// Custom Filter Google Fonts
 	// --------------------------
@@ -699,7 +704,7 @@ if (!function_exists('optionsframework_options')) {
 	// Formalize
 	$options[] = array(
 		'name' => __('Load Formalize (CSS and JS)', 'bioship'),
-		'desc' => __('Loads Formalize CSS and Javascript for cleaner cross-browser &gt;form&lt; element styling.', 'bioship'),
+		'desc' => __('Loads Formalize CSS and Javascript for cleaner cross-browser &lt;form&gt; element styling.', 'bioship'),
 		'id' => 'loadformalize',
 		'std' => '1',
 		'class' => 'skin',
@@ -1588,7 +1593,7 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'button_typography',
 		'std' => array('size' => '12px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#EEEEEE'),
 		'default' => array('font-size' => '14px', 'font-style' => 'normal', 'font-weight' => 'normal',
-			 'color' => '#444444', 'font-family' => 'helvetica, arial, "Nimbus Sans L", sans-serif'),
+			 'color' => '#EEEEEE', 'font-family' => 'helvetica, arial, "Nimbus Sans L", sans-serif'),
 		'show_google_fonts' => false,
 		'show_google_fonts' => false,
 		'show_letter_spacing' => false,
@@ -2213,7 +2218,7 @@ if (!function_exists('optionsframework_options')) {
 	// Excerpt Shortcodes
 	$options[] = array(
 		'name' => __('Excerpt Shortcodes', 'bioship'),
-		'desc' => __('Process Shortcodes in Excerpts', 'bioship'),
+		'desc' => __('Process Shortcodes in Excerpts (Note: formatting is still stripped from shortcode output.)', 'bioship'),
 		'id' => 'excerptshortcodes',
 		'std' => '1',
 		'class' => 'muscle',
@@ -2362,6 +2367,8 @@ if (!function_exists('optionsframework_options')) {
 		'desc' => __('', 'bioship'),
 		'class' => 'muscle',
 		'type' => 'info');
+
+	// TODO: author bio box position for author archive pages?
 
 	// Show Author Bio for CPTs
 	$cpt_defaults = array('post'=>'1');

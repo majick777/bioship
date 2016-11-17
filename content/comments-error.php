@@ -1,5 +1,10 @@
+<?php
 
-<?php /* Comments Error (via Hybrid Base) */ ?>
+	/* Comments Error (via Hybrid Base) */
+
+	if (THEMETRACE) {skeleton_trace('T',__('Comments Error Template','bioship'),__FILE__);}
+
+?>
 
 <?php if ( pings_open() && !comments_open() ) : ?>
 

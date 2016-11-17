@@ -177,8 +177,6 @@ if (!function_exists('skeleton_timer_time')) {
 // 1.8.0: added this for direct file writing
 if (!function_exists('skeleton_write_to_file')) {
  function skeleton_write_to_file($vfilepath,$vdata) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_write_to_file',__FILE__,func_get_args());}
-
  	// note: you could uncomment this line and remove dashes to bypass WP Filesystem
  	// $vfh = f-o-p-e-n($vfilepath,'w'); f-w-r-i-t-e($vfh,$vdata); f-c-l-o-s-e($vfh); return;
 
@@ -201,20 +199,36 @@ if (!function_exists('skeleton_write_to_file')) {
 // Debug File Writer
 // -----------------
 // 1.8.0: added this for tricky debugging output
+// 1.9.8: use debug directory global here
 if (!function_exists('skeleton_write_debug_file')) {
  function skeleton_write_debug_file($vfilename,$vdata) {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_write_debug_file',__FILE__,func_get_args());}
-	if (is_child_theme()) {global $vthemestyledir; $vdebugdir = $vthemestyledir.'debug';}
-	else {global $vthemetemplatedir; $vdebugdir = $vthemetemplatedir.'debug';}
-	$vdebugdir = apply_filters('skeleton_debug_dirpath',$vdebugdir);
-	$vdebugfile = $vdebugdir.DIRSEP.$vfilename;
+ 	global $vthemedebugdir;
+ 	if (!isset($vthemedebugdir)) {
+		if (is_child_theme()) {global $vthemestyledir; $vthemedebugdir = $vthemestyledir.'debug';}
+		else {global $vthemetemplatedir; $vthemedebugdir = $vthemetemplatedir.'debug';}
+		$vthemedebugdir = skeleton_apply_filters('skeleton_debug_dirpath',$vthemedebugdir);
+		if (!is_dir($vthemedebugdir)) {wp_mkdir_p($vthemedebugdir);}
+	}
+	$vdebugfile = $vthemedebugdir.DIRSEP.$vfilename;
 	skeleton_write_to_file($vdebugfile,$vdata);
+ }
+}
+
+// Apply Filters with Debugging
+// ----------------------------
+if (!function_exists('skeleton_apply_filters')) {
+ function skeleton_apply_filters($vfilter,$vvalue,$vcaller=false) {
+	$vnewvalue = apply_filters($vfilter,$vvalue);
+	$vvalues['in'] = $vvalue; $vvalues['out'] = $vnewvalue;
+	if (defined('THEMETRACE') && THEMETRACE) {skeleton_trace('V',$vfilter,$vcaller,$vvalues);}
+	return $vnewvalue;
  }
 }
 
 // Serialized Data Fixer
 // ---------------------
-function skeleton_fix_serialized($string) {
+if (!function_exists('skeleton_fix_serialized')) {
+ function skeleton_fix_serialized($string) {
     // securities
     if ( !preg_match('/^[aOs]:/', $string) ) return $string;
     if ( @unserialize($string) !== false ) return $string;
@@ -227,14 +241,17 @@ function skeleton_fix_serialized($string) {
         $new_data .= preg_replace_callback('%\bs:(\d+):"(.*)%', 'skeleton_fix_str_length', $line);
     }
     return $new_data;
+ }
 }
 
 // Fix Serialized String Callback
 // ------------------------------
-function skeleton_fix_str_length($matches) {
+if (!function_exists('skeleton_fix_str_length')) {
+ function skeleton_fix_str_length($matches) {
     $string = $matches[2];
     $right_length = strlen($string); // yes, strlen even for UTF-8 characters, PHP wants the mem size, not the char count
     return 's:' . $right_length . ':"' . $string . '";';
+ }
 }
 
 // Skeleton Get Option
@@ -242,6 +259,7 @@ function skeleton_fix_str_length($matches) {
 // 1.9.5: to get an option direct from database
 if (!function_exists('skeleton_get_option')) {
  function skeleton_get_option($voptionkey) {
+ 	if (defined('THEMETRACE') && THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
  	global $wpdb;
  	$vquery = "SELECT option_value FROM ".$wpdb->prefix."options WHERE option_name = '".$voptionkey."'";
  	$voptionvalue = $wpdb->get_var($vquery);
@@ -284,7 +302,7 @@ if (!function_exists('skeleton_get_theme_settings')) {
 				// if ($vfixedsettings) {return $vfixedsettings;}
 
 				// for now, add a filter so users can apply a custom manual fix
-				$vcustomsettings = apply_filters('skeleton_theme_settings_fallback',$vsettings);
+				$vcustomsettings = skeleton_apply_filters('skeleton_theme_settings_fallback',$vsettings);
 				if (is_serialized($vcustomsettings)) {
 					$vunserialized = unserialize($vcustomsettings);
 					if ($vunserialized) {
@@ -403,7 +421,7 @@ if (!function_exists('skeleton_get_theme_settings')) {
 if (!function_exists('skeleton_file_hierarchy')) {
  function skeleton_file_hierarchy($vtype,$vfilename,$vdirs = array(),$vsearchroots = array('stylesheet','template')) {
  	// 1.6.0: we need to check if THEMETRACE constant is defined here only
-	if (defined('THEMETRACE') && THEMETRACE) {skeleton_trace('F','skeleton_file_hierarchy',__FILE__,func_get_args());}
+	if (defined('THEMETRACE') && THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemestyledir, $vthemestyleurl, $vthemetemplatedir, $vthemetemplateurl;
 
@@ -541,7 +559,6 @@ $vtheme = wp_get_theme();
 // (as Theme Test Drive plugin functions not loaded yet)
 if (!function_exists('skeleton_themedrive_determine_theme')) {
  function skeleton_themedrive_determine_theme() {
-	if (defined('THEMETRACE') && THEMETRACE) {skeleton_trace('F','skeleton_themedrive_determine_theme',__FILE__);}
 
 	// get test drive value if any
 	if (!isset($_REQUEST['theme'])) {
@@ -624,11 +641,11 @@ if ($vfilters) {include_once($vfilters);} // initialize filters
 // Filter Resource Directories
 // ---------------------------
 // 1.8.5: run the directory search filters here (as could not earlier)
-$vthemedirs['core'] = apply_filters('skeleton_core_dirs',$vthemedirs['core']);
-$vthemedirs['admin'] = apply_filters('skeleton_admin_dirs',$vthemedirs['admin']);
-$vthemedirs['css'] = apply_filters('skeleton_css_dirs',$vthemedirs['css']);
-$vthemedirs['js'] = apply_filters('skeleton_js_dirs',$vthemedirs['js']);
-$vthemedirs['img'] = apply_filters('skeleton_img_dirs',$vthemedirs['img']);
+$vthemedirs['core'] = skeleton_apply_filters('skeleton_core_dirs',$vthemedirs['core']);
+$vthemedirs['admin'] = skeleton_apply_filters('skeleton_admin_dirs',$vthemedirs['admin']);
+$vthemedirs['css'] = skeleton_apply_filters('skeleton_css_dirs',$vthemedirs['css']);
+$vthemedirs['js'] = skeleton_apply_filters('skeleton_js_dirs',$vthemedirs['js']);
+$vthemedirs['img'] = skeleton_apply_filters('skeleton_img_dirs',$vthemedirs['img']);
 
 // set Global Theme Name and Parent/Child
 // --------------------------------------
@@ -669,34 +686,47 @@ if (!defined('THEMEDEBUG')) {
 		}
 	}
 	if ( ($vthemedebug == '') || ($vthemedebug == '0') ) {$vthemedebug = false;}
-	$vthemedebug = apply_filters('skeleton_theme_debug',$vthemedebug);
+	$vthemedebug = skeleton_apply_filters('skeleton_theme_debug',$vthemedebug);
 	// ...and finally...
 	define('THEMEDEBUG',$vthemedebug);
 }
 
 if (THEMEDEBUG) {global $pagenow; echo "<!-- Pagenow: ".$pagenow." -->";}
 
+// set Debug Directory
+// -------------------
+// 1.9.8: set debug directory global value
+if (is_child_theme()) {global $vthemestyledir; $vthemedebugdir = $vthemestyledir.'debug';}
+else {global $vthemetemplatedir; $vthemedebugdir = $vthemetemplatedir.'debug';}
+$vthemedebugdir = skeleton_apply_filters('skeleton_debug_dirpath',$vthemedebugdir);
+if (!is_dir($vthemedebugdir)) {wp_mkdir_p($vthemedebugdir);}
+
 // maybe Load Theme Function Tracer
 // --------------------------------
 // 1.8.0: moved here as was loaded too early to work, refined logic
 if (!defined('THEMETRACE')) {
 	// 1.8.5: added querystring option for high capability
+	$vthemetracer = false;
 	if (isset($_REQUEST['themetrace'])) {
 		$vthemetrace = $_REQUEST['themetrace'];
 		if (current_user_can('manage_options')) {
 			if ( ($vthemetrace == '1') || ($vthemetrace == 'yes') ) {$vthemetracer = true;}
 		}
 	}
-	$vthemetracer = apply_filters('skeleton_theme_tracer',false);
-	define('THEMETRACE',$vthemetracer);
+	// 1.9.8: fix to filtered value here, define constant moved to file
+	$vthemetracer = skeleton_apply_filters('skeleton_theme_tracer',$vthemetracer);
 }
 if (!function_exists('skeleton_trace')) { // still overrideable
-	if (THEMETRACE) {
+	if ($vthemetracer) {
 		// $vtracer = dirname(__FILE__).DIRSEP.'admin'.DIRSEP.'tracer.php';
-		$vtracer = skeleton_file_hierarchy('file','tracer.php',$vadmindirs);
+		// 1.9.8: fix to old directory variable
+		$vtracer = skeleton_file_hierarchy('file','tracer.php',$vthemedirs['admin']);
 		if ($vtracer) {include($vtracer);}
-		else {function skeleton_trace($varg1=null,$varg2=null,$varg3=null,$varg4=null) {return;} } // dummy
-	} else {function skeleton_trace($varg1=null,$varg2=null,$varg3=null,$varg4=null) {return;} } // dummy
+	}
+}
+if (!defined('THEMETRACE')) {define('THEMETRACE',false);}
+if ( (THEMETRACE) && (!function_exists('skeleton_trace')) ) {
+	function skeleton_trace($varg1=null,$varg2=null,$varg3=null,$varg4=null) {return;}
 }
 
 // Convert Posted Customizer Preview Options
@@ -704,13 +734,13 @@ if (!function_exists('skeleton_trace')) { // still overrideable
 // 1.8.5: moved here to be available for both options frameworks
 if (!function_exists('skeleton_customizer_convert_posted')) {
  function skeleton_customizer_convert_posted($vpostedvalues,$voptionvalues) {
-
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	global $vthemeoptions;
 
 	foreach ($vthemeoptions as $voptionkey => $voptionvalue) {
 		$vpreviewkey = str_replace('_options','_customize',THEMEKEY).'['.$voptionvalue['id'].']';
 		if (array_key_exists($vpreviewkey, $vpostedvalues)) {
-			$vpreviewvalue = apply_filters('customize_sanitize_{$vpreviewkey}', $vpostedvalues[$vpreviewkey], array());
+			$vpreviewvalue = skeleton_apply_filters('customize_sanitize_{$vpreviewkey}', $vpostedvalues[$vpreviewkey], array());
 			// note: the third argument above should actually be a Customizer setting object?
 
 			// !!! WARNING: ECHOING DEBUG OUTPUT IN CUSTOMIZER PREVENTS SAVING !!!
@@ -886,7 +916,7 @@ if ( (!THEMEOPT) && (THEMEDEBUG) ) {echo "<!-- Options Framework is OFF -->";}
 // 1.8.5: use optionsarray global and make function single argument only
 if (!function_exists('skeleton_titan_theme_options')) {
  function skeleton_titan_theme_options($voptionvalues) {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_titan_theme_options',__FILE__,func_get_args());}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemeoptions, $vthemename;
 
@@ -1045,7 +1075,7 @@ if ($vloadadmin) {$vadmin = skeleton_file_hierarchy('file','admin.php',$vthemedi
 // ---------------------------------
 $vhtmlcomments = false;
 if (isset($vthemesettings['htmlcomments'])) {if ($vthemesettings['htmlcomments'] == '1') {$vhtmlcomments = true;} }
-$vhtmlcomments = apply_filters('skeleton_html_comments',$vhtmlcomments);
+$vhtmlcomments = skeleton_apply_filters('skeleton_html_comments',$vhtmlcomments);
 if (!defined('THEMECOMMENTS')) {define('THEMECOMMENTS',$vhtmlcomments);}
 
 // set Theme Versions for Cache Busting
@@ -1080,7 +1110,7 @@ if ($vcachebust == 'filemtime') {clearstatcache();} // 1.9.5: clear stat cache h
 // WARNING: Do NOT create a woocommerce.php page template for your theme!
 // This is a 'beginner mistake' as it prevents you from over-riding default templates
 // such as single-product.php and archive-product.php (see class-wc-template-loader.php)
-$vwoosupport = apply_filters('skeleton_declare_woocommerce_support',false);
+$vwoosupport = skeleton_apply_filters('skeleton_declare_woocommerce_support',false);
 if ($vwoosupport) {add_theme_support('woocommerce');}
 else {
 	// 1.8.0: auto-remove 'this theme does not declare WooCommerce support' notice
@@ -1088,6 +1118,7 @@ else {
 		if (!function_exists('skeleton_remove_woocommerce_theme_notice')) {
 			add_action('admin_notices','skeleton_remove_woocommerce_theme_notice');
 			function skeleton_remove_woocommerce_theme_notice() {
+				if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 				$vnotices = array_diff(get_option('woocommerce_admin_notices', array()), array('theme_support'));
 				update_option('woocommerce_admin_notices', $vnotices);
 			}
@@ -1127,7 +1158,7 @@ if (THEMEDEBUG) {
 // [deprecated] transitional from SMPL Skeleton Theme, here for for option name references...
 if (!function_exists('skeleton_options')) {
  function skeleton_options($vname,$vdefault) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_options',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemesettings;
 
@@ -1149,7 +1180,7 @@ if (!function_exists('skeleton_options')) {
 
 	$vvalue = $vthemesettings[$vname];
 	if ($vvalue == '') {return $vdefault;}
-	return (apply_filters('skeleton_options_'.$vname,$vvalue));
+	return (skeleton_apply_filters('skeleton_options_'.$vname,$vvalue));
  }
 }
 
@@ -1174,7 +1205,7 @@ if (!function_exists('skeleton_options')) {
 add_action('customize_register', 'skeleton_options_customize_loader');
 if (!function_exists('skeleton_options_customize_loader')) {
  function skeleton_options_customize_loader($wp_customize) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_options_customize_loader',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	remove_action('customize_register','skeleton_options_customize_loader');
 	global $vthemedirs;
 	$vcustomizer = skeleton_file_hierarchy('file','customizer.php',$vthemedirs['admin']);
@@ -1195,6 +1226,7 @@ if (!function_exists('skeleton_options_customize_loader')) {
 add_action('customize_preview_init','skeleton_options_customize_preview_loader');
 if (!function_exists('skeleton_options_customize_preview_loader')) {
  function skeleton_options_customize_preview_loader() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	if (!function_exists('options_customize_preview')) {
 		global $vthemedirs;
 		$vcustomizer = skeleton_file_hierarchy('file','customizer.php',$vthemedirs['admin']);
@@ -1262,7 +1294,7 @@ if ( ($vhybridloadcore == '1') || ($vhybridloadcore == '3') ) {
 	// 1.8.5: change function from hybrid_core_setup to skeleton_hybrid_core_setup
 	if (!function_exists('skeleton_hybrid_core_setup')) {
 	 function skeleton_hybrid_core_setup() {
-	 	if (THEMETRACE) {skeleton_trace('F','skeleton_hybrid_core_setup',__FILE__);}
+	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		// Hybrid Core Setup
 		// -----------------
@@ -1365,7 +1397,7 @@ else {
 	// Conditional Hybrid Media Grabber Loader
 	if (!function_exists('skeleton_load_hybrid_media')) {
 		function skeleton_load_hybrid_media() {
-			if (THEMETRACE) {skeleton_trace('F','skeleton_load_hybrid_media',__FILE__);}
+			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 			require_once($vthemetemplatedir.'includes/hybrid3-media-grabber.php');
 		}
 	}
@@ -1373,18 +1405,24 @@ else {
 	// 1.8.5: moved here from header.php to prevent duplicate if using Hybrid
 	add_action('wp_head','skeleton_meta_charset',0);
 	if (!function_exists('skeleton_meta_charset')) {
-	 function skeleton_meta_charset() {echo '<meta charset="'.get_bloginfo('charset').'">';}
+	 function skeleton_meta_charset() {
+	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	 	echo '<meta charset="'.get_bloginfo('charset').'">';
+	 }
 	}
 	add_action('wp_head','skeleton_pingback_link',3);
-	function skeleton_pingback_link() {
+	if (!function_exists('skeleton_pingback_link')) {
+	 function skeleton_pingback_link() {
+	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		if (get_option('default_ping_status') == 'open') {
 			echo '<link rel="pingback" href="'.get_bloginfo('pingback_url').'">';
 		}
+	 }
 	}
 
 	// 1.8.0: fix to a missing function for HC3 (from functions-sidebar.php)
 	if (!function_exists('hybrid_get_sidebar_name')) {
-	 function hybrid_get_sidebar_name( $sidebar_id ) {
+	 function hybrid_get_sidebar_name($sidebar_id) {
 		global $wp_registered_sidebars;
 		return isset( $wp_registered_sidebars[ $sidebar_id ] ) ? $wp_registered_sidebars[ $sidebar_id ]['name'] : '';
 	 }
@@ -1455,7 +1493,7 @@ else {add_action('wp_enqueue_scripts','skin_enqueue_styles');}
 // --------------------
 if (!function_exists('skin_enqueue_styles')) {
  function skin_enqueue_styles() {
-	if (THEMETRACE) {skeleton_trace('F','skin_enqueue_styles',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemename, $vthemesettings, $vcsscachebust, $vthemedirs;
 
@@ -1529,7 +1567,7 @@ if (!function_exists('skin_enqueue_styles')) {
 		$vgridurl .= '&maxwidth='.$vthemelayout['maxwidth'];
 		// 1.9.5: pass filtered content columns and raw content padding
 		$vgridurl .= '&contentgridcolumns='.$vthemelayout['contentgridcolumns'];
-		$vcontentpadding = apply_filters('skeleton_raw_content_padding',$vthemesettings['contentpadding']);
+		$vcontentpadding = skeleton_apply_filters('skeleton_raw_content_padding',$vthemesettings['contentpadding']);
 		$vgridurl .= '&contentpadding='.urlencode($vcontentpadding);
 
 		// TODO: pass filtered options for grid spacing? (padding/margins)
@@ -1693,6 +1731,8 @@ if (!function_exists('skin_enqueue_styles')) {
 // -------------------------
 if (!function_exists('skin_enqueue_admin_styles')) {
  function skin_enqueue_admin_styles() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
  	// 1.9.8: fix add missing global vcsscachebust here
 	global $vthemesettings, $vthemedirs, $vcsscachebust;
 
@@ -1764,7 +1804,7 @@ if (!function_exists('skin_enqueue_admin_styles')) {
 if (!function_exists('skin_typography_loader')) {
  add_action('skin_typography','skin_typography_loader');
  function skin_typography_loader() {
-	if (THEMETRACE) {skeleton_trace('F','skin_typography_loader',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings;
 
@@ -1868,7 +1908,7 @@ add_action('wp_ajax_nopriv_skin_dynamic_css', 'skin_dynamic_css');
 
 if (!function_exists('skin_dynamic_css')) {
  function skin_dynamic_css() {
- 	if (THEMETRACE) {skeleton_trace('F','skin_dynamic_css',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	global $vthemedirs;
 	$vloadskin = skeleton_file_hierarchy('file','skin.php',$vthemedirs['core']);
 	if ($vloadskin) {require($vloadskin);}
@@ -1876,7 +1916,10 @@ if (!function_exists('skin_dynamic_css')) {
 }
 // 1.8.5: for printing inline header/footer styles
 if (!function_exists('skin_dynamic_css_inline')) {
- function skin_dynamic_css_inline() {echo "<style id='dynamic-styles'>"; skin_dynamic_css(true); echo "</style>";}
+ function skin_dynamic_css_inline() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+ 	echo "<style id='dynamic-styles'>"; skin_dynamic_css(true); echo "</style>";
+ }
 }
 
 // AJAX Grid CSS Loader
@@ -1888,7 +1931,7 @@ add_action('wp_ajax_nopriv_grid_dynamic_css', 'skeleton_grid_dynamic_css');
 // 1.8.5: added optional included argument
 if (!function_exists('skeleton_grid_dynamic_css')) {
  function skeleton_grid_dynamic_css($vincluded = false) {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_grid_dynamic_css',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $vthemedirs;
 	$vloadgrid = skeleton_file_hierarchy('file','grid.php',$vthemedirs['core']);
 	require($vloadgrid);
@@ -1896,7 +1939,10 @@ if (!function_exists('skeleton_grid_dynamic_css')) {
 }
 // 1.8.5: for printing inline header/footer styles
 if (!function_exists('skeleton_grid_dynamic_css_inline')) {
- function skeleton_grid_dynamic_css_inline() {echo "<style id='grid-styles'>"; skeleton_grid_dynamic_css(); echo "</style>";}
+ function skeleton_grid_dynamic_css_inline() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+ 	echo "<style id='grid-styles'>"; skeleton_grid_dynamic_css(); echo "</style>";
+ }
 }
 
 // AJAX Admin CSS Loader
@@ -1907,7 +1953,7 @@ add_action('wp_ajax_nopriv_skin_dynamic_admin_css', 'skin_dynamic_admin_css');
 // 1.8.5: added optional login style argument
 if (!function_exists('skin_dynamic_admin_css')) {
  function skin_dynamic_admin_css($vloginstyles = false) {
-	if (THEMETRACE) {skeleton_trace('F','skin_dynamic_admin_css',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $vthemedirs; $vadminstyles = true; // admin-only styles switch
 	$vloadskin = skeleton_file_hierarchy('file','skin.php',$vthemedirs['core']);
 	if ($vloadskin) {include($vloadskin);}
@@ -1915,11 +1961,17 @@ if (!function_exists('skin_dynamic_admin_css')) {
 }
 // 1.8.5: for printing inline header/footer styles
 if (!function_exists('skin_dynamic_admin_css_inline')) {
- function skin_dynamic_admin_css_inline() {echo "<style id='dynamic-admin-styles'>"; skin_dynamic_admin_css(); echo "</style>";}
+ function skin_dynamic_admin_css_inline() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+ 	echo "<style id='dynamic-admin-styles'>"; skin_dynamic_admin_css(); echo "</style>";
+ }
 }
 // 1.8.5: for printing inline login-only styles
 if (!function_exists('skin_dynamic_login_css_inline')) {
- function skin_dynamic_login_css_inline() {echo "<style id='dynamic-login-styles'>"; skin_dynamic_admin_css(true); echo "</style>";}
+ function skin_dynamic_login_css_inline() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+ 	echo "<style id='dynamic-login-styles'>"; skin_dynamic_admin_css(true); echo "</style>";
+ }
 }
 
 // ---------------
@@ -1933,7 +1985,7 @@ if (!function_exists('skin_dynamic_login_css_inline')) {
 add_action('init','skeleton_theme_update_checker');
 if (!function_exists('skeleton_theme_update_checker')) {
  function skeleton_theme_update_checker() {
-	if (THEMETRACE) {skeleton_trace('F','skeleton_theme_update_checker',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	if (is_admin()) {
 		// TODO: exclude (via svn:ignore?) this file from the WordPress.Org theme version on SVN repo
 		// 1.8.0: use file hierarchy for theme update checker
@@ -1962,6 +2014,7 @@ if (!function_exists('skeleton_theme_update_checker')) {
 			// add_filter('upgrader_package_options', 'skeleton_avoid_deletion', 999);
 			if (!function_exists('skeleton_avoid_deletion')) {
 			 function skeleton_avoid_deletion($voptions) {
+			 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 			 	$vhookextra = $voptions['hook_extra'];
 				if ( ($vhookextra['type'] == 'theme') && ($vhookextra['action'] == 'update') ) {
 					if ($vhookextra['theme'] == 'bioship') {

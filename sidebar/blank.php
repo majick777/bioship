@@ -2,6 +2,8 @@
 
 /* Blank Sidebar */
 
+if (THEMETRACE) {skeleton_trace('T','Blank Sidebar Template',__FILE__);}
+
 do_action('skeleton_before_sidebar'); ?>
 
 	<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-primary -->';} ?>
