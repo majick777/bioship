@@ -637,7 +637,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Styles', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Dynamic CSS
 	$options[] = array(
@@ -647,7 +648,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'skin',
 		// 'transport' => 'refresh', // TODO: Customizer test
-		'type' => 'textarea');
+		'type' => 'textarea',
+		'page' => 'basic');
 
 	// Replacement Values Reference
 	$rvdesc = __('Dynamic Stylesheet includes some replacement value support.','bioship').'<br>';
@@ -664,7 +666,8 @@ if (!function_exists('optionsframework_options')) {
 	 	'name' => __('Replacement Values', 'bioship'),
 		'desc' => $rvdesc,
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// CSS Mode
 	// 1.8.0: changed default to direct load from admin-ajax method
@@ -683,7 +686,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select', // was radio
 		'class' => 'skin',
 		'transport' => 'refresh',
-		'options' => $css_array);
+		'options' => $css_array,
+		'page' => 'advanced');
 
 	// CSS Normalize or Reset
 	$reset_array = array(
@@ -699,7 +703,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select', // was radio
 		'class' => 'skin',
 		'transport' => 'refresh',
-		'options' => $reset_array);
+		'options' => $reset_array,
+		'page' => 'basic');
 
 	// Formalize
 	$options[] = array(
@@ -709,7 +714,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'skin',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Combine Core Stylesheets
 	$options[] = array(
@@ -718,7 +724,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'combinecsscore',
 		'std' => '0',
 		'class' => 'skin',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Stylesheet Cache Busting
 	$options[] = array(
@@ -728,8 +735,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'yearmonthdate',
 		'class' => 'skin',
 		'type' => 'select', // was radio
-		'options' => $cachebusting_options
-		);
+		'options' => $cachebusting_options,
+		'page' => 'advanced');
 
 	// HTML Comments
 	// 1.8.0: added this option
@@ -739,7 +746,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'htmlcomments',
 		'class' => 'skin',
 		'std' => '0',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// ------------------
 	// === Background ===
@@ -748,7 +756,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Background', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	// Background Colour
 	$options[] = array(
@@ -760,7 +769,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => 'body {background-color: value;}',
 		'csselement' => 'body',
 		'cssproperty' => 'background-color',
-		'type' => 'color' );
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Background Image
 	$options[] = array( 'name' => __('Background Image','bioship'),
@@ -771,7 +781,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => 'body {background-image: value;}',
 		'csselement' => 'body',
 		'cssproperty' => 'background-image',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Background Position
 	$options[] = array(
@@ -783,7 +794,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => 'body {background-position: value;}',
 		'csselement' => 'body',
 		'cssproperty' => 'background-position',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Background Size
 	$options[] = array(
@@ -795,7 +807,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => 'body {background-size: value;}',
 		'csselement' => 'body',
 		'cssproperty' => 'background-size',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Background Repeat
 	// 1.8.5: use select dropdown options instead of text field
@@ -813,7 +826,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => 'body',
 		'cssproperty' => 'background-repeat',
 		'options' => $backgroundrepeat_options,
-		'type' => 'select');
+		'type' => 'select',
+		'page' => 'basic');
 
 	// Background Attachment
 	// 1.8.5: use select dropdown options instead of text field
@@ -829,15 +843,18 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => 'body',
 		'cssproperty' => 'background-attachment',
 		'options' => $backgroundattach_options,
-		'type' => 'select');
+		'type' => 'select',
+		'page' => 'basic');
 
 	// --------------
 	// === Header ===
 	// --------------
 
-	$options[] = array( 'name' => __('Header','bioship'),
+	$options[] = array(
+		'name' => __('Header','bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	// deprecated: old custom_header method
 	// $options[] = array( 'name' => __('Header Background','bioship'),
@@ -856,10 +873,12 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#header {background-color: value;}',
 		'csselement' => '#header',
 		'cssproperty' => 'background-color',
-		'type' => 'color' );
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Header Background Image
-	$options[] = array( 'name' => __('Header Background Image','bioship'),
+	$options[] = array(
+		'name' => __('Header Background Image','bioship'),
 		'desc' => __('Set the header image background image, you can upload or paste the URL here. <strong>Your background should be resized prior to uploading</strong>','bioship'),
 		'id' => 'header_background_image',
 		'std' => '',
@@ -868,7 +887,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#header',
 		'cssproperty' => 'background-image',
 		'transport' => 'refresh', // 1.8.5: for resize
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Header Background Position
 	$options[] = array(
@@ -880,7 +900,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#header {background-position: value;}',
 		'csselement' => '#header',
 		'cssproperty' => 'background-position',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Header Background Size
 	$options[] = array(
@@ -892,7 +913,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#header {background-size: value;}',
 		'csselement' => '#header',
 		'cssproperty' => 'background-size',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Header Background Repeat
 	// 1.8.5: use select dropdown options instead of text field
@@ -906,7 +928,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#header',
 		'cssproperty' => 'background-repeat',
 		'options' => $backgroundrepeat_options,
-		'type' => 'select');
+		'type' => 'select',
+		'page' => 'basic');
 
 	// Header Logo
 	$options[] = array( 'name' => __('Header Logo','bioship'),
@@ -917,7 +940,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#site-logo {background-image: value;}',
 		'csselement' => '#site-logo',
 		'cssproperty' => 'background-image',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	$options[] = array(
 		'name' => __('Auto Resize Logo', 'bioship'),
@@ -926,7 +950,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'skin',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Text Header Info
 	// $options[] = array( 'name' => __('Text Header Settings','bioship'),
@@ -947,7 +972,8 @@ if (!function_exists('optionsframework_options')) {
 		'transport' => 'postMessage',
 		'csselement' => '#header h1#site-title-text a,#site-description .site-desc',
 		'cssproperty' => 'display',
-		'options' => $textheader_options);
+		'options' => $textheader_options,
+		'page' => 'basic');
 
 	// Header Site Title Typography
 	$options[] = array( 'name' => __('Site Title Text Style','bioship'),
@@ -963,7 +989,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// Header Tagline Typography
 	$options[] = array( 'name' => __('Site Tagline Text Style','bioship'),
@@ -979,7 +1006,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// ------------
 	// === Menu ===
@@ -988,7 +1016,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Menu', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	// Auto Space Menu
 	// 1.8.5: added this option
@@ -999,7 +1028,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'skin',
 		'transport' => 'refresh', // TODO: postMessage?
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Menu Item Typography
 	$options[] = array( 'name' => __('Main Menu Item Typography','bioship'),
@@ -1014,7 +1044,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Submenu Item Typography
 	$options[] = array( 'name' => __('Main SubMenu Item Typography','bioship'),
@@ -1029,7 +1060,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Navigation Background Colour
 	// 1.8.5: added this style option
@@ -1041,7 +1073,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#navigation, #navigation #mainmenu, #navigation #mainmenu ul',
 		'cssproperty' => 'background-color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Default Menu Item Background Colour
 	// 1.8.5: added this style option
@@ -1053,7 +1086,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#navigation #mainmenu ul li',
 		'cssproperty' => 'background-color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Submenu Background Colour
 	// 1.8.5: added this style option
@@ -1065,7 +1099,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#navigation #mainmenu ul ul, #navigation #mainmenu ul ul li',
 		'cssproperty' => 'background-color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Active Menu Item Colour
 	// 1.8.5: added this style option
@@ -1077,7 +1112,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#navigation #mainmenu ul li.active',
 		'cssproperty' => 'color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Active Menu Item Background Colour
 	// 1.8.5: added this style option
@@ -1089,7 +1125,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#navigation #mainmenu ul li.active',
 		'cssproperty' => 'background-color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Hover Menu Item Colour
 	// 1.8.5: added this style option
@@ -1101,7 +1138,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#navigation #mainmenu ul li:hover',
 		'cssproperty' => 'color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Hover Menu Item Background Colour
 	// 1.8.5: added this style option
@@ -1113,7 +1151,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => '#navigation #mainmenu ul li:hover',
 		'cssproperty' => 'background-color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// ---------------
 	// === Colours ===
@@ -1124,7 +1163,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Colours', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	// 1.8.5: Inputs Text Colour
 	$options[] = array( 'name' => __('Input Text Color','bioship'),
@@ -1135,7 +1175,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => 'body input[type="text"], body input[type="checkbox"], body select, body textarea',
 		'cssproperty' => 'color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// 1.8.5: Inputs Background Colour
 	$options[] = array( 'name' => __('Input Background Color','bioship'),
@@ -1146,21 +1187,24 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => 'body input[type="text"], body input[type="checkbox"], body input[type="pasword"], body select, body textarea',
 		'cssproperty' => 'background-color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Colour Info
 	$options[] = array(
 		'name' => __('', 'bioship'),
 		'desc' => __('Here you can set some basic styles that will be loaded via the Dynamic CSS file.', 'bioship'),
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// Main Div Section
 	$options[] = array(
 		'name' => __('Main Div Area Colours', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// Colourpicker Info
 	$options[] = array(
@@ -1169,7 +1213,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => '',
 		'std' => '',
 		'class' => 'skin',
-		'type' => 'color' );
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Wrapper Background Colour
 	$options[] = array(
@@ -1182,7 +1227,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#wrap.container {background-color: value;}',
 		'csselement' => '#wrap.container',
 		'cssproperty' => 'background-color',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// moved to header section
 	// $options[] = array(
@@ -1206,7 +1252,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#content {background-color: value;}',
 		'csselement' => '#content',
 		'cssproperty' => 'background-color',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Sidebar Background Colour
 	$options[] = array(
@@ -1219,7 +1266,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#sidebar {background-color: value;}',
 		'csselement' => '#sidebar',
 		'cssproperty' => 'background-color',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// SubSidebar Background Colour
 	$options[] = array(
@@ -1232,7 +1280,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#subsidebar {background-color: value;}',
 		'csselement' => '#subsidebar',
 		'cssproperty' => 'background-color',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Footer Background Colour
 	$options[] = array(
@@ -1245,7 +1294,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => '#footer {background-color: value;}',
 		'csselement' => '#footer',
 		'cssproperty' => 'background-color',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// -------------
 	// === Fonts ===
@@ -1259,7 +1309,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Fonts', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	if (function_exists('admin_url')) {$fontstackexamplelink = admin_url('admin.php').'?show=bodyfontexamples=yes';}
 	else {$fontstackexamplelink = '/wp-admin/admin.php?show=bodyfontexamples';}
@@ -1279,7 +1330,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Extra Fonts
 	$options[] = array(
@@ -1288,7 +1340,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'extrafonts',
 		'std' => 'Open Sans',
 		'class' => 'skin',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// TODO: Local Open Sans font?
 	// $options[] = array(
@@ -1303,7 +1356,8 @@ if (!function_exists('optionsframework_options')) {
 		'name' => __('Section Typography', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// Header Typography
 	$options[] = array( 'name' => __('Header Typography','bioship'),
@@ -1322,7 +1376,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Sidebar Typography
 	$options[] = array( 'name' => __('Sidebar Typography','bioship'),
@@ -1341,7 +1396,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Subsidebar Typography
 	$options[] = array( 'name' => __('Subsidebar Typography','bioship'),
@@ -1360,7 +1416,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Content Typography
 	$options[] = array( 'name' => __('Content Area Typography','bioship'),
@@ -1379,7 +1436,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Footer Typography
 	$options[] = array( 'name' => __('Footer Typography','bioship'),
@@ -1398,7 +1456,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Headings Typography Info
 	if (function_exists('admin_url')) {$titlefontslink = admin_url('admin.php').'?show=titlefontexamples';}
@@ -1407,7 +1466,8 @@ if (!function_exists('optionsframework_options')) {
 		'name' => __('Headings Typography', 'bioship'),
 		'desc' => __('Selected Heading fonts are auto-loaded via Google Fonts.','bioship').' <a href="'.$titlefontslink.'" target=_blank>'.__('Example Title Font Page','bioship').'</a>. '.__('Customize available font selections via the options_title_fonts filter (see filters.php)', 'bioship'),
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// H1 Typography
 	$options[] = array( 'name' => __('&lt;H1&gt; Heading Typography','bioship'),
@@ -1423,7 +1483,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// H2 Typography
 	$options[] = array( 'name' => __('&lt;H2&gt; Heading Typography','bioship'),
@@ -1439,7 +1500,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// H3 Typography
 	$options[] = array( 'name' => __('&lt;H3&gt; Heading Typography','bioship'),
@@ -1455,7 +1517,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// H4 Typography
 	$options[] = array( 'name' => __('&lt;H4&gt; Heading Typography','bioship'),
@@ -1470,7 +1533,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// H5 Typography
 	$options[] = array( 'name' => __('&lt;H5&gt; Heading Typography','bioship'),
@@ -1486,7 +1550,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// H6 Typography
 	$options[] = array( 'name' => __('&lt;H6&gt; Heading Typography','bioship'),
@@ -1502,7 +1567,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $headertype_options);
+		'options' => $headertype_options,
+		'page' => 'basic');
 
 	// -----
 	// Links
@@ -1512,14 +1578,16 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Links', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	// Link Section
 	$options[] = array(
 		'name' => __('Link Styles', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// Standard Links Colour
 	$options[] = array( 'name' => __('Link Color','bioship'),
@@ -1530,7 +1598,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => 'body a',
 		'cssproperty' => 'color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Link Underlines
 	$options[] = array(
@@ -1543,7 +1612,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => 'body a {text-decoration: value;}',
 		'csselement' => 'body a',
 		'cssproperty' => 'text-decoration',
-		'options' => $link_array);
+		'options' => $link_array,
+		'page' => 'basic');
 
 	// Hover Links Colour
 	$options[] = array( 'name' => __('Hover Link Color','bioship'),
@@ -1554,7 +1624,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => 'body a:hover {color: value;}',
 		'csselement' => 'body a:hover',
 		'cssproperty' => 'color',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Hover Link Underlines
 	$options[] = array(
@@ -1567,7 +1638,8 @@ if (!function_exists('optionsframework_options')) {
 		// 'css' => 'body a {text-decoration: value;}',
 		'csselement' => 'body a:hover',
 		'cssproperty' => 'text-decoration',
-		'options' => $link_array);
+		'options' => $link_array,
+		'page' => 'basic');
 
 
 	// -------
@@ -1577,14 +1649,16 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Buttons', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	// Link Section
 	$options[] = array(
 		'name' => __('Button Styles', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// Button Typography
 	// 1.8.5: turned off some Titan options (for websafe fonts)
@@ -1605,7 +1679,8 @@ if (!function_exists('optionsframework_options')) {
 		'cssproperty' => 'typography',
 		'class' => 'skin',
 		'type' => 'typography',
-		'options' => $typography_options);
+		'options' => $typography_options,
+		'page' => 'basic');
 
 	// Button Font Hover Colour
 	$options[] = array( 'name' => __('Button Font Hover Colour','bioship'),
@@ -1616,7 +1691,8 @@ if (!function_exists('optionsframework_options')) {
 		'csselement' => 'body button:hover, body input[type="submit"]:hover, body input[type="reset"]:hover, body input[type="button"]:hover, body a.button:hover, body .button a:hover, body .button:hover',
 		'cssproperty' => 'color',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Button Gradient Colour Top
 	$options[] = array( 'name' => __('Button Gradient Top Colour','bioship'),
@@ -1626,7 +1702,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skin',
 		'csselement' => 'body button, body input[type="reset"], body input[type="submit"], body input[type="button"], body a.button, body button a, body .button',
 		'cssproperty' => 'backgroundtop', // pseudo
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Button Gradient Colour Bottom
 	$options[] = array( 'name' => __('Button Gradient Bottom Colour','bioship'),
@@ -1636,7 +1713,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skin',
 		'csselement' => 'body button, body input[type="reset"], body input[type="submit"], body input[type="button"], body a.button, body button a, body .button',
 		'cssproperty' => 'backgroundbottom', // pseudo
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Hover Button Gradient Colour Top
 	$options[] = array( 'name' => __('Hover Button Gradient Top Colour ','bioship'),
@@ -1647,7 +1725,8 @@ if (!function_exists('optionsframework_options')) {
 		'transport' => 'postMessage',
 		'csselement' => 'body button, body input[type="reset"], body input[type="submit"], body input[type="button"], body a.button, body button a, body .button',
 		'cssproperty' => 'backgroundtop:hover', // pseudo
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Hover Button Gradient Colour Bottom
 	$options[] = array( 'name' => __('Hover Button Gradient Bottom Colour','bioship'),
@@ -1658,7 +1737,8 @@ if (!function_exists('optionsframework_options')) {
 		'transport' => 'postMessage', // TODO: test
 		'csselement' => 'body button, body input[type="reset"], body input[type="submit"], body input[type="button"], body a.button, body button a, body .button',
 		'cssproperty' => 'backgroundbottom:hover', // pseudo
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Comment Buttons
 	// a.comment-edit-link, a.comment-reply-link
@@ -1669,7 +1749,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'skin',
 		'transport' => 'refresh', // TODO: postMessage?
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// WooCommerce Button Selectors
 	$options[] = array(
@@ -1679,7 +1760,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'skin',
 		'transport' => 'refresh', // TODO: postMessage?
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// TODO: BuddyPress Button Selectors?
 
@@ -1691,11 +1773,12 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'skin',
 		'transport' => 'refresh', // TODO: postMessage?
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// TODO: Browser Specific Style Options tab?
 	// TODO: Mobile Specific Style Options tab?
-	// using PHP Browser Detection plugin
+	// (using PHP Browser Detection plugin)
 
 	// -------------
 	// === Login ===
@@ -1704,7 +1787,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Login', 'bioship'),
 		'id' => 'skin',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Replace Login Logo
 	// TODO: use header background image option?
@@ -1719,9 +1803,10 @@ if (!function_exists('optionsframework_options')) {
 		'desc' => __('Replaces the Logo on your wp-login.php Page.', 'bioship'),
 		'id' => 'loginlogo',
 		'std' => 'default',
-		'type' => 'select', // was radio
+		'type' => 'select',
 		'class' => 'skin',
-		'options' => $loginlogo_array);
+		'options' => $loginlogo_array,
+		'page' => 'basic');
 
 	// Login Logo URL
 	$options[] = array(
@@ -1730,7 +1815,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'loginlogourl',
 		'std' => '',
 		'class' => 'skin',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Login Form Wrap Background
 	// 1.8.5: added this style option
@@ -1739,7 +1825,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'loginwrapbgcolor',
 		'std' => '#F0F0F0',
 		'class' => 'skin',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Login Background URL
 	$options[] = array(
@@ -1748,7 +1835,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'loginbackgroundurl',
 		'std' => '',
 		'class' => 'skin',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Theme My Login
 	// --------------
@@ -1758,7 +1846,8 @@ if (!function_exists('optionsframework_options')) {
 		'name' => __('Theme My Login', 'bioship'),
 		'desc' => __('Integrated TML Templates into Theme (if TML plugin is installed.)', 'bioship'),
 		'class' => 'skin',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'advanced');
 
 	// TML Templates
 	$options[] = array(
@@ -1767,7 +1856,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'tmltemplates',
 		'std' => '0',
 		'class' => 'skin',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Login Button URL
 	$options[] = array(
@@ -1776,7 +1866,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'loginbuttonurl',
 		'std' => '',
 		'class' => 'skin',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'advanced');
 
 	// Register Button URL
 	$options[] = array(
@@ -1785,7 +1876,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'registerbuttonurl',
 		'std' => '',
 		'class' => 'skin',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'advanced');
 
 	// Update Button URL
 	$options[] = array(
@@ -1794,7 +1886,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'profilebuttonurl',
 		'std' => '',
 		'class' => 'skin',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'advanced');
 
 	// Logo on Register
 	$options[] = array(
@@ -1803,7 +1896,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'registerformimage',
 		'std' => '0',
 		'class' => 'skin',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Logo on Login
 	$options[] = array(
@@ -1812,7 +1906,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'loginformimage',
 		'std' => '0',
 		'class' => 'skin',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 
 	// ==============
@@ -1827,7 +1922,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Scripts', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'advanced');
 
 	// 1.5.0: Deprecated (page cache fail) - Add Browser Classes
 	// $options[] = array(
@@ -1846,8 +1942,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'themeversion',
 		'class' => 'muscle',
 		'type' => 'select', // was radio
-		'options' => $cachebusting_options
-		);
+		'options' => $cachebusting_options,
+		'page' => 'advanced');
 
 	// Load jQuery from Google CDN
 	$options[] = array(
@@ -1857,7 +1953,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Load PrefixFree
 	$options[] = array(
@@ -1867,7 +1964,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Internet Explorer Supports
 	// 1.8.5: added IE8 DOM Fix
@@ -1889,7 +1987,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'muscle',
 		'type' => 'multicheck',
 		'transport' => 'refresh',
-	    'options' => $iesupports_array);
+	    'options' => $iesupports_array,
+	    'page' => 'advanced');
 
 	// Media Queries Support
 	$mediaqueries_options = array(
@@ -1903,9 +2002,10 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'mediaqueries',
 		'std' => 'respond',
 		'class' => 'muscle',
-		'type' => 'select', // was radio
+		'type' => 'select',
 		'transport' => 'refresh',
-		'options' => $mediaqueries_options);
+		'options' => $mediaqueries_options,
+		'page' => 'advanced');
 
 	// Fastclick Javascript
 	$options[] = array(
@@ -1915,7 +2015,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Mousewheel Javascript
 	$options[] = array(
@@ -1925,7 +2026,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Load NWWatcher
 	$options[] = array(
@@ -1935,7 +2037,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Load NWEvents
 	$options[] = array(
@@ -1945,7 +2048,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Load Modernizr
 	$modernizr_options = array('off'=>'Do Not Load','production'=>'Load Production version','development'=>'Load Development version');
@@ -1957,7 +2061,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'muscle',
 		'type' => 'select',
 		'transport' => 'refresh',
-		'options' => $modernizr_options);
+		'options' => $modernizr_options,
+		'page' => 'advanced');
 
 	// CSS Supports
 	$options[] = array(
@@ -1967,7 +2072,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// MatchMedia
 	$options[] = array(
@@ -1977,7 +2083,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 
 	// Extras
@@ -1986,7 +2093,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Extras', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'advanced');
 
 	// Discreet Text Widget
 	// 1.8.5: removed option, always on by default
@@ -2008,7 +2116,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Smooth Scrolling
 	$options[] = array(
@@ -2018,7 +2127,19 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
+
+	// jQuery Match Height
+	$options[] = array(
+		'name' => __('Load jQuery Match Height', 'bioship'),
+		'desc' => __('Loads jQuery MatchHeight to apply matching heights to any page element with .matchheight class.', 'bioship'),
+		'id' => 'loadmatchheight',
+		'std' => '0',
+		'class' => 'muscle',
+		'transport' => 'refresh',
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// jQuery Sticky Kit
 	$options[] = array(
@@ -2028,7 +2149,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Sticky Kit Elements
 	$options[] = array(
@@ -2038,7 +2160,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '#sidebar,#subsidebar',
 		'class' => 'mini muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'advanced');
 
 	// Load Fitvids
 	$options[] = array(
@@ -2048,7 +2171,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Fitvids Elements
 	$options[] = array(
@@ -2058,7 +2182,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '#content,.videowrapper',
 		'class' => 'mini muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'advanced');
 
 	// jQuery Scroll To Fixed
 	$options[] = array(
@@ -2068,7 +2193,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 
 	// ---------------
@@ -2078,7 +2204,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Reading', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'basic');
 
 	// Site Credits
 	$options[] = array(
@@ -2088,7 +2215,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'muscle',
 		'transport' => 'postMessage',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Home Category Mode
 	$homeblog_array = array(
@@ -2104,7 +2232,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'all',
 		'type' => 'select', // was radio
 		'class' => 'muscle',
-		'options' => $homeblog_array);
+		'options' => $homeblog_array,
+		'page' => 'basic');
 
 	// Select Categories (old method)
 	// if ($options_categories) {
@@ -2130,7 +2259,8 @@ if (!function_exists('optionsframework_options')) {
 			'type' => 'multicheck',
 			'class' => 'muscle',
 			'transport' => 'refresh',
-			'options' => $options_categories);
+			'options' => $options_categories,
+			'page' => 'basic');
 	}
 
 	// Select Exclude Categories
@@ -2144,7 +2274,8 @@ if (!function_exists('optionsframework_options')) {
 			'type' => 'multicheck',
 			'class' => 'muscle',
 			'transport' => 'refresh',
-			'options' => $options_categories);
+			'options' => $options_categories,
+			'page' => 'basic');
 	}
 
 	// Include CPTs on Home Page? Off. Leave to devs.
@@ -2159,7 +2290,7 @@ if (!function_exists('optionsframework_options')) {
 	//		'options' => $cpt_options);
 
 	// Number of Search Results
-	// 1.8.5: number sanitization
+	// 1.8.5: add number sanitization
 	$options[] = array(
 		'name' => __('Search Results per Page', 'bioship'),
 		'desc' => __('Number of search results to show for keyword search.', 'bioship'),
@@ -2167,7 +2298,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '30',
 		'class' => 'mini muscle',
 		'type' => 'text',
-		'sanitize_callback' => 'fallback_sanitize_number');
+		'sanitize_callback' => 'fallback_sanitize_number',
+		'page' => 'basic');
 
 	// Make CPTs Searchable
 	$cpt_defaults = array('post'=>'1','page'=>'1');
@@ -2178,7 +2310,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => $cpt_defaults,
 		'type' => 'multicheck',
 		'class' => 'muscle',
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'basic');
 
 	// Jetpack Infinite Scroll Support
 	$scroll_options = array(
@@ -2191,10 +2324,11 @@ if (!function_exists('optionsframework_options')) {
 		'desc' => __('Adds theme support for Jetpack Infinite Scroll... or you could use the <a href="https://wordpress.org/plugins/ajax-load-more/" target=_blank>AJAX Load More</a> plugin (loop template available in /templates/ajax-load-more/)', 'bioship'),
 		'id' => 'infinitescroll',
 		'std' => 'disable',
-		'type' => 'select', // was radio
+		'type' => 'select',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'options' => $scroll_options);
+		'options' => $scroll_options,
+		'page' => 'basic');
 
 	// -----------------
 	// Excerpt/Read More
@@ -2203,7 +2337,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Excerpts', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Page Excerpts
 	// 1.8.0: page excerpt support option
@@ -2213,7 +2348,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'pageexcerpts',
 		'std' => '0',
 		'class' => 'muscle',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Excerpt Shortcodes
 	$options[] = array(
@@ -2223,7 +2359,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Excerpt Length
 	// 1.8.5: number sanitization
@@ -2235,8 +2372,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'mini muscle',
 		'transport' => 'refresh',
 		'type' => 'text',
-		'sanitize_callback' => 'fallback_sanitize_number'
-		);
+		'sanitize_callback' => 'fallback_sanitize_number',
+		'page' => 'basic');
 
 	// Read More Anchor
 	$options[] = array(
@@ -2246,7 +2383,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'Continue reading <span class="meta-nav">&rarr;</span>',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// Read More Link
 	$options[] = array(
@@ -2256,7 +2394,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '&hellip;',
 		'class' => 'mini muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 
 	// ------------
@@ -2268,7 +2407,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Meta', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'advanced');
 
 	// Post Meta Formatting Reference
 	$rvdesc = __('Replacement Values:','bioship').'<br>';
@@ -2293,7 +2433,8 @@ if (!function_exists('optionsframework_options')) {
 		'name' => __('Post Meta Formatting', 'bioship'),
 		'desc' => $rvdesc,
 		'class' => 'muscle',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'advanced');
 
 	// Post Meta Top
 	$options[] = array(
@@ -2303,7 +2444,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'Posted on #DATELINK# by #AUTHOR#. #COMMENTSPOPUP# #EDITLINK#',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'advanced');
 
 	// Post Meta Bottom
 	$options[] = array(
@@ -2313,7 +2455,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '#CATSLIST#<br>#TAGSLIST#',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'advanced');
 
 	// Page Meta Top
 	$options[] = array(
@@ -2323,7 +2466,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'advanced');
 
 	// Post Meta Bottom
 	$options[] = array(
@@ -2333,13 +2477,15 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '#EDITLINK#',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'advanced');
 
 	$options[] = array(
 		'name' => __('Custom Post Type Metas', 'bioship'),
 		'desc' => __('Meta Top and Bottom for Custom Post Types can be set via filters.php in your Child Theme.', 'bioship'),
 		'class' => 'muscle',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'advanced');
 
 	// Entry Meta Top in Post Lists
 	$options[] = array(
@@ -2349,7 +2495,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Entry Meta Bottom in Post Lists
 	$options[] = array(
@@ -2359,14 +2506,16 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Author Bio
 	$options[] = array(
 		'name' => __('Author Bio', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'muscle',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'advanced');
 
 	// TODO: author bio box position for author archive pages?
 
@@ -2380,7 +2529,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'multicheck',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'advanced');
 
 	// Bio Box Position
 	$biopos_array = array(
@@ -2398,7 +2548,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'muscle',
 		'transport' => 'refresh',
 		// 'active_callback' => 'is_singular', // maybe
-		'options' => $biopos_array);
+		'options' => $biopos_array,
+		'page' => 'advanced');
 
 	// Author Avatar Size
 	// 1.8.5: number sanitization
@@ -2410,7 +2561,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'mini muscle',
 		'transport' => 'refresh',
 		'type' => 'text',
-		'sanitize_callback' => 'fallback_sanitize_number');
+		'sanitize_callback' => 'fallback_sanitize_number',
+		'page' => 'advanced');
 
 
 	// ---------------
@@ -2420,7 +2572,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Writing', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'advanced');
 
 	// 1.9.5: Dynamic Editor Styles
 	$options[] = array(
@@ -2430,7 +2583,7 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'type' => 'checkbox',
-	);
+		'page' => 'advanced');
 
 	// QuickSave/AutoSave Net
 	// 1.8.0: deprecated, plugin to be installed/activated via TGMPA
@@ -2459,7 +2612,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'postformatsupport',
 		'std' => '0',
 		'class' => 'muscle',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Active Post Formats
 	$post_formats = array(
@@ -2481,7 +2635,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => $multicheck_defaults,
 		'type' => 'multicheck',
 		'class' => 'muscle',
-		'options' => $post_formats);
+		'options' => $post_formats,
+		'page' => 'advanced');
 
 	// WP Subtitle Support
 	$subtitle_defaults = array('post'=>'1','page'=>'1');
@@ -2493,7 +2648,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'muscle',
 		'type' => 'multicheck',
 		'transport' => 'refresh',
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'advanced');
 
 	// -----------
 	// === RSS ===
@@ -2502,7 +2658,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('RSS', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'advanced');
 
 	// Automatic Feed Links
 	$options[] = array(
@@ -2512,7 +2669,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// RSS Excerpt Length
 	// 1.8.5: sanitize number callback
@@ -2523,7 +2681,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'mini muscle',
 		'type' => 'text',
-		'sanitize_callback' => 'fallback_sanitize_number');
+		'sanitize_callback' => 'fallback_sanitize_number',
+		'page' => 'advanced');
 
 	// RSS Publish Delay
 	// 1.8.5: sanitize number callback
@@ -2534,7 +2693,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '10',
 		'class' => 'mini muscle',
 		'type' => 'text',
-		'sanitize_callback' => 'fallback_sanitize_number');
+		'sanitize_callback' => 'fallback_sanitize_number',
+		'page' => 'advanced');
 
 	// Post Types in Feed
 	$cpt_defaults = array();
@@ -2545,7 +2705,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'type' => 'multicheck',
 		'class' => 'muscle',
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'advanced');
 
 	// Full Content Page Feeds
 	// 1.8.5: added this option
@@ -2555,7 +2716,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'pagecontentfeeds',
 		'std' => '0',
 		'class' => 'muscle',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 
 	// -------------
@@ -2565,7 +2727,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Admin', 'bioship'),
 		'id' => 'muscle',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'advanced');
 
 	// 1.5.0: Theme Update Admin Notification
 	// TODO: maybe resurrect this at some stage
@@ -2584,7 +2747,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'disableselfpings',
 		'std' => '1',
 		'class' => 'muscle',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// All Options Page
 	// TODO: may need to remove this?
@@ -2594,7 +2758,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'alloptionspage',
 		'std' => '1',
 		'class' => 'muscle',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Admin Only Update Notice
 	$options[] = array(
@@ -2603,7 +2768,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'removeupdatenotice',
 		'std' => '1',
 		'class' => 'muscle',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Disable New User Notifications
 	$options[] = array(
@@ -2612,7 +2778,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'disablenotifications',
 		'std' => '1',
 		'class' => 'muscle',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Cleaner Adminbar
 	$options[] = array(
@@ -2622,7 +2789,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'muscle',
 		// 'transport' => 'refresh', // no admin bar on customizer pages
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Admin Bar Link
 	// 1.8.5: change from option to filter
@@ -2651,7 +2819,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'cptsrightnow',
 		'class' => 'muscle',
 		'std' => '1',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Theme Tracer
 	// 1.8.0: this is now an (advanced) filter option
@@ -2678,7 +2847,7 @@ if (!function_exists('optionsframework_options')) {
 		'std' => $admincss_default,
 		'class' => 'muscle',
 		'type' => 'textarea',
-	);
+		'page' => 'advanced');
 
 
 	// ================
@@ -2694,7 +2863,8 @@ if (!function_exists('optionsframework_options')) {
 
 	$options[] = array( 'name' => __('Layout','bioship'),
 		'id' => 'skeleton',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Maximum Layout Width
 	// 1.8.5: sanitize number callback
@@ -2705,9 +2875,9 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'text',
 		'class' => 'mini skeleton',
 		'transport' => 'refresh', // not postMessage
-		'sanitize_callback' => 'fallback_sanitize_number'
+		'sanitize_callback' => 'fallback_sanitize_number',
 		// 'options' => array('960' => '960px', '1140' => '1140px', '1200' => '1200px')
-	);
+		'page' => 'basic');
 
 	// Grid Columns
 	$gridcols_array = array(
@@ -2723,17 +2893,19 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // not postMessage
-		'options' => $gridcols_array);
+		'options' => $gridcols_array,
+		'page' => 'basic');
 
-	// Breakpoints
+	// Responsive Grid Breakpoints
 	$options[] = array(
-		'name' => __('Grid Breakpoints','bioship'),
+		'name' => __('Responsive Grid Breakpoints','bioship'),
 		'desc' => __('Dynamic Layout Grid Breakpoints. Media queries are built from these which auto-size the container width based on window width. Default: 320,480,640,768,960,1140,1200','bioship'),
 		'id' => 'breakpoints',
 		'std' => '320,480,640,768,960,1140,1200',
 		'type' => 'text',
 		'transport' => 'postMessage', // TODO: no live preview here yet, but no point refreshing (grid.php)
-		'class' => 'skeleton');
+		'class' => 'skeleton',
+		'page' => 'advanced');
 
 	// Content Grid Columns
 	$options[] = array( 'name' => __('Content Grid Columns','bioship'),
@@ -2743,7 +2915,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // not postMessage
-		'options' => $gridcols_array);
+		'options' => $gridcols_array,
+		'page' => 'advanced');
 
 	// Backwards Compatibility Grid Styles
 	$compat_options = array(
@@ -2762,7 +2935,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'multicheck',
 		'class' => 'skeleton',
 		'transport' => 'postMessage', // TODO: no live preview here yet, but no point refreshing (grid.php)
-		'options' => $compat_options);
+		'options' => $compat_options,
+		'page' => 'advanced');
 
 	// Content Columns
 	$contentcols_array = array(
@@ -2786,7 +2960,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // not postMessage
-		'options' => $contentcols_array);
+		'options' => $contentcols_array,
+		'page' => 'basic');
 
 	// Content Padding
 	$options[] = array(
@@ -2798,7 +2973,8 @@ if (!function_exists('optionsframework_options')) {
 		'transport' => 'postMessage', // TODO: not full live preview here yet (grid.php)
 		'csselement' => '#content #contentpadding',
 		'cssproperty' => 'padding',
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'basic');
 
 	// ----------------
 	// === Sidebars ===
@@ -2807,16 +2983,19 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Sidebars', 'bioship'),
 		'id' => 'skeleton',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Sidebar Warning
-	// 1.8.5: removed old warning (no longer applies)
+	// 1.8.5: removed old warning (no longer needed, sidebars are now registered anyway)
 	// [Old] Warning: By changing sidebar modes or disabling sidebars their associated widgets will be found in an "Inactive Sidebar" on the Widgets page. Best to take note of your existing widgets before changing these!
+	// (Sidebars are registered so you can add widgets to them and display them in other ways.)
 	$options[] = array(
 		'name' => __('', 'bioship'),
 		'desc' => __('All sidebars are registered regardless of their active state so the you can add widgets while inactive. Note: You can save/restore different widget layouts with the ','bioship').'<a href="https://wordpress.org/plugins/widget-saver/" target=_blank>'.__('Widget Saver','bioship').'</a>'.__(' plugin, or import/export using the ','bioship').'<a href="https://wordpress.org/plugins/widget-settings-importexport/" target=_blank>'.__('Widget Import/Export','bioship').'</a>'.__(' plugin.)', 'bioship'),
 		'class' => 'skeleton',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'advanced');
 
 	// Sidebar Mode
 	// 1.5.0: added posts only and page only option like subsidebar
@@ -2836,14 +3015,14 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'options' => $sidebar_array);
+		'options' => $sidebar_array,
+		'page' => 'basic');
 
 	// Sidebar Position
 	if (is_rtl()) {$sidebar_default = 'right';} else {$sidebar_default = 'left';}
 	$sidebar_options = array(
 		'left' => __('Left Sidebar','bioship'),
 		'right' => __('Right Sidebar','bioship'),
-		// 'off' => __('No Sidebar','bioship')
 	);
 	$options[] = array( 'name' => __('Sidebar Position','bioship'),
 		'desc' => __('Select a sidebar layout position (left or right). You can also select a wide page layout on a per-page basis via edit screen metabox.','bioship'),
@@ -2852,8 +3031,9 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'mini skeleton',
 		'transport' => 'refresh',
-		'options' => $sidebar_options);
-	// 'options' => array('left' => $imagepath . '2cl.png', 'right' => $imagepath . '2cr.png')
+		'options' => $sidebar_options,
+		'page' => 'basic');
+		// 'options' => array('left' => $imagepath . '2cl.png', 'right' => $imagepath . '2cr.png')
 
 	// Sidebar Columns
 	$sidebarcols_array = array(
@@ -2871,7 +3051,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'mini skeleton',
 		'transport' => 'refresh',
-		'options' => $sidebarcols_array);
+		'options' => $sidebarcols_array,
+		'page' => 'basic');
 
 	// Subsidiary Sidebar
 	$suboptions_array = array(
@@ -2889,7 +3070,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'options' => $suboptions_array);
+		'options' => $suboptions_array,
+		'page' => 'basic');
 
 	// Subsidiary Sidebar Position
 	$subposition_array = array(
@@ -2905,7 +3087,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'options' => $subposition_array);
+		'options' => $subposition_array,
+		'page' => 'basic');
 
 	// Subsidiary Sidebar Columns
 	$subcolumns_array = array(
@@ -2922,7 +3105,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'mini skeleton',
 		'transport' => 'refresh',
-		'options' => $subcolumns_array);
+		'options' => $subcolumns_array,
+		'page' => 'basic');
 
 	// Header Widget Area
 	$options[] = array(
@@ -2932,7 +3116,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Footer Widget Areas
 	$footers_array = array(
@@ -2950,10 +3135,9 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'mini skeleton',
 		'transport' => 'refresh',
-		'options' => $footers_array);
+		'options' => $footers_array,
+		'page' => 'basic');
 
-
-	// (Sidebars are registered so you can add widgets to them and display filter.)
 
 	// Context Sidebars
 	// ----------------
@@ -2979,7 +3163,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skeleton',
 		'type' => 'multicheck',
 		'transport' => 'refresh',
-		'options' => $sidebar_options);
+		'options' => $sidebar_options,
+		'page' => 'advanced');
 
 	// Context Subsidebars
 	// -------------------
@@ -3005,7 +3190,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skeleton',
 		'type' => 'multicheck',
 		'transport' => 'refresh',
-		'options' => $subsidebar_options);
+		'options' => $subsidebar_options,
+		'page' => 'advanced');
 
 
 
@@ -3017,7 +3203,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Navigation', 'bioship'),
 		'id' => 'skeleton',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Primary Menu
 	$options[] = array(
@@ -3027,7 +3214,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Secondary Menu
 	$options[] = array(
@@ -3037,7 +3225,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Header Menu
 	$options[] = array(
@@ -3047,7 +3236,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Footer Menu
 	$options[] = array(
@@ -3057,7 +3247,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '1',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Page Navi
 	// 1.8.5: moved here from meta tab
@@ -3070,7 +3261,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skeleton',
 		'type' => 'multicheck',
 		'transport' => 'refresh',
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'advanced');
 
 	// Archive Page Navi
 	// 1.8.5: moved here from meta tab
@@ -3084,7 +3276,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'multicheck',
 		'transport' => 'refresh',
 		// 'active_callback' => 'is_archive', // possibly?
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'advanced');
 
 	// Breadcrumbs Post Types
 	// 1.8.5: added this option
@@ -3097,7 +3290,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skeleton',
 		'type' => 'multicheck',
 		'transport' => 'refresh',
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'advanced');
 
 	// Breadcrumb Archive Types
 	// 1.8.5: added this option
@@ -3109,7 +3303,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skeleton',
 		'type' => 'multicheck',
 		'transport' => 'refresh',
-		'options' => $cpt_options);
+		'options' => $cpt_options,
+		'page' => 'advanced');
 
 
 	// ----------
@@ -3119,14 +3314,16 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Thumbnails', 'bioship'),
 		'id' => 'skeleton',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Thumbsize Change Note
 	$options[] = array(
-		'name' => __('Thumbnail Size Changes Note', 'bioship'),
-		'desc' => __('If this is a new theme install, or you have changed the explicit thumbnail sizes via filters.php, you can use the <a href="http://wordpress.org/plugins/regenerate-thumbnails/" target=_blank>Regenerate Thumbnails</a> plugin to re-process your existing thumbnails (Note: Best not do this until theme is active just in case.)', 'bioship'),
+		'name' => __('Thumbnail Size Changes Reminder', 'bioship'),
+		'desc' => __('If this is a new theme install, or you have changed the explicit thumbnail sizes via filters, you can use the <a href="http://wordpress.org/plugins/regenerate-thumbnails/" target=_blank>Regenerate Thumbnails</a> plugin to re-process your existing thumbnails (Note: Best not do this until theme is active just in case.)', 'bioship'),
 		'class' => 'skeleton',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'basic');
 
 	// Cropping Options
 	$cropoptions_array = array(
@@ -3148,7 +3345,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'auto',
 		'type' => 'select',
 		'class' => 'skeleton',
-		'options' => $cropoptions_array);
+		'options' => $cropoptions_array,
+		'page' => 'advanced');
 
 	// Thumbnail Display Sizes
 	$thumb_array = array(
@@ -3168,7 +3366,7 @@ if (!function_exists('optionsframework_options')) {
 					$thumb_array[$size_name] = $size_name.' ('.$_wp_additional_image_sizes[$size_name]['width'].' x '.$_wp_additional_image_sizes[$size_name]['height'].')';
 				} else {
 					// CHECKME: why this warning was really even happening here?
-					// print_r($_wp_additional_image_sizes[$size_name]);
+					// echo "<!--"; print_r($_wp_additional_image_sizes[$size_name]); echo " -->";
 				}
 			}
 		}
@@ -3183,7 +3381,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // use active_callback for lists only?
-		'options' => $thumb_array);
+		'options' => $thumb_array,
+		'page' => 'basic');
 
 	// 1.5.0: Post List Thumbnail Alignment Class
 	$thumbalign_array = array(
@@ -3201,7 +3400,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // use active_callback for lists only?
-		'options' => $thumbalign_array);
+		'options' => $thumbalign_array,
+		'page' => 'advanced');
 
 	// Post Thumbnail Display Size
 	$options[] = array( 'name' => __('Single Post Thumbnail Image Display Size','bioship'),
@@ -3211,7 +3411,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // use active_callback for pages only?
-		'options' => $thumb_array);
+		'options' => $thumb_array,
+		'page' => 'basic');
 
 	// 1.5.0: Post Thumbnail Alignment Class
 	$thumbalign_array = array(
@@ -3227,7 +3428,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // use active_callback for posts only?
-		'options' => $thumbalign_array);
+		'options' => $thumbalign_array,
+		'page' => 'advanced');
 
 	// 1.5.0: Page Featured Image Display Size
 	$options[] = array( 'name' => __('Single Page Featured Image Display Size','bioship'),
@@ -3237,7 +3439,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // use active_callback for pages only?
-		'options' => $thumb_array);
+		'options' => $thumb_array,
+		'page' => 'basic');
 
 	// 1.5.0: Feature Image Alignment Class
 	$options[] = array( 'name' => __('Single Page Featured Image Alignment','bioship'),
@@ -3247,7 +3450,8 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // use active_callback for pages only?
-		'options' => $thumbalign_array);
+		'options' => $thumbalign_array,
+		'page' => 'advanced');
 
 	// 1.5.0: Thumbnail CPTs Support
 	$thumbcpt_defaults = array('page'=>'1');
@@ -3258,7 +3462,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => $thumbcpt_defaults,
 		'type' => 'multicheck',
 		'class' => 'skeleton',
-		'options' => $thumbcpt_options);
+		'options' => $thumbcpt_options,
+		'page' => 'advanced');
 
 	// -----
 	// Icons
@@ -3268,7 +3473,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Icons', 'bioship'),
 		'id' => 'skeleton',
-		'type' => 'heading');
+		'type' => 'heading',
+		'page' => 'both');
 
 	// Default Gravatar
 	$options[] = array(
@@ -3277,7 +3483,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'gravatarurl',
 		'std' => '',
 		'class' => 'skeleton',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Favicon.ico
 	// 1.8.5: set default to empty, fallback to root handled in function
@@ -3287,7 +3494,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'faviconico',
 		'std' => '',
 		'class' => 'skeleton',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Favicon.png
 	$options[] = array(
@@ -3296,7 +3504,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'faviconpng',
 		'std' => '',
 		'class' => 'skeleton',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Apple Touch Default
 	$options[] = array(
@@ -3305,7 +3514,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'appletouchicon',
 		'std' => '',
 		'class' => 'skeleton',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Win8 Tile/Apple Touch 144
 	$options[] = array(
@@ -3314,7 +3524,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'wineighttile',
 		'std' => '',
 		'class' => 'skeleton',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'basic');
 
 	// Win8 Tile Background Colour
 	$options[] = array(
@@ -3323,7 +3534,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'wineightbg',
 		'std' => '#FFFFFF',
 		'class' => 'skeleton',
-		'type' => 'color');
+		'type' => 'color',
+		'page' => 'basic');
 
 	// Apple Touch Icon Sizes: 57, 72, 76, 114, 120, 144, 152, 180, 192
 	$options[] = array(
@@ -3332,7 +3544,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'appleiconsizes',
 		'std' => '0',
 		'class' => 'skeleton',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Apple Startup Image Sizes: 320x460,640x920,640x1096,1024x748,768x1004,1536x2008,2048x1496
 	$options[] = array(
@@ -3341,7 +3554,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'startupimages',
 		'std' => '0',
 		'class' => 'skeleton',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Open Graph Default Image
 	// TODO: add login logo and site icon Customizer option (512x512)
@@ -3360,7 +3574,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'header_logo',
 		'type' => 'select',
 		'class' => 'skeleton',
-		'options' => $ogdefaultimage_array);
+		'options' => $ogdefaultimage_array,
+		'page' => 'advanced');
 
 	// Open Graph Image URL
 	$options[] = array(
@@ -3369,7 +3584,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'ogimageurl',
 		'std' => '',
 		'class' => 'skeleton',
-		'type' => 'upload');
+		'type' => 'upload',
+		'page' => 'advanced');
 
 	// -------------------
 	// === Hybrid Core ===
@@ -3378,7 +3594,8 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Hybrid', 'bioship'),
 		'id' => 'skeleton',
-		'type' => 'heading' );
+		'type' => 'heading',
+		'page' => 'both');
 
 	// 1.8.0: option to load HC2 or HC3
 	// note: value 1 is for HC2 (for backwards option compatibility)
@@ -3391,7 +3608,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '3',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Hybrid Hook
 	$options[] = array(
@@ -3400,7 +3618,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'hybridhook',
 		'std' => '0',
 		'class' => 'skeleton',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'basic');
 
 	// Hybrid Shortcodes
 	// 1.8.0: deactivated shortcodes
@@ -3413,14 +3632,15 @@ if (!function_exists('optionsframework_options')) {
 	//	'type' => 'checkbox');
 
 	// Hybrid Post Format Filters
-	// TODO: check the full effects of the post format filters?
+	// TODO: recheck the full effects of using post format filters?
 	$options[] = array(
 		'name' => __('Hybrid Post Format Filters', 'bioship'),
 		'desc' => __('Activate extra Post Formats Filters (note: full effects untested.)', 'bioship'),
 		'id' => 'hybridpostformats',
 		'std' => '0',
 		'class' => 'skeleton',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// -----------------
 	// Hybrid Extensions
@@ -3430,7 +3650,8 @@ if (!function_exists('optionsframework_options')) {
 		'name' => __('Hybrid Extensions', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skeleton',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'advanced');
 
 	// Get the Image
 	$options[] = array(
@@ -3439,7 +3660,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'hybridthumbnails',
 		'std' => '1',
 		'class' => 'skeleton',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Hybrid Breadcrumbs
 	$options[] = array(
@@ -3448,7 +3670,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'hybridbreadcrumbs',
 		'std' => '1',
 		'class' => 'skeleton',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Cleaner Gallery
 	$options[] = array(
@@ -3457,7 +3680,8 @@ if (!function_exists('optionsframework_options')) {
 		'id' => 'hybridgallery',
 		'std' => '1',
 		'class' => 'skeleton',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Loop Pagination
 	// 1.8.0: removed to match Hybrid Core 3
@@ -3517,14 +3741,16 @@ if (!function_exists('optionsframework_options')) {
 	$options[] = array(
 		'name' => __('Foundation', 'bioship'),
 		'id' => 'skeleton',
-		'type' => 'heading' );
+		'type' => 'heading',
+		'page' => 'advanced');
 
 	// note: Foundation 5 Dependencies: modernizr and fastclick (autoloaded for foundation 5)
 
 	$options[] = array( 'name' => __('Foundation Notes','bioship'),
 		'desc' => __('Integration of <a href="http://foundation.zurb.com/docs" target=_blank>Foundation</a> is <i>experimental</i>. Defaults to not load as not needed by most. This is a loader only - do with Foundation what you will. Dependency Notes: Modernizr is required, as is fastclick.js (turn them on in the Muscle Scripts tab or Foundation will not be loaded.)','bioship'),
 		'class' => 'skeleton',
-		'type' => 'info');
+		'type' => 'info',
+		'page' => 'advanced');
 
 	// 1.8.0: added Foundation version select (directory => label)
 	$version_options = array(
@@ -3540,7 +3766,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skeleton',
 		'transport' => 'refresh',
 		'type' => 'select',
-		'options' => $version_options);
+		'options' => $version_options,
+		'page' => 'advanced');
 
 	// Foundation Stylesheet
 	$options[] = array(
@@ -3550,7 +3777,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '0',
 		'class' => 'skeleton',
 		'transport' => 'refresh',
-		'type' => 'checkbox');
+		'type' => 'checkbox',
+		'page' => 'advanced');
 
 	// Foundation Javascript
 	$foundation_options = array(
@@ -3567,7 +3795,8 @@ if (!function_exists('optionsframework_options')) {
 		'class' => 'skeleton',
 		'type' => 'select',
 		'transport' => 'refresh',
-		'options' => $foundation_options);
+		'options' => $foundation_options,
+		'page' => 'advanced');
 
 	// Foundation Selective Javascript
 	// TODO: somehow correlate these with Foundation 6? they don't seem to match up anymore :-(
@@ -3597,7 +3826,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => $selected_defaults,
 		'type' => 'multicheck',
 		'class' => 'skeleton',
-		'options' => $selective_options);
+		'options' => $selective_options,
+		'page' => 'advanced');
 
 	// ---------------------
 	// === Hidden Inputs ===
@@ -3613,7 +3843,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'skin',
 		'class' => 'hidden',
 		'hidden' => true,
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'both');
 
 	$options[] = array(
 		'name' => __('Options Tab', 'bioship'),
@@ -3622,7 +3853,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'hidden',
 		'hidden' => true,
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'both');
 
 	// 1.8.5: added save time record
 	$options[] = array(
@@ -3632,7 +3864,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'hidden',
 		'hidden' => true,
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'both');
 
 	$options[] = array(
 		'name' => __('Backup Time', 'bioship'),
@@ -3641,7 +3874,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'hidden',
 		'hidden' => true,
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'both');
 
 	// 1.8.0: added missing restore time (for completeness)
 	$options[] = array(
@@ -3651,7 +3885,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'hidden',
 		'hidden' => true,
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'both');
 
 	$options[] = array(
 		'name' => __('Import Time', 'bioship'),
@@ -3660,7 +3895,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'hidden',
 		'hidden' => true,
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'both');
 
 	$options[] = array(
 		'name' => __('Export Time', 'bioship'),
@@ -3669,7 +3905,8 @@ if (!function_exists('optionsframework_options')) {
 		'std' => '',
 		'class' => 'hidden',
 		'hidden' => true,
-		'type' => 'text');
+		'type' => 'text',
+		'page' => 'both');
 
 	// -----------------------
 	// -- END THEME OPTIONS --

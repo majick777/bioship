@@ -108,7 +108,7 @@
 
 // set Framework Version
 // ---------------------
-$vbioshipversion = '1.9.8'; define('BIOSHIPVERSION', $vbioshipversion);
+$vbioshipversion = '1.9.9'; define('BIOSHIPVERSION', $vbioshipversion);
 
 // set WordQuest Theme 'plugin' Info
 // ---------------------------------
@@ -949,16 +949,20 @@ if (!function_exists('skeleton_titan_theme_options')) {
 			// fix for multicheck array options
 			// 1.8.5: redo fix for multicheck options
 			if ($voptionvalue['type'] == 'multicheck') {
-				$voptionarray = array();
+
 				// 1.9.5: fix to undefined index (typically for new settings)
 				if (isset($voptionvalues[$voptionkey])) {
 					$voptionvalues[$voptionkey] = maybe_unserialize($voptionvalues[$voptionkey]);
 				} else {$voptionvalues[$voptionkey] = array();}
 				// if (THEMEDEBUG) {echo "**"; print_r($voptionvalues[$voptionkey]); echo "**";}
+
+				$voptionarray = array();
 				foreach ($voptionvalue['options'] as $vkey => $vlabel) {
 					$vmulticheck[$voptionkey][] = $vkey;
 					// if (THEMEDEBUG) {echo "--".$voptionkey."--".$vkey."--";}
-					if ( (is_array($voptionvalues[$voptionkey])) && (in_array($vkey,$voptionvalues[$voptionkey])) ) {
+					// 1.9.9: fix to arrays switching around weirdly
+					if ( (array_key_exists($vkey,$voptionvalues[$voptionkey]))
+					  || (in_array($vkey,$voptionvalues[$voptionkey])) ) {
 						// if (THEMEDEBUG) {echo "*".$voptionvalues[$voptionkey][$vkey]."*";}
 						$voptionarray[$vkey] = '1';
 					} else {$voptionarray[$vkey] = '0';}
@@ -966,7 +970,7 @@ if (!function_exists('skeleton_titan_theme_options')) {
 
 				// WARNING: uncommenting this debug line will prevent Customizer saving
 				// TODO: maybe debug this to a file instead..?
-				// if (THEMEDEBUG) {echo "<!-- ".$voptionkey; print_r($voptionarray); echo " -->";}
+				if (THEMEDEBUG) {echo "<!-- ".$voptionkey; print_r($voptionarray); echo " -->";}
 				$vthemesettings[$voptionkey] = $voptionarray;
 			}
 

@@ -64,11 +64,12 @@ if (!function_exists('muscle_get_display_overrides')) {
 	// 1.8.0: moved content filters to a separate function
 	// 1.8.0: removed perpoststyles from overrides, now retrieved separately
 
-	// TODO: archive overrides via custom post type?
+	// TODO: archive overrides via custom post types/panel?
 	if (is_numeric($vresource)) {$vthemedisplay = get_post_meta($vresource,'_displayoverrides',true);}
 	else {$vthemedisplay = array();}
 
 	// 1.8.5: added wrapper, headernav, footernav, breadcrumb, pagenavi
+	// TODO: sitelogo, sitetitle, sitedesc?
 	$vdisplaykeys = array(
 		'wrapper', 'header', 'footer', 'navigation', 'secondarynav', 'headernav', 'footernav',
 		'sidebar', 'subsidebar', 'headerwidgets', 'footerwidgets', 'footer1', 'footer2', 'footer3', 'footer4',
@@ -115,6 +116,7 @@ if (!function_exists('muscle_get_templating_overrides')) {
 	if (is_numeric($vresource)) {$vthemeoverride = get_post_meta($vresource,'_templatingoverrides',true);}
 	else {$vthemeoverride = array();}
 
+	// note: output override keys (not implemented)
 	// $voverridekeys = array(
 	//	'wrapper'. 'header', 'footer', 'navigation', 'secondarynav', 'headernav', 'footernav',
 	//	'sidebar', 'subsidebar', 'headerwidgets', 'footerwidgets', 'footer1', 'footer2', 'footer3', 'footer4',
@@ -130,11 +132,6 @@ if (!function_exists('muscle_get_templating_overrides')) {
 	foreach ($voverridekeys as $voverridekey) {
 		if (!isset($vthemeoverride[$voverridekey])) {$vthemeoverride[$voverridekey] = '';}
 	}
-
-	// 1.9.8: fix to define some as yet unused override keys
-	$vthemeoverride['footerwidgets'] = '';
-	$vthemeoverride['footer1'] = ''; $vthemeoverride['footer2'] = '';
-	$vthemeoverride['footer3'] = ''; $vthemeoverride['footer4'] = '';
 
 	// check thumbnail size force off option
 	// 1.9.8: fix to undefined vpostid variable
@@ -719,6 +716,36 @@ if (!function_exists('muscle_smooth_scrolling')) {
  }
 }
 
+// Load jQuery matchHeight
+// -----------------------
+// 1.9.9: added this for content grid (and other) usage
+if (!function_exists('muscle_load_matchheight')) {
+ add_action('wp_enqueue_scripts','muscle_load_matchheight');
+ function muscle_load_matchheight() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadmatchheight = 0;
+	if (isset($vthemesettings['loadmatchheight'])) {$vloadmatchheight = $vthemesettings['loadmatchheight'];}
+	$vloadmatchheight = skeleton_apply_filters('muscle_load_matchheight',$vloadmatchheight);
+	if (!$vloadmatchheight) {return;}
+
+	$vmatchheight = skeleton_file_hierarchy('both','jquery.matchHeight.js',$vthemedirs['js']);
+	if (is_array($vmatchheight)) {
+		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmatchheight['file']));}
+		wp_enqueue_script('matchheight',$vmatchheight['url'],array('jquery'),$vjscachebust,true);
+
+		// add run trigger to footer
+		add_action('wp_footer','muscle_run_matchheight');
+		if (!function_exists('muscle_run_matchheight')) {
+		 function muscle_run_matchheight() {
+		 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+			echo "<input type='hidden' id='matchheight' name='matchheight' value='yes'>";
+		 }
+		}
+	}
+ }
+}
+
 // Load Sticky Kit
 // ---------------
 // 1.5.0: Added Sticky Kit Loading
@@ -728,11 +755,14 @@ if (!function_exists('muscle_load_stickykit')) {
  function muscle_load_stickykit() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	// 1.8.5: seems to cause customizer some troubles
-	if (is_customize_preview()) {return;}
+	// 1.9.9: add pagenow check for same reason
+	global $pagenow;
+	if ( ($pagenow == 'customizer.php') || (is_customize_preview()) ) {return;}
 
 	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadstickykit = 0;
 	if (isset($vthemesettings['loadstickykit'])) {$vloadstickykit = $vthemesettings['loadstickykit'];}
-	$vloadstickykit = skeleton_apply_filters('muscle_load_fitvids',$vloadstickykit);
+	// 1.9.9: fix to incorrect filter name typo
+	$vloadstickykit = skeleton_apply_filters('muscle_load_stickykit',$vloadstickykit);
 	if (!$vloadstickykit) {return;}
 
 	$vstickykit = skeleton_file_hierarchy('both','jquery.sticky-kit.min.js',$vthemedirs['js']);
@@ -1363,10 +1393,12 @@ if (is_admin()) {
 			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 			global $wp_meta_boxes, $current_user;
 			if ( (current_user_can('manage_options')) || (current_user_can('update_themes')) ) {
+				// 1.9.9: fix to undefined index warning
+				$vfeedloaded = false;
 				foreach (array_keys($wp_meta_boxes['dashboard']['normal']['core']) as $vname) {
-					if ($vname == 'bioship') {$vfeedloaded = 'yes';}
+					if ($vname == 'bioship') {$vfeedloaded = true;}
 				}
-				if ($vfeedloaded !='yes') {wp_add_dashboard_widget('bioship','BioShip News','muscle_bioship_dashboard_feed_widget');}
+				if (!$vfeedloaded) {wp_add_dashboard_widget('bioship','BioShip News','muscle_bioship_dashboard_feed_widget');}
 			}
 		}
 

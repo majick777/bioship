@@ -43,6 +43,7 @@ if (isset($_REQUEST['themedump'])) {
 	add_action('init','admin_echo_setting_values');
 	if (!function_exists('admin_echo_setting_values')) {
 	 function admin_echo_setting_values() {
+	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		if (current_user_can('edit_theme_options')) {
 			global $vtheme, $vthemename, $vthemesettings;
 			$vtitankey = preg_replace('/\W/','-',strtolower($vthemename)).'_options';
@@ -69,6 +70,7 @@ if (isset($_REQUEST['themedump'])) {
 add_action('update_option', 'admin_theme_settings_save',11,3);
 if (!function_exists('admin_theme_settings_save')) {
  function admin_theme_settings_save($voption,$voldsettings,$vnewsettings) {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	if ($voption != THEMEKEY) {return;}
  	if ( (defined('THEMEUPDATED')) && (THEMEUPDATED) ) {return;}
  	define('THEMEUPDATED',true); // to do this once only for actual updates
@@ -91,6 +93,7 @@ if (!function_exists('admin_theme_settings_save')) {
 if (isset($_REQUEST['transfersettings'])) {add_action('init','admin_framework_settings_transfer');}
 if (!function_exists('admin_framework_settings_transfer')) {
  function admin_framework_settings_transfer() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	if (!current_user_can('edit_theme_options')) {return;}
 
 	global $vthemestyledir, $vthemetemplatedir;
@@ -208,6 +211,7 @@ if ( (isset($_REQUEST['copysettings'])) && ($_REQUEST['copysettings'] == 'yes') 
 
 if (!function_exists('admin_copy_theme_settings')) {
  function admin_copy_theme_settings() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	if (!current_user_can('edit_theme_options')) {return;}
 
  	$vcopyto = false; $vcopyfrom = false;
@@ -277,7 +281,7 @@ if (!function_exists('admin_copy_theme_settings')) {
 
 // Theme Options Page Redirection
 // ------------------------------
-// 1.9.5: moved here from titan-specific function
+// 1.9.5: moved here from Titan-specific function
 if (!function_exists('admin_theme_options_page_redirect')) {
  function admin_theme_options_page_redirect($vupdated='') {
 	// 1.8.5: use add_query_arg
@@ -300,7 +304,7 @@ if (!function_exists('admin_theme_options_page_redirect')) {
 if (!function_exists('admin_options_default_submenu')) {
  add_filter('optionsframework_menu','admin_options_default_submenu',0);
  function admin_options_default_submenu($vmenu) {
- 	if (THEMETRACE) {skeleton_trace('F','admin_options_default_submenu',__FILE__,func_get_args());}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	// note this filter is priority 0 so added filters applied later
 	// can be further modified (see Child Theme filters.php)
@@ -320,7 +324,7 @@ if (THEMETITAN) {
 	add_action('admin_menu','admin_theme_options_submenu');
 	if (!function_exists('admin_theme_options_submenu')) {
 	 function admin_theme_options_submenu() {
-		if (THEMETRACE) {skeleton_trace('F','admin_theme_options_submenu',__FILE__);}
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	 	add_theme_page('Theme Options', 'Theme Options', 'edit_theme_options', 'theme-options', 'admin_theme_options_submenu_dummy');
 	 	function admin_theme_options_submenu_dummy() {} // dummy menu item function
 	 }
@@ -331,13 +335,29 @@ if (THEMETITAN) {
 	}
 }
 
+// Add the Advanced Options (Customizer) Submenu item
+// --------------------------------------------------
+// 1.9.9: add extra menu item for split Customizer options
+if ( (!THEMETITAN) && (!THEMEOPT) ) {
+	add_action('admin_menu','admin_theme_options_advanced');
+	if (!function_exists('admin_theme_options_advanced')) {
+	 function admin_theme_options_advanced() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		$vsplitoptions = apply_filters('options_customizer_split_options',true);
+		if ($vsplitoptions) {
+		 	add_submenu_page('themes.php', 'Customize Advanced', 'Advanced Options', 'edit_theme_options', 'customize.php?options=advanced');
+		 }
+	 }
+	}
+}
+
 // Hack the Theme Options Submenu Position to Top
 // ----------------------------------------------
 // (Appearance submenu for Options and Titan Framework)
 add_action('admin_head', 'admin_theme_options_position');
 if (!function_exists('admin_theme_options_position')) {
  function admin_theme_options_position() {
-  	if (THEMETRACE) {skeleton_trace('F','admin_theme_options_position',__FILE__);}
+  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $menu;
 	if (THEMEDEBUG) {echo "<!-- Admin Menu: "; print_r($menu); echo " -->";}
@@ -359,13 +379,11 @@ if (!function_exists('admin_theme_options_position')) {
 						if ($vkey == $vnewposition) {$vposition = $vj;}
 						$vj++;
 					}
-				}
-				else {
+				} else {
 					// just re-insert at the new position
 					$submenu['themes.php'][$vnewposition] = $vvalues;
 					$submenuthemes = $submenu['themes.php'];
-					ksort($submenuthemes);
-					$submenu['themes.php'] = $submenuthemes;
+					ksort($submenuthemes); $submenu['themes.php'] = $submenuthemes;
 				}
 			}
 			// 1.8.5: get the themes.php submenu position
@@ -376,6 +394,24 @@ if (!function_exists('admin_theme_options_position')) {
 			if ($vvalues[1] == 'customize') {
 				if ( (THEMETITAN) || (THEMEOPT) ) {
 					$submenu['themes.php'][$submenukey][0] = 'Live Preview';
+					$vcustomizerposition = $submenukey;
+				}
+			}
+
+			// 1.9.9: shift the advanced options (customizer) item position
+			if (strstr($vvalues[2],'?options=advanced')) {
+				unset($submenu['themes.php'][$submenukey]);
+				$vadvposition = $vcustomizerposition + 1;
+				if (isset($submenu['themes.php'][$vnewposition])) {
+					$vdospliceb = true; $vk = 0; $vadvancedvalues = $vvalues;
+					foreach ($submenu['themes.php'] as $vkey => $vvalue) {
+						if ($vkey == $vadvposition) {$vadvancedposition = $vk;}
+						$vk++;
+					}
+				} else {
+					$submenu['themes.php'][$vcustomizerposition+1] = $vvalues;
+					$submenuthemes = $submenu['themes.php'];
+					ksort($submenuthemes); $submenu['themes.php'] = $submenuthemes;
 				}
 			}
 
@@ -390,6 +426,18 @@ if (!function_exists('admin_theme_options_position')) {
 			$submenuthemesb = array_slice($submenuthemes,$vposition,count($submenuthemes),true);
 			foreach ($submenuthemesb as $key => $value) {$newthemesb[$key+1] = $value;}
 			$submenuthemesa[$vnewposition] = $vthemesettingsvalues;
+			$submenuthemes = $submenuthemesa + $newthemesb;
+			$submenu['themes.php'] = $submenuthemes;
+		}
+
+		// 1.9.9: repeat for advanced options item
+		if ($vdospliceb) {
+			// shift the $submenu array maintaining keys
+			$submenuthemes = $submenu['themes.php']; $newthemesb = array();
+			$submenuthemesa = array_slice($submenuthemes,0,$vadvancedposition,true);
+			$submenuthemesb = array_slice($submenuthemes,$vadvancedposition,count($submenuthemes),true);
+			foreach ($submenuthemesb as $key => $value) {$newthemesb[$key+1] = $value;}
+			$submenuthemesa[$vadvposition] = $vadvancedvalues;
 			$submenuthemes = $submenuthemesa + $newthemesb;
 			$submenu['themes.php'] = $submenuthemes;
 		}
@@ -419,7 +467,7 @@ if (!function_exists('admin_theme_options_position')) {
 
 if (!function_exists('admin_themetestdrive_options')) {
  function admin_themetestdrive_options() {
- 	if (THEMETRACE) {skeleton_trace('F','admin_themetestdrive_options',__FILE__);}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	$vtdtheme = $_REQUEST['theme'];
 	// 1.8.5: bug out if not test driving via querystring
@@ -465,7 +513,7 @@ if (!function_exists('admin_adminbar_theme_options')) {
  $vadminbar = skeleton_apply_filters('admin_adminbar_theme_options',1);
  if ($vadminbar) {add_action('wp_before_admin_bar_render', 'admin_adminbar_theme_options');}
  function admin_adminbar_theme_options() {
-	if (THEMETRACE) {skeleton_trace('F','muscle_adminbar_theme_options',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $wp_admin_bar, $vthemename, $vthemedirs;
 
@@ -512,7 +560,7 @@ if (!function_exists('admin_adminbar_theme_options')) {
 if (!function_exists('admin_adminbar_replace_howdy')) {
  add_filter('admin_bar_menu','admin_adminbar_replace_howdy',25);
  function admin_adminbar_replace_howdy($wp_admin_bar) {
-	if (THEMETRACE) {skeleton_trace('F','admin_adminbar_replace_howdy',__FILE__,func_get_args());}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	// 1.9.8: replaced deprecated function get_currentuserinfo();
 	global $current_user; wp_get_current_user();
 	$vusername = $current_user->user_login;
@@ -530,7 +578,7 @@ if (!function_exists('admin_adminbar_replace_howdy')) {
 if (!function_exists('admin_remove_admin_footer')) {
  add_filter('admin_admin_footer_text', 'admin_remove_admin_footer');
  function admin_remove_admin_footer() {
-	if (THEMETRACE) {skeleton_trace('F','admin_remove_admin_footer',__FILE__);}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	return skeleton_apply_filters('muscle_admin_footer_text','');
  }
 }
@@ -556,6 +604,7 @@ if ( (isset($_REQUEST['page'])) && ($_REQUEST['page'] == 'options-framework') ) 
 // -----------------------------------
 if (!function_exists('admin_theme_options_menu')) {
 	function admin_theme_options_menu() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		global $wp_version, $vthemesettings, $vthemename, $vthemeversion, $vthemedirs;
 
@@ -841,6 +890,7 @@ if (!function_exists('admin_theme_options_menu')) {
 		// 1.8.5: simplified defaults and improved options switching
 		if (!function_exists('options_switch_layer_options_tabs')) {
 		 function options_switch_layer_options_tabs() {
+		 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		 	global $vthemename;
 
 			// Switch Layer Display (defaults to skin)
@@ -984,6 +1034,7 @@ if (!function_exists('admin_theme_options_menu')) {
 		add_action('optionsframework_after','options_closing_div'); // Options Framework
 		if (!function_exists('options_closing_div')) {
 			function options_closing_div() {
+				if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 				echo '</div>'; if (THEMECOMMENTS) {echo '<!-- /#themeoptionswrap -->';}
 			}
 		}
@@ -1002,6 +1053,8 @@ if (isset($_REQUEST['page'])) {
 
 		if (!function_exists('options_admin_page_styles')) {
 		 function options_admin_page_styles() {
+		 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 		 	global $vthemename;
 		 	// 1.8.5: improved button tab colour scheme
 		 	// TODO: separate this out to an admin-styles.css file
@@ -1076,6 +1129,7 @@ if (isset($_REQUEST['page'])) {
 // Donations / Testimonials / Sidebar Ads / Footer
 if (!function_exists('options_floating_sidebar')) {
  function options_floating_sidebar() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	// Include WordQuest Sidebar
 	// -------------------------
@@ -1090,6 +1144,7 @@ if (!function_exists('options_floating_sidebar')) {
 		add_filter('wordquest_sidebar_save_button','admin_sidebar_save_button');
 		if (!function_exists('admin_sidebar_save_button')) {
 		 function admin_sidebar_save_button($vbutton) {
+		 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 			if (THEMETITAN) {
 				$vsubmitfunction = "jQuery('.options-container form button[name=\"action\"]').each(function() {
 					if (jQuery(this).hasClass('button-primary')) {jQuery(this).trigger('click');}
@@ -1143,6 +1198,7 @@ if (!function_exists('options_floating_sidebar')) {
 add_action('wp_ajax_quicksave_css_theme_settings','admin_quicksave_css');
 if (!function_exists('admin_quicksave_css')) {
  function admin_quicksave_css() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	if (current_user_can('edit_theme_options')) {
 		$vthemename = $_POST['theme'];
 		$vchecknonce = check_admin_referer('quicksave_css_'.$vthemename);
@@ -1172,6 +1228,7 @@ if (!function_exists('admin_quicksave_css')) {
 // standalone page for WordPress.org version (no Theme Framework page)
 if (!function_exists('admin_theme_info_page')) {
  function admin_theme_info_page() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	// TODO: improve this page title display...
 	echo "<h3>BioShip Theme Info</h3><br>";
@@ -1198,6 +1255,7 @@ if (!function_exists('admin_theme_info_page')) {
 // 1.8.0: separate function for theme home info tab
 if (!function_exists('admin_theme_info_section')) {
  function admin_theme_info_section() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemedirs;
 
@@ -1373,6 +1431,7 @@ if (!function_exists('admin_theme_info_section')) {
 
 if (!function_exists('admin_theme_updates_available')) {
  function admin_theme_updates_available() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $wp_version, $vthemename, $vthemeversion;
 	$vthemedisplayname = THEMEDISPLAYNAME;
@@ -1445,7 +1504,7 @@ if (!function_exists('admin_theme_updates_available')) {
 
 if (!function_exists('admin_do_install_child')) {
  function admin_do_install_child() {
-
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $wp_filesystem; // load WP Filesystem for correct writing permissions
 	global $vthemetemplatedir, $vthemestyledir; $vmessage = '';
 
@@ -1623,7 +1682,7 @@ if (!function_exists('admin_do_install_child')) {
 // 1.9.5: added child theme cloning function
 if (!function_exists('admin_do_install_clone')) {
  function admin_do_install_clone() {
-
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $wp_filesystem;
 
 	if (!isset($_REQUEST['clonetheme'])) {return __('Error: Source Child Theme not specified.','bioship');}
@@ -1740,6 +1799,7 @@ if (!function_exists('admin_do_install_clone')) {
 // ref: http://www.webdesignerdepot.com/2012/08/wordpress-filesystem-api-the-right-way-to-operate-with-local-files/
 if (!function_exists('admin_check_filesystem_credentials')) {
  function admin_check_filesystem_credentials($vurl, $vmethod, $vcontext, $vextrafields) {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $wp_filesystem;
 	if (empty($wp_filesystem)) {require_once(ABSPATH.'/wp-admin/includes/file.php'); WP_Filesystem();}
 	$vcredentials = request_filesystem_credentials($vurl, $vmethod, false, $vcontext, $vextrafields);
@@ -1753,7 +1813,7 @@ if (!function_exists('admin_check_filesystem_credentials')) {
 // --------------------------------------
 if (!function_exists('admin_get_directory_files')) {
  function admin_get_directory_files($dir, $recursive = true, $basedir = '') {
-
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	if ($dir == '') {return array();} else {$results = array(); $subresults = array();}
 	if (!is_dir($dir)) {$dir = dirname($dir);} // so a files path can be sent
 	if ($basedir == '') {$basedir = realpath($dir).DIRECTORY_SEPARATOR;}
@@ -1785,7 +1845,7 @@ if (!function_exists('admin_get_directory_files')) {
 // -------------------------------
 if (!function_exists('admin_get_directory_subdirs')) {
  function admin_get_directory_subdirs($dir, $recursive = true, $basedir = '') {
-
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	if ($dir == '') {return array();} else {$results = array(); $subresults = array();}
 	if (!is_dir($dir)) {$dir = dirname($dir);} // so a files path can be sent
 	if ($basedir == '') {$basedir = realpath($dir).DIRECTORY_SEPARATOR;}
@@ -1833,7 +1893,7 @@ add_action('customize_save_after','admin_build_selective_resources');
 // --------------------------
 if (!function_exists('admin_build_selective_resources')) {
  function admin_build_selective_resources() {
-
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $vthemename, $vthemesettings, $vthemedirs;
 
 	// Maybe Combine CSS Core On Save
@@ -3123,7 +3183,7 @@ if (!function_exists('admin_update_metabox_options')) {
 
 	// 1.8.0: grouped display overrides to array
 	// 1.8.5: added headernav, footernav, breadcrumbs, pagenavi
-	$vdisplay = array();
+	$vdisplay = array(); $vpostdata = false;
 	$vdisplaykeys = array(
 		'wrapper', 'header', 'footer', 'navigation', 'secondarynav', 'headernav', 'footernav',
 		'sidebar', 'subsidebar', 'headerwidgets', 'footerwidgets', 'footer1', 'footer2', 'footer3', 'footer4',
@@ -3133,21 +3193,27 @@ if (!function_exists('admin_update_metabox_options')) {
 	// 1.9.5: changed _hide prefix to _display_
 	foreach ($vdisplaykeys as $vkey) {
 		if (isset($_POST['_display_'.$vkey])) {
-			if ($_POST['_display_'.$vkey] == '1') {$vdisplay[$vkey] = '1';} else {$vdisplay[$vkey] = '0';}
+			$vpostdata = true;
+			if ($_POST['_display_'.$vkey] == '1') {$vdisplay[$vkey] = '1'; } else {$vdisplay[$vkey] = '0';}
 		} else {$vdisplay[$vkey] = '0';}
 	}
-	delete_post_meta($vpostid,'_displayoverrides');	add_post_meta($vpostid,'_displayoverrides',$vdisplay);
+	delete_post_meta($vpostid,'_displayoverrides');
+	// 1.9.9: check and save if new post data
+	if ($vpostdata) {add_post_meta($vpostid,'_displayoverrides',$vdisplay);}
 
 	// 1.9.5: added override keys
-	$voverride = array();
+	$voverride = array(); $vpostdata = false;
 	$voverridekeys = array(
 		'contentcolumns', 'sidebarcolumns', 'subsidebarcolumns', 'sidebarposition', 'subsidebarposition',
 		'sidebartemplate', 'subsidebartemplate', 'sidebarcustom', 'subsidebarcustom'
 	);
 	foreach ($voverridekeys as $vkey) {
-		if (isset($_POST['_'.$vkey])) {$voverride[$vkey] = $_POST['_'.$vkey];} else {$voverride[$vkey] = '';}
+		if (isset($_POST['_'.$vkey])) {$voverride[$vkey] = $_POST['_'.$vkey]; $vpostdata = true;}
+		else {$voverride[$vkey] = '';}
 	}
-	delete_post_meta($vpostid,'_templatingoverrides');	add_post_meta($vpostid,'_templatingoverrides',$voverride);
+	delete_post_meta($vpostid,'_templatingoverrides');
+	// 1.9.9: check and save if new post data
+	if ($vpostdata) {add_post_meta($vpostid,'_templatingoverrides',$voverride);}
 
 	// 1.8.0: grouped filters to array
 	$vremovefilters = array();
@@ -3157,16 +3223,21 @@ if (!function_exists('admin_update_metabox_options')) {
 			if ($_POST['_'.$vfilter] == '1') {$vremovefilters[$vfilter] = '1';}
 		}
 	}
-	delete_post_meta($vpostid,'_removefilters'); add_post_meta($vpostid,'_removefilters',$vremovefilters,true);
+	delete_post_meta($vpostid,'_removefilters');
+	// 1.9.9: check and save if new filters
+	if (count($vremovefilters) > 0) {add_post_meta($vpostid,'_removefilters',$vremovefilters,true);}
 
 	// 1.8.0: save individual key values
 	$voptionkeys = array('_perpoststyles', '_thumbnailsize', '_themeoptionstab');
 	foreach ($voptionkeys as $voption) {
-		$voptionvalue = $_POST[$voption]; $voptions[$voption] = $voptionvalue;
-		if ($voption == '_perpoststyles') {$voptionvalue = stripslashes($voptionvalue);}
-		delete_post_meta($vpostid,$voption);
-		// 1.9.5: cleaner, do not save empty values
-		if ($voptionvalue != '') {add_post_meta($vpostid,$voption,$voptionvalue,true);}
+		// 1.9.9: make sure option value is set as metaxbox may be removed
+		if (isset($_POST[$voption])) {
+			$voptionvalue = $_POST[$voption]; $voptions[$voption] = $voptionvalue;
+			if ($voption == '_perpoststyles') {$voptionvalue = stripslashes($voptionvalue);}
+			delete_post_meta($vpostid,$voption);
+			// 1.9.5: cleaner, do not save empty values
+			if ($voptionvalue != '') {add_post_meta($vpostid,$voption,$voptionvalue,true);}
+		}
 	}
 
 	// for manually writing a post options debug file on save
