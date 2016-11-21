@@ -55,7 +55,7 @@ if (!function_exists('add_action')) {exit;}
 // ---------------------
 if (!function_exists('skeleton_word_to_number')) {
  function skeleton_word_to_number($vword) {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_word_to_number',__FILE__,func_get_args());}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	$vwordnumbers = array(
 		'zero'=>'0', 'one'=>'1', 'two'=>'2', 'three'=>'3', 'four'=>'4', 'five'=>'5' ,'six'=>'6',
 		'seven'=>'7', 'eight'=>'8', 'nine'=>'9', 'ten'=>'10', 'eleven'=>'11', 'twelve'=>'12',
@@ -73,7 +73,7 @@ if (!function_exists('skeleton_word_to_number')) {
 // ---------------------
 if (!function_exists('skeleton_number_to_word')) {
  function skeleton_number_to_word($vnumber) {
- 	if (THEMETRACE) {skeleton_trace('F','skeleton_number_to_word',__FILE__,func_get_args());}
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	$vnumberwords = array(
 		'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
 		'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
@@ -110,14 +110,15 @@ if (!function_exists('skeleton_add_action')) {
 // 1.9.8: moved here from /content/loop-meta.php
 if (!function_exists('skeleton_get_loop_title')) {
  function skeleton_get_loop_title() {
-	 // 1.8.0: replaced hybrid_loop_title (HC3 deprecated)
-	 if (function_exists('get_the_archive_title')) {$vlooptitle = get_the_archive_title();}
-	 elseif (function_exists('hybrid_loop_title')) {$vlooptitle = hybrid_loop_title();}
-	 else {$vlooptitle = '';}
-	 // note: get_the_archive_title filter also available
-	 $vlooptitle = skeleton_apply_filters('hybrid_loop_title',$vlooptitle);
-	 $vlooptitle = skeleton_apply_filters('skeleton_loop_title',$vlooptitle);
-	 return $vlooptitle;
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	// 1.8.0: replaced hybrid_loop_title (HC3 deprecated)
+	if (function_exists('get_the_archive_title')) {$vlooptitle = get_the_archive_title();}
+	elseif (function_exists('hybrid_loop_title')) {$vlooptitle = hybrid_loop_title();}
+	else {$vlooptitle = '';}
+	// note: get_the_archive_title filter also available
+	$vlooptitle = skeleton_apply_filters('hybrid_loop_title',$vlooptitle);
+	$vlooptitle = skeleton_apply_filters('skeleton_loop_title',$vlooptitle);
+	return $vlooptitle;
  }
 }
 
@@ -126,6 +127,7 @@ if (!function_exists('skeleton_get_loop_title')) {
 // 1.9.8: moved here from /content/loop-meta.php
 if (!function_exists('skeleton_get_loop_description')) {
  function skeleton_get_loop_description() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	// 1.8.0: replace hybrid_get_loop_description (HC3 deprecated)
 	if (function_exists('get_the_archive_description')) {$vdescription = get_the_archive_description();}
 	elseif (function_exists('hybrid_get_loop_description')) {$vdescription = hybrid_get_loop_description();}
@@ -145,6 +147,8 @@ if (!function_exists('skeleton_get_loop_description')) {
 // -----------------
 if (!function_exists('skeleton_main_wrapper_open')) {
 	function skeleton_main_wrapper_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 		global $vthemesettings, $vthemelayout;
 
 		// 1.8.5: use new theme layout global
@@ -152,15 +156,7 @@ if (!function_exists('skeleton_main_wrapper_open')) {
 		$vclasses[] = $vthemelayout['gridcolumns'];
 
 		// 1.5.0: added container class compatibility
-		// 1.8.5: removed 960gs container class from main wrap
-		// ...as grid compatibility classes are now only applied to content columns
-		// if (isset($vthemesettings['gridcompatibility']['960gridsystem'])) {
-		//	if ($vthemesettings['gridcompatibility']['960gridsystem'] == '1') {
-		//		$vcolumnnumbers = skeleton_word_to_number($vthemelayout['gridcolumns']);
-		//		$vcontainerclasses[] = 'container_'.$vcolumnnumbers;
-		//	}
-		// }
-
+		// 1.8.5: removed grid compatibility classes (now content grid only)
 		// filter the main wrap container classes
 		$vcontainerclasses = skeleton_apply_filters('skeleton_container_classes',$vclasses);
 		if (is_array($vcontainerclasses)) {
@@ -171,7 +167,7 @@ if (!function_exists('skeleton_main_wrapper_open')) {
 
 		if (THEMECOMMENTS) {echo '<!-- #wrap.container -->';}
 		echo '<div id="wrap" class="'.$vclassstring.'">'.PHP_EOL;
-		echo '	<div id="wrappadding" class="inner">'.PHP_EOL;
+		echo '	<div id="wrappadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_container_open','skeleton_main_wrapper_open',5);
@@ -181,9 +177,10 @@ if (!function_exists('skeleton_main_wrapper_open')) {
 // ------------------
 if (!function_exists('skeleton_main_wrapper_close')) {
 	function skeleton_main_wrapper_close() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		echo '	</div>'.PHP_EOL;
-		echo '</div>';
-		if (THEMECOMMENTS) {echo '<!-- /#wrap.container -->';}
+		echo '</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /#wrap.container -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -194,7 +191,10 @@ if (!function_exists('skeleton_main_wrapper_close')) {
 // -------------------
 // 1.5.0: moved clear div here for flexibility
 if (!function_exists('skeleton_echo_clear_div')) {
-	function skeleton_echo_clear_div() {echo '<div class="clear"></div>'.PHP_EOL;}
+	function skeleton_echo_clear_div() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		echo '<div class="clear"></div>'.PHP_EOL;
+	}
 }
 
 // Add Clear Divs to Various Layout Points
@@ -238,6 +238,8 @@ skeleton_add_action('skeleton_footer','skeleton_echo_clear_div',7);
 // Header Wrap Open
 if (!function_exists('skeleton_header_open')) {
 	function skeleton_header_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 		global $vthemesettings, $vthemelayout;
 
 		// 1.8.5: use new theme layout global
@@ -261,7 +263,7 @@ if (!function_exists('skeleton_header_open')) {
 		if (THEMECOMMENTS) {echo '<!-- #header -->';}
 		echo '<div id="header" class="'.$vheaderclasses.'">'.PHP_EOL;
 		echo '	<div id="headerpadding" class="inner">'.PHP_EOL;
-		echo '		<header '.hybrid_get_attr('header').'>'.PHP_EOL;
+		echo '		<header '.hybrid_get_attr('header').'>'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_header','skeleton_header_open',0);
@@ -270,10 +272,11 @@ if (!function_exists('skeleton_header_open')) {
 // Header Wrap Close
 if (!function_exists('skeleton_header_close')) {
 	function skeleton_header_close() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'		</header>'.PHP_EOL;
 		echo '	</div>'.PHP_EOL;
-		echo '</div>';
-		if (THEMECOMMENTS) {echo '<!--/#header-->';}
+		echo '</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!--/#header-->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -284,6 +287,7 @@ if (!function_exists('skeleton_header_close')) {
 // ---------------
 if (!function_exists('skeleton_header_nav')) {
 	function skeleton_header_nav() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		// note: can use Hybrid attribute filter to add column classes
 		if (THEMECOMMENTS) {echo '<!-- .header-menu -->';}
 		echo '<div '.hybrid_get_attr('menu','header').'>'.PHP_EOL;
@@ -301,8 +305,8 @@ if (!function_exists('skeleton_header_nav')) {
 		$vheadernav = skeleton_apply_filters('skeleton_header_menu',$vheadernav);
 		wp_nav_menu($vheadernav);
 
-		echo '</div>';
-		if (THEMECOMMENTS) {echo '<!-- /.header-menu -->';}
+		echo '</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /.header-menu -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -313,7 +317,9 @@ if (!function_exists('skeleton_header_nav')) {
 // --------------------
 if (!function_exists('skeleton_logo')) {
 	function skeleton_header_logo() {
-		global $vthemesettings, $vthemeoverride;
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+		global $vthemesettings, $vthemedisplay;
 
 		$vlogourl = $vthemesettings['header_logo'];
 		// 1.5.0: moved logo url filter
@@ -325,7 +331,6 @@ if (!function_exists('skeleton_logo')) {
 
 		// 1.8.0: added header logo class filter
 		$vlogoclasses = skeleton_apply_filters('skeleton_header_logo_classes','logo');
-		if (THEMECOMMENTS) {$vlogo = '<!-- #site-logo -->';} else {$vlogo = '';}
 
 		// 1.8.5: recombined image/text template for live previewing
 		// 1.8.5: added site text / description text display checkboxes
@@ -333,20 +338,23 @@ if (!function_exists('skeleton_logo')) {
 		if ($vlogourl) {$vlogoimagedisplay = '';} else {$vlogoimagedisplay = ' style="display:none;"';}
 
 		$vsitetitle = false; $vsitedesc = false;
-		if ( (isset($vthemesettings['header_texts']['sitetitle'])) && ($vthemesettings['header_texts']['sitetitle'] == '1') ) {$vsitetitle = true;}
-		if ( (isset($vthemesettings['header_texts']['sitedescription'])) && ($vthemesettings['header_texts']['sitedescription'] == '1') ) {$vsitedesc = true;}
+		if ( (isset($vthemesettings['header_texts']['sitetitle'])) && ($vthemesettings['header_texts']['sitetitle'] == 1) ) {$vsitetitle = true;}
+		if ( (isset($vthemesettings['header_texts']['sitedescription'])) && ($vthemesettings['header_texts']['sitedescription'] == 1) ) {$vsitedesc = true;}
 
-		// TODO: add and check post meta display overrides?
-		// if (is_singular()) {}
+		// TODO: add/check meta display overrides?
+		// if ($vthemedisplay['sitetitle'] == '') {}
+		// if ($vthemedisplay['sitedesc'] == '') {}
 
 		$vsitetitle = skeleton_apply_filters('skeleton_site_title_display',$vsitetitle);
 		$vsitedesc = skeleton_apply_filters('skeleton_site_description_display',$vsitedesc);
-		if ( (!$vsitetitle) && (!$vsitedesc) ) {$vlogotextdisplay = ' style="display:none;"';}
-		else {$vlogotextdisplay = '';} // 1.9.8: undefined index fix
+		// 1.9.9: separate display variables for site title and description
+		if (!$vsitetitle) {$vsitetitledisplay = ' style="display:none;"';} else {$vsitetitledisplay = '';}
+		if (!$vsitedesc) {$vsitedescdisplay = ' style="display:none;"';} else {$vsitedescdisplay = '';}
 
 		// 1.8.5: fix to hybrid attributes names (_ to -)
 		// 1.9.0: added filter to site-description attribute to prevent duplicate ID
 		// 1.9.6: added logo-image ID not just class
+		if (THEMECOMMENTS) {$vlogo = '<!-- #site-logo -->';} else {$vlogo = '';}
 		$vlogo .= '<div id="site-logo" class="'.$vlogoclasses.'">'.PHP_EOL;
 		$vlogo .= '	<div class="inner">'.PHP_EOL;
 		$vlogo .= '  <div class="site-logo-image"'.$vlogoimagedisplay.'>'.PHP_EOL;
@@ -357,19 +365,19 @@ if (!function_exists('skeleton_logo')) {
 		$vlogo .= '			</h1>'.PHP_EOL;
 		$vlogo .= '		</a>'.PHP_EOL;
 		$vlogo .= '  </div>'.PHP_EOL;
-		$vlogo .= '  <div class="site-logo-text"'.$vlogotextdisplay.'>'.PHP_EOL;
-		$vlogo .= '		<h1 id="site-title-text" '.hybrid_get_attr('site-title').'>'.PHP_EOL;
+		$vlogo .= '  <div class="site-logo-text">'.PHP_EOL;
+		$vlogo .= '		<h1 id="site-title-text" '.hybrid_get_attr('site-title').$vsitetitledisplay.'>'.PHP_EOL;
 		$vlogo .= '			<a class="text" href="'.$vhomeurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.$vblogname.'</a>'.PHP_EOL;
 		$vlogo .= '		</h1>'.PHP_EOL;
-		$vlogo .= '		<div id="site-description">'.PHP_EOL;
+		$vlogo .= '		<div id="site-description"'.$vsitedescdisplay.'>'.PHP_EOL;
 		$vlogo .= '			<span class="site-desc" '.hybrid_get_attr('site-description').'>'.$vblogdescription.'</span>'.PHP_EOL;
 		$vlogo .= '		</div>'.PHP_EOL;
 		$vlogo .= '  </div>'.PHP_EOL;
 		$vlogo .= '	</div>'.PHP_EOL;
-		$vlogo .= '</div>';
-
-		if (THEMECOMMENTS) {$vlogo .= '<!-- /#site-logo -->';}
+		$vlogo .= '</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {$vlogo .= '<!-- /#site-logo -->'.PHP_EOL;}
 		$vlogo .= PHP_EOL;
+
 		$vlogo = skeleton_apply_filters('skeleton_header_logo_override',$vlogo);
 		echo $vlogo;
 	}
@@ -381,6 +389,7 @@ if (!function_exists('skeleton_logo')) {
 // --------------
 if (!function_exists('skeleton_header_widgets')) {
 	function skeleton_header_widgets() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		// note: template filterable to allow for custom post types (see filters.php)
 		// default template is sidebar/header.php
 		$vheader = skeleton_apply_filters('skeleton_header_sidebar','header');
@@ -394,6 +403,7 @@ if (!function_exists('skeleton_header_widgets')) {
 // -------------
 if (!function_exists('skeleton_header_extras')) {
 	function skeleton_header_extras() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings;
 		// 1.5.0: changed from skeleton_options to value filter
 		// $vheaderextras = skeleton_options('header_extras','');
@@ -429,8 +439,10 @@ if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] 
 	// ---------
 	if (!function_exists('skeleton_main_menu_open')) {
 		function skeleton_main_menu_open() {
+			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 			// note: can filter classes using Hybrid attribute filter
-			echo '<!-- #navigation --><div id="navigation" '.hybrid_get_attr('menu','primary').'>'.PHP_EOL;
+			if (THEMECOMMENTS) {echo '<!-- #navigation -->';}
+			echo '<div id="navigation" '.hybrid_get_attr('menu','primary').'>'.PHP_EOL.PHP_EOL;
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -440,11 +452,13 @@ if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] 
 	// ---------
 	if (!function_exists('skeleton_main_menu')) {
 		function skeleton_main_menu() {
-			// 1.9.8: check hide navigation override
-			global $vthemedisplay;
+			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
+			// 1.9.9: check hide navigation override filter
+			$vhidenav = skeleton_apply_filters('skeleton_navigation_hide',0);
+			if ($vhidenav) {return;}
 
-			// 1.8.0: only display if there is a menu is assigned to primary location
+			// 1.8.0: only output if there is a menu is assigned to primary location
 			if (has_nav_menu('primary')) {
 				wp_nav_menu( array( 'container_id' => 'mainmenu', 'container_class' => 'menu-header', 'theme_location' => 'primary'));
 			}
@@ -456,7 +470,12 @@ if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] 
 	// Wrap Close
 	// ----------
 	if (!function_exists('skeleton_main_menu_close')) {
-		function skeleton_main_menu_close() {echo '</div><!-- /#navigation -->'.PHP_EOL;}
+		function skeleton_main_menu_close() {
+			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+			echo '</div>'.PHP_EOL;
+			if (THEMECOMMENTS) {echo '<!-- /#navigation -->'.PHP_EOL;}
+			echo PHP_EOL;
+		}
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_navbar','skeleton_main_menu_close',10);
@@ -467,12 +486,13 @@ if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] 
 // 1.5.0: added mobile menu button
 if (!function_exists('skeleton_main_menu_mobile_button')) {
 	function skeleton_main_menu_mobile_button() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		// 1.5.5: check for perpost navigation disable
 		// 1.9.8: fix to use display override global
-		global $vthemedisplay;
-		$vhidenav = skeleton_apply_filters('skeleton_navigation_hide',$vthemedisplay['navigation']);
-		if ($vhidenav == '1') {return;}
+		// 1.9.9: check hide navigation override filter
+		$vhidenav = skeleton_apply_filters('skeleton_navigation_hide',0);
+		if ($vhidenav) {return;}
 
 		if (has_nav_menu('primary')) {
 			echo '<div id="mainmenubutton" class="mobilebutton">';
@@ -490,26 +510,27 @@ if (!function_exists('skeleton_main_menu_mobile_button')) {
 // note: action 'skeleton_secondarynav' is not actually called anywhere -
 // this is an auxiliary navigation bar available for custom positioning
 // ...or direct firing via: do_action('skeleton_secondarynav');
-if (isset($vthemesettings['secondarymenu'])) {
- if ($vthemesettings['secondarymenu'] == '1') {
+if ( (isset($vthemesettings['secondarymenu'])) && ($vthemesettings['secondarymenu'] == '1') ) {
 	if (!function_exists('skeleton_secondary_menu')) {
 		function skeleton_secondary_menu() {
+			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+			// check for menu in the seconday location
 			if (has_nav_menu('secondary')) {
 				if (THEMECOMMENTS) {echo '<!-- #secondarymenu -->';}
 				echo '<div id="secondarymenu" '.hybrid_get_attr('menu','secondary').'>'.PHP_EOL;
 				echo '	<div class="inner">'.PHP_EOL;
 				wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'secondary'));
 				echo '	</div>'.PHP_EOL;
-				echo '</div>';
-				if (THEMECOMMENTS) {echo '<!-- /#secondarymenu -->';}
+				echo '</div>'.PHP_EOL;
+				if (THEMECOMMENTS) {echo '<!-- /#secondarymenu -->'.PHP_EOL;}
 				echo PHP_EOL;
 			}
 		}
+		// 1.9.8: use new position filtered add_action method
+		// 1.9.8: hooked this to an existing template position (previously unused)
+		skeleton_add_action('skeleton_before_header','skeleton_secondary_menu',8);
 	}
-	// 1.9.8: use new position filtered add_action method
-	// 1.9.8: hooked this to an existing template position (was unused)
-	skeleton_add_action('skeleton_before_header','skeleton_secondary_menu',8);
- }
 }
 
 // ---------------
@@ -528,6 +549,7 @@ if (isset($vthemesettings['secondarymenu'])) {
 // -----------------------
 if (!function_exists('skeleton_banner_abstract')) {
  function skeleton_banner_abstract($vposition) {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
  	global $post; $vbanner = '';
  	// filterable to allow for HTML / ads / shortcode / widget...
  	$vbanner = skeleton_apply_filters('skeleton_'.$vposition.'_banner',$vbanner);
@@ -549,8 +571,8 @@ if (!function_exists('skeleton_banner_abstract')) {
 	 	echo '	<div class="inner">'.PHP_EOL;
  		echo $vbanner.PHP_EOL;
  		echo '	</div>'.PHP_EOL;
- 		echo '</div>';
- 		if (THEMECOMMENTS) {echo '<!-- /#'.$vposition.'banner -->';}
+ 		echo '</div>'.PHP_EOL;
+ 		if (THEMECOMMENTS) {echo '<!-- /#'.$vposition.'banner -->'.PHP_EOL;}
  		echo PHP_EOL;
 	}
  }
@@ -560,7 +582,10 @@ if (!function_exists('skeleton_banner_abstract')) {
 // ----------
 // 1.8.0: added banner position (above header)
 if (!function_exists('skeleton_top_banner')) {
-	function skeleton_top_banner() {skeleton_banner_abstract('top');}
+	function skeleton_top_banner() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		skeleton_banner_abstract('top');
+	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_before_header','skeleton_top_banner',2);
 }
@@ -569,7 +594,10 @@ if (!function_exists('skeleton_top_banner')) {
 // -------------
 // 1.8.0: added banner position (below header)
 if (!function_exists('skeleton_header_banner')) {
-	function skeleton_header_banner() {skeleton_banner_abstract('header');}
+	function skeleton_header_banner() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		skeleton_banner_abstract('header');
+	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_after_header','skeleton_header_banner',5);
 }
@@ -578,7 +606,10 @@ if (!function_exists('skeleton_header_banner')) {
 // -------------
 // 1.8.0: added banner position (under navbar)
 if (!function_exists('skeleton_navbar_banner')) {
-	function skeleton_navbar_banner() {skeleton_banner_abstract('navbar');}
+	function skeleton_navbar_banner() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		skeleton_banner_abstract('navbar');
+	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_after_navbar','skeleton_navbar_banner',10);
 }
@@ -587,7 +618,10 @@ if (!function_exists('skeleton_navbar_banner')) {
 // -------------
 // 1.8.0: added banner position (above footer)
 if (!function_exists('skeleton_footer_banner')) {
-	function skeleton_footer_banner() {skeleton_banner_abstract('footer');}
+	function skeleton_footer_banner() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		skeleton_banner_abstract('footer');
+	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_before_footer','skeleton_footer_banner',5);
 }
@@ -596,7 +630,10 @@ if (!function_exists('skeleton_footer_banner')) {
 // -------------
 // 1.8.0: added banner position (below footer)
 if (!function_exists('skeleton_bottom_banner')) {
-	function skeleton_bottom_banner() {skeleton_banner_abstract('bottom');}
+	function skeleton_bottom_banner() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		skeleton_banner_abstract('bottom');
+	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_after_footer','skeleton_bottom_banner',5);
 }
@@ -612,6 +649,7 @@ if (!function_exists('skeleton_bottom_banner')) {
 add_filter('dynamic_sidebar_params','skeleton_add_widget_classes');
 if (!function_exists('skeleton_add_widget_classes')) {
  function skeleton_add_widget_classes($vparams) {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemewidgets, $vthemewidgetcounter;
 	$vsidebarid = $vparams[0]['id'];
@@ -648,295 +686,302 @@ if (!function_exists('skeleton_add_widget_classes')) {
 // set Sidebars for Position
 // -------------------------
 if (!function_exists('skeleton_set_sidebar')) {
- function skeleton_set_sidebar($vposition) {
+	function skeleton_set_sidebar($vposition) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-	// 1.8.5: rename global sidebaroutput to themesidebars
-	global $vthemelayout, $vthemesidebars;
+		// 1.8.5: rename global sidebaroutput to themesidebars
+		global $vthemelayout, $vthemesidebars;
 
-	$vsidebar = $vthemesidebars['sidebar'];
-	$vsubsidebar = $vthemesidebars['subsidebar'];
- 	if ( (!$vsidebar) && (!$vsubsidebar) ) {return;}
+		$vsidebar = $vthemesidebars['sidebar'];
+		$vsubsidebar = $vthemesidebars['subsidebar'];
+		if ( (!$vsidebar) && (!$vsubsidebar) ) {return;}
 
-	// 1.9.0: use new themesidebars global
-	$vsidebars = $vthemesidebars['sidebars'];
-	$vcontext = $vthemesidebars['sidebarcontext'];
-	// 1.9.8: fix to variable typo here
-	$vsubcontext = $vthemesidebars['subsidebarcontext'];
+		// 1.9.0: use new themesidebars global
+		$vsidebars = $vthemesidebars['sidebars'];
+		$vcontext = $vthemesidebars['sidebarcontext'];
+		// 1.9.8: fix to variable typo here
+		$vsubcontext = $vthemesidebars['subsidebarcontext'];
 
-	// 1.9.8: fix to undefined index warning
- 	if ( (!isset($vthemesidebars['output'])) || (!is_array($vthemesidebars['output'])) ) {
- 		$vthemesidebars['output'] = array('','','','');
- 	}
- 	$vleftsidebar = $vsidebars[0];			$vleftoutput = $vthemesidebars['output'][0];
- 	$vsubleftsidebar = $vsidebars[1];		$vsubleftoutput = $vthemesidebars['output'][1];
- 	$vsubrightsidebar = $vsidebars[2];		$vsubrightoutput = $vthemesidebars['output'][2];
- 	$vrightsidebar = $vsidebars[3];			$vrightoutput = $vthemesidebars['output'][3];
-
-	// Note: Sidebar Positions: left - subleft - [content] - subright - right
-	// any primary and subsidiary sidebars are already mapped to these positions
- 	// if overriding use the skeleton_sidebar_layout_override filter above
-
- 	// final fallback is to sidebar/sidebar.php via hybrid_get_sidebar
- 	// this does not exist by default intentionally so shows no sidebar
-
- 	// Prepare/Output Left Sidebars
- 	// ----------------------------
- 	if ($vposition == 'left') {
- 		if (THEMEDEBUG) {echo "<!-- Left Sidebar Positions - Left: ".$vleftsidebar." - SubLeft: ".$vsubleftsidebar." -->";}
-
-	 	// Left Sidebar Position
-		if ($vleftsidebar != '') {
-			$vleftsidebar = skeleton_sidebar_check_template($vleftsidebar,'Left');
-			// prepare left sidebar position output
-			// 1.9.0: use blank sidebar template instead
-			ob_start(); hybrid_get_sidebar($vleftsidebar); $vleftoutput = ob_get_contents(); ob_end_clean();
-			// flag sidebar as empty if no sidebar content
-			if (strlen(trim($vleftoutput)) === 0) {
-				if (strstr($vleftsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
-				if (THEMEDEBUG) {echo '<!-- No Left Sidebar Content -->';}
-			} elseif (THEMEDEBUG) {echo '<!-- Left Sidebar Length: '.strlen($vleftoutput).' -->';}
+		// 1.9.8: fix to undefined index warning
+		if ( (!isset($vthemesidebars['output'])) || (!is_array($vthemesidebars['output'])) ) {
+			$vthemesidebars['output'] = array('','','','');
 		}
+		$vleftsidebar = $vsidebars[0];			$vleftoutput = $vthemesidebars['output'][0];
+		$vsubleftsidebar = $vsidebars[1];		$vsubleftoutput = $vthemesidebars['output'][1];
+		$vsubrightsidebar = $vsidebars[2];		$vsubrightoutput = $vthemesidebars['output'][2];
+		$vrightsidebar = $vsidebars[3];			$vrightoutput = $vthemesidebars['output'][3];
 
-		// Subleft Sidebar Position
-		if ($vsubleftsidebar != '') {
-			$vsubleftsidebar = skeleton_sidebar_check_template($vsubleftsidebar,'SubLeft');
-			// prepare subleft sidebar position output
-			// 1.8.5: allow for blank/empty sidebar override
-			// 1.9.0: use blank sidebar template instead
-			ob_start(); hybrid_get_sidebar($vsubleftsidebar); $vsubleftoutput = ob_get_contents(); ob_end_clean();
-			// flag sidebar as empty if no sidebar content
-			if (strlen(trim($vsubleftoutput)) === 0) {
-				if (strstr($vsubleftsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
-				if (THEMEDEBUG) {echo '<!-- No SubLeft Sidebar Content -->';}
-			} elseif (THEMEDEBUG) {echo '<!-- SubLeft Sidebar Length: '.strlen($vsubleftoutput).' -->';}
-		}
-	}
+		// Note: Sidebar Positions: left - subleft - [content] - subright - right
+		// any primary and subsidiary sidebars are already mapped to these positions
+		// if overriding use the skeleton_sidebar_layout_override filter above
 
- 	// Prepare/Output Right Sidebars
- 	// -----------------------------
- 	if ($vposition == 'right') {
- 		if (THEMEDEBUG) {echo "<!-- Right Sidebar Positions - SubRight: ".$vsubrightsidebar." - Right: ".$vrightsidebar." -->";}
+		// final fallback is to sidebar/sidebar.php via hybrid_get_sidebar
+		// this does not exist by default intentionally so shows no sidebar
 
- 	 	// Subright Sidebar Position
-		if ($vsubrightsidebar != '') {
-			$vsubrightsidebar = skeleton_sidebar_check_template($vsubrightsidebar,'SubRight');
-			// prepare subright sidebar position output
-			// 1.8.5: allow for blank sidebar override
-			// 1.9.0: use blank sidebar template instead
-			ob_start(); hybrid_get_sidebar($vsubrightsidebar); $vsubrightoutput = ob_get_contents(); ob_end_clean();
-			// flag sidebar as empty if no sidebar content
-			if (strlen(trim($vsubrightoutput)) === 0) {
-				if (strstr($vsubrightsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
-				if (THEMEDEBUG) {echo '<!-- No SubRight Sidebar Content -->';}
-			} elseif (THEMEDEBUG) {echo '<!-- SubRight Sidebar Length: '.strlen($vsubrightoutput).' -->';}
-		}
+		// Prepare/Output Left Sidebars
+		// ----------------------------
+		if ($vposition == 'left') {
+			if (THEMEDEBUG) {echo "<!-- Left Sidebar Positions - Left: ".$vleftsidebar." - SubLeft: ".$vsubleftsidebar." -->";}
 
-		// Right Sidebar Position
-		if ($vrightsidebar != '') {
-			$vrightsidebar = skeleton_sidebar_check_template($vrightsidebar,'Right');
-			// prepare right sidebar position output
-			// 1.8.5: allow for blank/empty sidebar override
-			// 1.9.0: use blank sidebar template instead
-			ob_start(); hybrid_get_sidebar($vrightsidebar); $vrightoutput = ob_get_contents(); ob_end_clean();
-			// flag sidebar as empty if no sidebar content
-			if (strlen(trim($vrightoutput)) === 0) {
-				if (strstr($vrightsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
-				if (THEMEDEBUG) {echo '<!-- No Right Sidebar Content -->';}
-			} elseif (THEMEDEBUG) {echo '<!-- Right Sidebar Length: '.strlen($vrightoutput).' -->';}
-		}
-	}
+			// Left Sidebar Position
+			if ($vleftsidebar != '') {
+				$vleftsidebar = skeleton_sidebar_check_template($vleftsidebar,'Left');
+				// prepare left sidebar position output
+				// 1.9.0: use blank sidebar template instead
+				ob_start(); hybrid_get_sidebar($vleftsidebar); $vleftoutput = ob_get_contents(); ob_end_clean();
+				// flag sidebar as empty if no sidebar content
+				if (strlen(trim($vleftoutput)) === 0) {
+					if (strstr($vleftsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
+					if (THEMEDEBUG) {echo '<!-- No Left Sidebar Content -->';}
+				} elseif (THEMEDEBUG) {echo '<!-- Left Sidebar Length: '.strlen($vleftoutput).' -->';}
+			}
 
-	// maybe swap mobile button positions to match sidebars
-	// TODO: maybe there is an easier/better way than this?
-	// ...we should check for sidebar content not just positions
-
-	// maybe move mobile subsidebar button to left
-	if ( ( (strstr($vleftsidebar,'sub')) && ($vsubleftsidebar == '') )
-	  && ( (strstr($vsubleftsidebar,'sub')) && ($vleftsidebar == '') ) ) {
-		if (!has_action('wp_footer','skeleton_mobile_subsidebar_button_swap')) {
-			add_action('wp_footer','skeleton_mobile_subsidebar_button_swap');
-			if (!function_exists('skeleton_mobile_subsidebar_button_swap')) {
-			 function skeleton_mobile_subsidebar_button_swap() {
-				echo "<style>#subsidebarbutton {float:left !important; margin-left:10px !important; margin-right:0px !important;}</style>";
-			 }
+			// Subleft Sidebar Position
+			if ($vsubleftsidebar != '') {
+				$vsubleftsidebar = skeleton_sidebar_check_template($vsubleftsidebar,'SubLeft');
+				// prepare subleft sidebar position output
+				// 1.8.5: allow for blank/empty sidebar override
+				// 1.9.0: use blank sidebar template instead
+				ob_start(); hybrid_get_sidebar($vsubleftsidebar); $vsubleftoutput = ob_get_contents(); ob_end_clean();
+				// flag sidebar as empty if no sidebar content
+				if (strlen(trim($vsubleftoutput)) === 0) {
+					if (strstr($vsubleftsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
+					if (THEMEDEBUG) {echo '<!-- No SubLeft Sidebar Content -->';}
+				} elseif (THEMEDEBUG) {echo '<!-- SubLeft Sidebar Length: '.strlen($vsubleftoutput).' -->';}
 			}
 		}
-	}
-	// maybe move mobile sidebar button to right
-	if ( ( ($vrightsidebar != '') && (!strstr($vrightsidebar,'sub')) && ($vsubrightsidebar == '') )
-	  && ( ($vsubrighsidebar != '') && (!strstr($vsubrightsidebar,'sub')) && ($vrightsidebar == '') ) ) {
-		if (!has_action('wp_footer','skeleton_mobile_sidebar_button_swap')) {
-			add_action('wp_head','skeleton_mobile_sidebar_button_swap');
-			if (!function_exists('skeleton_mobile_sidebar_button_swap')) {
-			 function skeleton_mobile_sidebar_button_swap() {
-				echo "<style>#sidebarbutton {float:right !important; margin-right:10px !important; margin-left:0px !important;}</style>";
-			 }
+
+		// Prepare/Output Right Sidebars
+		// -----------------------------
+		if ($vposition == 'right') {
+			if (THEMEDEBUG) {echo "<!-- Right Sidebar Positions - SubRight: ".$vsubrightsidebar." - Right: ".$vrightsidebar." -->";}
+
+			// Subright Sidebar Position
+			if ($vsubrightsidebar != '') {
+				$vsubrightsidebar = skeleton_sidebar_check_template($vsubrightsidebar,'SubRight');
+				// prepare subright sidebar position output
+				// 1.8.5: allow for blank sidebar override
+				// 1.9.0: use blank sidebar template instead
+				ob_start(); hybrid_get_sidebar($vsubrightsidebar); $vsubrightoutput = ob_get_contents(); ob_end_clean();
+				// flag sidebar as empty if no sidebar content
+				if (strlen(trim($vsubrightoutput)) === 0) {
+					if (strstr($vsubrightsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
+					if (THEMEDEBUG) {echo '<!-- No SubRight Sidebar Content -->';}
+				} elseif (THEMEDEBUG) {echo '<!-- SubRight Sidebar Length: '.strlen($vsubrightoutput).' -->';}
+			}
+
+			// Right Sidebar Position
+			if ($vrightsidebar != '') {
+				$vrightsidebar = skeleton_sidebar_check_template($vrightsidebar,'Right');
+				// prepare right sidebar position output
+				// 1.8.5: allow for blank/empty sidebar override
+				// 1.9.0: use blank sidebar template instead
+				ob_start(); hybrid_get_sidebar($vrightsidebar); $vrightoutput = ob_get_contents(); ob_end_clean();
+				// flag sidebar as empty if no sidebar content
+				if (strlen(trim($vrightoutput)) === 0) {
+					if (strstr($vrightsidebar,'sub')) {$vsubsidebar = false;} else {$vsidebar = false;}
+					if (THEMEDEBUG) {echo '<!-- No Right Sidebar Content -->';}
+				} elseif (THEMEDEBUG) {echo '<!-- Right Sidebar Length: '.strlen($vrightoutput).' -->';}
 			}
 		}
+
+		// maybe swap mobile button positions to match sidebars
+		// TODO: maybe there is an easier/better way than this?
+		// ...we should check for sidebar content not just positions
+
+		// maybe move mobile subsidebar button to left
+		if ( ( (strstr($vleftsidebar,'sub')) && ($vsubleftsidebar == '') )
+		  && ( (strstr($vsubleftsidebar,'sub')) && ($vleftsidebar == '') ) ) {
+			if (!has_action('wp_footer','skeleton_mobile_subsidebar_button_swap')) {
+				add_action('wp_footer','skeleton_mobile_subsidebar_button_swap');
+				if (!function_exists('skeleton_mobile_subsidebar_button_swap')) {
+				 function skeleton_mobile_subsidebar_button_swap() {
+					echo "<style>#subsidebarbutton {float:left !important; margin-left:10px !important; margin-right:0px !important;}</style>";
+				 }
+				}
+			}
+		}
+		// maybe move mobile sidebar button to right
+		if ( ( ($vrightsidebar != '') && (!strstr($vrightsidebar,'sub')) && ($vsubrightsidebar == '') )
+		  && ( ($vsubrighsidebar != '') && (!strstr($vsubrightsidebar,'sub')) && ($vrightsidebar == '') ) ) {
+			if (!has_action('wp_footer','skeleton_mobile_sidebar_button_swap')) {
+				add_action('wp_head','skeleton_mobile_sidebar_button_swap');
+				if (!function_exists('skeleton_mobile_sidebar_button_swap')) {
+				 function skeleton_mobile_sidebar_button_swap() {
+					echo "<style>#sidebarbutton {float:right !important; margin-right:10px !important; margin-left:0px !important;}</style>";
+				 }
+				}
+			}
+		}
+
+		// 1.8.5: rename to themesidebars global
+		$vthemesidebars['output'] = array($vleftoutput, $vsubleftoutput, $vsubrightoutput, $vrightoutput);
+
+		// 1.9.9: set theme sidebar states as may have changed
+		$vthemesidebars['sidebar'] = $vsidebar;
+		$vthemesidebars['subsidebar'] = $vsubsidebar;
+
+		if (THEMEDEBUG) {echo "<!-- Stored Sidebars Lengths: ";
+			echo strlen($vthemesidebars['output'][0]).','.strlen($vthemesidebars['output'][1]).',';
+			echo strlen($vthemesidebars['output'][2]).','.strlen($vthemesidebars['output'][3]); echo " -->";
+		}
+
+		// manual debug for full sidebar output
+		// if (THEMEDEBUG) {echo "<!-- Stored Sidebars: "; print_r($vthemesidebars['output']); echo " -->";}
+
 	}
-
-	// 1.8.5: rename to themesidebars global
-	$vthemesidebars['output'] = array($vleftoutput, $vsubleftoutput, $vsubrightoutput, $vrightoutput);
-
-	if (THEMEDEBUG) {echo "<!-- Stored Sidebars Lengths: ";
-		echo strlen($vthemesidebars['output'][0]).','.strlen($vthemesidebars['output'][1]).',';
-		echo strlen($vthemesidebars['output'][2]).','.strlen($vthemesidebars['output'][3]); echo " -->";
-	}
-
-	// manual debug for full sidebar output
-	// if (THEMEDEBUG) {echo "<!-- Stored Sidebars: "; print_r($vthemesidebars['output']); echo " -->";}
-
- }
 }
 
 // Check Sidebar Template
 // ----------------------
 // a fallback template hierarchy for sidebars
 if (!function_exists('skeleton_sidebar_check_template')) {
- function skeleton_sidebar_check_template($vtemplate,$vposition) {
+	function skeleton_sidebar_check_template($vtemplate,$vposition) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
- 	global $vthemelayout, $vthemesidebars;
+		global $vthemelayout, $vthemesidebars;
 
-	// 1.9.0: bug out if blank or subblank override
-	if ( ($vtemplate == 'blank') || ($vtemplate == 'subblank') ) {return $vtemplate;}
+		// 1.9.0: bug out if blank or subblank override
+		if ( ($vtemplate == 'blank') || ($vtemplate == 'subblank') ) {return $vtemplate;}
 
- 	// 1.9.0: use new themesidebars global
-	$vcontext = $vthemesidebars['sidebarcontext'];
-	$vsubcontext = $vthemesidebars['subsidebarcontext'];
+		// 1.9.0: use new themesidebars global
+		$vcontext = $vthemesidebars['sidebarcontext'];
+		$vsubcontext = $vthemesidebars['subsidebarcontext'];
 
-	// 1.8.5: changed to use get post types helper
-	$vposttypes = skeleton_get_post_types();
-	$vchecktemplate = false;
+		// 1.8.5: changed to use get post types helper
+		$vposttypes = skeleton_get_post_types();
+		$vchecktemplate = false;
 
-	// aiming to mirror WordPress page template hierarchy here (eventually)...
-	// handy mini ref: https://wphierarchy.com
-	// TODO: allow for specific post type ID sidebars?
-	// TODO: allow for specific author (nicename/ID) sidebars?
-	// TODO: allow for specific taxonomy-term (ID/slug) sidebars?
+		// aiming to mirror WordPress page template hierarchy here (eventually)...
+		// handy mini ref: https://wphierarchy.com
+		// TODO: allow for specific post type ID sidebars?
+		// TODO: allow for specific author (nicename/ID) sidebars?
+		// TODO: allow for specific taxonomy-term (ID/slug) sidebars?
 
-	// allow for post type archives...
-	if ( ($vcontext == 'archive') || ($vsubcontext == 'subarchive') ) {
-		if (!is_array($vposttypes)) {
-			if ($vtemplate == 'archive') {$vsubtemplate = 'archive-'.$vposttypes;}
-			if ($vtemplate == 'subarchive') {$vsubtemplate = 'subarchive-'.$vposttypes;}
+		// allow for post type archives...
+		if ( ($vcontext == 'archive') || ($vsubcontext == 'subarchive') ) {
+			if (!is_array($vposttypes)) {
+				if ($vtemplate == 'archive') {$vsubtemplate = 'archive-'.$vposttypes;}
+				if ($vtemplate == 'subarchive') {$vsubtemplate = 'subarchive-'.$vposttypes;}
+				$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
+				if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			}
+		}
+		// 1.8.5: allow for specific category slugs (and IDs)
+		if ( ($vcontext == 'category') || ($vsubcontext == 'subcategory') ) {
+			$vterm = get_queried_object(); $vcategory = $term->slug;
+			if ($vtemplate == 'category') {$vsubtemplate = 'category-'.$vcategory;}
+			if ($vtemplate == 'subcategory') {$vsubtemplate = 'subcategory-'.$vcategory;}
+			$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
+			if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			else {
+				$vcatid = $term->term_id;
+				if ($vtemplate == 'category') {$vsubtemplate = 'category-'.$vcatid;}
+				if ($vtemplate == 'subcategory') {$vsubtemplate = 'subcategory-'.$vcatid;}
+				$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
+				if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			}
+		}
+		// 1.8.5: allow for specific taxonomy slugs
+		if ( ($vcontext == 'taxonomy') || ($vsubcontext == 'subtaxonomy') ) {
+			$vterm = get_queried_object(); $vtaxonomy = $vterm->taxonomy;
+			if ($vtemplate == 'taxonomy') {$vsubtemplate = 'taxonomy-'.$vtaxonomy;}
+			if ($vtemplate == 'subtaxonomy') {$vsubtemplate = 'subtaxonomy-'.$vtaxonomy;}
 			$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
 			if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
 		}
-	}
-	// 1.8.5: allow for specific category slugs (and IDs)
-	if ( ($vcontext == 'category') || ($vsubcontext == 'subcategory') ) {
-		$vterm = get_queried_object(); $vcategory = $term->slug;
-		if ($vtemplate == 'category') {$vsubtemplate = 'category-'.$vcategory;}
-		if ($vtemplate == 'subcategory') {$vsubtemplate = 'subcategory-'.$vcategory;}
-		$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
-		if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+		// 1.8.5: allow for specific tag slugs (and IDs)
+		if ( ($vcontext == 'tag') || ($vsubcontext == 'subtag') ) {
+			$vterm = get_queried_object(); $vtag = $vterm->slug;
+			if ($vtemplate == 'tag') {$vsubtemplate = 'tag-'.$vtag;}
+			if ($vtemplate == 'subtag') {$vsubtemplate = 'subtag-'.$vtag;}
+			$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
+			if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			else {
+				$vtagid = $vterm->term_id;
+				if ($vtemplate == 'tag') {$vsubtemplate = 'tag-'.$vtagid;}
+				if ($vtemplate == 'subtag') {$vsubtemplate = 'subtag-'.$vtagid;}
+				$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
+				if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			}
+		}
+
+		// 1.8.5: allow already checked templates
+		if (!$vchecktemplate) {$vchecktemplate = skeleton_file_hierarchy('file',$vtemplate.'.php',array('sidebar'),array());}
+
+		if ($vchecktemplate) {
+			if (THEMEDEBUG) {echo '<!-- '.$vposition.' Sidebar Template Found: sidebar/'.$vtemplate.'.php -->';}
+			return $vtemplate;
+		}
 		else {
-			$vcatid = $term->term_id;
-			if ($vtemplate == 'category') {$vsubtemplate = 'category-'.$vcatid;}
-			if ($vtemplate == 'subcategory') {$vsubtemplate = 'subcategory-'.$vcatid;}
-			$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
-			if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
-		}
-	}
-	// 1.8.5: allow for specific taxonomy slugs
-	if ( ($vcontext == 'taxonomy') || ($vsubcontext == 'subtaxonomy') ) {
-		$vterm = get_queried_object(); $vtaxonomy = $vterm->taxonomy;
-		if ($vtemplate == 'taxonomy') {$vsubtemplate = 'taxonomy-'.$vtaxonomy;}
-		if ($vtemplate == 'subtaxonomy') {$vsubtemplate = 'subtaxonomy-'.$vtaxonomy;}
-		$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
-		if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
-	}
-	// 1.8.5: allow for specific tag slugs (and IDs)
-	if ( ($vcontext == 'tag') || ($vsubcontext == 'subtag') ) {
-		$vterm = get_queried_object(); $vtag = $vterm->slug;
-		if ($vtemplate == 'tag') {$vsubtemplate = 'tag-'.$vtag;}
-		if ($vtemplate == 'subtag') {$vsubtemplate = 'subtag-'.$vtag;}
-		$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
-		if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
-		else {
-			$vtagid = $vterm->term_id;
-			if ($vtemplate == 'tag') {$vsubtemplate = 'tag-'.$vtagid;}
-			if ($vtemplate == 'subtag') {$vsubtemplate = 'subtag-'.$vtagid;}
-			$vchecktemplate = skeleton_file_hierarchy('file',$vsubtemplate.'.php',array('sidebar'),array());
-			if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
-		}
-	}
+			if (THEMEDEBUG) {echo '<!-- '.$vposition.' Sidebar Template not found (sidebar/'.$vtemplate.'.php) -->';}
 
-	// 1.8.5: allow already checked templates
-	if (!$vchecktemplate) {$vchecktemplate = skeleton_file_hierarchy('file',$vtemplate.'.php',array('sidebar'),array());}
+			// fall back for singular post types to default sidebar
+			if (is_singular()) {
 
-	if ($vchecktemplate) {
-		if (THEMEDEBUG) {echo '<!-- '.$vposition.' Sidebar Template Found: sidebar/'.$vtemplate.'.php -->';}
+				// 1.9.0: use new theme layout global
+				$vsidebarmode = $vthemesidebars['sidebarmode'];
+				$vsubsidebarmode = $vthemesidebars['subsidebarmode'];
+
+				if ($vcontext == $vposttype) {
+					if ($vsidebarmode == 'unified') {$vtemplate = 'primary';}
+					elseif ( ($vsidebarmode == 'off') || ($vsidebarmode == 'pagesonly') ) {$vtemplate = '';}
+					else {$vtemplate = 'post';}
+				}
+				if ($vcontext == 'sub'.$vposttype) {
+					if ($vsubsidebarmode == 'unified') {$vtemplate = 'subsidiary';}
+					elseif ( ($vsubsidebarmode == 'off') || ($vsubsidebarmode == 'pagesonly') ) {$vtemplate = '';}
+					else {$vtemplate = 'subpost';}
+				}
+
+				$vchecktemplate = skeleton_file_hierarchy('file',$vtemplate.'.php',array('sidebar'),array());
+				if ($vchecktemplate) {return $vtemplate;}
+			}
+
+			// TODO: test blank sidebar behaviour
+			// if substr($vtemplate,0,3)) == 'sub') {$vtemplate = 'subblank';} else {$vtemplate = 'blank';}
+			$vtemplate = '';
+		}
+
 		return $vtemplate;
 	}
-	else {
-		if (THEMEDEBUG) {echo '<!-- '.$vposition.' Sidebar Template not found (sidebar/'.$vtemplate.'.php) -->';}
-
-		// fall back for singular post types to default sidebar
-		if (is_singular()) {
-
-			// 1.9.0: use new theme layout global
-			$vsidebarmode = $vthemesidebars['sidebarmode'];
-			$vsubsidebarmode = $vthemesidebars['subsidebarmode'];
-
-			if ($vcontext == $vposttype) {
-				if ($vsidebarmode == 'unified') {$vtemplate = 'primary';}
-				elseif ( ($vsidebarmode == 'off') || ($vsidebarmode == 'pagesonly') ) {$vtemplate = '';}
-				else {$vtemplate = 'post';}
-			}
-			if ($vcontext == 'sub'.$vposttype) {
-				if ($vsubsidebarmode == 'unified') {$vtemplate = 'subsidiary';}
-				elseif ( ($vsubsidebarmode == 'off') || ($vsubsidebarmode == 'pagesonly') ) {$vtemplate = '';}
-				else {$vtemplate = 'subpost';}
-			}
-
-			$vchecktemplate = skeleton_file_hierarchy('file',$vtemplate.'.php',array('sidebar'),array());
-			if ($vchecktemplate) {return $vtemplate;}
-		}
-
-		// TODO: test blank sidebar behaviour
-		// if substr($vtemplate,0,3)) == 'sub') {$vtemplate = 'subblank';} else {$vtemplate = 'blank';}
-		$vtemplate = '';
-	}
-
-	return $vtemplate;
- }
 }
 
 // Output Sidebars at Position
 // ---------------------------
 if (!function_exists('skeleton_get_sidebar')) {
- function skeleton_get_sidebar($vposition) {
+	function skeleton_get_sidebar($vposition) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-	// 1.8.5: rename global sidebaroutput to themesidebars
-	global $vthemelayout, $vthemesidebars;
+		// 1.8.5: rename global sidebaroutput to themesidebars
+		global $vthemelayout, $vthemesidebars;
 
-	$vsidebar = $vthemesidebars['sidebar'];
-	$vsubsidebar = $vthemesidebars['subsidebar'];
- 	if ( (!$vsidebar) && (!$vsubsidebar) ) {return;}
+		$vsidebar = $vthemesidebars['sidebar'];
+		$vsubsidebar = $vthemesidebars['subsidebar'];
+		if ( (!$vsidebar) && (!$vsubsidebar) ) {return;}
 
-	if (THEMEDEBUG) {
-		echo "<!-- Final Sidebar States: ";
-		$vsidebarstate = $vthemesidebars; unset($vsidebarstate['output']); print_r($vsidebarstate);
-		if ($vsidebar) {echo "Main Sidebar";} else {echo "No Main Sidebar";}
-		if ($vsubsidebar) {echo " - SubSidebar";} else {echo " - No SubSidebar";}
-		echo " -->";
+		if (THEMEDEBUG) {
+			echo "<!-- Final Sidebar States: ";
+			$vsidebarstate = $vthemesidebars; unset($vsidebarstate['output']); print_r($vsidebarstate);
+			if ($vsidebar) {echo "Main Sidebar";} else {echo "No Main Sidebar";}
+			if ($vsubsidebar) {echo " - SubSidebar";} else {echo " - No SubSidebar";}
+			echo " -->";
+		}
+
+		$vleftoutput = $vthemesidebars['output'][0];
+		$vsubleftoutput = $vthemesidebars['output'][1];
+		$vsubrightoutput = $vthemesidebars['output'][2];
+		$vrightoutput = $vthemesidebars['output'][3];
+
+		if ($vposition == 'left') {
+			if ($vleftoutput != '') {echo $vleftoutput;}
+			if ($vsubleftoutput != '') {echo $vsubleftoutput;}
+		}
+		if ($vposition == 'right') {
+			if ($vsubrightoutput != '') {echo $vsubrightoutput;}
+			if ($vrightoutput != '') {echo $vrightoutput;}
+		}
 	}
-
-	$vleftoutput = $vthemesidebars['output'][0];
-	$vsubleftoutput = $vthemesidebars['output'][1];
-	$vsubrightoutput = $vthemesidebars['output'][2];
-	$vrightoutput = $vthemesidebars['output'][3];
-
-	if ($vposition == 'left') {
-		if ($vleftoutput != '') {echo $vleftoutput;}
-		if ($vsubleftoutput != '') {echo $vsubleftoutput;}
-	}
-	if ($vposition == 'right') {
-		if ($vsubrightoutput != '') {echo $vsubrightoutput;}
-		if ($vrightoutput != '') {echo $vrightoutput;}
-	}
- }
 }
 
 
@@ -950,6 +995,7 @@ if (!function_exists('skeleton_get_sidebar')) {
 if (!function_exists('skeleton_sidebar_position_class')) {
 	add_filter('body_class','skeleton_sidebar_position_class');
 	function skeleton_sidebar_position_class($vclasses) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		global $vthemesidebars;
 		if (!$vthemesidebars['sidebar']) {return $vclasses;}
 
@@ -976,8 +1022,9 @@ if (!function_exists('skeleton_sidebar_position_class')) {
 // 1.5.0: added this button
 if (!function_exists('skeleton_sidebar_mobile_button')) {
 	function skeleton_sidebar_mobile_button() {
-		global $vthemesidebars;
-		if (!$vthemesidebars['sidebar']) {return;}
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+		global $vthemesidebars; if (!$vthemesidebars['sidebar']) {return;}
 
 		if (THEMECOMMENTS) {echo '<!-- #sidebarbutton -->';}
 		echo '<div id="sidebarbutton" class="mobilebutton">'.PHP_EOL;
@@ -1000,12 +1047,17 @@ if (!function_exists('skeleton_sidebar_mobile_button')) {
 // 1.5.0: skeleton_sidebar_wrap to skeleton_sidebar_open
 if (!function_exists('skeleton_sidebar_open'))  {
 	function skeleton_sidebar_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 		global $vthemesettings, $vthemesidebars;
 
 		// 1.9.0: use new theme layout global [!?! WTFF not working !?!]
 		// $vsidebarcolumns = $vthemesidebars['sidebarcolumns'];
-		if (THEMEDEBUG) {echo "<!-- *Sidebar Layout*";  $vsidebars = $vthemesidebars; unset($vsidebars['output']);
-			print_r($vsidebars); echo "*1* -->";}
+		if (THEMEDEBUG) {
+			echo "<!-- *Sidebar Layout* ";
+			$vsidebars = $vthemesidebars; unset($vsidebars['output']);
+			print_r($vsidebars); echo " -->";
+		}
 
 		$vsidebarcolumns = skeleton_set_sidebar_columns();
 
@@ -1038,7 +1090,7 @@ if (!function_exists('skeleton_sidebar_open'))  {
 
 		if (THEMECOMMENTS) {echo '<!-- #sidebar -->';}
 		echo '<div id="sidebar" class="'.$vclassstring.'" role="complementary">'.PHP_EOL;
-		echo '	<div id="sidebarpadding" class="inner">';
+		echo '	<div id="sidebarpadding" class="inner">'.PHP_EOL.PHP_EOL;
 
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -1049,9 +1101,10 @@ if (!function_exists('skeleton_sidebar_open'))  {
 // ------------------
 if (!function_exists('skeleton_sidebar_close')) {
 	function skeleton_sidebar_close() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'	</div>';
-		echo PHP_EOL.'</div>';
-		if (THEMECOMMENTS) {echo '<!-- /#sidebar -->';}
+		echo PHP_EOL.'</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /#sidebar -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -1067,23 +1120,27 @@ if (!function_exists('skeleton_sidebar_close')) {
 // --------------------------------
 // 1.8.0: renamed from skeleton_subsidebar_position
 // 1.8.0: removed theme options check to allow for sidebar overrides
+// 1.9.9: added missing function_exists check
 add_filter('body_class','skeleton_subsidebar_position_class');
-function skeleton_subsidebar_position_class($vclasses) {
-	global $vthemesidebars;
-	if (!$vthemesidebars['subsidebar']) {return $vclasses;}
+if (!function_exists('skeleton_subsidebar_position_class')) {
+	function skeleton_subsidebar_position_class($vclasses) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-	// 1.8.0: sidebars calculated in skeleton_set_sidebar_layout
-	$vi = 0;
-	$vsidebars = $vthemesidebars['sidebars'];
-	foreach ($vsidebars as $vasidebar) {
-		if (substr($vasidebar,0,3) == 'sub') {
-			// positions: left, subleft, subright, right
-			if ( ($vi == 0) || ($vi == 1) ) {$vclasses[] = 'subsidebar-left';}
-			if ( ($vi == 2) || ($vi == 3) ) {$vclasses[] = 'subsidebar-right';}
+		global $vthemesidebars; if (!$vthemesidebars['subsidebar']) {return $vclasses;}
+
+		// 1.8.0: sidebars calculated in skeleton_set_sidebar_layout
+		$vi = 0;
+		$vsidebars = $vthemesidebars['sidebars'];
+		foreach ($vsidebars as $vasidebar) {
+			if (substr($vasidebar,0,3) == 'sub') {
+				// positions: left, subleft, subright, right
+				if ( ($vi == 0) || ($vi == 1) ) {$vclasses[] = 'subsidebar-left';}
+				if ( ($vi == 2) || ($vi == 3) ) {$vclasses[] = 'subsidebar-right';}
+			}
+			$vi++;
 		}
-		$vi++;
+		return $vclasses;
 	}
-	return $vclasses;
 }
 
 // Mobile Subsidebar Display Button
@@ -1091,8 +1148,9 @@ function skeleton_subsidebar_position_class($vclasses) {
 // 1.5.0: added this button
 if (!function_exists('skeleton_subsidebar_mobile_button')) {
 	function skeleton_subsidebar_mobile_button() {
-		global $vthemesidebars;
-		if (!$vthemesidebars['subsidebar']) {return;}
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+		global $vthemesidebars; if (!$vthemesidebars['subsidebar']) {return;}
 
 		if (THEMECOMMENTS) {echo '<!-- #subsidebarbutton -->';}
 		echo '<div id="subsidebarbutton" class="mobilebutton">'.PHP_EOL;
@@ -1102,8 +1160,9 @@ if (!function_exists('skeleton_subsidebar_mobile_button')) {
 		echo '<div id="subsidebarbuttonsmall" class="mobilebutton">'.PHP_EOL;
 		echo '	<a class="button" id="subsidebarshowsmall" href="javascript:void(0);" onclick="showsubsidebar();">[+] SubBar</a>'.PHP_EOL;
 		echo '	<a class="button" id="subsidebarhidesmall" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">[-] SubBar</a>'.PHP_EOL;
-		echo '</div>';
-		if (THEMECOMMENTS) {echo '<!-- /#subsidebarbutton -->';}
+		echo '</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /#subsidebarbutton -->'.PHP_EOL;}
+		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_navbar','skeleton_subsidebar_mobile_button',6);
@@ -1113,12 +1172,17 @@ if (!function_exists('skeleton_subsidebar_mobile_button')) {
 // --------------------
 if (!function_exists('skeleton_subsidebar_open')) {
 	function skeleton_subsidebar_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 		global $vthemesettings, $vthemesidebars;
 
 		// 1.9.0: use new theme layout global [!?! WTFF not working !?!]
 		// $vsubsidebarcolumns = $vthemesidebars['subsidebarcolumns'];
-		if (THEMEDEBUG) {echo "<!-- *SubSidebars*"; $vsidebars = $vthemesidebars; unset($vsidebars['output']);
-						print_r($vsidebars); echo "*2* -->";}
+		if (THEMEDEBUG) {
+			echo "<!-- *SubSidebar Layout* ";
+			$vsidebars = $vthemesidebars; unset($vsidebars['output']);
+			print_r($vsidebars); echo " -->";
+		}
 
 		$vsubsidebarcolumns = skeleton_set_subsidebar_columns();
 
@@ -1149,7 +1213,7 @@ if (!function_exists('skeleton_subsidebar_open')) {
 
 		if (THEMECOMMENTS) {echo '<!-- #subsidebar -->';}
 		echo '<div id="subsidebar" class="'.$vclassstring.'" role="complementary">'.PHP_EOL;
-		echo '	<div id="subsidebarpadding" class="inner">'.PHP_EOL;
+		echo '	<div id="subsidebarpadding" class="inner">'.PHP_EOL.PHP_EOL;
 
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -1161,9 +1225,10 @@ if (!function_exists('skeleton_subsidebar_open')) {
 // 1.8.0: fix from skeleton_subsidebar_wrap_close
 if (!function_exists('skeleton_subsidebar_close')) {
 	function skeleton_subsidebar_close() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'	</div>';
-		echo PHP_EOL.'</div>';
-		if (THEMECOMMENTS) {echo '<!-- /#subsidebar -->';}
+		echo PHP_EOL.'</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /#subsidebar -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -1180,17 +1245,24 @@ if (!function_exists('skeleton_subsidebar_close')) {
 // 1.8.0: add woocommercecontent div wrapper to woocommerce content for ease of style targeting
 add_action('woocommerce_before_main_content','skeleton_woocommerce_page_wrapper_open');
 function skeleton_woocommerce_page_wrapper_open() {
-	if (THEMECOMMENTS) {echo '<!-- #woocommercecontent -->';} echo '<div id="woocommercecontent">';
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	if (THEMECOMMENTS) {echo '<!-- #woocommercecontent -->';}
+	echo '<div id="woocommercecontent">'.PHP_EOL.PHP_EOL;
 }
 add_action('woocommerce_after_main_content','skeleton_woocommerce_page_wrapper_close');
 function skeleton_woocommerce_page_wrapper_close() {
-	echo '</div>'; if (THEMECOMMENTS) {echo '<!-- /#woocommercecontent -->';}
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	echo '</div>'.PHP_EOL;
+	if (THEMECOMMENTS) {echo '<!-- /#woocommercecontent -->'.PHP_EOL;}
+	echo PHP_EOL;
 }
 
 // Content Wrap Open
 // -----------------
 if (!function_exists('skeleton_content_open')) {
 	function skeleton_content_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 		global $vthemesettings, $vthemelayout, $vthemesidebars;
 
 		// 1.8.0: sidebars calculated in skeleton_set_sidebar_layout
@@ -1201,7 +1273,6 @@ if (!function_exists('skeleton_content_open')) {
 		if ( ($vsidebars[2] != '') || ($vsidebars[3] != '') ) {$vrightsidebar = true;}
 
 		// 1.5.0: replaced skeleton_options call here
-		// $vcolumns = skeleton_content_width();
 		// 1.9.8: use themelayout global content columns
 		$vcolumns = $vthemelayout['contentcolumns'];
 
@@ -1216,10 +1287,26 @@ if (!function_exists('skeleton_content_open')) {
 		echo '<a id="top" name="top"></a>'; // #top id for scroll links
 		if (THEMECOMMENTS) {echo '<!-- #content -->';}
 		echo '<div id="content" class="'.$vclasslist.'">'.PHP_EOL;
-		echo '	<div id="contentpadding" class="inner">'.PHP_EOL;
+		echo '	<div id="contentpadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_before_content','skeleton_content_open',10);
+}
+
+// Content Wrap Close
+// ------------------
+if (!function_exists('skeleton_content_wrap_close')) {function skeleton_content_wrap_close() {skeleton_content_close();} }
+if (!function_exists('skeleton_content_close')) {
+    function skeleton_content_close() {
+    	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+    	echo PHP_EOL.'	</div>'.PHP_EOL;
+    	echo '</div>'.PHP_EOL;
+    	if (THEMECOMMENTS) {echo '<!-- /#content -->'.PHP_EOL;}
+    	echo PHP_EOL;
+    	echo '<a id="bottom" name="bottom"></a>'; // #bottom id for scroll links
+    }
+	// 1.9.8: use new position filtered add_action method
+	skeleton_add_action('skeleton_after_content','skeleton_content_close',0);
 }
 
 // Home (Blog) Page Top Content
@@ -1227,32 +1314,45 @@ if (!function_exists('skeleton_content_open')) {
 // 1.8.5: moved this template function here from loop-hybrid.php
 if (!function_exists('skeleton_home_page_content')) {
 	function skeleton_home_page_content() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 		$vpageid = get_option('page_for_posts');
 		if ($vpageid) {
 			$vtitle = get_the_title($vpageid);
 			// 1.9.8: added new home page title filter
 			// TODO: add filter example to filters.php
 			$vtitle = skeleton_apply_filters('skeleton_home_page_title',$vtitle);
-			if ($vtitle) {echo '<h2 id="blogpagetitle">'.$vtitle.'</h2>';}
+			if ($vtitle) {
+				if (THEMECOMMENTS) {echo '<!-- #blogpagetitle -->';}
+				echo '<h2 id="blogpagetitle">'.$vtitle.'</h2>'.PHP_EOL;
+				if (THEMECOMMENTS) {echo '<!-- /#blogpagetitle -->'.PHP_EOL;}
+				echo PHP_EOL;
+			}
 
 			setup_postdata(get_page($vpageid));
 			ob_start(); the_content(); $vcontent = ob_get_contents(); ob_end_clean();
 			// 1.9.8: added new home page content filter
 			// TODO: add filter example to filters.php
 			$vcontent = apply_filters('skeleton_home_page_content',$vcontent);
-			if ($vcontent) {echo '<div id="blogpagecontent">'.$vcontent.'</div>';}
+			if ($vcontent) {
+				if (THEMECOMMENTS) {echo '<!-- #blogpagecontent -->';}
+				echo '<div id="blogpagecontent">'.$vcontent.'</div>'.PHP_EOL;
+				if (THEMECOMMENTS) {echo '<!-- /#blogpagecontent -->'.PHP_EOL;}
+			}
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_home_page_top','skeleton_home_page_content',5);
 }
 
-
 // Echo the Excerpt via Action Hook
 // --------------------------------
 // 1.5.0: for no reason but to make it overrideable
 if (!function_exists('skeleton_echo_the_excerpt')) {
-	function skeleton_echo_the_excerpt() {the_excerpt();}
+	function skeleton_echo_the_excerpt() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		the_excerpt();
+	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_the_excerpt','skeleton_echo_the_excerpt',5);
 }
@@ -1261,24 +1361,12 @@ if (!function_exists('skeleton_echo_the_excerpt')) {
 // --------------------------------
 // 1.5.0: for no reason but to make it overrideable
 if (!function_exists('skeleton_echo_the_content')) {
-	function skeleton_echo_the_content() {the_content();}
+	function skeleton_echo_the_content() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		the_content();
+	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_the_content','skeleton_echo_the_content',5);
-}
-
-// Content Wrap Close
-// ------------------
-if (!function_exists('skeleton_content_wrap_close')) {function skeleton_content_wrap_close() {skeleton_content_close();} }
-if (!function_exists('skeleton_content_close')) {
-    function skeleton_content_close() {
-    	echo PHP_EOL.'	</div>';
-    	echo PHP_EOL.'</div>';
-    	if (THEMECOMMENTS) {echo '<!-- /#content -->';}
-    	echo PHP_EOL;
-    	echo '<a id="bottom" name="bottom"></a>'; // #bottom id for scroll links
-    }
-	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_after_content','skeleton_content_close',0);
 }
 
 // Media Template Handler
@@ -1286,6 +1374,7 @@ if (!function_exists('skeleton_content_close')) {
 // 1.8.0: media handler for attachments and post formats
 if (!function_exists('skeleton_attachment_media_handler')) {
 	function skeleton_attachment_media_handler() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		if (!is_singular()) {return;}
 		global $vthemesettings;
@@ -1328,8 +1417,8 @@ if (!function_exists('skeleton_attachment_media_handler')) {
 				echo file_get_contents($vfilepath);
 				echo '</textarea></div><br>';
 			}
-			echo PHP_EOL.'</div>';
-			if (THEMECOMMENTS) {echo '<!-- /#attachment -->';}
+			echo PHP_EOL.'</div>'.PHP_EOL;
+			if (THEMECOMMENTS) {echo '<!-- /#attachment -->'.PHP_EOL;}
 			echo PHP_EOL;
 
 			// Attachment Meta
@@ -1346,8 +1435,8 @@ if (!function_exists('skeleton_attachment_media_handler')) {
 			echo '</h4>'.PHP_EOL;
 			hybrid_media_meta();
 			echo PHP_EOL.'	</div>'.PHP_EOL;
-			echo '</div>';
-			if (THEMECOMMENTS) {echo '<!-- /.attachment-meta -->';}
+			echo '</div>'.PHP_EOL;
+			if (THEMECOMMENTS) {echo '<!-- /.attachment-meta -->'.PHP_EOL;}
 			echo PHP_EOL;
 
 			// Remove default WordPress attachment display (prepended to content)
@@ -1431,6 +1520,7 @@ if (!function_exists('skeleton_attachment_media_handler')) {
 // ---------------------
 if (!function_exists('skeleton_entry_header_open')) {
 	function skeleton_entry_header_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		if (THEMECOMMENTS) {echo '<!-- .entry-header -->';}
 		echo '<header '.hybrid_get_attr('entry-header').'>'.PHP_EOL;
 	}
@@ -1439,8 +1529,9 @@ if (!function_exists('skeleton_entry_header_open')) {
 }
 if (!function_exists('skeleton_entry_header_close')) {
 	function skeleton_entry_header_close() {
-		echo PHP_EOL.'</header>';
-		if (THEMECOMMENTS) {echo '<!-- /.entry-header -->';}
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		echo PHP_EOL.'</header>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /.entry-header -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -1451,6 +1542,7 @@ if (!function_exists('skeleton_entry_header_close')) {
 // ------------------
 if (!function_exists('skeleton_entry_header_title')) {
 	function skeleton_entry_header_title() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $post; $vpostid = $post->ID; $vposttype = $post->post_type;
 		// 1.5.0: use h3 instead of h2 for archive/excerpt listings
 		if (is_archive() || is_search() || (!is_singular($vposttype)) ) {$vhsize = 'h3';} else {$vhsize = 'h2';}
@@ -1459,8 +1551,8 @@ if (!function_exists('skeleton_entry_header_title')) {
 		echo '	<a href="'; the_permalink(); echo '" rel="bookmark" itemprop="url" title="';
 		printf(esc_attr__('Permalink to %s','bioship'), the_title_attribute('echo=0'));
 		echo '">'.get_the_title($vpostid).'</a>'.PHP_EOL;
-		echo '</'.$vhsize.'>';
-		if (THEMECOMMENTS) {echo '<!-- /.entry-title -->';}
+		echo '</'.$vhsize.'>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /.entry-title -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -1472,6 +1564,7 @@ if (!function_exists('skeleton_entry_header_title')) {
 // Uses WP Subtitle plugin, still shows saved subtitle if plugin deactivated
 if (!function_exists('skeleton_entry_header_subtitle')) {
 	function skeleton_entry_header_subtitle() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $post; $vpostid = $post->ID; $vposttype = $post->post_type;
 
 		// 1.5.0: moved key filter here before WP subtitle check
@@ -1481,16 +1574,15 @@ if (!function_exists('skeleton_entry_header_subtitle')) {
 		// Check for WP Subtitle Function
 		if ( (function_exists('get_the_subtitle')) && ($vsubtitlekey == 'wps_subtitle') ) {
 			$vsubtitle = get_the_subtitle($vpostid,'','',false);
-		}
-		else {$vsubtitle = get_post_meta($vpostid,$vsubtitlekey,true);}
+		} else {$vsubtitle = get_post_meta($vpostid,$vsubtitlekey,true);}
 
 		if ($vsubtitle != '') {
 			// 1.5.0: use h4 instead of h3 for archive/excerpt listings
 			if (is_archive() || is_search() || (!is_singular($vposttype)) ) {$vhsize = 'h4';} else {$vhsize = 'h3';}
 			// note: there is no actual hybrid attributes for entry-subtitle
 			if (THEMECOMMENTS) {echo '<!-- .entry-subtitle -->';}
-			echo '<'.$vhsize.' '.hybrid_get_attr('entry-subtitle').'>'.$vsubtitle.'</'.$vhsize.'>';
-			if (THEMECOMMENTS) {echo '<!-- /.entry-subtitle -->';}
+			echo '<'.$vhsize.' '.hybrid_get_attr('entry-subtitle').'>'.$vsubtitle.'</'.$vhsize.'>'.PHP_EOL;
+			if (THEMECOMMENTS) {echo '<!-- /.entry-subtitle -->'.PHP_EOL;}
 			echo PHP_EOL;
 		}
 	}
@@ -1502,6 +1594,7 @@ if (!function_exists('skeleton_entry_header_subtitle')) {
 // ------------------------
 if (!function_exists('skeleton_entry_header_meta')) {
 	function skeleton_entry_header_meta() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings, $post;
 		$vpostid = $post->ID; $vposttype = $post->post_type;
 
@@ -1509,8 +1602,8 @@ if (!function_exists('skeleton_entry_header_meta')) {
 		if ($vmeta != '') {
 			if (THEMECOMMENTS) {echo '<!-- .entry-meta -->';}
 			echo '<div class="entry-meta entry-byline">'.PHP_EOL;
-			echo $vmeta.PHP_EOL.'</div>';
-			if (THEMECOMMENTS) {echo '<!-- /.entry-meta -->';}
+			echo $vmeta.PHP_EOL.'</div>'.PHP_EOL;
+			if (THEMECOMMENTS) {echo '<!-- /.entry-meta -->'.PHP_EOL;}
 			echo PHP_EOL;
 		}
 	}
@@ -1532,6 +1625,7 @@ if (!function_exists('skeleton_entry_header_meta')) {
 // ---------------------
 if (!function_exists('skeleton_entry_footer_open')) {
 	function skeleton_entry_footer_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		if (THEMECOMMENTS) {echo '<!-- .entry-footer -->';}
 		echo '<footer '.hybrid_get_attr('entry-footer').'>'.PHP_EOL;
 	}
@@ -1540,6 +1634,7 @@ if (!function_exists('skeleton_entry_footer_open')) {
 }
 if (!function_exists('skeleton_entry_footer_close')) {
 	function skeleton_entry_footer_close() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'</footer>';
 		if (THEMECOMMENTS) {echo '<!-- /.entry-footer -->';}
 		echo PHP_EOL;
@@ -1552,6 +1647,7 @@ if (!function_exists('skeleton_entry_footer_close')) {
 // ------------------------
 if (!function_exists('skeleton_entry_footer_meta')) {
 	function skeleton_entry_footer_meta() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings, $post;
 		$vpostid = $post->ID; $vposttype = get_post_type();
 
@@ -1572,7 +1668,7 @@ if (!function_exists('skeleton_entry_footer_meta')) {
 // -----------------------------------
 if (!function_exists('skeleton_get_entry_meta')) {
 	function skeleton_get_entry_meta($vpostid,$vposttype,$vposition) {
-
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		global $vpost, $vthemesettings;
 
 		if ($vposttype == 'page') {$vmetaformat = $vthemesettings['pagemeta'.$vposition];}
@@ -1583,20 +1679,25 @@ if (!function_exists('skeleton_get_entry_meta')) {
 		if ($vposttype == 'post') {
 			if ( (is_archive()) || (is_search()) || (!is_singular($vposttype)) ) {
 				if ( ($vposition == 'top') && ($vthemesettings['listentrymetatop'] == 0) ) {$vmetaformat = '';}
-				if ( ($vposition == 'bottom') && ($vthemesettings['listentrymetabottom'] == 1) ) {$vmetaformat = '';}
+				// 1.9.9: fix to setting check value (0 not 1)
+				if ( ($vposition == 'bottom') && ($vthemesettings['listentrymetabottom'] == 0) ) {$vmetaformat = '';}
 			}
 		}
 
-		// Apply Meta Filters (see filters.php example)
-		// --------------------------------------------
+		// Apply Meta Filters
+		// ------------------
+		// (see filters.php example)
 		// 1.5.0: optional meta format for an archive list
 		if (is_archive() || is_search() || (!is_singular($vposttype)) ) {
 			$vformat = skeleton_apply_filters('skeleton_list_meta_format_'.$vposition,$vmetaformat);
-		} else {$vformat = skeleton_apply_filters('skeleton_meta_format_'.$vposition,$vmetaformat);}
-
-		// bug out if empty...
-		if ($vformat == '') {return '';}
-		// echo '<!-- Meta Format: '; print_r($vformat); echo ' -->'; // debug point
+		} else {
+			$vformat = skeleton_apply_filters('skeleton_meta_format_'.$vposition,$vmetaformat);
+			// 1.9.9: added post type specific meta format filter
+			// TODO: add example to filters.php
+			$vformat = skeleton_apply_filters('skeleton_meta_format_'.$vposttype,$vformat);
+		}
+		if ($vformat == '') {return '';} // bug out if empty format string...
+		if (THEMEDEBUG) {echo '<!-- Meta Format: '; print_r($vformat); echo ' -->';}
 
 		// Add Meta Separator Span
 		// -----------------------
@@ -1604,115 +1705,94 @@ if (!function_exists('skeleton_get_entry_meta')) {
 		if (strstr($vformat,' BY ')) {$vformat = str_replace(' BY ',' <span class="meta-sep">BY</span> ',$vformat);}
 		if (strstr($vformat,' By ')) {$vformat = str_replace(' By ',' <span class="meta-sep">By</span> ',$vformat);}
 		if (strstr($vformat,'|')) {$vformat = str_replace('|','<span class="meta-sep">|</span>',$vformat);}
+		if (strstr($vformat,'-')) {$vformat = str_replace('-','<span class="meta-sep">-</span>',$vformat);}
+		if (strstr($vformat,':')) {$vformat = str_replace(':','<span class="meta-sep">:</span>',$vformat);}
 
 		// Do Replacement Values
 		// ---------------------
+		// 1.9.9: do single old % to # replacement here too shorten later checks
+		$vformat = str_replace('%','#',$vformat);
 
 		// Post Format Link
 		// ----------------
-		if (strstr($vformat,'POSTFORMAT')) {
-			if ( (strstr($vformat,'%POSTFORMAT%')) || (strstr($vformat,'%POSTFORMATLINK%'))
-			  || (strstr($vformat,'#POSTFORMAT#')) || (strstr($vformat,'#POSTFORMATLINK#')) ) {
-				$vpostformat = get_post_format();
-				if ($vpostformat) {
-					// TODO: use hybrid_post_format_link here?
-					$vurl = get_post_format_link($vpostformat);
-					$vpostformatlink = sprintf( '<a href="%s" class="post-format-link">%s</a>', esc_url($vurl), get_post_format_string($vpostformat) );
-				}
-				$vformat = str_replace('%POSTFORMAT%',$vpostformatlink,$vformat);
-				$vformat = str_replace('%POSTFORMATLINK%',$vpostformatlink,$vformat);
-				$vformat = str_replace('#POSTFORMAT#',$vpostformatlink,$vformat);
-				$vformat = str_replace('#POSTFORMATLINK#',$vpostformatlink,$vformat);
+		if ( (strstr($vformat,'#POSTFORMAT#')) || (strstr($vformat,'#POSTFORMATLINK#')) ) {
+			$vpostformat = get_post_format();
+			if ($vpostformat) {
+				// TODO: use hybrid_post_format_link here?
+				$vurl = get_post_format_link($vpostformat);
+				$vpostformatlink = sprintf( '<a href="%s" class="post-format-link">%s</a>', esc_url($vurl), get_post_format_string($vpostformat) );
 			}
+			$vformat = str_replace('#POSTFORMAT#',$vpostformatlink,$vformat);
+			$vformat = str_replace('#POSTFORMATLINK#',$vpostformatlink,$vformat);
 		}
 
 		// Edit Link
 		// ---------
-		if (strstr($vformat,'EDIT')) {
-			if ( (strstr($vformat,'%EDITLINK%')) || (strstr($vformat,'%EDIT%'))
-			  || (strstr($vformat,'#EDITLINK#')) || (strstr($vformat,'#EDIT#')) ) {
-				$veditlink = get_edit_post_link();
-				if ($veditlink) {
-					// 1.5.0: use the post type display label
-					if ($vposttype == 'page') {$vposttypedisplay = __('Page','bioship');}
-					elseif ($vposttype == 'post') {$vposttypedisplay = __('Post','bioship');}
-					else {
-						$vposttypeobject = get_post_type_object($vposttype);
-						$vposttypedisplay = $vposttypeobject->labels->singular_name;
-					}
-					$vposttypedisplay = skeleton_apply_filters('skeleton_post_type_display',$vposttypedisplay);
-					$veditlink = '<span class="edit-link"><a href="'.$veditlink.'">Edit this '.$vposttypedisplay.'</a>.</span>';
+		if ( (strstr($vformat,'#EDITLINK#')) || (strstr($vformat,'#EDIT#')) ) {
+			// 1.9.9: added post id for possible archive pages
+			$veditlink = get_edit_post_link($vpostid);
+			if ($veditlink) {
+				// 1.5.0: use the post type display label
+				if ($vposttype == 'page') {$vposttypedisplay = __('Page','bioship');}
+				elseif ($vposttype == 'post') {$vposttypedisplay = __('Post','bioship');}
+				else {
+					$vposttypeobject = get_post_type_object($vposttype);
+					$vposttypedisplay = $vposttypeobject->labels->singular_name;
 				}
-				$vformat = str_replace('%EDITLINK%',$veditlink,$vformat);
-				$vformat = str_replace('%EDIT%',$veditlink,$vformat);
-				$vformat = str_replace('#EDITLINK#',$veditlink,$vformat);
-				$vformat = str_replace('#EDIT#',$veditlink,$vformat);
+				$vposttypedisplay = skeleton_apply_filters('skeleton_post_type_display',$vposttypedisplay);
+				$veditlink = '<span class="edit-link"><a href="'.$veditlink.'">Edit this '.$vposttypedisplay.'</a>.</span>';
 			}
+			$vformat = str_replace('#EDITLINK#',$veditlink,$vformat);
+			$vformat = str_replace('#EDIT#',$veditlink,$vformat);
 		}
 
 		// Permalink
 		// ---------
-		if ( (strstr($vformat,'%PERMALINK%')) || (strstr($vformat,'#PERMALINK#')) ) {
+		if (strstr($vformat,'#PERMALINK#')) {
 			$vpermalink = get_permalink();
 			$vthepermalink = '<a href="'.$vpermalink.'" rel="bookmark">'.__('Permalink','bioship').'</a>';
-			$vformat = str_replace('%PERMALINK%',$vpermalink,$vformat);
 			$vformat = str_replace('#PERMALINK#',$vpermalink,$vformat);
 		}
 
 		// Datelink
 		// --------
-		if (strstr($vformat,'DATE')) {
-			if ( (strstr($vformat,'%DATELINK%')) || (strstr($vformat,'#DATELINK#')) ) {
-				// 1.8.0: fix to post date/time display to match passsed ID
-				$vpermalink = get_permalink($vpostid);
-				$vtimeformat = get_option('time_format');
-				$vthetime = esc_attr(get_the_time($vtimeformat,$vpostid));
-				$vdateformat = get_option('date_format');
-				$vpostdate = get_the_date($vdateformat,$vpostid);
-				$vthedate = '<time '.hybrid_get_attr('entry-published').'>'.$vpostdate.'</time>';
+		if (strstr($vformat,'#DATELINK#')) {
+			// 1.8.0: fix to post date/time display to match passsed ID
+			$vpermalink = get_permalink($vpostid);
+			$vtimeformat = get_option('time_format');
+			$vthetime = esc_attr(get_the_time($vtimeformat,$vpostid));
+			$vdateformat = get_option('date_format');
+			$vpostdate = get_the_date($vdateformat,$vpostid);
+			$vthedate = '<time '.hybrid_get_attr('entry-published').'>'.$vpostdate.'</time>';
 
-				$vdatelink = '<a href="'.$vpermalink.'" title="'.$vthetime.'" rel="bookmark"><span class="entry-date">'.$vthedate.'</span></a>';
-				// $vdatelink = '<a href="'.$vpermalink.'" title="'.$vthetime.'" rel="bookmark">'.$vthedate.'</a>';
-				$vformat = str_replace('%DATELINK%',$vdatelink,$vformat);
-				$vformat = str_replace('#DATELINK#',$vdatelink,$vformat);
-			}
+			$vdatelink = '<a href="'.$vpermalink.'" title="'.$vthetime.'" rel="bookmark"><span class="entry-date">'.$vthedate.'</span></a>';
+			// $vdatelink = '<a href="'.$vpermalink.'" title="'.$vthetime.'" rel="bookmark">'.$vthedate.'</a>';
+			$vformat = str_replace('#DATELINK#',$vdatelink,$vformat);
 		}
 
 		// Parent Page Link
 		// ----------------
 		// 1.5.0: display parent page link
-		if (strstr($vformat,'PARENT')) {
-			if ( (strstr($vformat,'%PARENTPAGE%')) || (strstr($vformat,'%PARENTLINK%'))
-			  || (strstr($vformat,'#PARENTPAGE#')) || (strstr($vformat,'#PARENTLINK#')) ) {
-				if (is_page()) {
-					$vparentid = $post->post_parent;
-					if ($vparentid == 0) {$vpageparent = ''; $vpageparentlink = '';}
-					else {
-						$vparentpermalink = get_permalink($vparentid);
-						$vpageparent = get_the_title($vparentid);
-						$vpageparentlink = '<a href="'.$vparentpermalink.'">'.$vpageparent.'</a>';
-					}
-					$vformat = str_replace('%PARENTPAGE%',$vpageparent,$vformat);
-					$vformat = str_replace('%PARENTLINK%',$vpageparentlink,$vformat);
-					$vformat = str_replace('#PARENTPAGE#',$vpageparent,$vformat);
-					$vformat = str_replace('#PARENTLINK#',$vpageparentlink,$vformat);
+		if ( (strstr($vformat,'#PARENTPAGE#')) || (strstr($vformat,'#PARENTLINK#')) ) {
+			// 1.9.9: added post id for possible archive pages
+			if (is_page($vpostid)) {
+				$vparentid = $post->post_parent;
+				if ($vparentid == 0) {$vpageparent = ''; $vpageparentlink = '';}
+				else {
+					$vparentpermalink = get_permalink($vparentid);
+					$vpageparent = get_the_title($vparentid);
+					$vpageparentlink = '<a href="'.$vparentpermalink.'">'.$vpageparent.'</a>';
 				}
-				else {$vpageparent = ''; $vpageparentlink = '';}
-			}
+			} else {$vpageparent = ''; $vpageparentlink = '';}
+			// 1.9.9: shifted this outside page check
+			$vformat = str_replace('#PARENTPAGE#',$vpageparent,$vformat);
+			$vformat = str_replace('#PARENTLINK#',$vpageparentlink,$vformat);
 		}
-
-		// Category List / Taxonomy Cats (not linked)
-		// -----------------------------
-		// if (strstr($vformat,'%CATS%')) {
-			// TODO: get unlinked category list?
-			// $vcatlist = '';
-		// }
 
 		// Category List / Taxonomy Cats (linked)
 		// -----------------------------
-		$vcategorylist = '';
-		if ( (strstr($vformat,'%CATEGORIES%')) || (strstr($vformat,'%CATS%')) || (strstr($vformat,'%CATSLIST%'))
-		  || (strstr($vformat,'#CATEGORIES#')) || (strstr($vformat,'#CATS#')) || (strstr($vformat,'#CATSLIST#')) ) {
+		if ( (strstr($vformat,'#CATEGORIES#')) || (strstr($vformat,'#CATS#')) || (strstr($vformat,'#CATSLIST#')) ) {
+		  	$vcategorylist = '';
 			if ($vposttype == 'post') {$vcategorylist = get_the_category_list(', ','',$vpostid);}
 			elseif ($vposttype == 'page') {$vcategorylist = '';}
 			else {
@@ -1743,14 +1823,11 @@ if (!function_exists('skeleton_get_entry_meta')) {
 				// note skeleton classes: entry-utility-prep entry-utility-prep-cat-links
 			}
 
-			$vformat = str_replace('%CATEGORIES%',$vcategorylist,$vformat);
-			$vformat = str_replace('%CATS%',$vcategorylist,$vformat);
-			if (strstr($vformat,'%CATSLIST%')) {
-				if ($vcategorylist != '') {$vformat = str_replace('%CATSLIST%',__('Categories: ','bioship').$vcategorylist.'<br>',$vformat);}
-				else {$vformat = str_replace('%CATSLIST%','',$vformat);}
-			}
+			// 1.9.9: use strip tags to create unlinked category list
+			$vcatlist = strip_tags($vcategorylist);
+
+			$vformat = str_replace('#CATS#',$vcatlist,$vformat);
 			$vformat = str_replace('#CATEGORIES#',$vcategorylist,$vformat);
-			$vformat = str_replace('#CATS#',$vcategorylist,$vformat);
 			if (strstr($vformat,'#CATSLIST#')) {
 				if ($vcategorylist != '') {$vformat = str_replace('#CATSLIST#',__('Categories: ','bioship').$vcategorylist.'<br>',$vformat);}
 				else {$vformat = str_replace('#CATSLIST#','',$vformat);}
@@ -1759,9 +1836,8 @@ if (!function_exists('skeleton_get_entry_meta')) {
 
 		// Parent Category(s)
 		// ------------------
-		$vparentcategorylist = ''; $vparentcatlist = '';
-		if ( (strstr($vformat,'%PARENTCATEGORIES%')) || (strstr($vformat,'%PARENTCATS%'))
-		  || (strstr($vformat,'#PARENTCATEGORIES#')) || (strstr($vformat,'#PARENTCATS#')) ) {
+		if ( (strstr($vformat,'#PARENTCATEGORIES#')) || (strstr($vformat,'#PARENTCATS#')) ) {
+		  	$vparentcategorylist = ''; $vparentcatlist = '';
 			$vcategories = get_the_category($vpostid);
 			if (count($vcategories) > 0) {
 				$vcatparentids = array();
@@ -1792,151 +1868,121 @@ if (!function_exists('skeleton_get_entry_meta')) {
 			if ($vparentcategorylist != '') {$vparentcategorylist = '<span '.hybrid_get_attr('entry-terms','category').'>'.$vparentcategorylist.'</span>';}
 			if ($vparentcatlist != '') {$vparentcatlist = '<span '.hybrid_get_attr('entry-terms','category').'>'.$vparentcatlist.'</span>';}
 
-			$vformat = str_replace('%PARENTCATEGORIES%',$vparentcategorylist,$vformat);
-			$vformat = str_replace('%PARENTCATS%',$vparentcatlist,$vformat);
 			$vformat = str_replace('#PARENTCATEGORIES#',$vparentcategorylist,$vformat);
 			$vformat = str_replace('#PARENTCATS#',$vparentcatlist,$vformat);
 		}
 
-		// Post Tags / CPT Terms (unlinked)
-		// ---------------------
-		// if (strstr($vformat,'%TAGS')) {
-			// TODO: get unlinked tag list?
-			// $vtaglist = '';
-		// }
-
 		// Post Tags / CPT Terms (linked)
 		// ---------------------
-		$vposttags = '';
-		if (strstr($vformat,'TAGS')) {
-			if ( (strstr($vformat,'%POSTTAGS%')) || (strstr($vformat,'%TAGS%')) || (strstr($vformat,'%TAGSLIST%'))
-			  || (strstr($vformat,'#POSTTAGS#')) || (strstr($vformat,'#TAGS#')) || (strstr($vformat,'#TAGSLIST#')) ) {
-				if ($vposttype == 'post') {
-					$vposttags = get_the_tag_list('',', ');
-					$vposttags = trim($vposttags);
-				}
-				elseif ($vposttype == 'page') {$vposttags = '';}
-				else {
-					// handle CPT tag terms ('post_tag' taxonomy)...
-					$vtaxonomies = get_object_taxonomies($post);
-					if (in_array('post_tag',$vtaxonomies)) {
-						if (THEMEHYBRID) {$vposttags = hybrid_get_post_terms(array('taxonomy' => 'post_tag', 'text' => '', 'before' => ''));}
-						else {
-							$vtagterms = get_the_terms($vpostid,'post_tag');
-							if (count($vtagterms) > 0) {
-								$vtermlinks = array();
-								foreach ($vtagterms as $vtagterm) {
-									$vtermlinks[] = '<a href="'.esc_url(get_term_link($vtagterm->slug,'post_tag')).'">'.$vtagterm->name.'</a>';
-								}
-								$vposttags = implode(', ',$vtermlinks);
+		if ( (strstr($vformat,'#POSTTAGS#')) || (strstr($vformat,'#TAGS#')) || (strstr($vformat,'#TAGSLIST#')) ) {
+			$vposttags = '';
+			// 1.9.9: handle page as CPT as may have post_tag taxonomy added
+			if ($vposttype == 'post') {$vposttags = trim(get_the_tag_list('',', '));}
+			else {
+				// handle CPT tag terms ('post_tag' taxonomy)...
+				$vtaxonomies = get_object_taxonomies($post);
+				if (in_array('post_tag',$vtaxonomies)) {
+					if (THEMEHYBRID) {$vposttags = hybrid_get_post_terms(array('taxonomy' => 'post_tag', 'text' => '', 'before' => ''));}
+					else {
+						$vtagterms = get_the_terms($vpostid,'post_tag');
+						if (count($vtagterms) > 0) {
+							$vtermlinks = array();
+							foreach ($vtagterms as $vtagterm) {
+								$vtermlinks[] = '<a href="'.esc_url(get_term_link($vtagterm->slug,'post_tag')).'">'.$vtagterm->name.'</a>';
 							}
+							$vposttags = implode(', ',$vtermlinks);
 						}
 					}
 				}
-				if ($vposttags != '') {
-					// 1.8.5: use hybrid attribute entry-terms
-					$vposttags = '<span '.hybrid_get_attr('entry-terms','post_tag').'>'.$vposttags.'</span>';
-					// $vposttags = '<span class="tag-links">'.$vposttags.'</span>';
-					// note skeleton classes: entry-utility-prep entry-utility-prep-tag-links
-				}
+			}
+			if ($vposttags != '') {
+				// 1.8.5: use hybrid attribute entry-terms
+				$vposttags = '<span '.hybrid_get_attr('entry-terms','post_tag').'>'.$vposttags.'</span>';
+				// $vposttags = '<span class="tag-links">'.$vposttags.'</span>';
+				// note skeleton classes: entry-utility-prep entry-utility-prep-tag-links
+			}
 
-				$vformat = str_replace('%POSTTAGS%',$vposttags,$vformat);
-				$vformat = str_replace('%TAGS%',$vposttags,$vformat);
-				if (strstr($vformat,'%TAGSLIST%')) {
-					if ($vposttags != '') {$vformat = str_replace('%TAGSLIST%',__('Tagged: ','bioship').$vposttags.'<br>',$vformat);}
-					else {$vformat = str_replace('%TAGSLIST%','',$vformat);}
-				}
-				$vformat = str_replace('#POSTTAGS#',$vposttags,$vformat);
-				$vformat = str_replace('#TAGS#',$vposttags,$vformat);
-				if (strstr($vformat,'#TAGSLIST#')) {
-					if ($vposttags != '') {$vformat = str_replace('#TAGSLIST#',__('Tagged: ','bioship').$vposttags.'<br>',$vformat);}
-					else {$vformat = str_replace('#TAGSLIST#','',$vformat);}
-				}
+			// 1.9.9: use strip tags to create unlinked tag list
+			$vtaglist = strip_tags($vposttags);
+
+			$vformat = str_replace('#TAGS#',$vtaglist,$vformat);
+			$vformat = str_replace('#POSTTAGS#',$vposttags,$vformat);
+			if (strstr($vformat,'#TAGSLIST#')) {
+				if ($vposttags != '') {$vformat = str_replace('#TAGSLIST#',__('Tagged: ','bioship').$vposttags.'<br>',$vformat);}
+				else {$vformat = str_replace('#TAGSLIST#','',$vformat);}
 			}
 		}
 
 		// Comments
 		// --------
-		if (strstr($vformat,'COMMENTS')) {
-			if ( (strstr($vformat,'%COMMENTS%')) || (strstr($vformat,'%COMMENTSLINK%'))
-			  || (strstr($vformat,'#COMMENTS#')) || (strstr($vformat,'#COMMENTSLINK#')) ) {
+		if ( (strstr($vformat,'#COMMENTS#')) || (strstr($vformat,'#COMMENTSLINK#')) ) {
+			$vnumcomments = (int)get_comments_number(get_the_ID());
+			$vcommentsdisplay = '';
+			// 1.9.9: add possible missing argument for archives
+			if (comments_open($vpostid)) {
+				if ($vnumcomments === 0) {$vcommentsdisplay = number_format_i18n(0).' '.__('comments','bioship').'.';}
+				elseif ($vnumcomments === 1) {$vcommentsdisplay = number_format_i18n(1).' '.__('comment','bioship').'.';}
+				elseif ($vnumcomments > 1) {$vcommentsdisplay = number_format_i18n($vnumcomments).' '.__('comments','bioship').'.';}
+				$vcommentsdisplay = '<span class="comments-link">'.$vcommentsdisplay.'</span>';
+			}
+			$vformat = str_replace('#COMMENTS#',$vcommentsdisplay,$vformat);
+			$vformat = str_replace('#COMMENTSLINK#',$vcommentsdisplay,$vformat);
+		}
+		if ( (strstr($vformat,'#COMMENTSPOPUP#')) || (strstr($vformat,'#COMMENTSPOPUPLINK#')) ) {
+			$vcomments = '';
+			// 1.9.9: add possible missing argument for archives
+			if (comments_open($vpostid)) {
+				// 1.9.9: add switch for conditional load of comments popup script
+				global $vthemecommentspopup; $vthemecommentspopup = true;
+				$vcommentscss = 'no-comments';
 				$vnumcomments = (int)get_comments_number(get_the_ID());
-				$vcommentsdisplay = '';
-				if (comments_open()) {
-					if ($vnumcomments === 0) {$vcommentsdisplay = number_format_i18n(0).' '.__('comments','bioship').'.';}
-					elseif ($vnumcomments === 1) {$vcommentsdisplay = number_format_i18n(1).' '.__('comment','bioship').'.';}
-					elseif ($vnumcomments > 1) {$vcommentsdisplay = number_format_i18n($vnumcomments).' '.__('comments','bioship').'.';}
-					$vcommentsdisplay = '<span class="comments-link">'.$vcommentsdisplay.'</span>';
-				}
-				$vformat = str_replace('%COMMENTS%',$vcommentsdisplay,$vformat);
-				$vformat = str_replace('%COMMENTSLINK%',$vcommentsdisplay,$vformat);
-				$vformat = str_replace('#COMMENTS#',$vcommentsdisplay,$vformat);
-				$vformat = str_replace('#COMMENTSLINK#',$vcommentsdisplay,$vformat);
+				if ($vnumcomments === 1) {$vcommentscss = 'one-comment';}
+				elseif ($vnumcomments > 1) {$vcommentscss = 'multiple-comments';}
+				ob_start();
+				comments_popup_link(
+					number_format_i18n(0).' '.__('comments','bioship').'.',
+					number_format_i18n(1).' '.__('comment','bioship').'.',
+					number_format_i18n($vnumcomments).' '.__('comments','bioship').'.', // ? __('% comments','bioship').'.' ?
+					$vcommentscss, '' );
+				$vcomments = ob_get_contents();
+				ob_end_clean();
+				$vcomments = '<span class="comments-link">'.$vcomments.'</span>';
 			}
-			if ( (strstr($vformat,'%COMMENTSPOPUP%')) || (strstr($vformat,'%COMMENTSPOPUPLINK%'))
-			  || (strstr($vformat,'#COMMENTSPOPUP#')) || (strstr($vformat,'#COMMENTSPOPUPLINK#')) ) {
-			  	$vcomments = '';
-			  	if (comments_open()) {
-					$vcommentscss = 'no-comments';
-					$vnumcomments = (int)get_comments_number(get_the_ID());
-					if ($vnumcomments === 1) {$vcommentscss = 'one-comment';}
-					elseif ($vnumcomments > 1) {$vcommentscss = 'multiple-comments';}
-					ob_start();
-					comments_popup_link(
-						number_format_i18n(0).' '.__('comments','bioship').'.',
-						number_format_i18n(1).' '.__('comment','bioship').'.',
-						number_format_i18n($vnumcomments).' '.__('comments','bioship').'.', // ? __('% comments','bioship').'.' ?
-						$vcommentscss, '' );
-					$vcomments = ob_get_contents();
-					ob_end_clean();
-					$vcomments = '<span class="comments-link">'.$vcomments.'</span>';
-				}
-				$vformat = str_replace('%COMMENTSPOPUP%',$vcomments,$vformat);
-				$vformat = str_replace('%COMMENTSPOPUPLINK%',$vcomments,$vformat);
-				$vformat = str_replace('#COMMENTSPOPUP#',$vcomments,$vformat);
-				$vformat = str_replace('#COMMENTSPOPUPLINK#',$vcomments,$vformat);
-			}
+			$vformat = str_replace('#COMMENTSPOPUP#',$vcomments,$vformat);
+			$vformat = str_replace('#COMMENTSPOPUPLINK#',$vcomments,$vformat);
 		}
 
 		// Author Info
 		// -----------
-		// 1.8.0: disambiguate %AUTHOR% and %AUTHORURL%
-		if (strstr($vformat,'AUTHOR')) {
-			if ( (strstr($vformat,'%AUTHORLINK%')) || (strstr($vformat,'%AUTHORNAME%'))
-			  || (strstr($vformat,'%AUTHOR%')) || (strstr($vformat,'%AUTHORURL%'))
-			  || (strstr($vformat,'#AUTHORLINK#')) || (strstr($vformat,'#AUTHORNAME#'))
-			  || (strstr($vformat,'#AUTHOR#')) || (strstr($vformat,'#AUTHORURL#')) ) {
+		// 1.8.0: disambiguate #AUTHOR# and #AUTHORURL#
+		if ( (strstr($vformat,'#AUTHORLINK#')) || (strstr($vformat,'#AUTHORNAME#'))
+		  || (strstr($vformat,'#AUTHOR#')) || (strstr($vformat,'#AUTHORURL#')) ) {
 
-				// 1.8.0: use separate function to get author display name
-				$vauthordisplay = skeleton_get_author_display_by_post($vpostid);
+			// 1.8.0: use separate function to get author display name
+			$vauthordisplay = skeleton_get_author_display_by_post($vpostid);
 
-				// 1.8.0: fix to the author posts link, add title tag
-				$vauthorid = get_post_field('post_author',$vpostid);
-				$vauthorurl = get_author_posts_url($vauthorid);
-				if ($vposttype == 'page') {$vposttypedisplay = __('Pages','bioship');}
-				elseif ($vposttype == 'post') {$vposttypedisplay = __('Posts','bioship');}
-				else {
-					$vposttypeobject = get_post_type_object($vposttype);
-					$vposttypedisplay = $vposttypeobject->labels->name;
-				}
-				$vauthorpoststitle = 'View all '.$vposttypedisplay.' by '.$vauthordisplay.'.';
-				$vauthoranchor = '<a href="'.$vauthorurl.'" title="'.$vauthorpoststitle.'">'.$vauthordisplay.'</a>';
-				$vauthorlink = skeleton_author_posts_link($vauthorurl);
-
-				// 1.9.8: fix to use vauthordisplay not old vauthor variable
-				$vformat = str_replace('%AUTHORLINK%',$vauthorlink,$vformat);
-				$vformat = str_replace('%AUTHORURL%',$vauthorurl,$vformat);
-				$vformat = str_replace('%AUTHOR%',$vauthoranchor,$vformat);
-				$vformat = str_replace('%AUTHORNAME%',$vauthordisplay,$vformat);
-				$vformat = str_replace('#AUTHORLINK#',$vauthorlink,$vformat);
-				$vformat = str_replace('#AUTHORURL#',$vauthorurl,$vformat);
-				$vformat = str_replace('#AUTHOR#',$vauthoranchor,$vformat);
-				$vformat = str_replace('#AUTHORNAME#',$vauthordisplay,$vformat);
+			// 1.8.0: fix to the author posts link, add title tag
+			$vauthorid = get_post_field('post_author',$vpostid);
+			$vauthorurl = get_author_posts_url($vauthorid);
+			if ($vposttype == 'page') {$vposttypedisplay = __('Pages','bioship');}
+			elseif ($vposttype == 'post') {$vposttypedisplay = __('Posts','bioship');}
+			else {
+				$vposttypeobject = get_post_type_object($vposttype);
+				$vposttypedisplay = $vposttypeobject->labels->name;
 			}
+			$vauthorpoststitle = 'View all '.$vposttypedisplay.' by '.$vauthordisplay.'.';
+			$vauthoranchor = '<a href="'.$vauthorurl.'" title="'.$vauthorpoststitle.'">'.$vauthordisplay.'</a>';
+			$vauthorlink = skeleton_author_posts_link($vauthorurl);
+
+			// 1.9.8: fix to use vauthordisplay not old vauthor variable
+			$vformat = str_replace('#AUTHORLINK#',$vauthorlink,$vformat);
+			$vformat = str_replace('#AUTHORURL#',$vauthorurl,$vformat);
+			$vformat = str_replace('#AUTHOR#',$vauthoranchor,$vformat);
+			$vformat = str_replace('#AUTHORNAME#',$vauthordisplay,$vformat);
 		}
 
 		// add Meta Wrapper
-		$vmeta = '<span class="meta-prep">';
+		$vmeta = '<span class="meta-prep">'.PHP_EOL;
 		$vmeta .= $vformat.PHP_EOL;
 		$vmeta .= '</span>'.PHP_EOL;
 
@@ -1954,6 +2000,7 @@ if (!function_exists('skeleton_get_entry_meta')) {
 // --------------------------
 if (!function_exists('skeleton_echo_thumbnail')) {
 	function skeleton_echo_thumbnail() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings, $wp_query, $post;
 
 		// 1.8.0: bug out for image post format media
@@ -1986,6 +2033,7 @@ if (!function_exists('skeleton_echo_thumbnail')) {
 // 1.5.0: moved here to be a separate function (from content template)
 if (!function_exists('skeleton_get_thumbnail')) {
 function skeleton_get_thumbnail($vpostid, $vposttype, $vpostnumber, $vthumbsize='') {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	global $vthemesettings; $vthumbnail = ''; $vmethod = '';
 	$vwrapperclasses = 'thumbnail thumbnail-'.$vpostnumber;
 
@@ -2052,8 +2100,8 @@ function skeleton_get_thumbnail($vpostid, $vposttype, $vpostnumber, $vthumbsize=
 			$vthumbnail .= get_the_image($vargs);
 		}
 		else {$vthumbnail .= skeleton_thumbnailer($vpostid,$vthumbsize,$vthumbclasses,$vmethod);}
-		$vthumbnail .= PHP_EOL.'</div>';
-		if (THEMECOMMENTS) {$vthumbnail .= '<!-- /.thumbnail'.$vpostnumber.' -->';}
+		$vthumbnail .= PHP_EOL.'</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {$vthumbnail .= '<!-- /.thumbnail'.$vpostnumber.' -->'.PHP_EOL;}
 		$vthumbnail .= PHP_EOL;
 	}
 
@@ -2069,6 +2117,7 @@ function skeleton_get_thumbnail($vpostid, $vposttype, $vpostnumber, $vthumbsize=
 // 1.5.0: changed to more general classes and added method
 if (!function_exists('skeleton_thumbnailer')) {
 	function skeleton_thumbnailer($vpostid,$vthumbsize,$vthumbclasses,$vmethod='') {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		// $vclasses .= ' scale-with-grid'; // now by default in templates
 		if (has_post_thumbnail($vpostid)) {
 			// 1.5.0: added attachment method support for CPTs
@@ -2101,6 +2150,7 @@ if (!function_exists('skeleton_thumbnailer')) {
 // -----------------
 if (!function_exists('skeleton_get_author_avatar')) {
  function skeleton_get_author_avatar() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	global $vthemesettings;
 	$vavatarsize = skeleton_apply_filters('skeleton_author_bio_avatar_size', $vthemesettings['authoravatarsize']);
 	if (!is_numeric($vavatarsize)) {$vavatarsize = 60;}
@@ -2112,36 +2162,39 @@ if (!function_exists('skeleton_get_author_avatar')) {
 // ----------------------
 // 1.8.0: added these helpers as seems no easy way
 if (!function_exists('skeleton_get_author_by_post')) {
- function skeleton_get_author_by_post($vpostid) {
-	$vauthorid = get_post_field('post_author',$vpostid);
-	if (THEMEDEBUG) {echo '<!-- Author ID: '.$vauthorid.' -->';}
-	$vauthor = get_user_by('id', $vauthorid);
-	return $vauthor;
- }
+	function skeleton_get_author_by_post($vpostid) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+		$vauthorid = get_post_field('post_author',$vpostid);
+		if (THEMEDEBUG) {echo '<!-- Author ID: '.$vauthorid.' -->';}
+		$vauthor = get_user_by('id', $vauthorid);
+		return $vauthor;
+	}
 }
 
 // Get Author Display from Author Object
 // -------------------------------------
 if (!function_exists('skeleton_get_author_display')) {
- function skeleton_get_author_display($vauthor) {
-	$vauthordisplay = trim($vauthor->data->display_name);
-	if ($vauthordisplay == '') {
-		$vauthordisplay = trim($vauthor->data->nice_name);
-		if ($vauthordisplay == '') {$vauthordisplay = $vauthor->data->user_login;}
+	function skeleton_get_author_display($vauthor) {
+	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		$vauthordisplay = trim($vauthor->data->display_name);
+		if ($vauthordisplay == '') {
+			$vauthordisplay = trim($vauthor->data->nice_name);
+			if ($vauthordisplay == '') {$vauthordisplay = $vauthor->data->user_login;}
+		}
+		if (THEMEDEBUG) {echo '<!-- Author Display Name: '.$vauthordisplay.' -->';}
+		return $vauthordisplay;
 	}
-	if (THEMEDEBUG) {echo '<!-- Author Display Name: '.$vauthordisplay.' -->';}
-	return $vauthordisplay;
- }
 }
 
 // Get Author Display via Post ID
 // ------------------------------
 if (!function_exists('skeleton_get_author_display_by_post')) {
- function skeleton_get_author_display_by_post($vpostid) {
-	$vauthor = skeleton_get_author_by_post($vpostid);
-	$vauthordisplay = skeleton_get_author_display($vauthor);
-	return $vauthordisplay;
- }
+	function skeleton_get_author_display_by_post($vpostid) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+		$vauthor = skeleton_get_author_by_post($vpostid);
+		$vauthordisplay = skeleton_get_author_display($vauthor);
+		return $vauthordisplay;
+	}
 }
 
 // Echo Author Bio Action
@@ -2149,6 +2202,7 @@ if (!function_exists('skeleton_get_author_display_by_post')) {
 // 1.9.8: abstract function for bottom and top
 if (!function_exists('skeleton_echo_author_bio')) {
 	function skeleton_echo_author_bio($vposition) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 		if (is_author()) {$vauthorbio = skeleton_author_bio_box('archive','archive',$vposition);}
 		elseif (is_singular()) {
@@ -2168,7 +2222,10 @@ if (!function_exists('skeleton_echo_author_bio')) {
 // ---------------------------
 // 1.9.8: changed function to call abstract
 if (!function_exists('skeleton_echo_author_bio_top')) {
-	function skeleton_echo_author_bio_top() {skeleton_echo_author_bio('top');}
+	function skeleton_echo_author_bio_top() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		skeleton_echo_author_bio('top');
+	}
 
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_author_bio_top','skeleton_echo_author_bio_top',5);
@@ -2182,7 +2239,10 @@ if (!function_exists('skeleton_echo_author_bio_top')) {
 // -------------------------------
 // 1.9.8: changed function to call abstract
 if (!function_exists('skeleton_echo_author_bio_bottom')) {
-	function skeleton_echo_author_bio_bottom() {skeleton_echo_author_bio('bottom');}
+	function skeleton_echo_author_bio_bottom() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		skeleton_echo_author_bio('bottom');
+	}
 
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_author_bio_bottom','skeleton_echo_author_bio_bottom',5);
@@ -2198,13 +2258,14 @@ if (!function_exists('skeleton_echo_author_bio_bottom')) {
 // if author has a description, show a bio on their entries
 if (!function_exists('skeleton_author_bio_box')) {
 	function skeleton_author_bio_box($vpostid,$vposttype,$vposition) {
-		global $vthemesettings;
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+		global $vthemesettings, $vthemedisplay;
 
+		// author must have filled in their bio description
 		if (!get_the_author_meta('description')) {return false;}
 
 		if ( ($vpostid == 'archive') && ($vposttype == 'archive') ) {
 			// TODO: add archive option for author bio position
-
 
 			return false;
 		}
@@ -2221,9 +2282,7 @@ if (!function_exists('skeleton_author_bio_box')) {
 			if ( ($vposition == 'top') && (!strstr($vbiopos,'top')) ) {return false;}
 			if ( ($vposition == 'bottom') && (!strstr($vbiopos,'bottom')) ) {return false;}
 
-			// check for meta override and for an author description
-			if (get_post_meta($vpostid,'_hideauthorbio') == '1') {return false;}
-
+			// 1.9.9: remove old meta check
 			return true;
 		}
 	}
@@ -2234,9 +2293,10 @@ if (!function_exists('skeleton_author_bio_box')) {
 // 1.5.0: moved from author-bio.php
 if (!function_exists('skeleton_about_author_title')) {
 	function skeleton_about_author_title() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		// 1.8.0: use separate function to get author display name
 		global $post; $vauthordosplay = skeleton_get_author_display_by_post($post->ID);
-	 	$vboxtitle = esc_attr(sprintf( __('About %s', 'bioship'), $vauthordisplay ));
+	 	$vboxtitle = esc_attr(sprintf( __('About %s', 'bioship'), $vauthordisplay));
 		$vboxtitle = apply_filter('skeleton_about_author_text',$vboxtitle);
 		return $vauthortitle; // .meta-prep-author?
 	}
@@ -2248,7 +2308,9 @@ if (!function_exists('skeleton_about_author_title')) {
 // 1.8.0: fix for missing author URL
 if (!function_exists('skeleton_author_posts_link')) {
 	function skeleton_author_posts_link($vauthorurl) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		global $post; $vposttype = $post->post_type; $vpostid = $post->ID;
+
 		// 1.5.0: use post type display name
 		if ($vposttype == 'page') {$vposttypedisplay = __('Pages','bioship');}
 		elseif ($vposttype == 'post') {$vposttypedisplay = __('Posts','bioship');}
@@ -2283,13 +2345,16 @@ if (!function_exists('skeleton_author_posts_link')) {
 // -------------------------
 if (!function_exists('skeleton_echo_comments')) {
 	function skeleton_echo_comments() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		// note: comments template filter is located in functions.php
 		// 1.5.0: Loads the comments template (default /comments.php)
 		if ( (have_comments()) || (comments_open()) ) {
 			comments_template('/comments.php', true);
 		} else {
 			$vcommentsclosedtext = skeleton_apply_filters('skeleton_comments_closed_text','');
+			if (THEMECOMMENTS) {echo "<!-- .commentclosed -->";}
 			echo '<p class="commentsclosed">'.$vcommentsclosedtext.'</p>';
+			if (THEMECOMMENTS) {echo "<!-- /.commentsclosed -->".PHP_EOL;}
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -2301,7 +2366,7 @@ if (!function_exists('skeleton_echo_comments')) {
 // wp_list_comments callback called in comments.php
 if (!function_exists('skeleton_comments')) {
 	function skeleton_comments($comment, $args, $depth) {
-
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		global $vthemesettings;
 
 		// 1.8.5: added comment edit/reply link buttons option
@@ -2336,8 +2401,8 @@ if (!function_exists('skeleton_comments')) {
 			echo '<div class="comment-text">';
 				comment_text();
 			echo '</div>';
-		echo PHP_EOL.'</div>';
-		if (THEMECOMMENTS) {echo '<!-- /li -->';}
+		echo PHP_EOL.'</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /li -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 }
@@ -2345,15 +2410,21 @@ if (!function_exists('skeleton_comments')) {
 // Comments Popup Script
 // ---------------------
 if (!function_exists('skeleton_comments_popup_script')) {
-	add_action('wp_footer','skeleton_comments_popup_script');
+	add_action('wp_footer','skeleton_comments_popup_script',11);
 	function skeleton_comments_popup_script() {
-		if (comments_open()) {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		// 1.9.9: added check for theme comments popup being used
+		global $vthemecommentspopup;
+		if ( (!isset($vthemecommentspopup)) || (!$vthemecommentspopup) ) {return;}
+
+		// 1.9.9: only check comments_open on singular pages
+		if ( is_archive() || (is_singular() && comments_open()) ) {
 			$vpopupsize = skeleton_apply_filters('skeleton_comments_popup_size',array(500,500));
 			// 1.8.0: added these checks to bypass possible filter errors
 			// 1.8.5: changed default from 500x500 to 640x480
 			if ( (!is_array($vpopupsize)) || (count($vpopupsize) != 2) ) {$vpopupsize = array(640,480);}
 			if ( (!is_numeric($vpopupsize[0])) || (!is_numeric($vpopupsize[1])) ) {$vpopupsize = array(640,490);}
-			// TODO: replace this as deprecated since WP 4.5+ with "no alternative available"?
+			// TODO: maybe replace this as deprecated since WP 4.5+ with "no alternative available"?
 			@comments_popup_script($vpopupsize);
 		}
 	}
@@ -2366,82 +2437,84 @@ if (!function_exists('skeleton_comments_popup_script')) {
 // 1.8.5: added Hybrid Breadcrumbs
 // TODO: fallback breadcrumb function?
 if (!function_exists('skeleton_breadcrumbs')) {
- function skeleton_breadcrumbs() {
- 	if (is_front_page()) {return;} // no breadcrumbs on front page
-	global $vthemesettings; $vcpts = array(); $vi = 0;
+	function skeleton_breadcrumbs() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		if (is_front_page()) {return;} // no breadcrumbs on front page
+		global $vthemesettings; $vcpts = array(); $vi = 0;
 
-	$vdisplay = false; $vbreadcrumbs = '';
-	if (is_singular()) {
-		$vposttype = get_post_type();
-		if (isset($vthemesettings['breadcrumbposttypes'])) {$vcpts = $vthemesettings['breadcrumbposttypes'];}
-		$vcpts = skeleton_apply_filters('skeleton_breadcrumb_post_types',$vcpts);
-		if ( (!is_array($vcpts)) || (count($vcpts) == 0) ) {return;}
-		foreach ($vcpts as $vcpt => $vvalue) {
-			if ( ($vcpt == $vposttype) && ($vvalue == '1') ) {$vdisplay = true;}
-		}
-	} elseif (is_archive()) {
-		$vposttypes = skeleton_get_post_types();
-		if (!is_array($vposttypes)) {$vposttypes = array($vposttypes);}
-		if (isset($vthemesettings['breadcrumbarchivetypes'])) {$vcpts = $vthemesettings['breadcrumbarchivetypes'];}
-		$vcpts = skeleton_apply_filters('skeleton_breadcrumb_archive_types',$vcpts);
-		if ( (!is_array($vcpts)) || (count($vcpts) == 0) ) {return;}
-		foreach ($vcpts as $vcpt => $vvalue) {
-			if ( ($vvalue == '1') && (in_array($vcpt,$vposttypes)) ) {$vdisplay = true;}
-		}
-	}
-	// TODO: add options/filters for these breadcrumbs types...
-	//elseif (is_author()) {
-	//	$vdisplay = true;
-	//} elseif (is_search()) {
-	//	$vdisplay = true;
-	//} elseif (is_404()) {
-	//	$vdisplay = true;
-	//} elseif (is_home()) {
-	//	$vdisplay = true;
-	//}
-
-	if ($vdisplay) {
-		if ($vthemesettings['hybridbreadcrumbs'] == '1') {
-			// TODO: auto-include the breadcrumb trail?
-			// if (!function_exists('breadcrumb_trail')) {
-			// 	include('breadcrumb-trail.php');
-			// }
-
-			// use Hybrid Breadcrumb Trail extension
-			if (function_exists('breadcrumb_trail')) {
-				// get the Hybrid breadcrumb trail HTML
-				$vbreadcrumbs = breadcrumb_trail();
+		$vdisplay = false; $vbreadcrumbs = '';
+		if (is_singular()) {
+			$vposttype = get_post_type();
+			if (isset($vthemesettings['breadcrumbposttypes'])) {$vcpts = $vthemesettings['breadcrumbposttypes'];}
+			$vcpts = skeleton_apply_filters('skeleton_breadcrumb_post_types',$vcpts);
+			if ( (!is_array($vcpts)) || (count($vcpts) == 0) ) {return;}
+			foreach ($vcpts as $vcpt => $vvalue) {
+				if ( ($vcpt == $vposttype) && ($vvalue == '1') ) {$vdisplay = true;}
+			}
+		} elseif (is_archive()) {
+			$vposttypes = skeleton_get_post_types();
+			if (!is_array($vposttypes)) {$vposttypes = array($vposttypes);}
+			if (isset($vthemesettings['breadcrumbarchivetypes'])) {$vcpts = $vthemesettings['breadcrumbarchivetypes'];}
+			$vcpts = skeleton_apply_filters('skeleton_breadcrumb_archive_types',$vcpts);
+			if ( (!is_array($vcpts)) || (count($vcpts) == 0) ) {return;}
+			foreach ($vcpts as $vcpt => $vvalue) {
+				if ( ($vvalue == '1') && (in_array($vcpt,$vposttypes)) ) {$vdisplay = true;}
 			}
 		}
-		else {
-			// TODO: add a fallback method if not using Hybrid?
-			$vbreadcrumbs = '';
+		// TODO: add options/filters for these breadcrumbs types...
+		//elseif (is_author()) {
+		//	$vdisplay = true;
+		//} elseif (is_search()) {
+		//	$vdisplay = true;
+		//} elseif (is_404()) {
+		//	$vdisplay = true;
+		//} elseif (is_home()) {
+		//	$vdisplay = true;
+		//}
+
+		if ($vdisplay) {
+			if ($vthemesettings['hybridbreadcrumbs'] == '1') {
+				// TODO: auto-include the breadcrumb trail?
+				// if (!function_exists('breadcrumb_trail')) {
+				// 	include('breadcrumb-trail.php');
+				// }
+
+				// use Hybrid Breadcrumb Trail extension
+				if (function_exists('breadcrumb_trail')) {
+					// get the Hybrid breadcrumb trail HTML
+					$vbreadcrumbs = breadcrumb_trail();
+				}
+			}
+			else {
+				// TODO: add a fallback method if not using Hybrid?
+				$vbreadcrumbs = '';
+			}
+		}
+
+		// allow for breadcrumb filter override
+		$vbreadcrumbs = skeleton_apply_filters('skeleton_breadcrumb_override',$vbreadcrumbs);
+		if ($vbreadcrumbs != '') {
+			if (THEMECOMMENTS) {echo "<!-- #breadcrumb -->";}
+			echo "<div id='breadcrumb' class='".$vposttype."-breadcrumb'>".PHP_EOL;
+			echo $vbreadcrumbs.PHP_EOL."</div>".PHP_EOL;
+			if (THEMECOMMENTS) {echo "<!-- /#breadcrumb -->".PHP_EOL;}
+			echo PHP_EOL;
 		}
 	}
-
-	// allow for breadcrumb filter override
-	$vbreadcrumbs = skeleton_apply_filters('skeleton_breadcrumb_override',$vbreadcrumbs);
-	if ($vbreadcrumbs != '') {
-		if (THEMECOMMENTS) {echo "<!-- #breadcrumb -->";}
-		echo "<div id='breadcrumb' class='".$vposttype."-breadcrumb'>".PHP_EOL;
-		echo $vbreadcrumbs.PHP_EOL."</div>".PHP_EOL;
-		if (THEMECOMMENTS) {echo "<!-- /#breadcrumb -->";}
-		echo PHP_EOL;
-	}
- }
 }
 
 // Check Breadcrumbs
 // -----------------
 // 1.8.5: added this check to hook breadcrumbs to singular/archive templates
 // 1.9.8: move this check to very top so can be moved higher than before_loop
-add_action('skeleton_before_container','skeleton_check_breadcrumbs',0);
+add_action('wp','skeleton_check_breadcrumbs');
 if (!function_exists('skeleton_check_breadcrumbs')) {
- function skeleton_check_breadcrumbs() {
-	// 1.9.8: use new position filtered add_action method
-	if (is_singular()) {skeleton_add_action('skeleton_before_singular','skeleton_breadcrumbs',5);}
-	else {skeleton_add_action('skeleton_before_loop','skeleton_breadcrumbs',5);}
- }
+	function skeleton_check_breadcrumbs() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		// 1.9.8: use new position filtered add_action method
+		if (is_singular()) {skeleton_add_action('skeleton_before_singular','skeleton_breadcrumbs',5);}
+		else {skeleton_add_action('skeleton_before_loop','skeleton_breadcrumbs',5);}
+	}
 }
 
 // -----------------
@@ -2450,6 +2523,7 @@ if (!function_exists('skeleton_check_breadcrumbs')) {
 // with WP Pagenavi Support
 if (!function_exists('skeleton_page_navigation')) {
 	function skeleton_page_navigation() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 		global $vthemesettings;
 
@@ -2550,8 +2624,8 @@ if (!function_exists('skeleton_page_navigation')) {
 				if (THEMECOMMENTS) {echo '<!-- #nav-below -->';}
 				echo '<div id="nav-below" class="navigation">'.PHP_EOL;
 				echo $vpagenav;
-				echo PHP_EOL.'</div>';
-				if (THEMECOMMENTS) {echo '<!-- /#nav-below -->';}
+				echo PHP_EOL.'</div>'.PHP_EOL;
+				if (THEMECOMMENTS) {echo '<!-- /#nav-below -->'.PHP_EOL;}
 				echo PHP_EOL;
 			}
 		}
@@ -2567,6 +2641,8 @@ if (!function_exists('skeleton_page_navigation')) {
 // TODO: add position hook trigger for paged nav
 if (!function_exists('skeleton_paged_navi')) {
  function skeleton_paged_navi() {
+ 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
 	if (function_exists('wp_pagenavi')) {
 		ob_start(); wp_pagenavi(array('type' => 'multipart'));
 		$vpagednav = ob_get_contents(); ob_end_clean();
@@ -2603,18 +2679,11 @@ add_action('wp_footer','skeleton_footer',$vposition);
 if (!function_exists('skeleton_footer_wrap_open')) {function skeleton_footer_wrap_open() {skeleton_footer_open();} }
 if (!function_exists('skeleton_footer_open')) {
 	function skeleton_footer_open() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings, $vthemelayout; $vclasses = array();
 
-		// 1.5.0: added footer class compatibility and filter
-		// $vfooterwidgets = skeleton_count_footer_widgets();
-		// $vclasses[] = ($vfooterwidgets == '0' ? 'noborder' : 'normal');
-		// $vclasses[] = $vthemelayout['gridcolumns'];
-		// $vclasses[] = 'columns';
-		// if ($vthemesettings['gridcompatibility']['960gridsystem'] == '1') {
-		//	$vcolumnnumbers = skeleton_word_to_number($vthemelayout['gridcolumns']);
-		//	$vclasses[] = 'grid_'.$vcolumnnumbers;
-		// }
-
+		// 1.5.0: added footer class filter and grid class compatibility
+		// 1.8.0: removed grid class compatibility (now for content grid only)
 		$vclasses[] = 'noborder';
 		$vclasses = skeleton_apply_filters('skeleton_footer_classes',$vclasses);
 		$vfooterclasses = implode(' ',$vclasses);
@@ -2622,7 +2691,7 @@ if (!function_exists('skeleton_footer_open')) {
 		if (THEMECOMMENTS) {echo '<!-- #footer -->';}
 		echo '<div id="footer" class="'.$vfooterclasses.'">'.PHP_EOL;
 		echo '	<div id="footerpadding" class="inner">'.PHP_EOL;
-		echo '		<footer '.hybrid_get_attr('footer').'>'.PHP_EOL;
+		echo '		<footer '.hybrid_get_attr('footer').'>'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_footer','skeleton_footer_open',0);
@@ -2632,11 +2701,12 @@ if (!function_exists('skeleton_footer_open')) {
 if (!function_exists('skeleton_footer_wrap_close')) {function skeleton_footer_wrap_close() {skeleton_footer_close();} }
 if (!function_exists('skeleton_footer_close')) {
 	function skeleton_footer_close() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		echo '		</footer>'.PHP_EOL;
 		echo '	</div>'.PHP_EOL;
-		echo '</div>';
-		if (THEMECOMMENTS) {echo '<!-- /#footer -->';}
-		echo PHP_EOL.PHP_EOL;
+		echo '</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /#footer -->'.PHP_EOL;}
+		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_footer','skeleton_footer_close',10);
@@ -2646,11 +2716,14 @@ if (!function_exists('skeleton_footer_close')) {
 // ------------------
 if (!function_exists('skeleton_footer_extras')) {
 	function skeleton_footer_extras() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings;
 		// 1.5.0: changed from skeleton_options to filtered theme option
 		// $vfooterextras = skeleton_options('footer_extras','');
+		// 1.6.0: removed theme option, now by filter only
 		// $vfooterextras = $vthemesettings['footer_extras'];
 		$vfooterextras = skeleton_apply_filters('skeleton_footer_html_extras','');
+
 		if ($vfooterextras) {
 			// 1.8.0: changed #footer_extras to #footer-extras for consistency
 			if (THEMECOMMENTS) {echo '<!-- #footer-extras -->';}
@@ -2659,8 +2732,8 @@ if (!function_exists('skeleton_footer_extras')) {
 			echo $vfooterextras.PHP_EOL;
 			echo '	</div>'.PHP_EOL;
 			echo '</div>'.PHP_EOL;
-			if (THEMECOMMENTS) {echo '<!-- /#footer-extras -->';}
-			echo PHP_EOL.PHP_EOL;
+			if (THEMECOMMENTS) {echo '<!-- /#footer-extras -->'.PHP_EOL;}
+			echo PHP_EOL;
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -2671,14 +2744,14 @@ if (!function_exists('skeleton_footer_extras')) {
 // -------------------------------------------------
 if (!function_exists('skeleton_count_footer_widgets')) {
 	function skeleton_count_footer_widgets() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		// 1.9.5: simplify to just use theme overrides global here
+		// 1.9.9: remove override check (not implemented)
 		$vfooterwidgets = 0;
-		// 1.9.5: simplify and just use theme overrides global here
-		global $vthemeoverride;
-		if ($vthemeoverride['footerwidgets'] == 'off') {return $vfooterwidgets;}
-		if ( (is_active_sidebar('footer-widget-area-1')) && ($vthemeoverride['footer1'] != 'off') ) {$vfooterwidgets++;}
-		if ( (is_active_sidebar('footer-widget-area-2')) && ($vthemeoverride['footer2'] != 'off') ) {$vfooterwidgets++;}
-		if ( (is_active_sidebar('footer-widget-area-3')) && ($vthemeoverride['footer3'] != 'off') ) {$vfooterwidgets++;}
-		if ( (is_active_sidebar('footer-widget-area-4')) && ($vthemeoverride['footer4'] != 'off') ) {$vfooterwidgets++;}
+		if (is_active_sidebar('footer-widget-area-1')) {$vfooterwidgets++;}
+		if (is_active_sidebar('footer-widget-area-2')) {$vfooterwidgets++;}
+		if (is_active_sidebar('footer-widget-area-3')) {$vfooterwidgets++;}
+		if (is_active_sidebar('footer-widget-area-4')) {$vfooterwidgets++;}
 		return $vfooterwidgets;
 	}
 }
@@ -2687,6 +2760,7 @@ if (!function_exists('skeleton_count_footer_widgets')) {
 // -------------------
 if (!function_exists('skeleton_footer_widgets')) {
 	function skeleton_footer_widgets() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		// filterable to allow for custom post types (see filters.php)
 		// default template is sidebar/footer.php
 		$vfooter = skeleton_apply_filters('skeleton_footer_sidebar','footer');
@@ -2700,6 +2774,7 @@ if (!function_exists('skeleton_footer_widgets')) {
 // ---------------
 if (!function_exists('skeleton_footer_nav')) {
 	function skeleton_footer_nav() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		if (THEMECOMMENTS) {echo '<!-- .footer-menu -->';}
 		echo '<div class="footer-menu" '.hybrid_get_attr('menu','footer').'>'.PHP_EOL;
 		$vfooternav = array(
@@ -2714,8 +2789,8 @@ if (!function_exists('skeleton_footer_nav')) {
 		// 1.8.5: added missing setting filter
 		$vfooternav = skeleton_apply_filters('skeleton_header_menu',$vfooternav);
 		wp_nav_menu($vfooternav);
-		echo PHP_EOL.'</div>';
-		if (THEMECOMMENTS) {echo '<!-- /.footer-menu -->';}
+		echo PHP_EOL.'</div>'.PHP_EOL;
+		if (THEMECOMMENTS) {echo '<!-- /.footer-menu -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
@@ -2726,38 +2801,41 @@ if (!function_exists('skeleton_footer_nav')) {
 // -------------------
 if (!function_exists('skeleton_footer_credits')) {
 	function skeleton_footer_credits() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		// calls skeleton_credit_link for default theme credits
-		$vcredits = skeleton_apply_filters('skeleton_author_credits','');
+		// 1.9.9: get initial value via function not filter
+		$vcredits = skeleton_credit_link();
+		$vcredits = skeleton_apply_filters('skeleton_author_credits',$vcredits);
 		if ($vcredits) {
 			if (THEMECOMMENTS) {echo '<!-- #footercredits -->';}
 			echo '<div id="footercredits">'.PHP_EOL.$vcredits.PHP_EOL.'</div>';
 			if (THEMECOMMENTS) {echo '<!-- /#footercredits -->';}
-			echo PHP_EOL;
+			echo PHP_EOL.PHP_EOL;
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
 	skeleton_add_action('skeleton_footer','skeleton_footer_credits',8);
 }
 
-// Site Credits
-// ------------
+// Get Site Credits
+// ----------------
+// 1.9.9: use as function return not a filter
 if (!function_exists('skeleton_credit_link')) {
 	function skeleton_credit_link(){
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings;
 		if ($vthemesettings['sitecredits'] != '') {
 			if ($vthemesettings['sitecredits'] == '0') {return '';}
 			return $vthemesettings['sitecredits'];
-		}
-		else {
+		} else {
 			$vsitecredits = '<div id="themecredits">';
-			if (is_child_theme()) {$vsitecredits .= THEMEDISPLAYNAME.' Theme for '; $vmfanchor = 'BioShip';} else {$vmfanchor = 'BioShip Framework';}
+			if (THEMECHILD) {$vsitecredits .= THEMEDISPLAYNAME.' Theme for '; $vmfanchor = 'BioShip';} else {$vmfanchor = 'BioShip Framework';}
 			$vsitecredits .= '<a href="http://'.'bioship.space/" title="BioShip Responsive Wordpress Theme Framework" target=_blank>'.$vmfanchor.'</a>';
-			if (!is_child_theme()) {$vsitecredits .= ' by <a href="http://'.'wordquest.org/" title="WordQuest Alliance" target=_blank>WordQuest</a>';}
+			if (THEMEPARENT) {$vsitecredits .= ' by <a href="http://'.'wordquest.org/" title="WordQuest Alliance" target=_blank>WordQuest</a>';}
 			$vsitecredits .= '</div>';
 			return $vsitecredits;
 		}
 	}
-	add_filter('skeleton_author_credits','skeleton_credit_link');
 }
 
 ?>

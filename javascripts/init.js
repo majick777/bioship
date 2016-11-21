@@ -76,34 +76,40 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	// maybe Trigger Sticky Page Elements
-	// 1.5.0: added sticky kit elements
-	if (document.getElementById('stickyelements')) {
-		var stickyelementslist = document.getElementById('stickyelements').value;
-		if (stickyelementslist != '') {
-			if (stickyelementslist.indexOf(',') == -1) {$(stickyelementslist).stick_in_parent();}
-			else {
+	// 1.5.0: maybe Trigger Sticky Page Elements
+	// 1.9.9: revamped sticky kit function
+	function stickyelements() {
+		if (document.getElementById('stickyelements')) {
+			var stickyelementslist = document.getElementById('stickyelements').value;
+			if (stickyelementslist != '') {
 				var stickyelements = new Array();
-				stickyelements = stickyelementslist.split(',');
-				for (i in stickyelements) {$(stickyelements[i]).stick_in_parent();}
+				if (stickyelementslist.indexOf(',') == -1) {stickyelements[0] = stickyelementslist;}
+				else {stickyelements = stickyelementslist.split(',');}
+
+				for (i in stickyelements) {
+					$element = $(stickyelements[i]);
+					if ($element.is(':visible')) {
+						$element.stick_in_parent().on('sticky_kit:stick', function(e) {
+							/* display glitch bypass: trim 1px on stick */
+							parentwidth = $(e.target).parent().width();
+							$(e.target).parent().width(parentwidth-1+'px');
+						});
+					} else {$(stickyelements[i]).trigger('sticky_kit:detach');}
+				}
 			}
 		}
 	}
+	stickyelements();
 
-	// maybe Trigger FitVids Elements
-	// 1.5.0: handles multiple elements
+	// 1.5.0: maybe Trigger FitVids Elements
+	// 1.9.9: optimized fitvids array code
 	if (document.getElementById('fitvidselements')) {
-		/* fitvidsdiv = document.getElementById('fitvidselements').value;
-		if (fitvidsdiv != '') {$('#'+fitvidsdiv).fitVids();} */
-
 		var fitvidselementslist = document.getElementById('fitvidselements').value;
 		if (fitvidselementslist != '') {
-			if (fitvidselementslist.indexOf(',') == -1) {$(fitvidselementslist).fitVids();}
-			else {
-				var fitvidselements = new Array();
-				fitvidselements = fitvidselementslist.split(',');
-				for (i in fitvidselements) {$(fitvidselements[i]).fitVids();}
-			}
+			var fitvidselements = new Array();
+			if (fitvidselementslist.indexOf(',') == -1) {fitvidselements[0] = fitvidselementslist;}
+			else {fitvidselements = fitvidselementslist.split(',');}
+			for (i in fitvidselements) {$(fitvidselements[i]).fitVids();}
 		}
 	}
 
@@ -111,6 +117,14 @@ jQuery(document).ready(function($) {
 	if (document.getElementById('foundation')) {
 		if (document.getElementById('foundation').value == 'load') {$(document).foundation();}
 	}
+
+	// 1.9.9: maybe run jquery matchHeight
+	function matchheights() {
+		if (document.getElementById('matchheight')) {
+			if (document.getElementById('matchheight').value == 'yes') {$('.matchheight').matchHeight();}
+		}
+	}
+	matchheights();
 
 	// check mobile buttons
 	function checkmobilebuttons() {
@@ -154,12 +168,12 @@ jQuery(document).ready(function($) {
 		};
 	})();
 
-	/* 1.8.5: maybe resize header logo */
+	// 1.8.5: maybe resize header logo
 	var logowidth = $('#site-logo img.logo-image').width();
 	var logoheight = $('#site-logo img.logo-image').height();
 	var startheaderwidth = $('#header').width();
 	function resizeheaderlogo() {
-		/* 1.9.8: fix to check for page element */
+		// 1.9.8: fix to check for page element
 		if (document.getElementById('logoresize')) {
 			if (document.getElementById('logoresize').value == 'yes') {
 			headerwidth = $('#header').width();
@@ -167,7 +181,7 @@ jQuery(document).ready(function($) {
 			newlogowidth = logowidth * ratio;
 			newlogoheight = logoheight * ratio;
 
-			/* 1.9.6: smaller screen onload fix */
+			// 1.9.6: smaller screen onload fix
 			if (newlogowidth > headerwidth) {
 				newlogowidth = headerwidth;
 				newlogoheight = newlogowidth / logowidth * logoheight;
@@ -182,7 +196,7 @@ jQuery(document).ready(function($) {
 			}
 		}
  	}
- 	/* 1.9.6: onload resize fix */
+ 	// 1.9.6: onload resize fix
 	resizeheaderlogo();
 
 	$(window).resize(function () {
@@ -193,7 +207,11 @@ jQuery(document).ready(function($) {
 			// maybe resize header logo
 			resizeheaderlogo();
 
-			// other resize functions..?
+			// 1.9.9: match heights as may have changed
+			matchheights();
+
+			// 1.9.9: recheck sticky kit elements
+			stickyelements();
 
 		}, 750, "themejavascript");
 	});

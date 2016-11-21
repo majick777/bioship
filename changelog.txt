@@ -1,3 +1,14 @@
+= 1.9.9 =
+- Customizer: split into Basic and Advanced Option pages
+- Option: jQuery Match Height loading for .matchheight classes
+- Improved: split Customizer into Basic and Advanced Options
+- Added: function tracer lines to all templating functions
+- Fixed: jQuery StickyKit and Mobile Queries conflict
+- Fixed: jQuery StickyKit total width display glitch
+- Fixed: set changed theme sidebar state for empty sidebars
+- Removed: old unused display output override checks
+- Optimized: reduced old meta formatting code bloat
+
 = 1.9.8 =
 - Fixed: map default options if empty (on theme activation)
 - Fixed: fix to numerous undefined variable warnings
@@ -5,7 +16,7 @@
 - Fixed: to TMGPA plugin recommendations array
 - Fixed: process shortcodes in excerpts filter option
 - Fixed: removed overflow:hidden from CSS clearfix causing height
-- Improved: tracer.php revamped outdated debug tracer
+- Improved: tracer.php fully revamped outdated debug tracer
 - Improved: use templating action priorities from hooks array
 - Update: replace deprecated constructor on Discreet Text Widget
 - Update: Discreet Text Widget (deprecated constructor method)
@@ -335,7 +346,6 @@
 
 = 0.1.0 =
 - * Minor Update and Fix List *
-- Fix StickyKit on sidebars and Mobile Queries conflict
 - MetaBox QuickSave for Display / Override Options
 - Retest Widget Transfers on Activation/Deactivation
 - Retest Pagination Display for Post/Archive Types

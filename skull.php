@@ -123,7 +123,7 @@ if (!function_exists('skeleton_widgets_init')) {
  function skeleton_widgets_init($vactive=true) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-	global $vthemesettings; $vts = $vthemesettings;
+	global $pagenow, $vthemesettings; $vts = $vthemesettings;
 
 	// Set Sidebar Labels
 	// ------------------
@@ -341,7 +341,12 @@ if (!function_exists('skeleton_widgets_init')) {
 				$vwidgetcount = count($vallwidgets[$vsidebarid]);
 				$vlabels[$vsidebarid]['name'] .= ' ('.$vwidgetcount.')';
 			}
-			skeleton_register_sidebar($vsidebarid,$vlabels[$vsidebarid],'off');
+			// 1.9.9: for customizer advanced options page
+			if ( ($pagenow == 'customize.php') || (is_customize_preview()) ) {
+				if ( (isset($_REQUEST['options'])) && ($_REQUEST['options'] == 'advanced') ) {
+				 	skeleton_register_sidebar($vsidebarid,$vlabels[$vsidebarid],'off');
+				}
+			} else {skeleton_register_sidebar($vsidebarid,$vlabels[$vsidebarid],'off');}
 		}
 	}
 
