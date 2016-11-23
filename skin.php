@@ -686,7 +686,7 @@ if ($vadminstyles) {
 	// 1.5.0: set Theme Options default icon (as \ is stripped in Admin CSS Theme Options save)
 	// ref: https://developer.wordpress.org/resource/dashicons/
 	// and: http://calebserna.com/dashicons-cheatsheet/
-	$vicon = apply_filters('admin_adminbar_menu_icon','\\f115');
+	$vicon = pply_filters('admin_adminbar_menu_icon','\\f115');
 	echo '#wp-admin-bar-theme-options .ab-icon:before {content: "'.$vicon.'"; top:2px;}'.PHP_EOL;
 
 	// 1.8.5: added simple hybrid hook style fixes
