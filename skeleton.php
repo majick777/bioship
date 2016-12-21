@@ -408,7 +408,9 @@ if (!function_exists('skeleton_header_extras')) {
 		// 1.5.0: changed from skeleton_options to value filter
 		// $vheaderextras = skeleton_options('header_extras','');
 		// $vheaderextras = $vthemesettings['header_extras'];
-		$vheaderextras = skeleton_apply_filters('skeleton_header_html_extras','');
+		// 2.0.0: allow for use of shorter header extras filter name
+		$vheaderextras = skeleton_apply_filters('skeleton_header_extras','');
+		$vheaderextras = skeleton_apply_filters('skeleton_header_html_extras',$vheaderextras);
 		if ($vheaderextras) {
 			// 1.8.0: changed #header_extras to #header-extras for consistency, added class filter
 			$vheaderextraclasses = skeleton_apply_filters('skeleton_header_extras_classes','header-extras');
@@ -432,7 +434,6 @@ if (!function_exists('skeleton_header_extras')) {
 
 // Main Menu
 // ---------
-// note: hooked on 'skeleton_navbar' which is called in header.php
 if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] == '1') ) {
 
 	// Wrap Open
@@ -1693,7 +1694,7 @@ if (!function_exists('skeleton_get_entry_meta')) {
 		} else {
 			$vformat = skeleton_apply_filters('skeleton_meta_format_'.$vposition,$vmetaformat);
 			// 1.9.9: added post type specific meta format filter
-			// TODO: add example to filters.php
+			// TODO: add to filters.php list/example
 			$vformat = skeleton_apply_filters('skeleton_meta_format_'.$vposttype,$vformat);
 		}
 		if ($vformat == '') {return '';} // bug out if empty format string...
@@ -1705,8 +1706,9 @@ if (!function_exists('skeleton_get_entry_meta')) {
 		if (strstr($vformat,' BY ')) {$vformat = str_replace(' BY ',' <span class="meta-sep">BY</span> ',$vformat);}
 		if (strstr($vformat,' By ')) {$vformat = str_replace(' By ',' <span class="meta-sep">By</span> ',$vformat);}
 		if (strstr($vformat,'|')) {$vformat = str_replace('|','<span class="meta-sep">|</span>',$vformat);}
-		if (strstr($vformat,'-')) {$vformat = str_replace('-','<span class="meta-sep">-</span>',$vformat);}
 		if (strstr($vformat,':')) {$vformat = str_replace(':','<span class="meta-sep">:</span>',$vformat);}
+		// 2.0.0: remove this one as causing double replacements
+		// if (strstr($vformat,'-')) {$vformat = str_replace('-','<span class="meta-sep">-</span>',$vformat);}
 
 		// Do Replacement Values
 		// ---------------------
@@ -2448,6 +2450,7 @@ if (!function_exists('skeleton_breadcrumbs')) {
 			if (isset($vthemesettings['breadcrumbposttypes'])) {$vcpts = $vthemesettings['breadcrumbposttypes'];}
 			$vcpts = skeleton_apply_filters('skeleton_breadcrumb_post_types',$vcpts);
 			if ( (!is_array($vcpts)) || (count($vcpts) == 0) ) {return;}
+			if (THEMEDEBUG) {echo "<!-- Breadcrumbs for Single Post Types: "; print_r($vcpts); echo " -->";}
 			foreach ($vcpts as $vcpt => $vvalue) {
 				if ( ($vcpt == $vposttype) && ($vvalue == '1') ) {$vdisplay = true;}
 			}
@@ -2460,8 +2463,10 @@ if (!function_exists('skeleton_breadcrumbs')) {
 			foreach ($vcpts as $vcpt => $vvalue) {
 				if ( ($vvalue == '1') && (in_array($vcpt,$vposttypes)) ) {$vdisplay = true;}
 			}
+			if (THEMEDEBUG) {echo "<!-- Breadcrumbs for Archive Post Types: "; print_r($vcpts); echo " -->";}
 		}
-		// TODO: add options/filters for these breadcrumbs types...
+
+		// TODO: add further options/filters for these breadcrumbs types..?
 		//elseif (is_author()) {
 		//	$vdisplay = true;
 		//} elseif (is_search()) {
@@ -2722,7 +2727,9 @@ if (!function_exists('skeleton_footer_extras')) {
 		// $vfooterextras = skeleton_options('footer_extras','');
 		// 1.6.0: removed theme option, now by filter only
 		// $vfooterextras = $vthemesettings['footer_extras'];
-		$vfooterextras = skeleton_apply_filters('skeleton_footer_html_extras','');
+		// 2.0.0: allow for usage of shorter footer extras filter name
+		$vfooterextras = skeleton_apply_filters('skeleton_footer_extras','');
+		$vfooterextras = skeleton_apply_filters('skeleton_footer_html_extras',$vfooterextras);
 
 		if ($vfooterextras) {
 			// 1.8.0: changed #footer_extras to #footer-extras for consistency

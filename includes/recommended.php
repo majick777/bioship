@@ -2,20 +2,20 @@
 
 function bioship_get_recommended() {
 
-	$vbaseurl = 'http://'.'bioship.space';
+	$vr = false; $vbaseurl = BIOSHIPHOME;
 
 	// check if CSS Hero is already installed...
 	if (!is_plugin_active('css-hero/css-hero-main.php')) {
 
 		$vcsshero = skeleton_file_hierarchy('url','csshero.png',array('images'));
 		if ($vcsshero) {
-			if (THEMECHILD) {$vthemetext = __('This Theme','bioship');} else {$vthemetext = __('BioShip','bioship');}
+			if (THEMECHILD) {$vthemetext = __('This Framework','bioship');} else {$vthemetext = __('BioShip','bioship');}
 
 			$vr = '<center><div style="font-size:12pt;"><b>'.$vthemetext.' is CSS Hero Ready!</b><br><br>';
 			$vr .= '<div id="csshero-ad"><a href="'.$vbaseurl.'/recommends/CSSHero/" target=_blank>';
 			$vr .= '<img src="'.$vcsshero.'" border="0"></a></div><br>';
 			$vr .= '&rarr; <a href="'.$vbaseurl.'/recommends/CSSHero/" style="font-size:12pt;" target=_blank>';
-			$vr .= 'Customize Styles Live with CSS Hero</a> &larr;</div></center>';
+			$vr .= 'Edit Styles Live with CSS Hero</a> &larr;</div></center>';
 
 			$vcssherobg = skeleton_file_hierarchy('url','csshero-hover.jpg',array('images'));
 			if ($vcssherobg) {
