@@ -1,7 +1,15 @@
+= 2.0.0 =
+- Updated: WordQuest Helper Library to 1.6.5
+- Updated: BioShip news dashboard feed widget
+- Fixed: full page content feed output
+- Fixed: multicheck box options bug one more time
+- Fixed: filemtime mode cachebusting for style.css
+- Fixed: breadcrumb display override targeting bug
+- Fixed: meta formatting duplicate dash replacement bug
+
 = 1.9.9 =
 - Customizer: split into Basic and Advanced Option pages
 - Option: jQuery Match Height loading for .matchheight classes
-- Improved: split Customizer into Basic and Advanced Options
 - Added: function tracer lines to all templating functions
 - Fixed: jQuery StickyKit and Mobile Queries conflict
 - Fixed: jQuery StickyKit total width display glitch

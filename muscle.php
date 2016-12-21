@@ -94,7 +94,7 @@ if (!function_exists('muscle_get_display_overrides')) {
 		}
 	}
 
-	// TODO: change this filter name to muscle_display_overrides
+	// TODO: change this filter name to muscle_display_overrides?
 	$vthemedisplay = skeleton_apply_filters('muscle_perpage_overrides',$vthemedisplay);
 
 	if (THEMEDEBUG) {echo '<!-- Display Overrides: '; print_r($vthemedisplay); echo ' -->';}
@@ -205,7 +205,8 @@ if (!is_admin()) {
 		// -------------
 		// 1.9.5: separated display and templating override for thumbnail
 		if ($voverride['image']) {$vstyles .= "div.thumbnail img {display:none !important;}";}
-		if ($voverride['breadcrumb'] == '1') {$vstyles .= "#content #breadcrumb {display:none !important;}".PHP_EOL;}
+		// 2.0.0: fix to breadcrumb trail targeting (was #breadcrumb)
+		if ($voverride['breadcrumb'] == '1') {$vstyles .= "#content .breadcrumb-trail {display:none !important;}".PHP_EOL;}
 		if ($voverride['title'] == '1') {$vstyles .= "#content .entry-title {display:none !important;}".PHP_EOL;}
 		if ($voverride['subtitle'] == '1') {$vstyles .= "#content .entry-subtitle {display:none !important;}".PHP_EOL;}
 		if ($voverride['metatop'] == '1') {$vstyles .= "#content .entry-meta {display:none !important;}".PHP_EOL;}
@@ -887,7 +888,7 @@ if (!function_exists('muscle_thumbnail_size_custom')) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	// rather funny way of doing it but seems to work fine
 	// as this is for the admin post/page editing screen
-	// TODO: check if this works for new posts though?
+	// TODO: check if this works for new posts also (no post ID)?
 	$vposttype = get_post_type($_REQUEST['post_id']);
 
 	// get default thumbnail size options (as in theme setup)
@@ -962,41 +963,36 @@ if ($vthemesettings['homecategorymode'] != 'all') {
 		// -------------------
 		if (!function_exists('muscle_select_home_categories')) {
 		 add_filter('pre_get_posts','muscle_select_home_categories');
-		 function muscle_select_home_categories($query) {
+		 function muscle_select_home_categories($vquery) {
 			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-			if ($query->is_home()) {
+			if ($vquery->is_home()) {
 				global $vthemesettings;
 
-				// $vhomecategories = $vthemesettings['homecategories'];
-				$vincludecategories = $vthemesettings['homeincludecategories'];
-				$vexcludecategories = $vthemesettings['homeexcludecategories'];
+				// 2.0.0: added category mode/include/exclude filters
+				// TODO: add to filters.php list/example
+				$vhomecategorymode = apply_filters('muscle_home_category_mode',$vthemesettings['homecategorymode']);
+				$vincludecategories = apply_filters('muscle_home_include_categories',$vthemesettings['homeincludecategories']);
+				$vexcludecategories = apply_filters('muscle_home_exclude_categories',$vthemesettings['homeexcludecategories']);
 
 				$vcategories = get_categories();
 
 				foreach ($vcategories as $vcategory) {
 					$vcatid = $vcategory->cat_ID;
-					if ( ($vthemesettings['homecategorymode'] == 'include')
-					  || ($vthemesettings['homecategorymode'] == 'includeexclude') ) {
-						if (isset($vincludecategories[$vcatid])) {
-							$vselected[] = $vcatid;
-						}
+					if ( ($vhomecategorymode == 'include') || ($vhomecategorymode == 'includeexclude') ) {
+						if (isset($vincludecategories[$vcatid])) {$vselected[] = $vcatid;}
 					}
-
-					if ( ($vthemesettings['homecategorymode'] == 'exclude')
-					  || ($vthemesettings['homecategorymode'] == 'includeexclude') ) {
-						if (isset($vexcludecategories[$vcatid])) {
-							$vselected[] = '-'.$vcatid;
-						}
+					if ( ($vhomecategorymode == 'exclude') || ($vhomecategorymode == 'includeexclude') ) {
+						if (isset($vexcludecategories[$vcatid])) {$vselected[] = '-'.$vcatid;}
 					}
 				}
 
 				if (count($vselected) > 0) {
 					$vcatstring = implode(' ',$vselected);
-					$query->set('cat',$vcatstring);
+					$vquery->set('cat',$vcatstring);
 				}
 			}
-			return $query;
+			return $vquery;
 		 }
 	 	}
 	}
@@ -1011,7 +1007,9 @@ if (is_numeric($vthemesettings['searchresults'])) {
 	 function muscle_search_results_per_page($vquery) {
 		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		global $vthemesettings, $wp_the_query;
-		$vsearchresults = $vthemesettings['searchresults'];
+		// 2.0.0: added muscle_search_results filter
+		// TODO: add to filters.php list/example
+		$vsearchresults = apply_filters('muscle_search_results',$vthemesettings['searchresults']);
 		if ( (!is_admin()) && ($vquery === $wp_the_query) && ($vquery->is_search()) ) {
 			$vquery->set('posts_per_page', $vsearchresults);
 		}
@@ -1078,10 +1076,11 @@ if ( ($vthemesettings['infinitescroll'] == 'scroll') || ($vthemesettings['infini
 		add_theme_support('infinite-scroll', $vsettings);
 	 }
 	}
+
 	if (!function_exists('muscle_infinite_scroll_loop')) {
 	 function muscle_infinite_scroll_loop() {
 		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-		// TODO: update this to match AJAX Load More Loop Template?
+		// TODO: maybe update this to use/match AJAX Load More Loop Template?
 		while (have_posts()) {
 			the_post();
 			// 1.5.0: fix: always use hybrid content hierarchy
@@ -1178,7 +1177,10 @@ if ($vthemesettings['readmoreanchor'] != '') {
 	 function muscle_continue_reading_link() {
 		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		global $vthemesettings;
-		return ' <a href="'.get_permalink().'">'.$vthemesettings['readmoreanchor'].'</a>';
+		// 2.0.0: added muscle_read_more_anchor filter
+		// TODO: add to filters.php list/examples
+		$vreadmoreanchor = apply_filters('muscle_read_more_anchor',$vthemesettings['readmoreanchor']);
+		return ' <a href="'.get_permalink().'">'.$vreadmoreanchor.'</a>';
 	 }
 	}
 }
@@ -1196,14 +1198,15 @@ if ($vthemesettings['readmorebefore'] != '') {
 		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 		global $vthemesettings;
+		// 2.0.0: added muscle_read_more_before filter
+		// TODO: add to filters.php list/examples
+		$vreadmorebefore = apply_filters('muscle_read_more_filter',$vthemesettings['readmorebefore']);
 		if (function_exists('muscle_continue_reading_link')) {
 			return '<div class="readmore">'.$vthemesettings['readmorebefore'].muscle_continue_reading_link().'</div>';
-		}
-		elseif (function_exists('skeleton_continue_reading_link')) {
+		} elseif (function_exists('skeleton_continue_reading_link')) {
 			return '<div class="readmore">'.$vthemesettings['readmorebefore'].skeleton_continue_reading_link().'</div>';
-		}
-		else {
-			$default = ' <a href="'.get_permalink().'">Continue reading <span class="meta-nav">&rarr;</span></a>';
+		} else {
+			$default = ' <a href="'.get_permalink().'">'.__('Continue reading','bioship').' <span class="meta-nav">&rarr;</span></a>';
 			return '<div class="readmore">'.$vthemesettings['readmorebefore'].'</div>';
 		}
 	 }
@@ -1212,7 +1215,7 @@ if ($vthemesettings['readmorebefore'] != '') {
 
 // Remove More 'Jump' Link
 // -----------------------
-// TODO: make this a theme option?
+// TODO: maybe make this a theme option?
 if (!function_exists( 'muscle_remove_more_jump_link')) {
  add_filter('the_content_more_link', 'muscle_remove_more_jump_link');
  function muscle_remove_more_jump_link($vlink) {
@@ -1255,11 +1258,8 @@ if (!function_exists('muscle_wp_subtitle_custom_support')) {
 		$vcptsubtitles = $vthemesettings['subtitlecpts'];
 		foreach ($vcptsubtitles as $vcpt => $vvalue) {
 			if ($vvalue) {
-				if ( ($vcpt != 'post') && ($vcpt != 'page') ) {
-					add_post_type_support($vcpt,'wps_subtitle');
-				}
-			}
-			else {
+				if ( ($vcpt != 'post') && ($vcpt != 'page') ) {add_post_type_support($vcpt,'wps_subtitle');}
+			} else {
 				if ($vcpt == 'post') {remove_post_type_support('post','wps_subtitle');}
 				if ($vcpt == 'page') {remove_post_type_support('page','wps_subtitle');}
 			}
@@ -1304,7 +1304,7 @@ if ( (is_numeric($vthemesettings['rsspublishdelay'])) && ($vthemesettings['rsspu
 // -----------------------------
 $vcptsinfeed = false;
 if (is_array($vthemesettings['cptsinfeed'])) {
-	if (THEMEDEBUG) {echo "<!-- RSS Feed Post Types: "; print_r($vthemesettings['cptsinfeed']); echo " -->";}
+	if (THEMEDEBUG) {echo "<!-- Feed CPTs: "; print_r($vthemesettings['cptsinfeed']); echo " -->";}
 	if (count($vthemesettings['cptsinfeed']) > 0) {
  		foreach ($vthemesettings['cptsinfeed'] as $vcpt => $vvalue) {if ($vvalue == '1') {$vcptsinfeed = true;} }
  	}
@@ -1321,8 +1321,8 @@ if ($vcptsinfeed) {
 				if ($vvalue == '1') {$vcptsinfeed[] = $vcpt;}
 			}
 			if (THEMEDEBUG) {echo "<!-- RSS Feed Post Types: "; print_r($vcptsinfeed); echo " -->";}
-			// TODO: recheck this function
-			// $vars['post_type'] = $vcptsinfeed;
+			// TODO: recheck this function is working
+			$vars['post_type'] = $vcptsinfeed;
 		}
 		return $vars;
 	 }
@@ -1337,25 +1337,29 @@ if ($vcptsinfeed) {
 
 if ( (isset($vthemesettings['pagecontentfeeds'])) && ($vthemesettings['pagecontentfeeds'] == '1') ) {
 
+	// 2.0.0: fix to query object typo
 	add_action('pre_get_posts', 'rss_page_feed_full_content');
 	if (!function_exists('muscle_rss_page_feed_full_content')) {
  	 function rss_page_feed_full_content($vquery) {
  	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-		// Check if it feed request and for single page
-		if ($vquery->is_main_query() && $vquery->is_feed() && $vquery>is_page()) {
+		// check feed request and for single page only
+		if ($vquery->is_main_query() && $vquery->is_feed() && $vquery->is_page()) {
 			// set the post type to page
-			$q->set('post_type', array('page'));
+			$vquery->set('post_type', array('page'));
 			// allow for page comments feed via ?withcomments=1
 			if ( (isset($_GET['withcomments'])) && ($_GET['withcomments'] == '1') ) {return;}
 			// set the comment feed to false
-			$q->is_comment_feed = false;
+			$vquery->is_comment_feed = false;
 		}
+
+		if ( ($vquery->is_feed()) && (THEMEDEBUG) ) {echo "<!-- Feed Query: "; print_r($vquery); echo " -->";}
 	 }
 	}
 
-	add_filter('pre_option_rss_use_excerpt', 'page_rss_excerpt_option');
+ 	// 2.0.0: fix to function name typo
+	add_filter('pre_option_rss_use_excerpt', 'muscle_page_rss_excerpt_option');
     if (!function_exists('muscle_page_rss_excerpt_option')) {
-	 function musclepage_rss_excerpt_option($voption) {
+	 function muscle_page_rss_excerpt_option($voption) {
 	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		// force full content output for pages
 		if (is_page()) {return '0';}
@@ -1415,37 +1419,53 @@ if (is_admin()) {
 // BioShip Dashboard Feed Widget
 // -----------------------------
 // 1.9.5: added displayupdates argument
+// 2.0.0: added displaylinks argument
 if (!function_exists('muscle_bioship_dashboard_feed_widget')) {
- function muscle_bioship_dashboard_feed_widget($vdisplayupdates=true) {
+ function muscle_bioship_dashboard_feed_widget($vdisplayupdates=true,$vdisplaylinks=false) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	// Display Updates Available
 	// -------------------------
 	if (!function_exists('admin_theme_updates_available')) {
-	  	$vadmin = skeleton_file_hierarchy('file','admin.php'); include_once($vadmin);
+		// 2.0.0: fix to file hierarchy search dir
+		global $vthemedirs; $vadmin = skeleton_file_hierarchy('file','admin.php',$vthemedirs['admin']); include_once($vadmin);
 	}
 	if ($vdisplayupdates) {echo admin_theme_updates_available();}
 
-	// Load the News Feed
-	// ------------------
-	$vbaseurl = "http://bioship.space"; // theme news home
+	// Load the Update News Feed
+	// -------------------------
+	$vbaseurl = BIOSHIPHOME;
 	$vrssurl = $vbaseurl."/feed/";
+
 	// 1.8.0: set transient for daily feed update only
-	$vfeed = trim(get_transient('bioship_feed'));
+	// 2.0.0: clear feed transient for debugging
+	delete_transient('bioship_feed');
+	if (THEMEDEBUG) {$vfeed = ''; delete_transient('bioship_feed');}
+	else {$vfeed = trim(get_transient('bioship_feed'));}
+
 	if ( (!$vfeed) || ($vfeed == '') ) {
-		echo "<!-- Fetching Feed -->";
-		$vrssfeed = fetch_feed($vrssurl);
-		$vfeeditems = 5;
+		$vrssfeed = fetch_feed($vrssurl); $vfeeditems = 4;
 		$vfeed = muscle_process_rss_feed($vrssfeed,$vfeeditems);
 		if ($vfeed != '') {set_transient('bioship_feed',$vfeed,(24*60*60));}
 	}
-	if ($vfeed != '') {
-		// 1.8.0: set link hover class
-		echo "<style>.themefeedlink {text-decoration:none;} .themefeedlink:hover {text-decoration:underline;}</style>";
-		echo "<div id='musclenewsdisplay'><b>Latest News</b><br>".$vfeed;
-		// 1.8.5: fix to typo on close div ruining admin page
-		echo "<div align='right'>&rarr;<a href='".$vbaseurl."/category/news/' class='themefeedlink' target=_blank> More News...</a></div></div>";
-	} else {echo "Feed currently unavailable.<br>"; delete_transient('bioship_feed');}
+
+	// 1.8.0: set link hover class
+	echo "<style>.themefeedlink {text-decoration:none;} .themefeedlink:hover {text-decoration:underline;}</style>";
+
+	// 2.0.0: add documentation, development and extensions links
+	if ($vdisplaylinks) {
+		echo "<center><b><a href='".BIOSHIPHOME."/documentation/' class='themefeedlink' target=_blank>Documentation</a></b> | ";
+		echo "<b><a href='".BIOSHIPHOME."/development/' class='themefeedlink' target=_blank>Development</a></b> | ";
+		echo "<b><a href='".BIOSHIPHOME."/extensions/' class='themefeedlink' target=_blank>Extensions</a></b></center><br>";
+	}
+
+	// 1.8.5: fix to typo on close div ruining admin page
+	// 2.0.0: re-arrange display output and styles
+	echo "<div id='bioshipfeed'>";
+	echo "<div style='float:right;'>&rarr;<a href='".$vbaseurl."/category/news/' class='themefeedlink' target=_blank> ".__('More','bioship')."...</a></div>";
+	if ($vfeed != '') {echo $vfeed;} else {echo __('Feed currently unavailable.','bioship'); delete_transient('bioship_feed');}
+	echo "</div>";
+
  }
 }
 
@@ -1457,14 +1477,13 @@ if (!function_exists('muscle_process_rss_feed')) {
 
 	// 1.8.0: fix to undefined index warning
 	$vprocessed = '';
-
 	if (is_wp_error($vrss)) {return '';}
 
 	$vmaxitems = $vrss->get_item_quantity($vfeeditems);
 	$vrssitems = $vrss->get_items(0,$vmaxitems);
 
 	if (count($vrssitems) > 0) {
-		$vprocessed = "<ul style='list-style:none;'>";
+		$vprocessed = "<ul style='list-style:none;margin:0;text-align:left;'>";
 		foreach ($vrssitems as $vitem ) {
 			$vprocessed .= "<li>&rarr; <a href='".esc_url($vitem->get_permalink())."' target='_blank' ";
 			$vprocessed .= "title='Posted ".$vitem->get_date('j F Y | g:i a')."' class='themefeedlink'>";
@@ -1578,8 +1597,8 @@ if ($vthemesettings['disablenotifications'] == '1') {
 if ($vthemesettings['disableselfpings'] == '1') {
 	if (!function_exists('muscle_disable_self_pings')) {
 	 add_action('pre_ping','muscle_disable_self_pings');
-	 // TODO: remove unneeded reference here?
-	 function muscle_disable_self_pings(&$vlinks) {
+	 // 2.0.0: remove unneeded pass by reference in argument
+	 function muscle_disable_self_pings($vlinks) {
 	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	 	// 1.5.5: fix to use home_url for theme check
 	 	$vhome = home_url(); // $vhome = get_option('home');
