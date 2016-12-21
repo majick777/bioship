@@ -11,7 +11,7 @@
 
 // For more detailed information see BioShip Documentation:
 // Available online at http://bioship.space/documentation/
-// and offline by loading /wp-content/themes/bioship/admin/docs.php
+// or offline by loading /wp-content/themes/bioship/admin/docs.php
 
 // Mini Theme History
 // ------------------
@@ -48,6 +48,7 @@
 // TGM Plugin Activation - https://github.com/thomasgriffin/TGM-Plugin-Activation
 // Foundation - http://foundation.zurb.com/docs
 // Kirki - http://github.com/aristath/kirki
+
 
 // =================
 // Theme Directories
@@ -86,6 +87,7 @@
 // Theme Constants
 // ---------------
 // BIOSHIPVERSION 	- version of this theme framework
+// BIOSHIPHOME		- static URL of BioShip website
 // THEMEKEY 		- options key value for theme options
 // THEMECHILD 		- if using a Child Theme
 // THEMEPARENT 		- parent Theme template slug (if any)
@@ -108,7 +110,10 @@
 
 // set Framework Version
 // ---------------------
-$vbioshipversion = '1.9.9'; define('BIOSHIPVERSION', $vbioshipversion);
+$vbioshipversion = '2.0.0';
+define('BIOSHIPVERSION', $vbioshipversion);
+// 2.0.0: added BioShip Home constant
+define('BIOSHIPHOME','http://bioship.space');
 
 // set WordQuest Theme 'plugin' Info
 // ---------------------------------
@@ -337,10 +342,11 @@ if (!function_exists('skeleton_get_theme_settings')) {
 				delete_option($voptionkey); add_option($voptionkey,$vunserialized);
 				$vthemesettingsupdating = false;
 				if (THEMEDEBUG) {echo "<!-- Force Update Settings Used and Restored -->";}
-				add_action('theme_admin_notices','admin_forced_settings_restored');
-				if (!function_exists('admin_forced_settings_restored')) {
-				 function admin_forced_settings_restored() {
-					echo "<div class='message'><b>Warning:</b> Theme Settings from Force Update Used and Restored!</div>";
+				// 2.0.0: change to skeleton prefix and add translation wrappers
+				add_action('theme_admin_notices','skeleton_forced_settings_restored');
+				if (!function_exists('skeleton_forced_settings_restored')) {
+				 function skeleton_forced_settings_restored() {
+					echo "<div class='message'><b>".__('Warning','bioship').":</b> ".__('Theme Settings from Force Update Used and Restored!','bioship')."</div>";
 				 }
 				}
 				return $vunserialized;
@@ -365,10 +371,11 @@ if (!function_exists('skeleton_get_theme_settings')) {
 				delete_option($voptionkey); add_option($voptionkey,$vunserialized);
 				$vthemesettingsupdating = false;
 				if (THEMEDEBUG) {echo "<!-- File Theme Settings Used and Restored -->";}
-				add_action('theme_admin_notices','admin_file_settings_restored');
-				if (!function_exists('admin_file_settings_restored')) {
-				 function admin_file_settings_restored() {
-					echo "<div class='message'><b>Warning:</b> Theme Settings from File Settings Used and Restored!</div>";
+				// 2.0.0: change to skeleton prefix and add translation wrappers
+				add_action('theme_admin_notices','skeleton_file_settings_restored');
+				if (!function_exists('skeleton_file_settings_restored')) {
+				 function skeleton_file_settings_restored() {
+					echo "<div class='message'><b>".__('Warning','bioship').":</b> ".__('Theme Settings from File Settings Used and Restored!','bioship')."</div>";
 				 }
 				}
 				return $vunserialized;
@@ -393,10 +400,11 @@ if (!function_exists('skeleton_get_theme_settings')) {
 					delete_option($voptionkey); add_option($voptionkey,$vunserialized);
 					$vthemesettingsupdating = false;
 					if (THEMEDEBUG) {echo "<!-- AutoBackup Theme Settings Restored -->";}
-					add_action('theme_admin_notices','admin_backup_settings_restored');
-					if (!function_exists('admin_backup_settings_restored')) {
-					 function admin_backup_settings_restored() {
-						echo "<div class='message'><b>Error:</b> Theme Settings Empty! Existing Settings AutoBackup Restored.</div>";
+					// 2.0.0: change to skeleton prefix and add translation wrappers
+					add_action('theme_admin_notices','skeleton_backup_settings_restored');
+					if (!function_exists('skeleton_backup_settings_restored')) {
+					 function skeleton_backup_settings_restored() {
+						echo "<div class='message'><b>".__('Error','bioship').":</b> ".__('Theme Settings Empty! Existing Settings AutoBackup Restored.','bioship')."</div>";
 					 }
 					}
 				}
@@ -954,23 +962,27 @@ if (!function_exists('skeleton_titan_theme_options')) {
 				if (isset($voptionvalues[$voptionkey])) {
 					$voptionvalues[$voptionkey] = maybe_unserialize($voptionvalues[$voptionkey]);
 				} else {$voptionvalues[$voptionkey] = array();}
-				// if (THEMEDEBUG) {echo "**"; print_r($voptionvalues[$voptionkey]); echo "**";}
+				// if (THEMEDEBUG) {echo "<!-- ***"; print_r($voptionvalues[$voptionkey]); echo "*** -->";}
 
 				$voptionarray = array();
 				foreach ($voptionvalue['options'] as $vkey => $vlabel) {
 					$vmulticheck[$voptionkey][] = $vkey;
-					// if (THEMEDEBUG) {echo "--".$voptionkey."--".$vkey."--";}
+					// if (THEMEDEBUG) {echo "<!-- ? ".$vkey." ? ".$vlabel." ? -->";}
 					// 1.9.9: fix to arrays switching around weirdly
-					if ( (array_key_exists($vkey,$voptionvalues[$voptionkey]))
-					  || (in_array($vkey,$voptionvalues[$voptionkey])) ) {
-						// if (THEMEDEBUG) {echo "*".$voptionvalues[$voptionkey][$vkey]."*";}
+					if (array_key_exists($vkey,$voptionvalues[$voptionkey])) {
+						// 2.0.0: one more fix for this absolute madness
+						// if (THEMEDEBUG) {echo "<!-- !A!".$voptionvalues[$voptionkey][$vkey]."!A! -->";}
+						if ($voptionvalues[$voptionkey][$vkey] == '0') {$voptionarray[$vkey] = '0';}
+						else {$voptionarray[$vkey] = '1';}
+					} elseif (in_array($vkey,$voptionvalues[$voptionkey])) {
+						// if (THEMEDEBUG) {echo "<!-- !B!".$voptionvalues[$voptionkey][$vkey]."!B! -->";}
 						$voptionarray[$vkey] = '1';
 					} else {$voptionarray[$vkey] = '0';}
 				}
 
 				// WARNING: uncommenting this debug line will prevent Customizer saving
 				// TODO: maybe debug this to a file instead..?
-				if (THEMEDEBUG) {echo "<!-- ".$voptionkey; print_r($voptionarray); echo " -->";}
+				if (THEMEDEBUG) {echo "<!-- ".$voptionkey.": "; print_r($voptionarray); echo " -->";}
 				$vthemesettings[$voptionkey] = $voptionarray;
 			}
 
@@ -1648,7 +1660,9 @@ if (!function_exists('skin_enqueue_styles')) {
 		// style.css
 		// ---------
 		$vdep = array_merge($vmaindep,$vdep);
-		if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime(get_stylesheet($vthemename)));}
+		// 2.0.0: fix for filemtime cachebusting stylesheet filepath
+		$vstylesheetpath = get_stylesheet_directory().DIRSEP.'style.css';
+		if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vstylesheetpath));}
 		wp_enqueue_style('bioship-style', get_stylesheet_uri($vthemename), $vdep, $vcsscachebust);
 
 	}
@@ -1985,7 +1999,7 @@ if (!function_exists('skin_dynamic_login_css_inline')) {
 // WShadow Theme Update Checker
 // ----------------------------
 // note: checks presence of /includes/theme-update-checker.php
-// this indicates a version downloaded from http://bioship.space - not WordPress.org
+// this indicates a version downloaded from Bioship.Space - not WordPress.org
 add_action('init','skeleton_theme_update_checker');
 if (!function_exists('skeleton_theme_update_checker')) {
  function skeleton_theme_update_checker() {
@@ -1997,8 +2011,8 @@ if (!function_exists('skeleton_theme_update_checker')) {
 		if ($vthemeupdater) {
 			require_once($vthemeupdater);
 			// 1.5.0: use custom theme update server location
-			$vjsoninfo = 'http://bioship.space/download/?action=get_metadata&slug=bioship';
-			// $vjsoninfo = 'http://bioship.space/download/version.json'; // for 1.4.5 to 1.5.0 only
+			$vjsoninfo = BIOSHIPHOME.'/download/?action=get_metadata&slug=bioship';
+			// $vjsoninfo = BIOSHIPHOME.'/download/version.json'; // for 1.4.5 to 1.5.0 only
 			$vupdatechecker = new ThemeUpdateChecker('bioship', $vjsoninfo);
 			// 1.8.5: add default sidebar option values
 			if (!is_array(get_option('bioship_sidebar_options'))) {
