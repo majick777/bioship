@@ -3,7 +3,7 @@ Theme Name: BioShip
 Theme URI: http://bioship.space
 Details URI: http://bioship.space/news/
 Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
-Version: 1.9.8
+Version: 2.0.0
 Status: publish
 Author: majick
 Author URI: http://wordquest.org
@@ -11,6 +11,7 @@ Tags: fluid-layout, responsive-layout, one-column, two-columns, three-columns, f
 License: GPL
 License URI: http://www.opensource.org/licenses/gpl-license.php
 Requires at least: 3.4
+GitHub Theme URI: majick777/bioship
 */
 
 /* ---------------------------------- */
@@ -48,7 +49,7 @@ body .mobilebutton a.button {padding: 5px !important; font-size: 13px !important
 table td, body table th {border: 0; padding:5px;}
 body .entry-meta, body .entry-utility {margin-bottom:0; padding-bottom:0; border-bottom: 0;}
 
-/* More Style Fixes... (...to merge?) */
+/* More Style Fixes... (merge with skeleton.css?) */
 
 #header {margin:0px;}
 #sidebar-header {float: right;}
