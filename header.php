@@ -1,5 +1,5 @@
-<!doctype html><?php if (THEMETRACE) {skeleton_trace('T',__('Header Template','bioship'),__FILE__);} ?>
-
+<!doctype html>
+<?php if (THEMETRACE) {skeleton_trace('T',__('Header Template','bioship'),__FILE__);} ?>
 <!--[if lt IE 7 ]><html class="ie ie6" <?php language_attributes();?>><![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" <?php language_attributes();?>><![endif]-->
 <!--[if IE 8 ]><html class="ie ie8" <?php language_attributes();?>><![endif]-->
@@ -17,15 +17,15 @@
 
 <?php
 
-	do_action('skeleton_before_container');
-	do_action('skeleton_container_open');
+	do_action('bioship_before_container');
+	do_action('bioship_container_open');
 
-	do_action('skeleton_before_header');
-	do_action('skeleton_header');
-	do_action('skeleton_after_header');
+	do_action('bioship_before_header');
+	do_action('bioship_header');
+	do_action('bioship_after_header');
 
-	do_action('skeleton_before_navbar');
-	do_action('skeleton_navbar');
-	do_action('skeleton_after_navbar');
+	do_action('bioship_before_navbar');
+	do_action('bioship_navbar');
+	do_action('bioship_after_navbar');
 
 ?>

@@ -13,7 +13,7 @@ if (THEMEDEBUG) {echo "<!-- Post Types: "; print_r($vposttypes); echo " -->";}
 if (is_string($vposttypes)) {$vposttype = $vposttypes;}
 
 /* Before Content Hook */
-do_action('skeleton_before_content');
+do_action('bioship_before_content');
 
 if (THEMECOMMENTS) {echo "<!-- #maincontent -->";}
 echo '<main '.hybrid_get_attr('content').'>';
@@ -29,7 +29,7 @@ echo '<main '.hybrid_get_attr('content').'>';
 	if ( (is_front_page()) &&  (get_option('show_on_front') == 'posts') ) {
 		// no default here, just hook a function to use it
 		// 1.9.8: shorten action name from skeleton_front_page_top_html
-		do_action('skeleton_front_page_top');
+		do_action('bioship_front_page_top');
 		rewind_posts(); // ah to be sure to sure
 	}
 
@@ -38,22 +38,22 @@ echo '<main '.hybrid_get_attr('content').'>';
 	if ( (is_home()) && (get_option('show_on_front') == 'page') ) {
 		// 1.8.5: moved to skeleton.php and use action hook
 		// 1.9.8: shorten action name from skeleton_home_page_top_html
-		do_action('skeleton_home_page_top');
+		do_action('bioship_home_page_top');
 		rewind_posts(); // ah to be sure to sure
 	}
 
 	// 1.6.0: added before loop hook
-	do_action('skeleton_before_loop');
+	do_action('bioship_before_loop');
 	// 1.8.5: added specific archive loop hooks
 	// 1.9.0: double-check singular for odd queries
 	// 1.9.5: fix to is_date typo for new action
 	if (is_archive() && !is_singular($vposttype)) {
-		do_action('skeleton_before_archive');
-		if (is_category()) {do_action('skeleton_before_category');}
-		elseif (is_tax()) {do_action('skeleton_before_taxonomy');}
-		elseif (is_tag()) {do_action('skeleton_before_tags');}
-		elseif (is_author()) {do_action('skeleton_before_author');}
-		elseif (is_date()) {do_action('skeleton_before_date');}
+		do_action('bioship_before_archive');
+		if (is_category()) {do_action('bioship_before_category');}
+		elseif (is_tax()) {do_action('bioship_before_taxonomy');}
+		elseif (is_tag()) {do_action('bioship_before_tags');}
+		elseif (is_author()) {do_action('bioship_before_author');}
+		elseif (is_date()) {do_action('bioship_before_date');}
 	}
 
 	// Checks if any posts were found
@@ -103,20 +103,21 @@ echo '<main '.hybrid_get_attr('content').'>';
 	// 1.8.5: added specific archive loop hooks
 	// 1.9.0: double-check singular for odd queries
 	if (is_archive() && !is_singular($vposttype)) {
-		if (is_date()) {do_action('skeleeton_after_date');}
-		elseif (is_author()) {do_action('skeleton_after_author');}
-		elseif (is_tag()) {do_action('skeleton_after_tags');}
-		elseif (is_tax()) {do_action('skeleton_after_taxonomy');}
-		elseif (is_category()) {do_action('skeleton_after_category');}
-		do_action('skeleton_before_archive');
+		if (is_date()) {do_action('bioship_after_date');}
+		elseif (is_author()) {do_action('bioship_after_author');}
+		elseif (is_tag()) {do_action('bioship_after_tags');}
+		elseif (is_tax()) {do_action('bioship_after_taxonomy');}
+		elseif (is_category()) {do_action('bioship_after_category');}
+		// 2.0.1: fix to before archive typo
+		do_action('bioship_after_archive');
 	}
 	// 1.6.0: added after loop hook
-	do_action('skeleton_after_loop');
+	do_action('bioship_after_loop');
 
 echo "</main>";
 if (THEMECOMMENTS) {echo "<!-- /#maincontent -->";}
 
 /* After Content Hook */
-do_action('skeleton_after_content');
+do_action('bioship_after_content');
 
 ?>

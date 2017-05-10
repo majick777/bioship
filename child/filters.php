@@ -587,7 +587,7 @@ function muscle_thumbnail_height($vheight) {
 // /= Media Image Sizes =/
 // -----------------------
 add_filter('skeleton_image_sizes','muscle_image_sizes');
-function muscle_image_sizes() {
+function muscle_image_sizes($vimagesizes) {
 
 	// Ref: Default image sizes
 	// $vimagesizes[0] = array('name' => 'squared150', 'width' => 150, 'height' => 150, 'crop' => true);
@@ -1752,7 +1752,7 @@ add_filter('admin_adminbar_howdy_title','muscle_loggedinas_message');
 function muscle_loggedinas_message($vtitle) {
 	// note: default already changed to "Logged in as {user_name}"
 	// eg. change to "Account: {user_name}"
-	# global $current_user; get_currentuserinfo();
+	# global $current_user; wp_get_current_user();
 	# $vusername = $current_user->user_login;
 	# $vtitle = __('Account: ', 'bioship').$vusername;
 	return $vtitle;

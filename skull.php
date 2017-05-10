@@ -1253,8 +1253,10 @@ if (!function_exists('skeleton_get_post_types')) {
 // Title Tag Support
 // -----------------
 // 1.8.5: use new title-tag support
-// (off by default as it renders no home tag yet?)
-$vtitletagsupport = skeleton_apply_filters('skeleton_title_tag_support',0);
+// 1.9.0: off as not rendering tag yet?
+// 2.0.1: fixed so on again (and now works fine with or without)
+$vtitletagsupport = skeleton_apply_filters('skeleton_title_tag_support',true);
+
 if ($vtitletagsupport) {
 	add_theme_support('title-tag');
 	// replace title tag render action to add filter
@@ -1279,8 +1281,9 @@ if ($vtitletagsupport) {
 if (!function_exists('skeleton_render_title_tag_filtered')) {
  function skeleton_render_title_tag_filtered() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-    ob_start(); _wp_render_title_tag(); $titletag = ob_get_contents(); ob_end_clean();
-    return skeleton_apply_filters('wp_render_title_tag_filter',$titletag);
+    ob_start(); _wp_render_title_tag(); $vtitletag = ob_get_contents(); ob_end_clean();
+    $vtitletag = skeleton_apply_filters('wp_render_title_tag_filter',$vtitletag);
+    echo $vtitletag;
  }
 }
 
@@ -1291,7 +1294,7 @@ if (!function_exists('skeleton_wp_render_title_tag')) {
  function skeleton_wp_render_title_tag($vtitletag) {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
  	// note: rendered default is (for WP 4.4):
- 	// echo '<title itemprop="name">' . wp_get_document_title() . '</title>' . "\n";
+ 	// echo '<title>' . wp_get_document_title() . '</title>' . "\n";
  	$vtitletag = str_replace('<title>','<title itemprop="name">',$vtitletag);
 	return $vtitletag;
  }
@@ -1327,7 +1330,8 @@ if (!function_exists('skeleton_wp_title'))  {
 	}
 	else {
 		// 1.8.5: fix to double sep
-		$vtitle .= " ".$vblogname;
+		// 2.0.1: nope, fix to unfix that
+		$vtitle .= " ".$vsep." ".$vblogname;
 	}
 
 	// maybe add a page number
@@ -1339,7 +1343,6 @@ if (!function_exists('skeleton_wp_title'))  {
 	return $vtitle;
  }
 }
-
 
 
 // ------------------------
@@ -1671,11 +1674,11 @@ if (!function_exists('skeleton_setup')) {
  function skeleton_setup() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
-	global $vthemesettings, $vthemedirs;
+	global $vthemename, $vthemesettings, $vthemedirs;
 
 	// Language Translation
 	// --------------------
-	// TODO: create translations file in the /languages/ directory
+	// TODO: update translations file in the /languages/ directory
 	// (they have not been touched in a loooong time... ok ever.)
 	// https://make.wordpress.org/meta/handbook/documentation/translations/
 	load_theme_textdomain('bioship', get_template_directory().'/languages');
@@ -1765,7 +1768,7 @@ if (!function_exists('skeleton_setup')) {
 				$vlinks .= "} "; $vstyles .= $vlinks;
 			}
 
-			// TODO: add any other relevant style rules? eg. buttons ?
+			// TODO: maybe add other relevant style rules? eg. buttons ?
 
 			// 1.9.8: addded check if array key exists
 			if (isset($mceInit['content_style'])) {$mceInit['content_style'] .= ' '.$vstyles.' ';}
@@ -1783,21 +1786,17 @@ if (!function_exists('skeleton_setup')) {
 	// 1.5.0: add custom post type thumbnail support override
 	// check: are page thumbnails (featured images) on by adding default support?!
 	$vthumbcpts = $vthemesettings['thumbnailcpts'];
-	if ($vthumbcpts != '') {
-		if ( (count($vthumbcpts) > 0) && (is_array($vthumbcpts)) ) {
-			foreach ($vthumbcpts as $vcpt => $vvalue) {
-				if ($vvalue == '1') {
-					if (!post_type_supports($vcpt,'thumbnail')) {
-						add_post_type_support($vcpt,'thumbnail');
-					}
-				}
+	if ( ($vthumbcpts) && (is_array($vthumbcpts)) && (count($vthumbcpts) > 0) ) {
+		foreach ($vthumbcpts as $vcpt => $vvalue) {
+			if ( ($vvalue == '1') && (!post_type_supports($vcpt,'thumbnail')) ) {
+				add_post_type_support($vcpt,'thumbnail');
 			}
 		}
 	}
 
 	// Set Default Post Thumbnail Size
 	// -------------------------------
-	// TODO: maybe add 'post-thumbnail' image size (for post screen) ?
+	// TODO: maybe add a 'post-thumbnail' image size (for post writing screen) ?
 	// (ref: _wp_post_thumbnail_html in /wp-admin/includes/post.php)
 
 	// get_option('thumbnail_image_w'); get_option('thumbnail_image_h');
@@ -1828,6 +1827,14 @@ if (!function_exists('skeleton_setup')) {
 	$vimagesizes[3] = array('name' => 'video169', 'width' => 320, 'height' => 180, 'crop' => $vcrop);
 	// 1.5.0: added open graph size 560x292
 	$vimagesizes[4] = array('name' => 'opengraph', 'width' => 560, 'height' => 292, 'crop' => $vcrop);
+
+	// 2.0.2: add new image size names in preparation to deprecate old ones
+	$vimagesizes[5] = array('name' => 'bioship-150', 'width' => 150, 'height' => 150, 'crop' => $vcrop);
+	$vimagesizes[6] = array('name' => 'bioship-250', 'width' => 250, 'height' => 250, 'crop' => $vcrop);
+	$vimagesizes[7] = array('name' => 'bioship-4-3', 'width' => 320, 'height' => 240, 'crop' => $vcrop);
+	$vimagesizes[8] = array('name' => 'bioship-16-9', 'width' => 320, 'height' => 180, 'crop' => $vcrop);
+	$vimagesizes[9] = array('name' => 'bioship-opengraph', 'width' => 560, 'height' => 292, 'crop' => $vcrop);
+
 	$vimagesizes = skeleton_apply_filters('skeleton_image_sizes',$vimagesizes);
 
 	if (count($vimagesizes) > 0) {
@@ -1842,13 +1849,15 @@ if (!function_exists('skeleton_setup')) {
 // Enqueue Skeleton Scripts
 // ------------------------
 // note: Styles moved to Skin Section
+// note: for Foundation loading functions see muscle.php
 // 1.8.0: added filemtime cache busting option
+// 2.0.2: use THEMESLUG instead of vthemename
 if (!function_exists('skeleton_scripts')) {
  add_action('wp_enqueue_scripts', 'skeleton_scripts');
  function skeleton_scripts() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
-	global $vthemesettings, $vthemename, $vjscachebust, $vthemedirs;
+	global $vthemename, $vthemesettings, $vjscachebust, $vthemedirs;
 
 	// 1.9.5: check and set filemtime use just once
 	$vfilemtime = false; if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vfilemtime = true;}
@@ -1908,21 +1917,23 @@ if (!function_exists('skeleton_scripts')) {
 	}
 
 	// superfish.js
+	// ------------
 	// 1.8.5: conditionally load only if there is primary Nav Menu
 	// 1.9.5: fix to dashes in theme name slug for theme mods
-	$vthememods = get_option('theme_mods_'.str_replace('_','-',$vthemename));
+	$vthememods = get_option('theme_mods_'.THEMESLUG);
 	if ( (isset($vthememods['nav_menu_locations']['primary'])) && ($vthememods['nav_menu_locations']['primary'] != '') ) {
 		$vsuperfish = skeleton_file_hierarchy('both','superfish.js',$vthemedirs['js']);
 		if (is_array($vsuperfish)) {
 			if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vsuperfish['file']));}
-			wp_enqueue_script('superfish',$vsuperfish['url'],array('jquery'),$vjscachebust,true);
+			// 2.0.1: add theme name prefix to script handle
+			wp_enqueue_script(THEMESLUG.'-superfish',$vsuperfish['url'],array('jquery'),$vjscachebust,true);
 		}
 
 		// 1.8.5: count and set main menu (not submenu) items
 		$vmenuid = $vthememods['nav_menu_locations']['primary'];
 		// $vmainmenu = get_term($vmenuid,'nav_menu');
 		if (THEMEDEBUG) {echo "<!-- Main Menu ID: ".$vmenuid." -->";}
-		$vmenuitems = wp_get_nav_menu_items( $vmenuid, 'nav_menu' );
+		$vmenuitems = wp_get_nav_menu_items( $vmenuid,'nav_menu');
 		// if (THEMEDEBUG) {echo "<!-- Main Menu Items: "; print_r($vmenuitems)." -->";}
 		foreach ($vmenuitems as $vitem) {
 			if ($vitem->menu_item_parent == 0) {$vmenumainitems++;}
@@ -1935,6 +1946,7 @@ if (!function_exists('skeleton_scripts')) {
 	}
 
 	// formalize.js
+	// ------------
 	if ($vthemesettings['loadformalize']) {
 		$vformalize = skeleton_file_hierarchy('both','jquery.formalize.min.js',$vthemedirs['js']);
 		if (is_array($vformalize)) {
@@ -1944,23 +1956,48 @@ if (!function_exists('skeleton_scripts')) {
 	}
 
 	// init.js
+	// -------
 	$vinit = skeleton_file_hierarchy('both','init.js',$vthemedirs['js']);
 	if (is_array($vinit)) {
 		if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vinit['file']));}
-		wp_enqueue_script('init',$vinit['url'],array('jquery'),$vjscachebust,true);
+		// 2.0.1: add theme name prefix to script handle
+		wp_enqueue_script(THEMESLUG.'-init',$vinit['url'],array('jquery'),$vjscachebust,true);
 	}
 
 	// custom.js
+	// ---------
 	$vcustom = skeleton_file_hierarchy('both','custom.js',$vthemedirs['js']);
 	if (is_array($vcustom)) {
 		if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vcustom['file']));}
-		wp_enqueue_script('custom',$vcustom['url'],array('jquery'),$vjscachebust,true);
+		// 2.0.1: add theme name prefix to script handle
+		wp_enqueue_script(THEMESLUG.'-custom',$vcustom['url'],array('jquery'),$vjscachebust,true);
 	}
 
 	// maybe enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option('thread_comments') ) {wp_enqueue_script('comment-reply');}
 
-	// note: for Foundation loading functions see muscle.php
+	// Better WordPress Minify Integration
+	// -----------------------------------
+	// 2.0.2: added to make automatic script filtering possible
+	// (as bwp_minify_ignore filter has been missed)
+	global $bwp_minify;
+	if ( (is_object($bwp_minify)) && (property_exists($bwp_minify,'print_positions')) ) {
+		$vpositions = $bwp_minify->print_positions;
+		if ( (is_array($vpositions)) && (isset($vpositions['ignore'])) ) {
+			$vhandles = $vpositions['ignore'];
+			$vnominifyscripts = array(THEMESLUG.'-init', THEMESLUG.'-custom');
+			$vnominifyscripts = apply_filters('bioship_bwp_nominify_scripts', $vnominifyscripts);
+			foreach ($vnominifyscripts as $vhandle) {
+				if (!in_array($vhandle,$vhandles)) {$vhandles[] = $vhandle;}
+			}
+			if ($vhandles != $vpositions['style']) {
+				$vpositions['ignore'] = $vhandles;
+				$bwp_minify->print_positions = $vpositions;
+				if (THEMEDEBUG) {echo "<!-- BWP Ignore Scripts: "; print_r($vhandles); echo " -->";}
+			}
+		}
+	}
+
  }
 }
 
@@ -1987,11 +2024,12 @@ if (!function_exists('skeleton_mobile_meta')) {
  add_action('wp_head','skeleton_mobile_meta',2);
  function skeleton_mobile_meta() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	 // TODO: test this specific-width mobile meta line effect?
+	// TODO: somehow test this specific-width mobile meta line has any effect?
+	// (320 is a good minimum width but not sure if this info helps mobiles)
 	// $vmobilemeta .= '<meta name="MobileOptimized" content="320">'.PHP_EOL;
 	$vmobilemeta = "<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->".PHP_EOL;
 	$vmobilemeta = '<meta name="HandheldFriendly" content="True">'.PHP_EOL; // i wanna hold your haaand...
-	// 1.8.5: fix to duplicate line if using Hybrid
+	// 1.8.5: fix to remove duplicate line if using Hybrid
 	if (!THEMEHYBRID) {$vmobilemeta .= '<meta name="viewport" content="width=device-width, initial-scale=1" />'.PHP_EOL;}
 	$vmobilemeta = skeleton_apply_filters('skeleton_mobile_metas',$vmobilemeta);
 	echo $vmobilemeta;
@@ -2009,7 +2047,7 @@ if (!function_exists('skeleton_icons')) {
 
 	global $vthemesettings, $vthemedirs;
 
-	// 1.8.0: fallback - auto-check for favicon files when URLs are not set
+	// 1.8.0: added fallbacks to auto-check for favicon files when URLs are not set
 
 	// <!-- Apple Touch, use the 144x144 default, then optional sizes -->
 	$vappleicons = '';
@@ -2172,9 +2210,9 @@ if ( (isset($_GET['csshero_action'])) && ($_GET['csshero_action'] == 'edit_page'
 // Included Templates Tracer
 // -------------------------
 
-// only load for Debug Mode
-// ------------------------
-if (THEMEDEBUG) {
+// load for debug mode or site admin
+// ---------------------------------
+if ( (THEMEDEBUG) || (current_user_can('manage_options')) ) {
 	add_action('wp_loaded','skeleton_check_theme_includes');
 	add_action('wp_footer','skeleton_check_theme_templates');
 }
@@ -2191,8 +2229,8 @@ if (!function_exists('skeleton_get_theme_includes')) {
 	$vstyledirectory = str_replace("\\","/",get_stylesheet_directory());
 	$vtemplatedirectory = str_replace("\\","/",get_template_directory());
 
-	$vi = 0; // loop included files
-	foreach ($vincludedfiles as $vincludedfile) {
+	// loop included files
+	foreach ($vincludedfiles as $vi => $vincludedfile) {
 		// normalize include path for match
 		$vincludedfile = str_replace("\\","/",$vincludedfile);
 		// check if included file is in stylesheet directory
@@ -2205,6 +2243,8 @@ if (!function_exists('skeleton_get_theme_includes')) {
 				else {
 					// strip template directory from include path
 					$vpathinfo = pathinfo(str_replace(dirname($templatedir),'',$vincludedfile));
+					// 2.0.1: re-add full filepath to pathinfo array
+					$vpathinfo['fullpath'] = $vincludedfile;
 					// add filename.php => pathinfo array to the template array
 					$vthemeincludes[$pathinfo['basename']] = $vpathinfo;
 				}
@@ -2212,10 +2252,11 @@ if (!function_exists('skeleton_get_theme_includes')) {
 		} else {
 			// strip stylesheet dir from include path
 			$vpathinfo = pathinfo(str_replace(dirname($vstyledirectory),'',$vincludedfile));
+			// 2.0.1: re-add full filepath to pathinfo array
+			$vpathinfo['fullpath'] = $vincludedfile;
 			// add filename.php => pathinfo array to the template array
 			$vthemeincludes[$vpathinfo['basename']] = $vpathinfo;
 		}
-		$vi++;
 	}
 	return $vthemeincludes;
  }
@@ -2250,8 +2291,8 @@ if (!function_exists('skeleton_check_theme_templates')) {
 	}
 	if (THEMEDEBUG) {echo "<!-- Included Template Files: "; print_r($vtemplateincludes); echo "-->";}
 
-	// TODO: make this an option or filter option?
-	// could output a template array for use by jquery/ajax loading
+	// TODO: idea? make this an option or filter option?
+	// could output a template array for use by jQuery/AJAX loading
 	// echo "<script>var templatenames = new Array(); var templatepaths = new Array(); ";
 	// $i = 0;
 	// foreach ($vtemplateincludes as $template => $pathinfo) {
@@ -2264,8 +2305,62 @@ if (!function_exists('skeleton_check_theme_templates')) {
 	// }
 	// echo "</script>";
 
-	// TODO: inspector-style list of included templates as dropdown in admin bar?
+	// 2.0.1: maybe add list of included templates as dropdown menu in admin bar
+	if (current_user_can('manage_options')) {
+		$vaddmenu = false;
+		if (isset($vthemesettings['templatesdropdown'])) {$vaddmenu = $vthemesettings['templatesdropdown'];}
+		$vaddmenu = apply_filters('admin_template_list_dropdown',$vaddmenu);
+		if ($vaddmenu != '1') {return;}
+		add_action('wp_before_admin_bar_render', 'skeleton_admin_template_dropdown');
+	}
 
+ }
+}
+
+// Admin Bar Templates Dropdown
+// ----------------------------
+// 2.0.1: added this dropdown to admin bar
+if (!function_exists('skeleton_admin_template_dropdown')) {
+ function skeleton_admin_template_dropdown() {
+
+	global $wp_admin_bar, $vtemplateincludes, $vthemename;
+	$vmenu = array(
+		'id' => 'page-templates',
+		'title' => '<span class="ab-icon"></span>'.__('Templates','bioship'),
+		'href' => 'javascript:void(0);',
+		'meta' => array(
+			'title' => __('Ordered list of included templates for this page.')
+		)
+	);
+	$wp_admin_bar->add_menu($vmenu);
+
+	$vi = 0;
+	foreach ($vtemplateincludes as $vfilename => $vpathinfo) {
+		$vrelfilepath = str_replace($vthemename,'',$vpathinfo['dirname']);
+		while (substr($vrelfilepath,0,1) == '/') {
+			$vrelfilepath = substr($vrelfilepath,1,strlen($vrelfilepath));
+		}
+		$vrelfilepath = urlencode($vrelfilepath.'/'.$vfilename);
+		$veditlink = admin_url('theme-editor.php').'?theme='.$vthemename;
+		$veditlink .= '&file='.$vrelfilepath;
+		$vargs = array(
+			'id' => 'template-'.$vi,
+			'title' => $vfilename,
+			'parent' => 'page-templates',
+			'href' => $veditlink,
+			'meta' => array(
+				'title' => $vpathinfo['fullpath'],
+				'class' => 'page-template'
+			)
+		);
+		$wp_admin_bar->add_node($vargs);
+		$vi++;
+	}
+
+	// add page menu template dashicon
+	echo '<style>#wp-admin-bar-page-templates .ab-icon:before {content: "\\f232"; top: 3px;}</style>';
+
+	if (THEMEDEBUG) {echo "<!-- Admin Bar: "; print_r($wp_admin_bar); echo " -->";}
  }
 }
 

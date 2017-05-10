@@ -1,6 +1,26 @@
+= 2.0.2 = 
+- Added: Admin Notice message helper function
+- Added: Auto-ignore core styles/scripts for BWP Minify
+- Added: THEMESLUG constant (for dashes not underscores)
+- Updated: WordQuest Helper Library to 1.6.7
+- Updated: added recording of first installed version
+- Changed: all grid_ functions to bioship_grid_ prefix
+- Fixed: some simplified script load check typos
+
+= 2.0.1: =
+- Fixed: title-tag (or no title-tag!) theme supports
+- Changed: all skin_ functions to bioship_skin_ prefix
+- Changed: all skeleton_ action hooks to bioship_ prefix
+- Updated: theme slug prefix to script and style handles
+- Updated: simplified some constant usage in theme setup
+- Added: page template includes list dropdown to Admin Bar
+- Added: sidebar-template class to sidebar elements
+- Added: missing script loading conditional filters
+
 = 2.0.0 =
 - Updated: WordQuest Helper Library to 1.6.5
 - Updated: BioShip news dashboard feed widget
+- Added: missing translation wrappers to admin
 - Fixed: full page content feed output
 - Fixed: multicheck box options bug one more time
 - Fixed: filemtime mode cachebusting for style.css
