@@ -26,7 +26,7 @@ if (strstr($_SERVER['REQUEST_URI'],'grid.php')) {
 
 	// Use our friend Shorty...
 	define('SHORTINIT', true);
-	$wp_root_path = grid_find_require('wp-load.php');
+	$wp_root_path = bioship_grid_find_require('wp-load.php');
 	$memorysavingmode = true;
 
 	// Include only what you need to survive...
@@ -38,7 +38,7 @@ if (strstr($_SERVER['REQUEST_URI'],'grid.php')) {
 	// wp_get_theme (themes.php)
 	// get_theme_data (deprecated.php - conditional load)
 	// get_stylesheet_directory (themes.php)
-
+f
 	// templates and dependencies
 	if (!defined('ABSPATH')) {define('ABSPATH', $wp_root_path);}
 	if (!defined('WPINC')) {define('WPINC', 'wp-includes');}
@@ -70,7 +70,7 @@ if (strstr($_SERVER['REQUEST_URI'],'grid.php')) {
 	if (file_exists($userclass)) {include($userclass);} // 1.6.0
 	include(ABSPATH.WPINC.DIRSEP.'post.php');
 
-	// Theme functions.php : skeleton_themedrive_determine_theme (copied)
+	// Theme functions.php : bioship_themedrive_determine_theme (copied)
 	// Theme functions.php : skeleton_file_hierarchy (replaced)
 
 }
@@ -80,19 +80,19 @@ if (strstr($_SERVER['REQUEST_URI'],'grid.php')) {
 // ================
 
 // find and require for blog loader
-function grid_find_require($file,$folder=null) {
+function bioship_grid_find_require($file,$folder=null) {
 	if ($folder === null) {$folder = dirname(__FILE__);}
 	$path = $folder.'/'.$file;
 	if (file_exists($path)) {require($path); return $folder;}
 	else {
-		$upfolder = grid_find_require($file,dirname($folder));
+		$upfolder = bioship_grid_find_require($file,dirname($folder));
 		if ($upfolder != '') {return $upfolder;}
 	}
 }
 
 // copy of skeleton_themedrive_determine_theme function
-if (!function_exists('skeleton_themedrive_determine_theme')) {
-	function skeleton_themedrive_determine_theme() {
+if (!function_exists('bioship_themedrive_determine_theme')) {
+	function bioship_themedrive_determine_theme() {
 
 		if (!isset($_REQUEST['theme'])) {
 			$vtdlevel = get_option('td_level');
@@ -128,7 +128,7 @@ $vtheme = wp_get_theme();
 
 // Theme Test Drive Compatibility
 // ------------------------------
-$vthemetestdrive = skeleton_themedrive_determine_theme();
+$vthemetestdrive = bioship_themedrive_determine_theme();
 if ($vthemetestdrive) {$vtheme = $vthemetestdrive;}
 
 // get Theme Options
@@ -401,10 +401,10 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 	// #content .column .inner, #content .columns .inner {}
 
 	$rules = array('content'=>'','padleft'=>'','padright'=>'','shiftleft'=>'','shiftright'=>'');
-	$rules = skeleton_content_grid_generate_rules($rules,24);
-	$rules = skeleton_content_grid_generate_rules($rules,20);
-	$rules = skeleton_content_grid_generate_rules($rules,16);
-	$rules = skeleton_content_grid_generate_rules($rules,12);
+	$rules = bioship_content_grid_generate_rules($rules,24);
+	$rules = bioship_content_grid_generate_rules($rules,20);
+	$rules = bioship_content_grid_generate_rules($rules,16);
+	$rules = bioship_content_grid_generate_rules($rules,12);
 
 	echo $rules['content'].PHP_EOL;
 	echo $rules['padleft'].PHP_EOL;
@@ -415,7 +415,7 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 	// Generate Content Grid Rules
 	// ---------------------------
 	// 1.9.5: new content grid
-	function skeleton_content_grid_generate_rules($rules, $columns) {
+	function bioship_content_grid_generate_rules($rules, $columns) {
 
 		global $gridcompat, $contentcolumns; $c = $columns;
 		$contentrules = ''; $padleftrules = ''; $padrightrules = ''; $shiftleftrules = ''; $shiftrightrules = '';
@@ -542,14 +542,14 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 <?php
 
 // generate and output the default rules for the layout maxwidth
-$defaultcss = skeleton_grid_css_rules($maxwidth,false,'full');
+$defaultcss = bioship_grid_css_rules($maxwidth,false,'full');
 echo $defaultcss.PHP_EOL.PHP_EOL;
 
 
 // -------------------
 // Grid Rules Function
 // -------------------
-function skeleton_grid_css_rules($totalwidth,$mobile,$offset) {
+function bioship_grid_css_rules($totalwidth,$mobile,$offset) {
 
 	global $totalcolumns, $contentcolumns, $contentpadding, $empixels, $maxwidth, $contentwidth, $spacing, $gridcompat;
 
@@ -905,7 +905,7 @@ function skeleton_grid_css_rules($totalwidth,$mobile,$offset) {
 // note: experimental, using this seems to force a horizontal scrollbar also though,
 // by forcing the content width bigger than screen width - not what I was looking for!
 // therefore: NOT IMPLEMENTED
-// function skeleton_grid_body_min_width($width,$empixels) {
+// function bioship_grid_body_min_width($width,$empixels) {
 //	// $widthem = round(($width / $empixels),3,PHP_ROUND_HALF_DOWN);
 //	// $minwidth = 'html body {min-width: '.$widthem.'em;}'.PHP_EOL;
 //
@@ -961,29 +961,29 @@ if ($numbreakpoints > 0) {
 			if ($breakpoint < 321) { 			// generally smallest mobile (default 320)
 				if ($usebreakpoint == $usedbreakpoint) {$usebreakpoint = $usebreakpoint + 0.001;}
 				$mediaqueries .= '@media only screen and (max-width: '.$usebreakpoint.'em) {'.PHP_EOL;
-				$mediaqueries .= skeleton_grid_css_rules($breakpoint,true,'zero');
+				$mediaqueries .= bioship_grid_css_rules($breakpoint,true,'zero');
 				$mediaqueries .= '}'.PHP_EOL;
 			}
 			elseif ($breakpoint < 401) { 		// generally small mobile (default 400)
 				$mediaqueries .= '@media only screen and (min-width: '.$lastbreakpoint.'em) and (max-width: '.$usebreakpoint.'em) {'.PHP_EOL;
-				$mediaqueries .= skeleton_grid_css_rules($previousbreakpoint,true,'zero');
+				$mediaqueries .= bioship_grid_css_rules($previousbreakpoint,true,'zero');
 				$mediaqueries .= '}'.PHP_EOL;
 			}
 			elseif ($breakpoint < 481) { 		// generally standard mobile (default 480)
 				$mediaqueries .= '@media only screen and (min-width: '.$lastbreakpoint.'em) and (max-width: '.$usebreakpoint.'em) {'.PHP_EOL;
-				$mediaqueries .= skeleton_grid_css_rules($previousbreakpoint,true,'half');
+				$mediaqueries .= bioship_grid_css_rules($previousbreakpoint,true,'half');
 				$mediaqueries .= '}'.PHP_EOL;
 			}
 			else {								// everything in between
 				$mediaqueries .= '@media only screen and (min-width: '.$lastbreakpoint.'em) and (max-width: '.$usebreakpoint.'em) {'.PHP_EOL;
-				$mediaqueries .= skeleton_grid_css_rules($previousbreakpoint,false,'full');
+				$mediaqueries .= bioship_grid_css_rules($previousbreakpoint,false,'full');
 				$mediaqueries .= '}'.PHP_EOL;
 			}
 			if ($i == $numbreakpoints) { 		// largest width (default 1200)
 				$usebreakpoint = round(($breakpoint/$empixels),3,PHP_ROUND_HALF_DOWN);
 				if ($usebreakpoint == $usedbreakpoint) {$usebreakpoint = $usebreakpoint + 0.001;}
 				$mediaqueries .= '@media only screen and (min-width: '.$usebreakpoint.'em) {'.PHP_EOL;
-				$mediaqueries .= skeleton_grid_css_rules($breakpoint,false,'full');
+				$mediaqueries .= bioship_grid_css_rules($breakpoint,false,'full');
 				$mediaqueries .= '}'.PHP_EOL;
 			}
 		}

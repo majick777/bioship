@@ -3,25 +3,19 @@ Theme Name: BioShip
 Theme URI: http://bioship.space
 Details URI: http://bioship.space/news/
 Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
-<<<<<<< HEAD
-Version: 1.9.9
-=======
-Version: 2.0.0
->>>>>>> hotfix/errors
+Version: 2.0.1
 Status: publish
 Author: majick
 Author URI: http://wordquest.org
-Tags: fluid-layout, responsive-layout, one-column, two-columns, three-columns, four-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
-License: GPL
+Tags: fluid-layout, responsive-layout, one-column, two-columns, three-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
+License: GPLv2 or later
 License URI: http://www.opensource.org/licenses/gpl-license.php
 Requires at least: 3.4
+Text Domain: bioship
 GitHub Theme URI: majick777/bioship
 */
 
-/* ---------------------------------- */
-/* Skeleton Styles already enqueued   */
-/* @import url("css/skeleton.css");   */
-/* ---------------------------------- */
+/* note: this file is enequeued after skeleton.css */
 
 /* @group BioShip Styles */
 
@@ -97,9 +91,9 @@ span.infinite-loader {url('../images/infinite-loader.gif');}
 /* @end */
 
 
-/* Font-Face -  This is the proper syntax for an @font-face file
-   Just create a "fonts" folder at the root, copy your FontName 
-   into the code below and remove comment brackets. 		*/
+/* Font-Face example - this is the proper syntax for an @font-face file
+   Just create a "fonts" folder at the theme root, copy your FontName 
+   into the code below and remove comment braces. 		*/
 
 /*	
 	@font-face {

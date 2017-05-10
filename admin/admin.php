@@ -34,6 +34,39 @@ if (!function_exists('add_action')) {exit;}
 
 // TODO: Theme Settings CPT for Revisions (with visual 'editor' off)
 
+// --------------------
+// Admin Notice Helpers
+// --------------------
+
+// Admin Notices Output
+// --------------------
+// 2.0.2: added admin notice output helper
+$vadminmessages = array();
+if (!function_exists('bioship_admin_notices')) {
+ function bioship_admin_notices() {
+	global $vadminmessages;
+	if (count($vadminmessages) > 0) {
+		foreach ($vadminmessages as $vadminmessage) {
+			echo "<div class='update message'>".$vadminmessage."</div><br>";
+		}
+	}
+ }
+}
+
+// Admin Notices Enqueue
+// ---------------------
+// 2.0.2: added admin notice enqueue helper
+if (!function_exists('bioship_admin_notices_enqueue')) {
+ function bioship_admin_notices_enqueue() {
+	if (!has_action('admin_notice', 'bioship_admin_notices')) {
+		add_action('admin_notice', 'bioship_admin_notices');
+	}
+	if (!has_action('theme_admin_notice', 'bioship_admin_notices')) {
+		add_action('theme_admin_notice', 'bioship_admin_notices');
+	}
+ }
+}
+
 
 // Theme Debug: Echo All Theme Option Values
 // -----------------------------------------
@@ -563,7 +596,8 @@ if (!function_exists('admin_adminbar_replace_howdy')) {
  function admin_adminbar_replace_howdy($wp_admin_bar) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	// 1.9.8: replaced deprecated function get_currentuserinfo();
-	global $current_user; wp_get_current_user();
+	if (function_exists('wp_get_current_user')) {$current_user =  wp_get_current_user();}
+	else {global $current_user; get_currentuserinfo();}
 	$vusername = $current_user->user_login;
 	$vmyaccount = $wp_admin_bar->get_node('my-account');
 	// 1.5.5: fixed translation for Theme Check
@@ -740,18 +774,18 @@ if (!function_exists('admin_theme_options_menu')) {
 			// ----------------------
 			echo '<td><table id="themedisplayname" cellpadding="0" cellspacing="0"><tr height="40">';
 			echo '<td style="vertical-align:middle;"><h2 style="margin:5px 0;">'.THEMEDISPLAYNAME.'</h2>';
-			echo '</td><td width="10"></td><td><h3 style="margin:5px 0;">v'.$vthemeversion.'</h3></td>';
+			echo '</td><td width="10"></td><td><h3 style="margin:5px 0;">v'.THEMEVERSION.'</h3></td>';
 			echo '</tr>';
 			echo '<tr height="40"><td colspan="3" align="center" style="vertical-align:middle;">';
 
 			// Small Theme Links
 			// -----------------
 			// TODO: Docs could be a popup link to /bioship/admin/docs.php?
-			echo '<font style="font-size:11pt;"><a href="'.BIOSHIPHOME.'/news/" class="frameworklink" title="BioShip Theme Framework News" target=_blank>'.__('News','bioship').'</a>';
-			echo ' | <a href="'.BIOSHIPHOME.'/documentation/" class="frameworklink" title="BioShip Theme Framework Documentation" target=_blank>'.__('Docs','bioship').'</a>';
-			// echo ' | <a href="'.BIOSHIPHOME.'/faq/" class="frameworklink" title="BioShip Theme Framework Frequently Asked Questions" target=_blank>'.__('FAQ','bioship').'</a>';
-			echo ' | <a href="'.BIOSHIPHOME.'/development/" class="frameworklink" title="BioShip Theme Framework Development" target=_blank>'.__('Dev','bioship').'</a>';
-			// echo ' | <a href="'.BIOSHIPHOME.'/extensions/" class="frameworklink" title="BioShip Theme Framework Extensions" target=_blank>'.__('Extend','bioship').'</a>';
+			echo '<font style="font-size:11pt;"><a href="'.THEMEHOMEURL.'/news/" class="frameworklink" title="BioShip Theme Framework News" target=_blank>'.__('News','bioship').'</a>';
+			echo ' | <a href="'.THEMEHOMEURL.'/documentation/" class="frameworklink" title="BioShip Theme Framework Documentation" target=_blank>'.__('Docs','bioship').'</a>';
+			// echo ' | <a href="'.THEMEHOMEURL.'/faq/" class="frameworklink" title="BioShip Theme Framework Frequently Asked Questions" target=_blank>'.__('FAQ','bioship').'</a>';
+			echo ' | <a href="'.THEMEHOMEURL.'/development/" class="frameworklink" title="BioShip Theme Framework Development" target=_blank>'.__('Dev','bioship').'</a>';
+			// echo ' | <a href="'.THEMEHOMEURL.'/extensions/" class="frameworklink" title="BioShip Theme Framework Extensions" target=_blank>'.__('Extend','bioship').'</a>';
 			echo '</font></center></td></tr></table>';
 
 			echo '</td><td width="10"></td>';
@@ -1238,7 +1272,7 @@ if (!function_exists('admin_theme_info_page')) {
 	// Include WordQuest Sidebar
 	// -------------------------
 	$vsidebar = skeleton_file_hierarchy('file','wordquest.php',array('includes'));
-	// 1.8.5: change from wordquest_admin_load for new helper version (1.6.0)
+	// 1.8.5: change from wordquest_admin_load for new helper version (1.6.0+)
 	if ($vsidebar) {include_once($vsidebar); wqhelper_admin_loader();}
 
 	// Load Theme Info Section
@@ -1300,28 +1334,26 @@ if (!function_exists('admin_theme_info_section')) {
 
 		// BioShip Theme Links
 		// -------------------
-		// IMPROVEME: needs some lovin attention...
-		$vwordquesturl = "http://wordquest.org";
 		$vboxid = 'bioshiplinks'; $vboxtitle = __('Theme Links','bioship');
 		echo '<div id="'.$vboxid.'" class="postbox">';
 		echo '<h2 class="hndle" onclick="togglethemebox(\''.$vboxid.'\');"><span>'.$vboxtitle.'</span></h2>';
 		echo '<div class="inside" id="'.$vboxid.'-inside">';
 			$vbioshiplogo = skeleton_file_hierarchy('url','bioship.png',$vthemedirs['img']);
-			echo '<table><tr><td style="vertical-align:top;"><a href="'.$vwordquesturl.'" class="themelink" target=_blank><img src="'.$vbioshiplogo.'" border="0"></a></td>';
+			echo '<table><tr><td style="vertical-align:top;"><a href="'.THEMESUPPORT.'" class="themelink" target=_blank><img src="'.$vbioshiplogo.'" border="0"></a></td>';
 			echo '<td width="20"></td>';
-			echo '<td><a href="'.BIOSHIPHOME.'/documentation/" class="themelink" target=_blank>'.__('BioShip Documentation','bioship').'</a><br>';
-			// TODO: list of documentation subpages?
+			echo '<td><a href="'.THEMEHOMEURL.'/documentation/" class="themelink" target=_blank>'.__('BioShip Documentation','bioship').'</a><br>';
+			// TODO: maybe dropdown list of documentation subpages?
 			// Support Forum Links
-			echo '<a href="'.$vwordquesturl.'/quest/quest-category/bioship-support/" class="themelink" target=_blank>'.__('Support Solutions','bioship').'</a><br>';
-			echo '<a href="'.$vwordquesturl.'/quest/quest-category/bioship-features/" class="themelink" target=_blank>'.__('Features and Feedback','bioship').'</a><br>';
+			echo '<a href="'.THEMESUPPORT.'/quest/quest-category/bioship-support/" class="themelink" target=_blank>'.__('Support Solutions','bioship').'</a><br>';
+			echo '<a href="'.THEMESUPPORT.'/quest/quest-category/bioship-features/" class="themelink" target=_blank>'.__('Features and Feedback','bioship').'</a><br>';
 			// Development
 			echo '<a href="http://github.com/majick777/bioship/" class="themelink" target=_blank>'.__('Development via GitHub','bioship').'</a><br><br>';
 			// Extensions
-			echo '<a href="'.BIOSHIPHOME.'/extensions/" class="themelink" target=_blank>'.__('BioShip Extensions','bioship').'</a><br>';
-			// Content Sidebars / AutoSave Net (DraftNet?) / FreeStyler
-			echo '&rarr; <a href="'.$vwordquesturl.'/plugins/content-sidebars/" class="themelink" target=_blank>Content Sidebars Plugin</a><br>';
-			echo '&rarr; <a href="'.$vwordquesturl.'/plugins/autosave-net/" class="themelink" target=_blank>AutoSave Net Plugin</a>';
-			// echo '<a href="'.$vwordquesturl.'/plugins/freestyler/" class="themelink" target=_blank>FreeStyler</a>';
+			echo '<a href="'.THEMEHOMEURL.'/extensions/" class="themelink" target=_blank>'.__('BioShip Extensions','bioship').'</a><br>';
+			// Content Sidebars / AutoSave Net (DraftNet?) / ...FreeStyler
+			echo '&rarr; <a href="'.THEMESUPPORT.'/plugins/content-sidebars/" class="themelink" target=_blank>Content Sidebars Plugin</a><br>';
+			echo '&rarr; <a href="'.THEMESUPPORT.'/plugins/autosave-net/" class="themelink" target=_blank>AutoSave Net Plugin</a>';
+			// echo '<a href="'.THEMESUPPORT.'/plugins/freestyler/" class="themelink" target=_blank>FreeStyler</a>';
 			echo '</td></tr></table>';
 		echo '</div></div>';
 
@@ -1346,10 +1378,10 @@ if (!function_exists('admin_theme_info_section')) {
 		// Recommended Plugins
 		// -------------------
 		// 1.8.5: added recommended box display
-		// TODO: exclude recommended.php file from wp.org version?
 		$vrecommended = skeleton_file_hierarchy('file','recommended.php',array('includes'));
 		if ($vrecommended) {
-			include($vrecommended); $vrecommend = bioship_get_recommended();
+			include($vrecommended);
+			$vrecommend = bioship_admin_get_recommended();
 			if ($vrecommend) {
 				$vboxid = 'recommended'; $vboxtitle = __('Recommended','bioship');
 				echo '<div id="'.$vboxid.'" class="postbox">';
@@ -1415,8 +1447,8 @@ if (!function_exists('admin_theme_info_section')) {
 			echo '</div></div>';
 		}
 
-		// Enequeue Feed Loader Javascript
-		// -------------------------------
+		// maybe enqueue Feed Loader Javascript
+		// ------------------------------------
 		if (!has_action('admin_footer','wqhelper_dashboard_feed_javascript')) {
 			add_action('admin_footer','wqhelper_dashboard_feed_javascript');
 		}
@@ -1435,7 +1467,7 @@ if (!function_exists('admin_theme_updates_available')) {
  function admin_theme_updates_available() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
-	global $wp_version, $vthemename, $vthemeversion;
+	global $wp_version, $vthemename;
 	$vthemedisplayname = THEMEDISPLAYNAME;
 	$updatehtml = ''; $vthemeslug = str_replace('_','-',$vthemename);
 
@@ -1445,7 +1477,7 @@ if (!function_exists('admin_theme_updates_available')) {
 			$vtheme = wp_get_theme(get_stylesheet($vthemeslug));
 			$vparenttheme = wp_get_theme(get_template($vtheme['Template']));
 			$vparentversion = $vparenttheme['Version'];
-			$updatehtml = 'Parent Theme:<br>BioShip Framework v'.$vparentversion.'<br>';
+			$updatehtml = __('Parent Theme','bioship').':<br>BioShip Framework v'.$vparentversion.'<br>';
 		}
 		// else {$updatehtml = 'Theme Framework v'.$vthemeversion.'<br>';}
 		return $updatehtml;
@@ -1478,7 +1510,7 @@ if (!function_exists('admin_theme_updates_available')) {
 		$vthemeslug = $vparenttheme['Stylesheet'];
 		$vthemedisplayname = $vparenttheme['Stylesheet'];
 		$vthemeversion = $vparenttheme['Version'];
-		$updatehtml .= 'Parent Theme:<br>BioShip Framework v'.$vthemeversion.'<br>';
+		$updatehtml .= __('Parent Theme','bioship').':<br>BioShip Framework v'.$vthemeversion.'<br>';
 
 		// echo '**'.$vthemeslug.'**'.$vthemedisplayname.'**'.$vthemeversion.'<br>'; // debug point
 	}
@@ -1577,20 +1609,16 @@ if (!function_exists('admin_do_install_child')) {
 
 		if (file_exists($vchildsource.$vchildfile)) {
 			// 1.8.0: read files using WP Filesystem
-			// $vfh = f-o-p-e-n($vchildsource.$vchildfile,'r');
-			// $vfilesize = filesize($vchildsource.$vchildfile);
-			// $vfilecontents = f-r-e-a-d($vfh,$vfilesize); f-c-l-o-s-e($vfh);
 			$vfilecontents = $wp_filesystem->get_contents($vchildsource.$vchildfile);
 
 			// replace the default Child Theme name with the New one in style.css
 			if ($vchildfile == 'style.css') {
 				$vfilecontents = str_replace('Theme Name: BioShip Child','Theme Name: '.$vnewchildname,$vfilecontents);
 				// 1.9.5: match the child theme version to the parent version on creation
-				$vfilecontents = str_replace('1.0.0',BIOSHIPVERSION,$vfilecontents);
+				$vfilecontents = str_replace('1.0.0',THEMEVERSION,$vfilecontents);
 			}
 
 			// 1.8.0: write the file using WP_Filesystem
-			// $vfh = f-o-p-e-n($vchilddir.$vchildfile,'w'); f-w-r-i-t-e($vfh,$vfilecontents); f-c-l-o-s-e($vfh);
 			$wp_filesystem->put_contents($vchilddest.$vchildfile,$vfilecontents,FS_CHMOD_FILE);
 
 		}

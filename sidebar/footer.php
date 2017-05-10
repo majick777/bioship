@@ -5,8 +5,6 @@
 if (THEMETRACE) {skeleton_trace('T','Footer Widget Area Template',__FILE__);}
 
 // Count the active widgets to determine column sizes
-// $footerwidgets = is_active_sidebar('footer-widget-area-1') + is_active_sidebar('footer-widget-area-2')
-//				  + is_active_sidebar('footer-widget-area-3') + is_active_sidebar('footer-widget-area-4');
 $footerwidgets = skeleton_count_footer_widgets();
 
 $footergrid = "one_fourth"; // Default
@@ -22,7 +20,7 @@ elseif ($footerwidgets == "4") {$footergrid = "one_fourth";} 	// if four, split 
 	<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-footer -->';} ?>
 	<div <?php hybrid_attr('sidebar','footer'); ?>>
 
-		<?php do_action('skeleton_before_footer_widgets'); ?>
+		<?php do_action('bioship_before_footer_widgets'); ?>
 
 			<?php if (is_active_sidebar('footer-widget-area-1')) : ?>
 			<div id="footerwidgetarea1" class="<?php echo $footergrid;?>">
@@ -48,7 +46,7 @@ elseif ($footerwidgets == "4") {$footergrid = "one_fourth";} 	// if four, split 
 			</div>
 			<?php endif;?>
 
-		<?php do_action('skeleton_after_footer_widgets'); ?>
+		<?php do_action('bioship_after_footer_widgets'); ?>
 
 	</div>
 	<?php if (THEMECOMMENTS) {echo '<!-- /#sidebar-footer -->';} ?>
