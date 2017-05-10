@@ -2,15 +2,13 @@
 
 /* Comments Template (via Skeleton) */
 
-/* main callback to skeleton_comments in skeleton.php */
-
-if (THEMETRACE) {skeleton_trace('T',__('Comments Template','bioship'),__FILE__);}
+if (THEMETRACE) {bioship_trace('T',__('Comments Template','bioship'),__FILE__);}
 
 if ( post_password_required() ) {return;}
 
 ?>
 
-<?php do_action('bioship_before_comments'); ?>
+<?php bioship_do_action('bioship_before_comments'); ?>
 
 <div id="comments">
 
@@ -20,7 +18,7 @@ if ( post_password_required() ) {return;}
 	<?php printf( _n( 'One Response to %2$s', '%1$s Responses to %2$s', get_comments_number(), 'bioship' ), number_format_i18n( get_comments_number() ), '<span class="normal">&quot;'.get_the_title().'&quot;</span>' );?></h3>
 
 	<ul class="commentlist">
-	<?php wp_list_comments("callback=skeleton_comments"); ?>
+	<?php wp_list_comments("callback=bioship_skeleton_comments"); ?>
 	</ul>
 
 	<div class="navigation nav-below">
@@ -31,7 +29,7 @@ if ( post_password_required() ) {return;}
 <?php // else : // this is displayed if there are no comments so far ?>
 
 	<p class="nocomments">
-		<?php echo skeleton_apply_filters('skeleton_no_comments_text',''); ?>
+		<?php echo bioship_apply_filters('skeleton_no_comments_text', ''); ?>
 	</p>
 
 <?php endif; ?>
@@ -79,4 +77,4 @@ if ( post_password_required() ) {return;}
 
 </div>
 
-<?php do_action('bioship_after_comments'); ?>
+<?php bioship_do_action('bioship_after_comments'); ?>

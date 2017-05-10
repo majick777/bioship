@@ -149,7 +149,7 @@ function muscle_add_theme_options_menu($vmenu) {
 
 	// change the menu icon URL
 	# global $vthemedirs;
-	# $vicon = skeleton_file_hierarchy('url','theme-options-icon.png',$vthemedirs['img']);
+	# $vicon = bioship_file_hierarchy('url','theme-options-icon.png',$vthemedirs['img']);
 	# if ($vicon) {$vmenu['icon_url'] = $vicon;}
 
 	// change the menu position
@@ -259,22 +259,46 @@ function muscle_options_recommendations($vrecommend) {
 // TODO: add filter examples for Customizer Styling via Kirki
 
 // /= Customizer Extra Styles =/
-// options_customizer_extra_styles
+add_filter('options_customizer_extra_styles','muscle_customizer_extra_styles');
+function muscle_customizer_extra_styles($vstyles) {
+	# TODO: example
+	return $vstyles;
+}
 
 // /= Customizer Logo Image =/
-// options_customizer_logo_image
+add_filter('options_customizer_logo_image','muscle_customizer_logo_image');
+function muscle_customizer_logo_image($vimage) {
+	# TODO: example
+	return $vimage;
+}
 
 // /= Customizer Description =/
-// options_customizer_description
+add_filter('options_customizer_description','muscle_customizer_description');
+function muscle_customizer_description($vdescription) {
+	# TODO: example
+	return $vdescription;
+}
 
 // /= Customizer Colour Accent =/
-// options_customizer_color_accent
+add_filter('options_customizer_color_accent','muscle_customizer_color_accent');
+function muscle_customizer_color_accent($vcolor) {
+	# TODO: example
+	return $vcolor;
+}
 
 // /= Customizer Sidebar Colour =/
-// options_customizer_color_back
+add_filter('options_customizer_color_back','muscle_customizer_color_back');
+function muscle_customizer_color_back($vcolor) {
+	# TODO: example
+	return $vcolor;
+}
 
 // /= Customizer Panel Width =/
-// options_customizer_panel_width
+add_filter('options_customizer_panel_width','muscle_customizer_panel_width');
+function muscle_customizer_panel_width($vwidth) {
+	# TODO: example
+	return $vwidth;
+}
 
 
 // /=============
@@ -391,9 +415,9 @@ function muscle_title_tag_support($vsupport) {
 // ---------------------------
 // 1.8.5: for wp_title fallback only
 // You could remove the title filter eg. if your SEO plugin handles it
-# remove_filter('wp_title','skeleton_wp_title',10,2);
+# remove_filter('wp_title','bioship_wp_title',10,2);
 // or change the title
-add_filter('skeleton_page_title_tag','muscle_page_title-tag');
+add_filter('skeleton_page_title_tag','muscle_page_title_tag');
 function muscle_page_title_tag($vtitle) {
 	// Modify the existing title tag here, eg. for pages
 	# if (is_page()) {
@@ -1024,8 +1048,8 @@ function muscle_sidebar_mode($vmode) {
 // /= Sidebar Column Width =/
 // --------------------------
 // 1.5.0: moved here from old skeleton_set_sidebarwidth function
-add_filter('skeleton_sidebar_columns', 'skeleton_sidebar_columns');
-function skeleton_sidebar_columns($vcolumns) {
+add_filter('skeleton_sidebar_columns', 'muscle_sidebar_columns');
+function muscle_sidebar_columns($vcolumns) {
 	// eg. change the main sidebar column width for a particlur page
 	# if (is_page('about')) {return 'three';}
 	// eg. change the column width for video archive pages
@@ -1454,13 +1478,25 @@ function muscle_pagenavi_override($vpagenav) {
 }
 
 // /= Breadcrumb Post Types =/
-// skeleton_breadcrumb_post_types
+add_filter('skeleton_breadcrumb_post_types','muscle_breadcrumb_post_types');
+function muscle_breadcrumb_post_types($vposttypes) {
+	# TODO: example
+	return $vposttypes;
+}
 
 // /= Breadcrumb Archive Post Types =/
-// skeleton_breadcrumb_archive_types
+add_filter('skeleton_breadcrumb_archive_types','muscle_breadcrumb_archive_types');
+function muscle_breadcrumb_archive_types($varchivetypes) {
+	# TODO: example
+	return $varchivetypes;
+}
 
 // /= Breadcrumb Override =/
-// skeleton_breadcrumb_override
+add_filter('skeleton_breadcrumb_override','muscle_breadcrumb_override');
+function muscle_breadcrumb_override($vhtml) {
+	# TODO: example
+	return $vhtml;
+}
 
 
 // /=============
@@ -1469,11 +1505,23 @@ function muscle_pagenavi_override($vpagenav) {
 // muscle_widget_text_shortcodes
 // muscle_widget_title_shortcodes
 // muscle_smooth_scrolling
+// muscle_load_selectivizr
+// muscle_load_html5shiv
+// muscle_load_supersleight
+// muscle_load_ie8dom
+// muscle_load_flexibility
+// muscle_load_nwwatcher
+// muscle_load_nwevents
+// muscle_load_mediaqueries
+// muscle_load_csssupports
+// muscle_load_matchmedia
+// muscle_load_modernizr
+// muscle_load_matchheight
 // muscle_load_prefixfree
 // muscle_load_fastclick
 // muscle_load_mousewheel
 // muscle_load_stickykit
-// muscle_stickykit_elements
+// muscle_sticky_elements
 // muscle_load_fitvids
 // muscle_fitvids_elements
 // muscle_load_scrolltofixed
@@ -1508,8 +1556,56 @@ function muscle_custom_smooth_scrolling($vsmoothscrolling) {
 	return $vsmoothscrolling;
 }
 
-// /= Fast Click Loading =/
+// /= Selectivizr Loading =/
+// -------------------------
+// add_filter('muscle_load_selectivizr', '');
+
+// /= HTML5 Shiv Loading =/
 // ------------------------
+// add_filter('muscle_load_html5shiv', '');
+
+// /= Supersleight Loading =/
+// --------------------------
+// add_filter('muscle_load_supersleight', '');
+
+// /= IE8 DOM Polyfill Loadin =/
+// -----------------------------
+// add_filter('muscle_load_ie8dom', '');
+
+// /= Flexibility (Flexbox Polyfill) Loading =/
+// --------------------------------------------
+// add_filter('muscle_load_flexibility', '');
+
+// /= NW Watcher Loading =/
+// ------------------------
+// add_filter('muscle_load_nwwatcher', '');
+
+// /= NW Events Loading =/
+// -----------------------
+// add_filter('muscle_load_nwevents', '');
+
+// /= MediQueries Loading =/
+// -------------------------
+// add_filter('muscle_load_mediaqueries', '');
+
+// /= CSS Supports Loading =/
+// --------------------------
+// add_filter('muscle_load_csssupports', '');
+
+// /= MatchMedia Loading =/
+// ------------------------
+// add_filter('muscle_load_matchmedia', '');
+
+// /= Modernizr Loading =/
+// -----------------------
+// add_filter('muscle_load_modernizr', '');
+
+// /= MatchHeight Loading =/
+// -------------------------
+// add_filter('muscle_load_matchheight', '');
+
+// /= Prefix Free Loading =/
+// -------------------------
 add_filter('muscle_load_prefixfree','muscle_custom_load_prefixfree');
 function muscle_custom_load_prefixfree($vprefixfree) {
 	// could conditionally load prefixfree, eg.
@@ -1546,7 +1642,7 @@ function muscle_custom_load_stickykit($vstickykit) {
 
 // /= Sticky Kit Elements =/
 // -------------------------
-add_filter('muscle_stickykit_elements','muscle_custom_stickykit_elements');
+add_filter('muscle_sticky_elements','muscle_custom_stickykit_elements');
 function muscle_custom_stickykit_elements($velements) {
 	// eg. do not sticky float subsidebar for single posts
 	# if ( (is_post_type('post')) && (is_singular()) ) {
@@ -1741,7 +1837,7 @@ function muscle_adminbar_theme_options_icon($vurl) {
 	// default searches for /images/theme-icon.png via file hierarchy
 	// you could change this to a different filename, eg. child-icon.png
 	# global $vthemedirs;
-	# $viconurl = skeleton_file_hierarchy('url','child-icon.png',$vthemedirs['img']);
+	# $viconurl = bioship_file_hierarchy('url','child-icon.png',$vthemedirs['img']);
 	# if ($viconurl) {return $viconurl;}
 	return $vurl;
 }
@@ -1993,7 +2089,7 @@ function muscle_open_graph_override_image_custom($vimage) {
 # function custom_muscle_register_form_image($vregisterformimage) {
 #		// this example will look for and use register-image.png if found
 #		global $vthemedirs;
-# 		$vregisterimage = skeleton_file_hierarchy('url','register-image.png',$vthemedirs['img']);
+# 		$vregisterimage = bioship_file_hierarchy('url','register-image.png',$vthemedirs['img']);
 #		if ($vregisterimage) {return $vregisterimage;}
 # 		return $vregisterformimage;
 # }
@@ -2005,7 +2101,7 @@ function muscle_open_graph_override_image_custom($vimage) {
 # function custom_muscle_login_form_image($vloginformimage) {
 #		// this example will look for and use login-image.png
 #		global $vthemedirs
-# 		$vloginimage = skeleton_file_hierarchy('url','login-image.png',$vthemedirs['img']);
+# 		$vloginimage = bioship_file_hierarchy('url','login-image.png',$vthemedirs['img']);
 #		if ($vloginimage) {return $vloginimage;}
 # 		return $vloginformimage;
 # }

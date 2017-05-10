@@ -1,60 +1,63 @@
 <?php
 
-/* BioShip Hybrid Content Loop */
-/* based on Hybrid Base template */
+/* BioShip Content Loop */
 
-if (THEMETRACE) {skeleton_trace('T',__('Loop Index Template','bioship'),__FILE__);}
+/* orginally forked from Hybrid Base theme template */
 
-// Note: For consistency the improved Hybrid template/attribute functions
+if (THEMETRACE) {bioship_trace('T',__('Loop Index Template','bioship'),__FILE__);}
+
+// Note: For consistency, the improved Hybrid template/attribute functions
 // are included and used whether full Hybrid Core library is active or not.
 
-$vposttypes = skeleton_get_post_types();
+$vposttypes = bioship_get_post_types();
 if (THEMEDEBUG) {echo "<!-- Post Types: "; print_r($vposttypes); echo " -->";}
 if (is_string($vposttypes)) {$vposttype = $vposttypes;}
 
 /* Before Content Hook */
-do_action('bioship_before_content');
+bioship_do_action('bioship_before_content');
 
 if (THEMECOMMENTS) {echo "<!-- #maincontent -->";}
-echo '<main '.hybrid_get_attr('content').'>';
+$vattributes = hybrid_get_attr('content');
+echo '<main '.$vattributes.'>';
 
 	// If viewing a multi-post page
-	if ( !is_front_page() && !is_singular() && !is_404() ) {
+	if ( !is_front_page() && !is_singular() && !is_404() ) :
 		// Loads the content/loop-meta.php template
 		// 1.5.0: change from locate_template
-		skeleton_locate_template('content/loop-meta.php', true);
-	}
+		bioship_locate_template('content/loop-meta.php', true);
+	endif;
 
 	// 1.6.0: for front page 'blog' only, call top content action hook
-	if ( (is_front_page()) &&  (get_option('show_on_front') == 'posts') ) {
+	if ( (is_front_page()) &&  (get_option('show_on_front') == 'posts') ) :
 		// no default here, just hook a function to use it
-		// 1.9.8: shorten action name from skeleton_front_page_top_html
-		do_action('bioship_front_page_top');
+		// 1.9.8: shorten action name from front_page_top_html
+		bioship_do_action('bioship_front_page_top');
 		rewind_posts(); // ah to be sure to sure
-	}
+	endif;
 
 	// 1.6.0: for home 'blog' page only, to show page content above posts
 	// ref: http://zeo.my/wordpress-display-the-contents-of-static-page-posts-page/
-	if ( (is_home()) && (get_option('show_on_front') == 'page') ) {
+	if ( (is_home()) && (get_option('show_on_front') == 'page') ) :
 		// 1.8.5: moved to skeleton.php and use action hook
-		// 1.9.8: shorten action name from skeleton_home_page_top_html
-		do_action('bioship_home_page_top');
+		// 1.9.8: shorten action name from home_page_top_html
+		bioship_do_action('bioship_home_page_top');
 		rewind_posts(); // ah to be sure to sure
-	}
+	endif;
 
 	// 1.6.0: added before loop hook
-	do_action('bioship_before_loop');
+	bioship_do_action('bioship_before_loop');
+
 	// 1.8.5: added specific archive loop hooks
 	// 1.9.0: double-check singular for odd queries
 	// 1.9.5: fix to is_date typo for new action
-	if (is_archive() && !is_singular($vposttype)) {
-		do_action('bioship_before_archive');
-		if (is_category()) {do_action('bioship_before_category');}
-		elseif (is_tax()) {do_action('bioship_before_taxonomy');}
-		elseif (is_tag()) {do_action('bioship_before_tags');}
-		elseif (is_author()) {do_action('bioship_before_author');}
-		elseif (is_date()) {do_action('bioship_before_date');}
-	}
+	if (is_archive() && !is_singular($vposttype)) :
+		bioship_do_action('bioship_before_archive');
+		if (is_category()) {bioship_do_action('bioship_before_category');}
+		elseif (is_tax()) {bioship_do_action('bioship_before_taxonomy');}
+		elseif (is_tag()) {bioship_do_action('bioship_before_tags');}
+		elseif (is_author()) {bioship_do_action('bioship_before_author');}
+		elseif (is_date()) {bioship_do_action('bioship_before_date');}
+	endif;
 
 	// Checks if any posts were found
 	if ( have_posts() ) :
@@ -83,41 +86,43 @@ echo '<main '.hybrid_get_attr('content').'>';
 			// content/content.php (default)
 
 			// Loads the content template
-			hybrid_get_content_template();
+			// 2.0.5: added wrapper function
+			bioship_get_content_template();
 
 		endwhile; // End content loop
 
 		// Loads the content/loop-nav.php template
 		// 1.5.0: change from locate_template
-		skeleton_locate_template('content/loop-nav.php', true);
+		bioship_locate_template('content/loop-nav.php', true);
 
 	// If no posts were found
 	else :
 
 		// Loads the content/error.php template.
 		// 1.5.0: change from locate_template
-		skeleton_locate_template('content/error.php', true);
+		bioship_locate_template('content/error.php', true);
 
 	endif; // End no posts
 
 	// 1.8.5: added specific archive loop hooks
 	// 1.9.0: double-check singular for odd queries
-	if (is_archive() && !is_singular($vposttype)) {
-		if (is_date()) {do_action('bioship_after_date');}
-		elseif (is_author()) {do_action('bioship_after_author');}
-		elseif (is_tag()) {do_action('bioship_after_tags');}
-		elseif (is_tax()) {do_action('bioship_after_taxonomy');}
-		elseif (is_category()) {do_action('bioship_after_category');}
+	if (is_archive() && !is_singular($vposttype)) :
+		if (is_date()) {bioship_do_action('bioship_after_date');}
+		elseif (is_author()) {bioship_do_action('bioship_after_author');}
+		elseif (is_tag()) {bioship_do_action('bioship_after_tags');}
+		elseif (is_tax()) {bioship_do_action('bioship_after_taxonomy');}
+		elseif (is_category()) {bioship_do_action('bioship_after_category');}
 		// 2.0.1: fix to before archive typo
-		do_action('bioship_after_archive');
-	}
+		bioship_do_action('bioship_after_archive');
+	endif;
+
 	// 1.6.0: added after loop hook
-	do_action('bioship_after_loop');
+	bioship_do_action('bioship_after_loop');
 
 echo "</main>";
 if (THEMECOMMENTS) {echo "<!-- /#maincontent -->";}
 
 /* After Content Hook */
-do_action('bioship_after_content');
+bioship_do_action('bioship_after_content');
 
 ?>

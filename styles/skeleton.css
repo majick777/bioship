@@ -714,11 +714,11 @@ li.menu-item a:hover {
 /* @group WP Blog Styles */
 
 .sticky {
-	padding: 1em 0;
+	padding: 1em 1em;
 	margin: 1em auto;
 	border: 10px solid #eee;
-	border-left: none;
-	border-right:none;
+	/* border-left: none; */
+	/* border-right:none; */
 }
 
 .entry-meta,.entry-utility {

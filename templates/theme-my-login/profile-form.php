@@ -143,8 +143,8 @@ Theme My Login will always look in your theme's directory first, before using th
 				<input type="hidden" name="instance" value="<?php $template->the_instance(); ?>" />
 				<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $current_user->ID ); ?>" />
 
-				<?php $profilebuttonurl = apply_filters('profile_button_url',get_option('profilebuttonurl'));
-				$profilebuttontext = esc_attr(apply_filters('profile_button_text','Update Profile'));
+				<?php $profilebuttonurl = apply_filters('profile_button_url', get_option('profilebuttonurl'));
+				$profilebuttontext = esc_attr(apply_filters('profile_button_text', __('Update Profile')));
 				if ($profilebuttonurl != '') { ?>
 					<input type="image" me="submit" src="<?php echo $profilebuttonurl; ?>" />
 				<?php }	else { ?>

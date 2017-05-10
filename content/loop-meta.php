@@ -1,8 +1,8 @@
 <?php
 
-	/* Loop Meta Description Template */
+/* Loop Meta Description Template */
 
-	if (THEMETRACE) {skeleton_trace('T',__('Loop Meta Template','bioship'),__FILE__);}
+if (THEMETRACE) {bioship_trace('T',__('Loop Meta Template','bioship'),__FILE__);}
 
 ?>
 
@@ -14,7 +14,7 @@ if (THEMECOMMENTS) {echo "<!-- .archive-header -->";} ?>
 
 	/* Loop Title */
 
-	$vlooptitle = skeleton_get_loop_title();
+	$vlooptitle = bioship_get_loop_title();
 	if ($vlooptitle) {
 		// 1.9.8: switch from .loop-title to .archive-title
 		if (THEMECOMMENTS) {echo "<!-- .archive-title -->";}
@@ -26,7 +26,7 @@ if (THEMECOMMENTS) {echo "<!-- .archive-header -->";} ?>
 
 	if (!is_paged()) { // Check if we are on page/1
 
-		$vdescription = skeleton_get_loop_description();
+		$vdescription = bioship_get_loop_description();
 		if ($vdescription) {
 			// 1.9.8: switch from .loop-description to .archive-description
 			if (THEMECOMMENTS) {echo "<!-- .archive-description -->";}
