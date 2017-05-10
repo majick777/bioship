@@ -40,6 +40,7 @@ if (!isset($vincluded)) {
 
 // Documentation Index
 // -------------------
+// 2.0.5: added table markers for admin page
 function bioship_docs_index($vwrap) {
 
 	$vhtml = '';
@@ -47,28 +48,36 @@ function bioship_docs_index($vwrap) {
 
 	$vhtml .= '<div id="bioshipdocindex">';
 
+		$vhtml .= '<!-- START -->';
+
 		$vhtml .= '<h3>Setup</h3>';
 		$vhtml .= '<a href="docs.php?page=install">Installation and Updates</a><br>';
 		$vhtml .= '<a href="docs.php?page=child-themes">Child Themes</a><br>';
 		$vhtml .= '<a href="docs.php?page=frameworks">Options Frameworks</a><br>';
 
+		$vhtml .= '<!-- SPLIT -->';
+
 		$vhtml .= '<h3>Options</h3>';
 		$vhtml .= '<a href="docs.php?page=options">Theme Options Reference</a><br>';
 		$vhtml .= '<a href="docs.php?page=metabox">Writing Screen Metabox</a><br>';
+		$vhtml .= '<a href="docs.php?page=filters">Conditional Value Filters</a><br>';
 
 		$vhtml .= '<h3>Hierarchies</h3>';
-		$vhtml .= '<a href="docs.php?page=files">Files and Hierarchy</a><br>';
+		$vhtml .= '<a href="docs.php?page=files">File Guide and Hierarchy</a><br>';
 		$vhtml .= '<a href="docs.php?page=templates">Page Template Hierarchy</a><br>';
 
+		$vhtml .= '<!-- SPLIT -->';
+
 		$vhtml .= '<h3>Layout</h3>';
-		$vhtml .= '<a href="docs.php?page=sidebars">Sidebar Guide</a><br>';
+		$vhtml .= '<a href="docs.php?page=sidebars">Sidebar Layout Guide</a><br>';
 		$vhtml .= '<a href="docs.php?page=grid">Responsive Grid System</a><br>';
 		$vhtml .= '<a href="docs.php?page=hooks">Layout Hook Reference</a><br>';
 
 		$vhtml .= '<h3>Development</h3>';
-		$vhtml .= '<a href="docs.php?page=filters">Conditional Value Filters</a><br>';
 		$vhtml .= '<a href="docs.php?page=values">Theme Constants and Globals</a><br>';
 		$vhtml .= '<a href="docs.php?page=debug">Theme Debugging</a><br>';
+
+		$vhtml .= '<!-- END -->';
 
 	$vhtml .= '</div>';
 
@@ -143,6 +152,41 @@ function bioship_docs_wrap_close() {
 // === SETUP ===
 // =============
 
+// ----------
+// QUICKSTART
+// ----------
+// 2.0.5: add quickstart section
+
+function bioship_docs_quickstart($vwrap) {
+
+	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip QuickStart</h2><br>';}
+	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
+
+	$vhtml .= '<p>Even though BioShip has a lot to it, getting started with BioShip is actually easy. ';
+	$vhtml .= 'The main thing to remember is you do not need to setup and use every single feature! ';
+	$vhtml .= 'For the majority of projects the default settings for many of the options are great. ';
+	$vhtml .= 'So the fastest way to get started is to leave them alone and focus on your design.</p>';
+
+	$vhtml .= '<p>Practically speaking, this means customizing the Skin layer settings mostly, and ';
+	$vhtml .= 'adjusting some Skeleton layer sidebar settings if you need to modify your sidebars. ';
+	$vhtml .= 'Most of the Skeleton and all of the Muscle layer settings can be left for later.';
+	$vhtml .= '</p>';
+
+	$vhtml .= '<p>BioShip has a lot of complex code under the hood to make everything <i>super-flexible</i>. ';
+	$vhtml .= 'This means you can leave the more advanced stuff for if and when you actually need it, ';
+	$vhtml .= 'confident and relaxed knowing that you really can change anything at all in the future. ';
+	$vhtml .= 'And in the meantime, enjoy the simplicity of having everything setup and working sooner!</p>';
+
+	$vhtml .= '<p>And if and when you are ready to delve deeper, complete documentation is available below. ';
+	$vhtml .= 'I hope you enjoy using BioShip and welcome any feedback or improvements.';
+	$vhtml .= '</p>';
+
+	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
+
+	return $vhtml;
+
+}
+
 // ------------
 // INSTALLATION
 // ------------
@@ -195,7 +239,7 @@ function bioship_docs_install_guide($vwrap) {
 	want to go with step 5b so that other site admins do not see the new theme preview while you are developing it!)<br>';
 
 	$vhtml .= '<h4>Theme Updates</h4>
-	(via Wordpress Upgrader)<br><br>
+	(via WordPress Upgrader)<br><br>
 	Theme updates are available via your <i>Themes</i> page, just as they would be for any standard theme in the Wordpress.Org
 	repository. Clicking on <i>Update Available</i> on the BioShip Theme will bring up the <i>Theme Details</i>. From there you
 	can click on <i>view version x.x.x Details</i> before updating to show you the latest changes, and then you can simply click
@@ -208,20 +252,19 @@ function bioship_docs_install_guide($vwrap) {
 	$vhtml .= '<h5>Manual Theme Update</h5>
 	(for super-fast update testing)<br><br>
 	<b>1</b>. Download the latest <a href="http://bioship.space/download/download-latest/">BioShip ZIP</a> (right-click and "Save Linked Content As") to your computer.<br>
-	<b>2</b>. Unzip the file locally, then upload it by FTP to:	/wp-content/themes/bioship-new/<br>
-	<b>3</b>. Rename the existing /bioship/ subdirectory to /bioship-old/<br>
-	<b>4</b>. Rename the /bioship-new/ subdirectory to /bioship/<br>
-	<b>5</b>. Check the new version is working and when you are ready delete /bioship-old/<br>
+	<b>2</b>. Unzip the file locally, then upload it by FTP to:	<i>/wp-content/themes/bioship-new/</i><br>
+	(make sure you log in FTP as the correct user so owner/group permissions match your install!)<br>
+	<b>3</b>. Rename the existing <i>/bioship/</i> subdirectory to <i>/bioship-old/</i><br>
+	<b>4</b>. Rename the <i>/bioship-new/</i> subdirectory to <i>/bioship/</i><br>
+	<b>5</b>. Check the new version is working and when you are ready delete <i>/bioship-old/</i><br>
 	This fast "switcheroo" install will update to the new framework core with no downtime,
 	and if you have any problems at all you can always switch back to the previous version without hassle.<br>';
 
-	$vhtml .= "<h5>Optimization</h5>
-	For pageload optimization use a caching plugin such as W3 Total Cache.<br>
-	Optionally disable the W3 Database Cache and use DB Cache Reloaded Fix plugin.<br>
-	Optionally disable the W3 Minify Engine and use Better WordPress Minify.<br>
-	In this case, visit BWP Minify -&gt; Enqueued Files, and under Manage Enqueued CSS Files,<br>
-	to the right of the list click 'Styles to NOT minify', add <i>skeleton-style</i> and Save.<br>
-	(to avoid minification issues preventing this stylesheet from being loaded properly.)<br>";
+	$vhtml .= '<h5>Optimization</h5>
+	For pageload optimization use a caching plugin such as <a href="http://wordpress.org/plugin/w3-total-cache/" target=_blank>W3 Total Cache</a>.<br>
+	Preferably disable the W3 Minify Engine and use <a href="http://wordpress.org/plugins/better-wordpress-minify" target=_blank>Better WordPress Minify</a>.<br>
+	(BioShip 2.0.5+ integrates with Better WordPress Minity to prevent minification of a few resources.
+	This stops it from breaking the layout, whereas prior to this it needed to be done manually.)<br>';
 
 	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
 
@@ -424,9 +467,9 @@ function bioship_docs_option_list($vwrap) {
 	$vhtml .= "</script>";
 
 	// declare some dummy functions to allow direct loading of options.php
-	if (!function_exists('optionsframework_options')) {
+	if (!function_exists('bioship_options')) {
 		if (!function_exists('add_action')) {function add_action() {} }
-		if (!function_exists('skeleton_trace')) {function skeleton_trace() {} }
+		if (!function_exists('bioship_trace')) {function bioship_trace() {} }
 		if (!function_exists('apply_filters')) {function apply_filters($f,$v) {return $v;} }
 		if (!function_exists('get_categories')) {function get_categories() {} }
 		if (!function_exists('__')) {function __($v,$d) {return $v;} }
@@ -438,7 +481,9 @@ function bioship_docs_option_list($vwrap) {
 		include(dirname(dirname(__FILE__)).'/options.php');
 	}
 
-	$voptions = optionsframework_options(false);
+	// $voptions = optionsframework_options(false);
+	// 2.0.5: change to bioship_ prefix
+	$voptions = bioship_options(false);
 
 	// print_r($voptions);
 
@@ -539,7 +584,7 @@ function bioship_docs_metabox_guide($vwrap) {
 	$vhtml .= "and other settings on a per-post or per-page basis, giving you fine-grained control over many of the page elements.<br>";
 	$vhtml .= "(without having to resort to other more complex workarounds to achieve the same effect, such as one-column templates,<br>";
 	$vhtml .= "hiding elements with styles and endless page-targeted CSS rules that clutter your stylesheets etc.)<br>";
-	$vhtml .= "Note: Metabox overrides take priority over filtered theme settings. (ie. Settings -&gt; Filtered -&lt; Overrides)<br><br>";
+	$vhtml .= "Note: Metabox overrides take priority over filtered theme settings. (ie. Settings -&gt; Filtered -&gt; Overrides)<br><br>";
 
 	$vhtml .= "Currently most override options in the metabox are for display (hiding elements) rather than output (removing them.)<br>";
 	$vhtml .= "Inline CSS is added to a particular page to achieve this (more actual output overrides will be added at a later stage.)<br>";
@@ -581,6 +626,187 @@ function bioship_docs_metabox_guide($vwrap) {
 	$vhtml .= "These rules are checked for singular pages and output in the &lt;head&gt; section of the page on display automatically.<br>";
 	$vhtml .= "There is also an expand/collapse link for better access to viewing and editing this stylesheet rules textarea.<br>";
 	$vhtml .= "[PerPost Styles are stored in the post meta with (hidden) meta key <i>_perpoststyles</i>]<br>";
+
+	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
+
+	return $vhtml;
+}
+
+// -------------
+// VALUE FILTERS
+// -------------
+function bioship_docs_filter_list($vwrap) {
+
+	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip Value Filters</h2><br>';}
+	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
+
+	if (isset($_REQUEST['filter'])) {$vselected = $_REQUEST['filter'];} else {$vselected = '';}
+	$vhtml .= "<!-- Selected Filter: ".$vselected." -->";
+
+	if ($vwrap) {$vfilterfile = dirname(dirname(__FILE__)).'/child/filters.php';}
+	else {$vfilterfile = get_template_directory().'/child/filters.php';}
+
+	$vfilterdocs = file_get_contents($vfilterfile);
+
+	// TODO: get/move filter file introduction here
+
+	// skip section index as creating it
+
+	$vi = 0; // section index
+
+	while (strstr($vfilterdocs,'/==')) {
+
+		// get next section heading
+		$vpos = strpos($vfilterdocs,'/==');
+		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
+		$vpos = strpos($vfilterdocs,'==/');
+		$vheading = substr($vfilterdocs,0,$vpos);
+		$vfilterdocs = substr($vfilterdocs,($vpos+3),strlen($vfilterdocs));
+		$vheading = trim( str_replace(array('=','/',"\n"),'',$vheading) );
+		// echo $vheading;
+		$vsections[$vi]['title'] = $vheading;
+		$vsections[$vi]['name'] = strtolower(str_replace(' ','-',$vheading));
+
+		// get filters in section
+		$vpos = strpos($vfilterdocs,'// /==');
+		$vlist = substr($vfilterdocs,0,$vpos);
+		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
+		$vpos = strpos($vfilterdocs,'==/');
+		$vfilterdocs = substr($vfilterdocs,($vpos+3),strlen($vfilterdocs));
+
+		// get section comments
+		$vpos = strpos($vfilterdocs,'// /=');
+		$vcomments = trim( substr($vfilterdocs,0,$vpos) );
+		$vsections[$vi]['comments'] = str_replace('//','',$vcomments);
+		// echo $vsections[$vi]['comments'];
+		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
+
+		$vlist = trim( str_replace('//','',$vlist) );
+		$vlist = explode("\n",$vlist);
+		$vj = 0;
+		foreach ($vlist as $vfilter) {$vlist[$vj] = trim($vfilter); $vj++;}
+		$vsections[$vi]['filters'] = $vlist;
+		// print_r($vlist);
+
+		$vpos = strpos($vfilterdocs,'/==');
+		$vsections[$vi]['content'] = substr($vfilterdocs,0,$vpos);
+		// echo "(((((".$vsections[$vi]['content'].")))))";
+
+		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
+		$vpos = strpos($vfilterdocs,'// /==');
+		$vendpos = strpos($vfilterdocs,'// /===== END FILTERS');
+		if ($vpos == $vendpos) {$vfilterdocs = '';}
+
+		$vi++;
+	}
+
+	// print_r($vsections);
+
+	$vi = 0;
+	foreach ($vsections as $vsection) {
+
+		$vlist = $vsection['filters'];
+		$vcontent = $vsection['content'];
+
+		$vj = 0; // filter index
+		foreach ($vlist as $vfilter) {
+			$vfilter = trim($vfilter);
+			$vfilters[$vfilter]['slug'] = strtolower(str_replace('_','-',$vfilter));
+
+			if (!strstr($vcontent,$vfilter)) {
+				echo "Filter not found: ".$vfilter."<br>".PHP_EOL;
+				echo $vcontent;
+			}
+			else {
+				$vpos = strpos($vcontent,$vfilter);
+				$vtempa = substr($vcontent,0,$vpos);
+				$vtempb = substr($vcontent,$vpos,strlen($vcontent));
+				$vposa = strrpos($vtempa,'/=');
+				$vtempc = substr($vtempa,($vposa+2),strlen($vtempa));
+				$vposb = strpos($vtempc,'=/');
+				$vfilters[$vfilter]['name'] = trim(substr($vtempc,0,$vposb));
+				$vposc = strrpos($vtempa,'add_filter');
+				$vexample = trim( substr($vtempa,$vposc,strlen($vtempc)) );
+				$vtempa = substr($vtempa,0,$vposa);
+
+				if (strstr($vtempb,'/=')) {$vpos = strpos($vtempb,'/=');}
+				else {$vpos = strlen($vtempb);}
+				$vexample .= substr($vtempb,0,$vpos);
+				$vtempb = trim( substr($vtempb,$vpos,strlen($vtempb)) );
+
+				if (DOCDEBUG) {
+					if (!strstr($vexample,'return')) {
+						echo "Warning: no return for ".$vfilter.":<br>".PHP_EOL;
+						echo $vfilters[$vfilter]['content'];
+					}
+				}
+
+				if (substr($vexample,-3,3) == '// ') {$vexample = substr($vexample,0,(strlen($vexample)-3));}
+				// echo "(((".$vexample.")))";
+
+				$vfilters[$vfilter]['example'] = $vexample;
+
+				$vcontent = $vtempa.$vtempb;
+
+				$vj++;
+			}
+		}
+
+		$vi++;
+
+	}
+
+	// print_r($vfilters);
+
+	$vhtml .= "<script>
+	function togglesection(section) {
+		sectionid = 'section-'+section;
+		if (document.getElementById(sectionid).style.display == 'none') {
+			document.getElementById(sectionid).style.display = '';
+		} else {document.getElementById(sectionid).style.display = 'none';}
+	}
+	function togglefilter(filter) {
+		filterid = 'filter-'+filter;
+		if (document.getElementById(filterid).style.display == 'none') {
+			document.getElementById(filterid).style.display = '';
+		} else {document.getElementById(filterid).style.display = 'none';}
+	}".PHP_EOL;
+	if ($vselected != '') {$vhtml .= "scrolltohash('".$vselected."');";}
+	$vhtml .= "</script>";
+
+	// Conditional Filter note...
+	// $vhtml .= '<b>Note</b>: For modifying options in different contexts, see <a href="'.$vdoclinks['filters'].'">Conditional Filter Examples</a>.<br><br>';
+
+	foreach ($vsections as $vsection) {
+
+		$vsectionhtml = '<h3><a href="javascript:void(0);" onclick="togglesection(\''.$vsection['name'].'\');">'.$vsection['title'].'</a></h3>';
+
+		$vsectionhtml .= '<div id="section-'.$vsection['name'].'"'; // '>
+
+		$vfiltershtml = ''; $vfoundfilter = false;
+
+		foreach ($vsection['filters'] as $vfilter) {
+
+			$vfiltershtml .= '<a name="'.$vfilter.'"></a>';
+
+			$vfiltershtml .= '<h4><a href="javascript:void(0);" onclick="togglefilter(\''.$vfilters[$vfilter]['slug'].'\');">'.$vfilter." : ".$vfilters[$vfilter]['name'].'</a></h4>';
+
+			$vfiltershtml .= '<div id="filter-'.$vfilters[$vfilter]['slug'].'"'; // '>
+
+			if ($vselected == $vfilter) {$vfoundfilter = true; $vfiltershtml .= '>';} else {$vfiltershtml .= ' style="display:none;">';}
+
+			$vfiltershtml .= '<pre><code>'.$vfilters[$vfilter]['example'].'</code></pre>';
+
+			$vfiltershtml .= '</div>'; // end filter
+
+		}
+
+		if (!$vfoundfilter) {$vsectionhtml .= ' style="display:none;">';} else {$vsectionhtml .= '>';}
+
+		$vhtml .= $vsectionhtml.$vfiltershtml;
+
+		$vhtml .= '</div>'; // end section
+	}
 
 	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
 
@@ -1202,40 +1428,50 @@ function bioship_docs_layout_hooks($vwrap) {
 	$vhtml .= "You can of course simply add your own functions to any of the available hooks with a few lines of code, in the form:<br>";
 	$vhtml .= "<i><pre>add_action('{hook_name}', '{function_name}', {priority});</pre></i>";
 	$vhtml .= "For example, to add a simple welcome message:";
-	$vhtml .= "<i><pre>add_action('skeleton_after_header', 'custom_after_header_function', 5);<br>";
+	$vhtml .= "<i><pre>add_action('bioship_after_header', 'custom_after_header_function', 5);<br>";
 	$vhtml .= "function custom_after_header_function() {echo 'Welcome!';}</pre></i>";
 	$vhtml .= "Or for an existing shortcode function called <i>welcome_shortcode</i>:";
-	$vhtml .= "<i><pre>add_action('skeleton_after_header', 'welcome_shortcode', 5);</pre></i><br>";
-
-		// $vhtml .= "<h4>Layout Hook Changes</h4>";
-		// $vhtml .= "One exception when using Child Theme's is re-ordering layout and adding page elements, as both the functions added<br>";
-		// $vhtml .= "and the layout hooks need to exist <i>before</i> they can be removed or re-ordered, but are not yet in the Child Theme functions.php<br>";
-		// $vhtml .= "So, you would need to add an extra wrapper so changes are made after the Parent Theme has loaded. eg.<br>";
-		// $vhtml .= "<pre>add_action('init','custom_layout_filters');<br>";
-		// $vhtml .= "function custom_layout_filters() {<br>
-		// $vhtml .= "	if (is_page()) {remove_action('bioship_header','skeleton_header_widgets',6);}
-		// $vhtml .= "}</pre>";
-		// $vhtml .= "see the <a href="'.$vdoclinks['hooks'].">Layout Hooks Guide</a> for more examples.<br><br>";
+	$vhtml .= "<i><pre>add_action('bioship_after_header', 'custom_welcome_shortcode', 5);<br>";
+	$vhtml .= "function custom_welcome_shortcode() {echo do_shortcode('[welcome_shortcode']);}</pre></i><br>";
 
 	$vhtml .= "<h4>Reordering Layout Functions</h4>";
-	$vhtml .= "If something is hooked in the wrong position for your desired layout, you could either remove it and reinsert it, eg.<br>";
-	$vhtml .= "<i><pre>remove_action('bioship_header', 'skeleton_header_widgets', 6);<br>";
-	$vhtml .= "add_action('skeleton_header', 'skeleton_header_widgets', 2);</pre></i>";
-	$vhtml .= "Or use the available priority filters to modify when and where it is called and thus positioned in the section.";
-	$vhtml .= "<i><pre>add_filter('skeleton_header_widgets_position', function() {return 2;} );</pre></i><br>";
+	$vhtml .= "If something is hooked in the wrong position for your desired layout, you can change it's position with a filter.<br>";
+	$vhtml .= "Priority filters have the same name as the function appended with _position:";
+	$vhtml .= "<i><pre>add_filter('bioship_header_widgets_position', 'custom_header_widgets_position');<br>";
+	$vhtml .= "function custom_header_widgets_position() {return 2;}</pre></i><br>";
+	$vhtml .= "OR more directly with an anonymous function:";
+	$vhtml .= "<i><pre>add_filter('bioship_header_widgets_position', function(){return 2;} );</pre></i><br>";
 
 	$vhtml .= "<h4>Removing Layout Functions</h4>";
-	$vhtml .= "If you want to remove any of the hooked functions you can do so in the standard WordPress way (requires specifying priority.)<br>";
-	$vhtml .= "<i><pre>remove_action('bioship_header', 'skeleton_header_widgets', 6);</pre></i>";
-	$vhtml .= "You can also change the hooked function priority via filter to -1 and it will not be added. eg.";
-	$vhtml .= "<i><pre>add_filter('skeleton_header_widgets_position', function() {return -1;} );</pre></i><br>";
+	$vhtml .= "If you change the hooked function priority via filter to -1 and it will not be added. eg.";
+	$vhtml .= "<i><pre>add_filter('bioship_header_widgets_position', function(){return -1;} );</pre></i><br>";
+
+	$vhtml .= "You can also remove any of the hooked functions you can do so using <i>bioship_remove_action</i><br>";
+	$vhtml .= "This is a wrapper for WordPress <i>remove_action</i> with the filtered priority calculated automatically.<br>";
+	$vhtml .= "<i><pre>bioship_remove_action('bioship_header', 'bioship_header_widgets');</pre></i><br>";
+
+	$vhtml .= "Note: while you can do the same manually without using <i>bioship_remove_action</i> you would need to<br>";
+	$vhtml .= "delay the removal until <i>after</i> the action has been added or it will not actually be removed.<br>";
+	$vhtml .= "Practically speaking, this means wrapping in a further check in your functions.php eg.<br>";
+	$vhtml .= "<i><pre>add_action('init', 'custom_layout_femovals');<br>";
+	$vhtml .= "function custom_layout_removals() {<br>";
+	$vhtml .= "	remove_action('bioship_header', 'bioship_header_widgets', 6);<br>";
+	$vhtml .= "}</pre></i>";
+
+	$vhtml .= "<h4>Replacing Layout Functions</h4>";
+	$vhtml .= "If something is hooked in the wrong section for your desired layout, you can remove it and reinsert it.<br>";
+	$vhtml .= "Note again you would need to delay the removal or use <i>bioship_remove_action</i> which auto-delays for you.<br>";
+	$vhtml .= "<i><pre>bioship_remove_action('bioship_header', 'bioship_header_widgets');<br>";
+	$vhtml .= "add_action('bioship_navbar', 'bioship_header_widgets', 2);</pre></i>";
 
 	$vhtml .= "<h4>Header / Footer Extra HTML</h4>";
 	$vhtml .= "You can also add extra HTML to the Header / Footer HTML sections using filters.<br>";
 	$vhtml .= "These are throwbacks from a previous implementation but are still available for use.<br>";
-	$vhtml .= "Filters: <i>skeleton_header_html_extras</i> and <i>skeleton_footer_html_extras</i><br>";
-	// $vhtml .= "eg...";
+	$vhtml .= "Filters: <i>bioship_header_html_extras</i> and <i>bioship_footer_html_extras</i>, eg:<br>";
+	$vhtml .= "<i><pre>add_filter('bioship_header_html_extra', 'custom_header_html_extras');<br>";
+	$vhtml .= "function custom_header_html_extras() {return '&lt;div&gt;Div Content&lt;/div&gt;';}</pre></i>";
 
+	// TODO: finish banner position notes
 	// $vhtml .= "<h4>Banner Positions</h4>";
 	// $vhtml .= "You can also add banners to the banner positions with the filter: <i>skeleton_{position}_banner</i><br>";
 	// $vhtml .= "Available banner positions:<br>";
@@ -1260,187 +1496,6 @@ function bioship_docs_layout_hooks($vwrap) {
 // DEVELOPMENT
 // ===========
 
-// ---------------
-// FILTER EXAMPLES
-// ---------------
-function bioship_docs_filter_list($vwrap) {
-
-	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip Value Filters</h2><br>';}
-	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
-
-	if (isset($_REQUEST['filter'])) {$vselected = $_REQUEST['filter'];} else {$vselected = '';}
-	$vhtml .= "<!-- Selected Filter: ".$vselected." -->";
-
-	if ($vwrap) {$vfilterfile = dirname(dirname(__FILE__)).'/child/filters.php';}
-	else {$vfilterfile = get_template_directory().'/child/filters.php';}
-
-	$vfilterdocs = file_get_contents($vfilterfile);
-
-	// TODO: get/move filter file introduction here
-
-	// skip section index as creating it
-
-	$vi = 0; // section index
-
-	while (strstr($vfilterdocs,'/==')) {
-
-		// get next section heading
-		$vpos = strpos($vfilterdocs,'/==');
-		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
-		$vpos = strpos($vfilterdocs,'==/');
-		$vheading = substr($vfilterdocs,0,$vpos);
-		$vfilterdocs = substr($vfilterdocs,($vpos+3),strlen($vfilterdocs));
-		$vheading = trim( str_replace(array('=','/',"\n"),'',$vheading) );
-		// echo $vheading;
-		$vsections[$vi]['title'] = $vheading;
-		$vsections[$vi]['name'] = strtolower(str_replace(' ','-',$vheading));
-
-		// get filters in section
-		$vpos = strpos($vfilterdocs,'// /==');
-		$vlist = substr($vfilterdocs,0,$vpos);
-		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
-		$vpos = strpos($vfilterdocs,'==/');
-		$vfilterdocs = substr($vfilterdocs,($vpos+3),strlen($vfilterdocs));
-
-		// get section comments
-		$vpos = strpos($vfilterdocs,'// /=');
-		$vcomments = trim( substr($vfilterdocs,0,$vpos) );
-		$vsections[$vi]['comments'] = str_replace('//','',$vcomments);
-		// echo $vsections[$vi]['comments'];
-		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
-
-		$vlist = trim( str_replace('//','',$vlist) );
-		$vlist = explode("\n",$vlist);
-		$vj = 0;
-		foreach ($vlist as $vfilter) {$vlist[$vj] = trim($vfilter); $vj++;}
-		$vsections[$vi]['filters'] = $vlist;
-		// print_r($vlist);
-
-		$vpos = strpos($vfilterdocs,'/==');
-		$vsections[$vi]['content'] = substr($vfilterdocs,0,$vpos);
-		// echo "(((((".$vsections[$vi]['content'].")))))";
-
-		$vfilterdocs = substr($vfilterdocs,$vpos,strlen($vfilterdocs));
-		$vpos = strpos($vfilterdocs,'// /==');
-		$vendpos = strpos($vfilterdocs,'// /===== END FILTERS');
-		if ($vpos == $vendpos) {$vfilterdocs = '';}
-
-		$vi++;
-	}
-
-	// print_r($vsections);
-
-	$vi = 0;
-	foreach ($vsections as $vsection) {
-
-		$vlist = $vsection['filters'];
-		$vcontent = $vsection['content'];
-
-		$vj = 0; // filter index
-		foreach ($vlist as $vfilter) {
-			$vfilter = trim($vfilter);
-			$vfilters[$vfilter]['slug'] = strtolower(str_replace('_','-',$vfilter));
-
-			if (!strstr($vcontent,$vfilter)) {
-				echo "Filter not found: ".$vfilter."<br>".PHP_EOL;
-				echo $vcontent;
-			}
-			else {
-				$vpos = strpos($vcontent,$vfilter);
-				$vtempa = substr($vcontent,0,$vpos);
-				$vtempb = substr($vcontent,$vpos,strlen($vcontent));
-				$vposa = strrpos($vtempa,'/=');
-				$vtempc = substr($vtempa,($vposa+2),strlen($vtempa));
-				$vposb = strpos($vtempc,'=/');
-				$vfilters[$vfilter]['name'] = trim(substr($vtempc,0,$vposb));
-				$vposc = strrpos($vtempa,'add_filter');
-				$vexample = trim( substr($vtempa,$vposc,strlen($vtempc)) );
-				$vtempa = substr($vtempa,0,$vposa);
-
-				if (strstr($vtempb,'/=')) {$vpos = strpos($vtempb,'/=');}
-				else {$vpos = strlen($vtempb);}
-				$vexample .= substr($vtempb,0,$vpos);
-				$vtempb = trim( substr($vtempb,$vpos,strlen($vtempb)) );
-
-				if (DOCDEBUG) {
-					if (!strstr($vexample,'return')) {
-						echo "Warning: no return for ".$vfilter.":<br>".PHP_EOL;
-						echo $vfilters[$vfilter]['content'];
-					}
-				}
-
-				if (substr($vexample,-3,3) == '// ') {$vexample = substr($vexample,0,(strlen($vexample)-3));}
-				// echo "(((".$vexample.")))";
-
-				$vfilters[$vfilter]['example'] = $vexample;
-
-				$vcontent = $vtempa.$vtempb;
-
-				$vj++;
-			}
-		}
-
-		$vi++;
-
-	}
-
-	// print_r($vfilters);
-
-	$vhtml .= "<script>
-	function togglesection(section) {
-		sectionid = 'section-'+section;
-		if (document.getElementById(sectionid).style.display == 'none') {
-			document.getElementById(sectionid).style.display = '';
-		} else {document.getElementById(sectionid).style.display = 'none';}
-	}
-	function togglefilter(filter) {
-		filterid = 'filter-'+filter;
-		if (document.getElementById(filterid).style.display == 'none') {
-			document.getElementById(filterid).style.display = '';
-		} else {document.getElementById(filterid).style.display = 'none';}
-	}".PHP_EOL;
-	if ($vselected != '') {$vhtml .= "scrolltohash('".$vselected."');";}
-	$vhtml .= "</script>";
-
-	// Conditional Filter note...
-	// $vhtml .= '<b>Note</b>: For modifying options in different contexts, see <a href="'.$vdoclinks['filters'].'">Conditional Filter Examples</a>.<br><br>';
-
-	foreach ($vsections as $vsection) {
-
-		$vsectionhtml = '<h3><a href="javascript:void(0);" onclick="togglesection(\''.$vsection['name'].'\');">'.$vsection['title'].'</a></h3>';
-
-		$vsectionhtml .= '<div id="section-'.$vsection['name'].'"'; // '>
-
-		$vfiltershtml = ''; $vfoundfilter = false;
-
-		foreach ($vsection['filters'] as $vfilter) {
-
-			$vfiltershtml .= '<a name="'.$vfilter.'"></a>';
-
-			$vfiltershtml .= '<h4><a href="javascript:void(0);" onclick="togglefilter(\''.$vfilters[$vfilter]['slug'].'\');">'.$vfilter." : ".$vfilters[$vfilter]['name'].'</a></h4>';
-
-			$vfiltershtml .= '<div id="filter-'.$vfilters[$vfilter]['slug'].'"'; // '>
-
-			if ($vselected == $vfilter) {$vfoundfilter = true; $vfiltershtml .= '>';} else {$vfiltershtml .= ' style="display:none;">';}
-
-			$vfiltershtml .= '<pre><code>'.$vfilters[$vfilter]['example'].'</code></pre>';
-
-			$vfiltershtml .= '</div>'; // end filter
-
-		}
-
-		if (!$vfoundfilter) {$vsectionhtml .= ' style="display:none;">';} else {$vsectionhtml .= '>';}
-
-		$vhtml .= $vsectionhtml.$vfiltershtml;
-
-		$vhtml .= '</div>'; // end section
-	}
-
-	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
-
-	return $vhtml;
-}
-
 // ------------
 // THEME VALUES
 // ------------
@@ -1453,28 +1508,32 @@ function bioship_docs_theme_values($vwrap) {
 	$vhtml .= "<h3>Theme Constants</h3>";
 	$vhtml .= "<table>
 		<tr><td><b>Theme Values</b></td><td colspan='2'><b>Description</b></td><td><b>Value</b></tr>
-		<tr><td>THEMEVERSION</td><td colspan='2'>current version of BioShip Theme Framework</td><td>x.x.x</td></tr>
-		<tr><td>THEMECHILDVERSION</td><td colspan='2'>Child Theme version (or parent if no child)</td><td>x.x.x</td></tr>
+		<tr><td>THEMESLUG</td><td colspan='2'>sanitized lowercase and hyphenated) theme name</td><td>string</td></tr>
+		<tr><td>THEMEKEY</td><td colspan='2'>options table key value for theme options</td><td>string</td></tr>
 		<tr><td>THEMEDISPLAYNAME</td><td colspan='2'>the Display Name of currently active Theme</td><td>string</td></tr>
 		<tr><td>THEMEHOMEURL</td><td colspan='2'>static URL of the BioShip website</td><td><a href='http://bioship.space' target=_blank>http://bioship.space</a></td></tr>
 		<tr><td>THEMESUPPORT</td><td colspan='2'>static URL of Support website (WordQuest)</td><td><a href='http://wordquest.org' target=_blank>http://wordquest.org</a></td></tr>
+		<tr height='10'><td> </td></tr>
 		<tr><td><b>Load States</b></td></tr>
-		<tr><td>THEMESSL</td><td colspan='2'></td>whether to load SSL resources (is_ssl)<td>true/false</td></tr>
-		<tr><td>THEMEKEY</td><td colspan='2'>options table key value for theme options</td><td>string</td></tr>
+		<tr><td>THEMESSL</td><td colspan='2'>whether to load SSL resources (is_ssl)</td><td>true/false</td></tr>
 		<tr><td>THEMECHILD</td><td colspan='2'>if using a Child Theme or not</td><td>true/false</td></tr>
 		<tr><td>THEMEPARENT</td><td colspan='2'>parent Theme template slug (if any)</td><td>string</td></tr>
+		<tr><td>THEMEVERSION</td><td colspan='2'>current version of BioShip Theme Framework</td><td>x.x.x</td></tr>
+		<tr><td>THEMECHILDVERSION</td><td colspan='2'>Child Theme version (or parent if no child)</td><td>x.x.x</td></tr>
+		<tr height='10'><td> </td></tr>
 		<tr><td><b>Library States</b></td></tr>
 		<tr><td>THEMETITAN</td><td colspan='2'>if Titan Framework is loaded</td><td>true/false</td></tr>
 		<tr><td>THEMEOPT</td><td colspan='2'>if Options Framework is loaded</td><td>true/false</td></tr>
 		<tr><td>THEMEHYBRID</td><td colspan='2'>if full Hybrid Core is loaded</td><td>true/false</td></tr>
 		<tr><td>THEMEDRIVE</td><td colspan='2'>if a Theme Test Drive is active</td><td>true/false</td></tr>
 		<tr><td>THEMEKIRKI</td><td colspan='2'>if Kirki is loaded (Customizer only)</td><td>true/false</td></tr>
+		<tr height='10'><td> </td></tr>
 		<tr><td><b>Theme Debugging</b></td></tr>
 		<tr><td>THEMEDEBUG</td><td colspan='2'>output debugging information comments</td><td>true/false</td></tr>
 		<tr><td>THEMECOMMENTS</td><td colspan='2'>output template element comments</td><td>true/false</td></tr>
 		<tr><td>THEMETRACE</td><td colspan='2'>if performing a theme argument trace</td><td>true/false</td></tr>
 		<tr><td>THEMEWINDOWS</td><td colspan='2'>local environment for directory paths</td><td>true/false</td></tr>
-		<tr height='40'><td> </td></tr>
+		<tr height='30'><td> </td></tr>
 
 
 	<tr><td><h3>Theme Globals</h3></td></tr>
@@ -1506,7 +1565,7 @@ function bioship_docs_theme_values($vwrap) {
 		<tr><td> ['hooks']</td><td colspan='2'>Array of Theme Layout Hook Keys</td><td>flat list of all layout hook keys</td></tr>
 		<tr><td> ['functions']</td><td colspan='2'>Array of Hooked Default Functions</td><td>(default function priorities are also stored)</tr>
 		<tr><td> ['labels']</td><td colspan='2'>Labels for both Sections and Hooks</td><td>(sections numeric keys, hooks string keys)</td></tr>
-		<tr><td> ['hybrid']</td><td colspan='2'>Modified Layout Hook array for Hybrid Hook</td><td>(skeleton_ prefix removed)</tr>
+		<tr><td> ['hybrid']</td><td colspan='2'>Modified Layout Hook array for Hybrid Hook</td><td>(bioship_ prefix removed)</tr>
 		<tr height='20'><td> </td></tr>
 
 	<tr><td><b>Theme Layout Values</b></td></tr>

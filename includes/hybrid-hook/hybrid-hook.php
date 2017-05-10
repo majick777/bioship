@@ -33,7 +33,7 @@
 // @author Tony Hayes http://dreamjester.net
 // ! Please do not expect original author to support this modified plugin! Thanks!
 // - changed plugindir to dirname to include via theme options
-// - added a filter to the hook array so it can use Skeleton hooks
+// - added a filter to the hook array so it can use theme hooks
 // - further changes noted in add-actions.php and meta-boxes.php
 
 

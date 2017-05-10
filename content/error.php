@@ -2,7 +2,7 @@
 
 /* No Content Found Template (via Hybrid Base) */
 
-if (THEMETRACE) {skeleton_trace('T',__('Error Template','bioship'),__FILE__);}
+if (THEMETRACE) {bioship_trace('T',__('Error Template','bioship'),__FILE__);}
 
 ?>
 
@@ -12,7 +12,7 @@ if (THEMETRACE) {skeleton_trace('T',__('Error Template','bioship'),__FILE__);}
 		<h1 class="entry-title">
 			<?php // 1.8.5: added no content title filter
 				$nocontenttitle = __( 'Nothing Found', 'bioship' );
-				$nocontenttitle = skeleton_apply_filters('skeleton_no_content_title',$nocontenttitle);
+				$nocontenttitle = bioship_apply_filters('skeleton_no_content_title',$nocontenttitle);
 				echo $nocontenttitle;
 			?>
 		</h1>
@@ -21,7 +21,7 @@ if (THEMETRACE) {skeleton_trace('T',__('Error Template','bioship'),__FILE__);}
 	<?php if (THEMECOMMENTS) : ?><!-- .entry-content --><?php endif; ?><div <?php hybrid_attr('entry-content'); ?>>
 		<?php // 1.8.5: added no content message filter
 			$nocontent = wpautop( __( 'Apologies, but no entries were found.', 'bioship' ) );
-			$nocontent = skeleton_apply_filters('skeleton_no_content_message',$nocontent);
+			$nocontent = bioship_apply_filters('skeleton_no_content_message',$nocontent);
 			echo $nocontent;
 		?>
 	</div><?php if (THEMECOMMENTS) : ?><!-- /.entry-content --><?php endif; ?>

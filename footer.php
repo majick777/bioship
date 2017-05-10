@@ -1,13 +1,13 @@
 <?php
 
-	if (THEMETRACE) {skeleton_trace('T',__('Footer Template','bioship'),__FILE__);}
+	if (THEMETRACE) {bioship_trace('T',__('Footer Template','bioship'),__FILE__);}
 
-	do_action('bioship_before_footer');
-	wp_footer();
-	do_action('bioship_after_footer');
+	bioship_do_action('bioship_before_footer');
+		wp_footer();
+	bioship_do_action('bioship_after_footer');
 
-	do_action('bioship_container_close');
-	do_action('bioship_after_container');
+	bioship_do_action('bioship_container_close');
+	bioship_do_action('bioship_after_container');
 
 ?>
 
