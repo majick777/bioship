@@ -17,17 +17,16 @@ if (THEMECOMMENTS) {echo "<!-- article.entry -->";}
 echo '<article '.hybrid_get_attr('post'),'>';
 
 	/* Before Entry Hook */
-	do_action('skeleton_before_entry');
+	do_action('bioship_before_entry');
 
 	/* Attachment / Media Handler */
-	// 1.9.8: shorten action name to skeleton_media_handler
-	do_action('skeleton_media_handler');
+	do_action('bioship_media_handler');
 
 	/* Entry Header */
-	do_action('skeleton_entry_header');
+	do_action('bioship_entry_header');
 
 	/* Thumbnail */
-	do_action('skeleton_thumbnail');
+	do_action('bioship_thumbnail');
 
 	if ( (THEMEDEBUG) || ( (isset($_GET['debugquery'])) && ($_GET['debugquery'] == 'yes') ) ) {
 		// 1.9.5: allow for separate query-only debugging
@@ -38,43 +37,43 @@ echo '<article '.hybrid_get_attr('post'),'>';
 	if (is_search() || (is_archive() && !is_singular($vposttype)) || !is_singular($vposttype)) :
 
 		/* Before Excerpt Hook */
-		do_action('skeleton_before_excerpt');
+		do_action('bioship_before_excerpt');
 
 			/* Entry Content Summary */
 			if (THEMECOMMENTS) {echo '<!-- .entry-summary -->';}
 			echo '<div '.hybrid_get_attr('entry-summary').'>';
 
 				/* the_excerpt() */
-				do_action('skeleton_the_excerpt');
+				do_action('bioship_the_excerpt');
 
 			echo '</div>';
 			if (THEMECOMMENTS) {echo '<!-- /.entry-summary -->';}
 
 		/* After Excerpt Hook */
-		do_action('skeleton_after_excerpt');
+		do_action('bioship_after_excerpt');
 
 		/* Entry Footer */
-		do_action('skeleton_entry_footer');
+		do_action('bioship_entry_footer');
 
 	else :
 
 		/* Full Content Display */
 
 		/* Before Singular Hook */
-		do_action('skeleton_before_singular');
+		do_action('bioship_before_singular');
 
 			/* Author Bio (top)
-			do_action('skeleton_author_bio_top');
+			do_action('bioship_author_bio_top');
 
 				/* Before Main Content */
-				do_action('skeleton_after_the_content');
+				do_action('bioship_before_the_content');
 
 					/* Entry Content (Full) */
 					if (THEMECOMMENTS) {echo '<!-- .entry-content -->';}
 					echo '<div '.hybrid_get_attr('entry-content').'>';
 
 							/* the_content */
-							do_action('skeleton_the_content');
+							do_action('bioship_the_content');
 
 						echo '<div class="clear"></div>';
 
@@ -82,24 +81,24 @@ echo '<article '.hybrid_get_attr('post'),'>';
 					if (THEMECOMMENTS) {echo '<!-- /.entry-content -->';}
 
 				/* After Main Content */
-				do_action('skeleton_after_the_content');
+				do_action('bioship_after_the_content');
 
 			/* Author Bio (bottom) */
-			do_action('skeleton_author_bio_bottom');
+			do_action('bioship_author_bio_bottom');
 
 			/* Entry Footer */
-			do_action('skeleton_entry_footer');
+			do_action('bioship_entry_footer');
 
 		/* After Singular Hook */
-		do_action('skeleton_after_singular');
+		do_action('bioship_after_singular');
 
 		/* Comments */
-		do_action('skeleton_comments');
+		do_action('bioship_comments');
 
 	endif;
 
 	/* After Entry Hook */
-	do_action('skeleton_after_entry');
+	do_action('bioship_after_entry');
 
 echo '</article>';
 if (THEMECOMMENTS) {echo '<!-- /article.entry -->';}

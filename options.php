@@ -2731,7 +2731,7 @@ if (!function_exists('optionsframework_options')) {
 		'page' => 'advanced');
 
 	// 1.5.0: Theme Update Admin Notification
-	// TODO: maybe resurrect this at some stage
+	// TODO: maybe resurrect this at some stage?
 	// $options[] = array(
 	//	'name' => __('Admin Update Notification', 'bioship'),
 	//	'desc' => __('Display Theme Update Available Notifications in the Admin Header Notices (for capability update_themes)', 'bioship'),
@@ -2751,7 +2751,7 @@ if (!function_exists('optionsframework_options')) {
 		'page' => 'advanced');
 
 	// All Options Page
-	// TODO: may need to remove this?
+	// TODO: may need to remove this option?
 	$options[] = array(
 		'name' => __('Add All Options Page', 'bioship'),
 		'desc' => __('Add an "All Options" Page to the Settings Menu', 'bioship'),
@@ -2792,8 +2792,16 @@ if (!function_exists('optionsframework_options')) {
 		'type' => 'checkbox',
 		'page' => 'advanced');
 
+	$options[] = array(
+		'name' => __('Templates Dropdown', 'bioship'),
+		'desc' => __('Add an ordered list of included templates for the current page to the Admin Bar.', 'bioship'),
+		'id' => 'templatesdropdown',
+		'std' => '1',
+		'class' => 'muscle',
+		'type' => 'checkbox');
+
 	// Admin Bar Link
-	// 1.8.5: change from option to filter
+	// 1.8.5: changed from option to filter
 	// $options[] = array(
 	//	'name' => __('Admin Bar Link', 'bioship'),
 	//	'desc' => __('Add a link to Theme Options in the Admin Bar.', 'bioship'),
@@ -2847,6 +2855,18 @@ if (!function_exists('optionsframework_options')) {
 		'std' => $admincss_default,
 		'class' => 'muscle',
 		'type' => 'textarea',
+		'page' => 'advanced');
+
+	// Admin CSS Mode
+	$options[] = array(
+		'name' => __('Admin CSS Mode', 'bioship'),
+		'desc' => __('How to load the Dynamic Admin CSS.', 'bioship'),
+		'id' => 'admincssmode',
+		'std' => 'direct',
+		'type' => 'select',
+		'class' => 'skin',
+		'transport' => 'refresh',
+		'options' => $css_array,
 		'page' => 'advanced');
 
 

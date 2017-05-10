@@ -4,19 +4,22 @@
 
 if (THEMETRACE) {skeleton_trace('T','Frontpage Sidebar Template',__FILE__);}
 
-if (is_active_sidebar('frontpage')) { // If the sidebar has widgets
+$vtemplate = str_replace('.php','',basename(__FILE__));
+$vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
-	do_action('skeleton_before_sidebar'); ?>
+if (is_active_sidebar('frontpage')) {
+
+	do_action('bioship_before_sidebar'); ?>
 
 		<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-primary -->';} ?>
-		<aside <?php hybrid_attr('sidebar','primary'); ?>>
+		<aside <?php hybrid_attr('sidebar','primary',$vargs); ?>>
 
-			<?php dynamic_sidebar('frontpage'); // Displays the primary page sidebar. ?>
+			<?php dynamic_sidebar('frontpage'); ?>
 
 		</aside>
 		<?php if (THEMECOMMENTS) {echo '<!-- /#sidebar-primary -->';} ?>
 
-	<?php do_action('skeleton_after_sidebar');
+	<?php do_action('bioship_after_sidebar');
 
 }
 

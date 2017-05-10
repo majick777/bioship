@@ -53,14 +53,14 @@ function bioship_theme_layout_wrapper() { // <!-- DO NOT MODIFY THIS LINE -->
 	// to the desired action hook using Wordpress add_action function.
 
 	// Example: Add a welcome message above the header:
-	# add_action('skeleton_before_header','my_welcome_function',0);
+	# add_action('bioship_before_header','my_welcome_function',0);
 	# function my_welcome_function() {echo "Welcome to the site!";}
 
 	// To insert an element between existing hooked functions, simple make sure to
 	// specify the correct priority as the third parameter.
 
 	// Example: Add a welcome message within the header (after header open wrapper)
-	# add_action('skeleton_header_open','my_welcome_function',1);
+	# add_action('bioship_header_open','my_welcome_function',1);
 	# function my_welcome_function() {echo "Thanks for visiting!";}
 
 
@@ -72,7 +72,7 @@ function bioship_theme_layout_wrapper() { // <!-- DO NOT MODIFY THIS LINE -->
 	// These are listed for reference in hooks.php
 
 	// Example: Remove the main navigation bar section entirely
-	# remove_action('skeleton_navbar','skeleton_main_menu',5);
+	# remove_action('bioship_navbar','skeleton_main_menu',5);
 
 
 
@@ -82,8 +82,8 @@ function bioship_theme_layout_wrapper() { // <!-- DO NOT MODIFY THIS LINE -->
 	// You may wish to simple swap the order in which page elements are displayed.
 
 	// Example: To move HTML Header extra section to before Header widget area:
-	// remove_action('skeleton_header','skeleten_header_extras',8);
-	// add_action('skeleton_header','skeleten_header_extras',5);
+	// remove_action('bioship_header','skeleten_header_extras',8);
+	// add_action('bioship_header','skeleten_header_extras',5);
 
 
 

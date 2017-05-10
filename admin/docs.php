@@ -1213,20 +1213,20 @@ function bioship_docs_layout_hooks($vwrap) {
 		// $vhtml .= "So, you would need to add an extra wrapper so changes are made after the Parent Theme has loaded. eg.<br>";
 		// $vhtml .= "<pre>add_action('init','custom_layout_filters');<br>";
 		// $vhtml .= "function custom_layout_filters() {<br>
-		// $vhtml .= "	if (is_page()) {remove_action('skeleton_header','skeleton_header_widgets',6);}
+		// $vhtml .= "	if (is_page()) {remove_action('bioship_header','skeleton_header_widgets',6);}
 		// $vhtml .= "}</pre>";
 		// $vhtml .= "see the <a href="'.$vdoclinks['hooks'].">Layout Hooks Guide</a> for more examples.<br><br>";
 
 	$vhtml .= "<h4>Reordering Layout Functions</h4>";
 	$vhtml .= "If something is hooked in the wrong position for your desired layout, you could either remove it and reinsert it, eg.<br>";
-	$vhtml .= "<i><pre>remove_action('skeleton_header', 'skeleton_header_widgets', 6);<br>";
+	$vhtml .= "<i><pre>remove_action('bioship_header', 'skeleton_header_widgets', 6);<br>";
 	$vhtml .= "add_action('skeleton_header', 'skeleton_header_widgets', 2);</pre></i>";
 	$vhtml .= "Or use the available priority filters to modify when and where it is called and thus positioned in the section.";
 	$vhtml .= "<i><pre>add_filter('skeleton_header_widgets_position', function() {return 2;} );</pre></i><br>";
 
 	$vhtml .= "<h4>Removing Layout Functions</h4>";
 	$vhtml .= "If you want to remove any of the hooked functions you can do so in the standard WordPress way (requires specifying priority.)<br>";
-	$vhtml .= "<i><pre>remove_action('skeleton_header', 'skeleton_header_widgets', 6);</pre></i>";
+	$vhtml .= "<i><pre>remove_action('bioship_header', 'skeleton_header_widgets', 6);</pre></i>";
 	$vhtml .= "You can also change the hooked function priority via filter to -1 and it will not be added. eg.";
 	$vhtml .= "<i><pre>add_filter('skeleton_header_widgets_position', function() {return -1;} );</pre></i><br>";
 
@@ -1453,9 +1453,15 @@ function bioship_docs_theme_values($vwrap) {
 	$vhtml .= "<h3>Theme Constants</h3>";
 	$vhtml .= "<table>
 		<tr><td><b>Theme Values</b></td><td colspan='2'><b>Description</b></td><td><b>Value</b></tr>
-		<tr><td>BIOSHIPVERSION</td><td colspan='2'>version of this theme framework</td><td>x.x.x</td></tr>
+		<tr><td>THEMEVERSION</td><td colspan='2'>current version of BioShip Theme Framework</td><td>x.x.x</td></tr>
+		<tr><td>THEMECHILDVERSION</td><td colspan='2'>Child Theme version (or parent if no child)</td><td>x.x.x</td></tr>
+		<tr><td>THEMEDISPLAYNAME</td><td colspan='2'>the Display Name of currently active Theme</td><td>string</td></tr>
+		<tr><td>THEMEHOMEURL</td><td colspan='2'>static URL of the BioShip website</td><td><a href='http://bioship.space' target=_blank>http://bioship.space</a></td></tr>
+		<tr><td>THEMESUPPORT</td><td colspan='2'>static URL of Support website (WordQuest)</td><td><a href='http://wordquest.org' target=_blank>http://wordquest.org</a></td></tr>
+		<tr><td><b>Load States</b></td></tr>
+		<tr><td>THEMESSL</td><td colspan='2'></td>whether to load SSL resources (is_ssl)<td>true/false</td></tr>
 		<tr><td>THEMEKEY</td><td colspan='2'>options table key value for theme options</td><td>string</td></tr>
-		<tr><td>THEMECHILD</td><td colspan='2'>if using a Child Theme</td><td>true/false</td></tr>
+		<tr><td>THEMECHILD</td><td colspan='2'>if using a Child Theme or not</td><td>true/false</td></tr>
 		<tr><td>THEMEPARENT</td><td colspan='2'>parent Theme template slug (if any)</td><td>string</td></tr>
 		<tr><td><b>Library States</b></td></tr>
 		<tr><td>THEMETITAN</td><td colspan='2'>if Titan Framework is loaded</td><td>true/false</td></tr>

@@ -170,7 +170,7 @@ if (!function_exists('skeleton_main_wrapper_open')) {
 		echo '	<div id="wrappadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_container_open','skeleton_main_wrapper_open',5);
+	skeleton_add_action('bioship_container_open','skeleton_main_wrapper_open',5);
 }
 
 // Main Wrapper Close
@@ -184,7 +184,7 @@ if (!function_exists('skeleton_main_wrapper_close')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_container_close','skeleton_main_wrapper_close',5);
+	skeleton_add_action('bioship_container_close','skeleton_main_wrapper_close',5);
 }
 
 // Echo a Clearing Div
@@ -204,20 +204,20 @@ if (!function_exists('skeleton_echo_clear_div')) {
 // eg. add_filter('skeleton_navbar_skeleton_echo_clear_div_position',function() {return 4;});
 
 // after header nav
-skeleton_add_action('skeleton_header','skeleton_echo_clear_div',3);
+skeleton_add_action('bioship_header','skeleton_echo_clear_div',3);
 // after nav menu // 1.8.0: moved sidebar buttons inline
-// add_action('skeleton_navbar','skeleton_echo_clear_div',6);
+// add_action('bioship_navbar','skeleton_echo_clear_div',6);
 // after nav bar
-skeleton_add_action('skeleton_after_navbar','skeleton_echo_clear_div',0);
-skeleton_add_action('skeleton_after_navbar','skeleton_echo_clear_div',8);
+skeleton_add_action('bioship_after_navbar','skeleton_echo_clear_div',0);
+skeleton_add_action('bioship_after_navbar','skeleton_echo_clear_div',8);
 // 1.9.8: after content
-skeleton_add_action('skeleton_after_content','skeleton_echo_clear_div',2);
+skeleton_add_action('bioship_after_content','skeleton_echo_clear_div',2);
 // before footer
-skeleton_add_action('skeleton_before_footer','skeleton_echo_clear_div',10);
+skeleton_add_action('bioship_before_footer','skeleton_echo_clear_div',10);
 // after footer widgets
-skeleton_add_action('skeleton_footer','skeleton_echo_clear_div',5);
+skeleton_add_action('bioship_footer','skeleton_echo_clear_div',5);
 // after footer nav
-skeleton_add_action('skeleton_footer','skeleton_echo_clear_div',7);
+skeleton_add_action('bioship_footer','skeleton_echo_clear_div',7);
 
 
 // --------------
@@ -266,7 +266,7 @@ if (!function_exists('skeleton_header_open')) {
 		echo '		<header '.hybrid_get_attr('header').'>'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_header','skeleton_header_open',0);
+	skeleton_add_action('bioship_header','skeleton_header_open',0);
 }
 
 // Header Wrap Close
@@ -280,7 +280,7 @@ if (!function_exists('skeleton_header_close')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_header','skeleton_header_close',10);
+	skeleton_add_action('bioship_header','skeleton_header_close',10);
 }
 
 // Header Nav Menu
@@ -310,7 +310,7 @@ if (!function_exists('skeleton_header_nav')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_header','skeleton_header_nav',2);
+	skeleton_add_action('bioship_header','skeleton_header_nav',2);
 }
 
 // Skeleton Header Logo
@@ -382,7 +382,7 @@ if (!function_exists('skeleton_logo')) {
 		echo $vlogo;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_header','skeleton_header_logo',4);
+	skeleton_add_action('bioship_header','skeleton_header_logo',4);
 }
 
 // Header Widgets
@@ -396,7 +396,7 @@ if (!function_exists('skeleton_header_widgets')) {
 		hybrid_get_sidebar($vheader);
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_header','skeleton_header_widgets',6);
+	skeleton_add_action('bioship_header','skeleton_header_widgets',6);
 }
 
 // Header Extras
@@ -425,7 +425,7 @@ if (!function_exists('skeleton_header_extras')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_header','skeleton_header_extras',8);
+	skeleton_add_action('bioship_header','skeleton_header_extras',8);
 }
 
 // -----------------
@@ -447,7 +447,7 @@ if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] 
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_navbar','skeleton_main_menu_open',0);
+	skeleton_add_action('bioship_navbar','skeleton_main_menu_open',0);
 
 	// Main Menu
 	// ---------
@@ -466,7 +466,7 @@ if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] 
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_navbar','skeleton_main_menu',8);
+	skeleton_add_action('bioship_navbar','skeleton_main_menu',8);
 
 	// Wrap Close
 	// ----------
@@ -479,7 +479,7 @@ if ( (isset($vthemesettings['primarymenu'])) && ($vthemesettings['primarymenu'] 
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_navbar','skeleton_main_menu_close',10);
+	skeleton_add_action('bioship_navbar','skeleton_main_menu_close',10);
 }
 
 // Main Menu Mobile Button
@@ -503,14 +503,14 @@ if (!function_exists('skeleton_main_menu_mobile_button')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_navbar','skeleton_main_menu_mobile_button',4);
+	skeleton_add_action('bioship_navbar','skeleton_main_menu_mobile_button',4);
 }
 
 // Secondary Menu
 // --------------
-// note: action 'skeleton_secondarynav' is not actually called anywhere -
+// note: action 'skeleton_secondarynav' is not actually called anywhere
 // this is an auxiliary navigation bar available for custom positioning
-// ...or direct firing via: do_action('skeleton_secondarynav');
+// ...or direct firing via: do_action('bioship_secondarynav');
 if ( (isset($vthemesettings['secondarymenu'])) && ($vthemesettings['secondarymenu'] == '1') ) {
 	if (!function_exists('skeleton_secondary_menu')) {
 		function skeleton_secondary_menu() {
@@ -530,7 +530,8 @@ if ( (isset($vthemesettings['secondarymenu'])) && ($vthemesettings['secondarymen
 		}
 		// 1.9.8: use new position filtered add_action method
 		// 1.9.8: hooked this to an existing template position (previously unused)
-		skeleton_add_action('skeleton_before_header','skeleton_secondary_menu',8);
+		skeleton_add_action('bioship_before_header','skeleton_secondary_menu',8);
+		add_action('bioship_secondarynav','skeleton_secondary_menu');
 	}
 }
 
@@ -588,7 +589,7 @@ if (!function_exists('skeleton_top_banner')) {
 		skeleton_banner_abstract('top');
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_before_header','skeleton_top_banner',2);
+	skeleton_add_action('bioship_before_header','skeleton_top_banner',2);
 }
 
 // Header Banner
@@ -600,7 +601,7 @@ if (!function_exists('skeleton_header_banner')) {
 		skeleton_banner_abstract('header');
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_after_header','skeleton_header_banner',5);
+	skeleton_add_action('bioship_after_header','skeleton_header_banner',5);
 }
 
 // NavBar Banner
@@ -612,7 +613,7 @@ if (!function_exists('skeleton_navbar_banner')) {
 		skeleton_banner_abstract('navbar');
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_after_navbar','skeleton_navbar_banner',10);
+	skeleton_add_action('bioship_after_navbar','skeleton_navbar_banner',10);
 }
 
 // Footer Banner
@@ -624,7 +625,7 @@ if (!function_exists('skeleton_footer_banner')) {
 		skeleton_banner_abstract('footer');
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_before_footer','skeleton_footer_banner',5);
+	skeleton_add_action('bioship_before_footer','skeleton_footer_banner',5);
 }
 
 // Bottom Banner
@@ -636,7 +637,7 @@ if (!function_exists('skeleton_bottom_banner')) {
 		skeleton_banner_abstract('bottom');
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_after_footer','skeleton_bottom_banner',5);
+	skeleton_add_action('bioship_after_footer','skeleton_bottom_banner',5);
 }
 
 
@@ -1040,7 +1041,7 @@ if (!function_exists('skeleton_sidebar_mobile_button')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_navbar','skeleton_sidebar_mobile_button',2);
+	skeleton_add_action('bioship_navbar','skeleton_sidebar_mobile_button',2);
 }
 
 // Sidebar Wrap Open
@@ -1095,7 +1096,7 @@ if (!function_exists('skeleton_sidebar_open'))  {
 
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_before_sidebar','skeleton_sidebar_open',5);
+	skeleton_add_action('bioship_before_sidebar','skeleton_sidebar_open',5);
 }
 
 // Sidebar Wrap Close
@@ -1109,7 +1110,7 @@ if (!function_exists('skeleton_sidebar_close')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_after_sidebar','skeleton_sidebar_close',5);
+	skeleton_add_action('bioship_after_sidebar','skeleton_sidebar_close',5);
 }
 
 
@@ -1166,7 +1167,7 @@ if (!function_exists('skeleton_subsidebar_mobile_button')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_navbar','skeleton_subsidebar_mobile_button',6);
+	skeleton_add_action('bioship_navbar','skeleton_subsidebar_mobile_button',6);
 }
 
 // Subsidebar Wrap Open
@@ -1218,7 +1219,7 @@ if (!function_exists('skeleton_subsidebar_open')) {
 
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_before_subsidebar','skeleton_subsidebar_open',5);
+	skeleton_add_action('bioship_before_subsidebar','skeleton_subsidebar_open',5);
 }
 
 // Subsidebar Wrap Close
@@ -1233,7 +1234,7 @@ if (!function_exists('skeleton_subsidebar_close')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_after_subsidebar','skeleton_subsidebar_close',5);
+	skeleton_add_action('bioship_after_subsidebar','skeleton_subsidebar_close',5);
 }
 
 
@@ -1291,7 +1292,7 @@ if (!function_exists('skeleton_content_open')) {
 		echo '	<div id="contentpadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_before_content','skeleton_content_open',10);
+	skeleton_add_action('bioship_before_content','skeleton_content_open',10);
 }
 
 // Content Wrap Close
@@ -1307,7 +1308,7 @@ if (!function_exists('skeleton_content_close')) {
     	echo '<a id="bottom" name="bottom"></a>'; // #bottom id for scroll links
     }
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_after_content','skeleton_content_close',0);
+	skeleton_add_action('bioship_after_content','skeleton_content_close',0);
 }
 
 // Home (Blog) Page Top Content
@@ -1343,7 +1344,7 @@ if (!function_exists('skeleton_home_page_content')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_home_page_top','skeleton_home_page_content',5);
+	skeleton_add_action('bioship_home_page_top','skeleton_home_page_content',5);
 }
 
 // Echo the Excerpt via Action Hook
@@ -1355,7 +1356,7 @@ if (!function_exists('skeleton_echo_the_excerpt')) {
 		the_excerpt();
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_the_excerpt','skeleton_echo_the_excerpt',5);
+	skeleton_add_action('bioship_the_excerpt','skeleton_echo_the_excerpt',5);
 }
 
 // Echo the Content via Action Hook
@@ -1367,7 +1368,7 @@ if (!function_exists('skeleton_echo_the_content')) {
 		the_content();
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_the_content','skeleton_echo_the_content',5);
+	skeleton_add_action('bioship_the_content','skeleton_echo_the_content',5);
 }
 
 // Media Template Handler
@@ -1497,7 +1498,7 @@ if (!function_exists('skeleton_attachment_media_handler')) {
 
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_media_handler','skeleton_attachment_media_handler',5);
+	skeleton_add_action('bioship_media_handler','skeleton_attachment_media_handler',5);
 }
 
 
@@ -1526,7 +1527,7 @@ if (!function_exists('skeleton_entry_header_open')) {
 		echo '<header '.hybrid_get_attr('entry-header').'>'.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_header','skeleton_entry_header_open',0);
+	skeleton_add_action('bioship_entry_header','skeleton_entry_header_open',0);
 }
 if (!function_exists('skeleton_entry_header_close')) {
 	function skeleton_entry_header_close() {
@@ -1536,7 +1537,7 @@ if (!function_exists('skeleton_entry_header_close')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_header','skeleton_entry_header_close',10);
+	skeleton_add_action('bioship_entry_header','skeleton_entry_header_close',10);
 }
 
 // Entry Header Title
@@ -1557,7 +1558,7 @@ if (!function_exists('skeleton_entry_header_title')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_header','skeleton_entry_header_title',2);
+	skeleton_add_action('bioship_entry_header','skeleton_entry_header_title',2);
 }
 
 // Entry Header Subtitle
@@ -1588,7 +1589,7 @@ if (!function_exists('skeleton_entry_header_subtitle')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_header','skeleton_entry_header_subtitle',4);
+	skeleton_add_action('bioship_entry_header','skeleton_entry_header_subtitle',4);
 }
 
 // Entry Header Meta/Byline
@@ -1609,7 +1610,7 @@ if (!function_exists('skeleton_entry_header_meta')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_header','skeleton_entry_header_meta',6);
+	skeleton_add_action('bioship_entry_header','skeleton_entry_header_meta',6);
 }
 
 // ------------
@@ -1631,7 +1632,7 @@ if (!function_exists('skeleton_entry_footer_open')) {
 		echo '<footer '.hybrid_get_attr('entry-footer').'>'.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_footer','skeleton_entry_footer_open',0);
+	skeleton_add_action('bioship_entry_footer','skeleton_entry_footer_open',0);
 }
 if (!function_exists('skeleton_entry_footer_close')) {
 	function skeleton_entry_footer_close() {
@@ -1641,7 +1642,7 @@ if (!function_exists('skeleton_entry_footer_close')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_footer','skeleton_entry_footer_close',10);
+	skeleton_add_action('bioship_entry_footer','skeleton_entry_footer_close',10);
 }
 
 // Entry Footer Meta/Byline
@@ -1662,7 +1663,7 @@ if (!function_exists('skeleton_entry_footer_meta')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_entry_footer','skeleton_entry_footer_meta',6);
+	skeleton_add_action('bioship_entry_footer','skeleton_entry_footer_meta',6);
 }
 
 // Formattable Meta Replacement Output
@@ -2021,13 +2022,13 @@ if (!function_exists('skeleton_echo_thumbnail')) {
 
 		// only trigger template wrapper actions if there is thumbnail content
 		if ($vthumbnail != '') {
-			do_action('skeleton_before_thumbnail');
-			echo $vthumbnail;
-			do_action('skeleton_after_thumbnail');
+			do_action('bioship_before_thumbnail');
+				echo $vthumbnail;
+			do_action('bioship_after_thumbnail');
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_thumbnail','skeleton_echo_thumbnail',5);
+	skeleton_add_action('bioship_thumbnail','skeleton_echo_thumbnail',5);
 }
 
 // Get Thumbnail for Templates
@@ -2213,9 +2214,9 @@ if (!function_exists('skeleton_echo_author_bio')) {
 		}
 
 		if ($vauthorbio) {
-			do_action('skeleton_before_author_bio');
+			do_action('bioship_before_author_bio');
 			skeleton_locate_template(array('content/author-bio.php'), true);
-			do_action('skeleton_after_author_bio');
+			do_action('bioship_after_author_bio');
 		}
 	}
 }
@@ -2230,11 +2231,11 @@ if (!function_exists('skeleton_echo_author_bio_top')) {
 	}
 
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_author_bio_top','skeleton_echo_author_bio_top',5);
+	skeleton_add_action('bioship_author_bio_top','skeleton_echo_author_bio_top',5);
 
 	// 1.9.0: add author bio to author archive top?
 	// 1.9.8: use new position filtered add_action method
-	// skeleton_add_action('skeleton_before_author','skeleton_echo_author_bio_top',5);
+	// skeleton_add_action('bioship_before_author','skeleton_echo_author_bio_top',5);
 }
 
 // Echo Author Bio Action (bottom)
@@ -2247,11 +2248,11 @@ if (!function_exists('skeleton_echo_author_bio_bottom')) {
 	}
 
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_author_bio_bottom','skeleton_echo_author_bio_bottom',5);
+	skeleton_add_action('bioship_author_bio_bottom','skeleton_echo_author_bio_bottom',5);
 
 	// 1.9.0: add author bio to author archive bottom
 	// 1.9.8: use new position filtered add_action method
-	// skeleton_add_action('skeleton_after_author','skeleton_echo_author_bio_bottom',5);
+	// skeleton_add_action('bioship_after_author','skeleton_echo_author_bio_bottom',5);
 }
 
 // Author Bio Box
@@ -2360,7 +2361,7 @@ if (!function_exists('skeleton_echo_comments')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_comments','skeleton_echo_comments',5);
+	skeleton_add_action('bioship_comments','skeleton_echo_comments',5);
 }
 
 // Skeleton Comments Callback
@@ -2517,8 +2518,8 @@ if (!function_exists('skeleton_check_breadcrumbs')) {
 	function skeleton_check_breadcrumbs() {
 		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 		// 1.9.8: use new position filtered add_action method
-		if (is_singular()) {skeleton_add_action('skeleton_before_singular','skeleton_breadcrumbs',5);}
-		else {skeleton_add_action('skeleton_before_loop','skeleton_breadcrumbs',5);}
+		if (is_singular()) {skeleton_add_action('bioship_before_singular','skeleton_breadcrumbs',5);}
+		else {skeleton_add_action('bioship_before_loop','skeleton_breadcrumbs',5);}
 	}
 }
 
@@ -2636,7 +2637,7 @@ if (!function_exists('skeleton_page_navigation')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_page_navi','skeleton_page_navigation',5);
+	skeleton_add_action('bioship_page_navi','skeleton_page_navigation',5);
 }
 
 
@@ -2663,8 +2664,8 @@ if (!function_exists('skeleton_paged_navi')) {
 // --------------
 // === Footer ===
 // --------------
-// note: skeleton_footer is hooked on wp_footer and footer functions are hooked on skeleton_footer
-function skeleton_footer() {do_action('skeleton_footer');}
+// note: skeleton_footer is hooked on wp_footer and footer functions are hooked on bioship_footer
+function skeleton_footer() {do_action('bioship_footer');}
 if (function_exists('skeleton_apply_filters')) {$vposition = skeleton_apply_filters('skeleton_footer_position',0);}
 else {$vposition = apply_filters('skeleton_footer_position',0);}
 add_action('wp_footer','skeleton_footer',$vposition);
@@ -2699,7 +2700,7 @@ if (!function_exists('skeleton_footer_open')) {
 		echo '		<footer '.hybrid_get_attr('footer').'>'.PHP_EOL.PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_footer','skeleton_footer_open',0);
+	skeleton_add_action('bioship_footer','skeleton_footer_open',0);
 }
 
 // Footer Wrap Close
@@ -2714,7 +2715,7 @@ if (!function_exists('skeleton_footer_close')) {
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_footer','skeleton_footer_close',10);
+	skeleton_add_action('bioship_footer','skeleton_footer_close',10);
 }
 
 // Footer Extras HTML
@@ -2744,7 +2745,7 @@ if (!function_exists('skeleton_footer_extras')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_footer','skeleton_footer_extras',2);
+	skeleton_add_action('bioship_footer','skeleton_footer_extras',2);
 }
 
 // Count Footer Widgets, allowing for Post Overrides
@@ -2774,7 +2775,7 @@ if (!function_exists('skeleton_footer_widgets')) {
 		hybrid_get_sidebar($vfooter);
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_footer','skeleton_footer_widgets',4);
+	skeleton_add_action('bioship_footer','skeleton_footer_widgets',4);
 }
 
 // Footer Nav Menu
@@ -2794,14 +2795,15 @@ if (!function_exists('skeleton_footer_nav')) {
 			'after'           => '',
 			'depth'           => 1);
 		// 1.8.5: added missing setting filter
-		$vfooternav = skeleton_apply_filters('skeleton_header_menu',$vfooternav);
+		// 2.0.1: fix to filter name typo
+		$vfooternav = skeleton_apply_filters('skeleton_footer_menu',$vfooternav);
 		wp_nav_menu($vfooternav);
 		echo PHP_EOL.'</div>'.PHP_EOL;
 		if (THEMECOMMENTS) {echo '<!-- /.footer-menu -->'.PHP_EOL;}
 		echo PHP_EOL;
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_footer','skeleton_footer_nav',6);
+	skeleton_add_action('bioship_footer','skeleton_footer_nav',6);
 }
 
 // Footer Credits Area
@@ -2821,7 +2823,7 @@ if (!function_exists('skeleton_footer_credits')) {
 		}
 	}
 	// 1.9.8: use new position filtered add_action method
-	skeleton_add_action('skeleton_footer','skeleton_footer_credits',8);
+	skeleton_add_action('bioship_footer','skeleton_footer_credits',8);
 }
 
 // Get Site Credits
@@ -2836,9 +2838,9 @@ if (!function_exists('skeleton_credit_link')) {
 			return $vthemesettings['sitecredits'];
 		} else {
 			$vsitecredits = '<div id="themecredits">';
-			if (THEMECHILD) {$vsitecredits .= THEMEDISPLAYNAME.' Theme for '; $vmfanchor = 'BioShip';} else {$vmfanchor = 'BioShip Framework';}
-			$vsitecredits .= '<a href="http://'.'bioship.space/" title="BioShip Responsive Wordpress Theme Framework" target=_blank>'.$vmfanchor.'</a>';
-			if (THEMEPARENT) {$vsitecredits .= ' by <a href="http://'.'wordquest.org/" title="WordQuest Alliance" target=_blank>WordQuest</a>';}
+			if (THEMECHILD) {$vsitecredits .= THEMEDISPLAYNAME.' Theme for '; $vanchor = 'BioShip';} else {$vanchor = 'BioShip Framework';}
+			$vsitecredits .= '<a href="'.THEMEHOMEURL.'" title="BioShip '.__('Responsive Wordpress Theme Framework','bioship').'" target=_blank>'.$vanchor.'</a>';
+			if (THEMEPARENT) {$vsitecredits .= ' by <a href="'.THEMESUPPORT.'" title="WordQuest Alliance" target=_blank>WordQuest</a>';}
 			$vsitecredits .= '</div>';
 			return $vsitecredits;
 		}

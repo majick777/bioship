@@ -48,7 +48,7 @@ if (strstr($_SERVER['REQUEST_URI'],'skin.php')) {
 
 	// Use our friend Shorty...
 	define('SHORTINIT', true);
-	$wp_root_path = skin_find_require('wp-load.php');
+	$wp_root_path = bioship_skin_find_require('wp-load.php');
 	$memorysavingmode = true;
 
 	// Include only what you need to survive...
@@ -128,13 +128,16 @@ if (strstr($_SERVER['REQUEST_URI'],'skin.php')) {
 
 // maybe define WP_CONTENT_URL
 // ---------------------------
-// 1.8.0: move here for dual framework compat
+// 1.8.0: move here for dual framework compatibility
 if (!defined('WP_CONTENT_URL')) {define('WP_CONTENT_URL',get_option('siteurl').'/wp-content');}
 
-// Add default Skin filters
-// ------------------------
-add_filter('skin_dynamic_css','skin_css_replace_values');
-add_filter('skin_dynamic_admin_css','skin_css_replace_values');
+// add Default Skin value filters
+// ------------------------------
+// 2.0.2: [deprecated] use replacement function not filter
+// if (function_exists('add_filter')) {
+	// add_filter('skin_dynamic_css','skin_css_replace_values');
+	// add_filter('skin_dynamic_admin_css','skin_css_replace_values');
+// }
 
 
 // ---------------------
@@ -143,12 +146,12 @@ add_filter('skin_dynamic_admin_css','skin_css_replace_values');
 
 // Find/Require for Blog Loader
 // ----------------------------
-function skin_find_require($file,$folder=null) {
+function bioship_skin_find_require($file,$folder=null) {
 	if ($folder === null) {$folder = dirname(__FILE__);}
 	$path = $folder.DIRECTORY_SEPARATOR.$file;
 	if (file_exists($path)) {require($path); return $folder;}
 	else {
-		$upfolder = skin_find_require($file,dirname($folder));
+		$upfolder = bioship_skin_find_require($file,dirname($folder));
 		if ($upfolder != '') {return $upfolder;}
 	}
 }
@@ -157,8 +160,8 @@ function skin_find_require($file,$folder=null) {
 // -----------------------
 // 1.8.5: made separate for header background and login logo
 // 1.8.5: cleaned logic for caching image size
-if (!function_exists('skin_get_image_size')) {
- function skin_get_image_size($vimageurl,$vcachekey) {
+if (!function_exists('bioship_skin_get_image_size')) {
+ function bioship_skin_get_image_size($vimageurl,$vcachekey) {
 
 	global $vthemename, $vthemesettings;
 	if (THEMEDEBUG) {echo "/* Image URL: ".$vimageurl." */".PHP_EOL;}
@@ -225,8 +228,8 @@ if (!function_exists('skin_get_image_size')) {
 
 // CSS Replacement Value Function
 // ------------------------------
-if (!function_exists('skin_css_replace_values')) {
- function skin_css_replace_values($vcss) {
+if (!function_exists('bioship_skin_css_replace_values')) {
+ function bioship_skin_css_replace_values($vcss) {
 
 	// 1.8.0: added trailing slash fix
 	$vthemestyleurl = get_stylesheet_directory_uri().'/';
@@ -254,8 +257,8 @@ if (!function_exists('skin_css_replace_values')) {
 }
 
 // copy of skeleton_themedrive_determine_theme function
-if (!function_exists('skeleton_themedrive_determine_theme')) {
- function skeleton_themedrive_determine_theme() {
+if (!function_exists('bioship_themedrive_determine_theme')) {
+ function bioship_themedrive_determine_theme() {
 
 	// 1.8.5: added a check for if theme test drive is active!
 	$vactiveplugins = maybe_unserialize(get_option('active_plugins'));
@@ -289,7 +292,7 @@ if (!function_exists('skeleton_themedrive_determine_theme')) {
 // Fix Serialized
 // --------------
 // (copy of skeleton_fix_serialized)
-function skin_fix_serialized($string) {
+function bioship_skin_fix_serialized($string) {
     // securities
     if ( !preg_match('/^[aOs]:/', $string) ) return $string;
     if ( @unserialize($string) !== false ) return $string;
@@ -299,14 +302,14 @@ function skin_fix_serialized($string) {
     $tab = explode("µµµ", $data);
     $new_data = '';
     foreach ($tab as $line) {
-        $new_data .= preg_replace_callback('%\bs:(\d+):"(.*)%', 'skin_fix_str_length', $line);
+        $new_data .= preg_replace_callback('%\bs:(\d+):"(.*)%', 'bioship_skin_fix_str_length', $line);
     }
     return $new_data;
 }
 
 // Fix Serialized String Callback
 // ------------------------------
-function skin_fix_str_length($matches) {
+function bioship_skin_fix_str_length($matches) {
     $string = $matches[2];
     $right_length = strlen($string);
     return 's:' . $right_length . ':"' . $string . '";';
@@ -316,23 +319,11 @@ function skin_fix_str_length($matches) {
 // ---------
 // Get Theme
 // ---------
-
-// (deprecated) - for prior to WP 3.4
-// global $wp_version;
-// if (version_compare($wp_version,'3.4','<')) { // '
-//	if (!function_exists('get_theme_data')) {
-//		include($wp_root_path.DIRECTORY_SEPARATOR.WPINC.DIRECTORY_SEPARATOR.'l10n.php');
-//		include($wp_root_path.DIRECTORY_SEPARATOR.WPINC.DIRECTORY_SEPARATOR.'deprecated.php');
-//	}
-//	$vtheme = get_theme_data(get_stylesheet_directory().DIRECTORY_SEPARATOR.'style.css');
-// } else {$vtheme = wp_get_theme();}
-
 $vtheme = wp_get_theme();
 
-// ------------------------------
 // Theme Test Drive Compatibility
 // ------------------------------
-$vthemetestdrive = skeleton_themedrive_determine_theme();
+$vthemetestdrive = bioship_themedrive_determine_theme();
 if ($vthemetestdrive) {$vtheme = $vthemetestdrive;}
 
 // manual debug only for private theme object
@@ -389,7 +380,7 @@ if ($vthemeframework == 'options') {
 				else {
 					echo "/* Unserialize Error: "; print_r(error_get_last()); echo " */";
 					// 1.9.6: added possible serialization fix
-					$vsaveddata = skin_fix_serialized($vsaveddata);
+					$vsaveddata = bioship_skin_fix_serialized($vsaveddata);
 					$vunserialized = unserialize($vsaveddata);
 					if ($vunserialized) {$vthemesettings = $vunserialized;}
 					else {echo "/* Unserialize Error: "; print_r(error_get_last()); echo " */";}
@@ -676,17 +667,19 @@ if ($vthemesettings['background_attachment'] != '') {$vbody .= " background-atta
 // ============
 // 1.8.5: fix to adminstyles variable default clearing
 if (!isset($vadminstyles)) {$vadminstyles = false;}
-if (isset($_GET['adminstyles'])) {if ($_GET['adminstyles'] == 'yes') {$vadminstyles = true;} }
+if ( (isset($_GET['adminstyles'])) && ($_GET['adminstyles'] == 'yes') ) {$vadminstyles = true;}
 if ($vadminstyles) {
 
 	echo $vbuttons.PHP_EOL;
-	$vadmincss = apply_filters('skin_dynamic_admin_css',$vthemesettings['dynamicadmincss']);
+	$vadmincss = bioship_skin_css_replace_values($vthemesettings['dynamicadmincss']);
+	if (function_exists('apply_filters')) {$vadmincss = apply_filters('skin_dynamic_admin_css',$vadmincss);}
 	echo $vadmincss.PHP_EOL;
 
 	// 1.5.0: set Theme Options default icon (as \ is stripped in Admin CSS Theme Options save)
 	// ref: https://developer.wordpress.org/resource/dashicons/
 	// and: http://calebserna.com/dashicons-cheatsheet/
-	$vicon = pply_filters('admin_adminbar_menu_icon','\\f115');
+	$vicon = '\\f115';
+	if (function_exists('apply_filters')) {$vicon = apply_filters('admin_adminbar_menu_icon',$vicon);}
 	echo '#wp-admin-bar-theme-options .ab-icon:before {content: "'.$vicon.'"; top:2px;}'.PHP_EOL;
 
 	// 1.8.5: added simple hybrid hook style fixes
@@ -763,7 +756,7 @@ if ($vadminstyles) {
 				// (can be used to recheck image size - if you overwrite the image but keep same URL)
 				if ( (isset($_GET['loginlogo_image_size'])) && ($_GET['loginlogo_image_size'] == 'refresh') ) {delete_option($vthemename.'_'.$vcachekey);}
 
-				$imagesize = skin_get_image_size($imageurl,$vcachekey);
+				$imagesize = bioship_skin_get_image_size($imageurl,$vcachekey);
 
 				// Output the Login Logo Style
 				// ---------------------------
@@ -828,10 +821,10 @@ if ($vthemesettings['header_background_image'] != '') {
 	if ( (isset($_GET['header_image_size'])) && ($_GET['header_image_size'] == 'refresh') ) {delete_option($vthemename.'_'.$vcachekey);}
 
 	// 1.8.5: improved image size handling function
-	$vimagesize = skin_get_image_size($vthemesettings['header_background_image'],$vcachekey);
+	$vimagesize = bioship_skin_get_image_size($vthemesettings['header_background_image'],$vcachekey);
 	if (!$vimagesize) {
 		// hmmmm... no allow_url_fopen and no filepath found (and all our lovely automated code has failed)
-		// if this is happening to you, you need to set an explicit filter for this in your filters.php
+		// if this is happening to you, you may need to set an explicit filter for this in your filters.php
 		// TODO: rethink this as filters maybe not loaded?
 		$vfilteredsize = apply_filters('muscle_skin_header_size',array());
 
@@ -1041,12 +1034,14 @@ if ($vbrowserstyles != '') {
 $vlivepreview = false;
 if ( (isset($_REQUEST['livepreview'])) && ($_REQUEST['livepreview'] == 'yes') ) {$vlivepreview = true;}
 if (!$vlivepreview) {
-	$vdynamiccustomcss = $vthemesettings['dynamiccustomcss'];
-	$vdynamiccustomcss = apply_filters('skin_dynamic_css',$vdynamiccustomcss);
-	if ($vdynamiccustomcss != '') {
+	$vcustomcss = $vthemesettings['dynamiccustomcss'];
+	$vcustomcss = bioship_skin_css_replace_values($vcustomcss);
+	if (function_exists('apply_filters')) {$vcustomcss = apply_filters('skin_dynamic_css',$vcustomcss);}
+
+	if ($vcustomcss != '') {
 		echo PHP_EOL."/* Dynamic CSS */".PHP_EOL.PHP_EOL;
 		// 1.8.0: added stripslashes to fix single quotes for Titan
-		echo stripslashes($vdynamiccustomcss).PHP_EOL;
+		echo stripslashes($vcustomcss).PHP_EOL;
 	}
 }
 

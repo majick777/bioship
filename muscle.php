@@ -217,7 +217,7 @@ if (!is_admin()) {
 		// PerPost Styles
 		// --------------
 		// 1.9.5: moved singular post check to here
-		// TODO: get archive overrides from custom post type?
+		// TODO: get archive overrides from special custom post type?
 		if (is_singular()) {
 			global $post; $vpostid = $post->ID;
 			$vperpoststyles = get_post_meta($vpostid,'_perpoststyles',true);
@@ -369,14 +369,19 @@ if (!function_exists('muscle_discreet_text_widget')) {
 // TODO: Could maybe add to Theme Options? Currently loaded via filters only...
 // (see filters.php example): muscle_videobackground_type,
 // muscle_videobackground_id, muscle_videobackground_delay
-$vvideobackground = '';
-if (isset($vthemesettings['videobackground'])) {$vvideobackground = $vthemesettings['videobackground'];}
-if (skeleton_apply_filters('muscle_videobackground_type',$vvideobackground) == 'youtube') {
-	// 1.9.8: fix to function_exists check (missing argument)
-	if (!function_exists('muscle_video_background')) {
-	 add_action('skeleton_before_navbar','muscle_video_background');
-	 function muscle_video_background() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+// 1.9.8: fix to function_exists check (missing argument)
+// 2.0.1: check themesettings internally to allow better filtering
+if (!function_exists('muscle_video_background')) {
+ add_action('bioship_before_navbar','muscle_video_background');
+ function muscle_video_background() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+	global $vthemesettings; $vload = false;
+	if (isset($vthemesettings['videobackground'])) {$vload = $vthemesettings['videobackground'];}
+	$vload = skeleton_apply_filters('muscle_videobackground_type',$vload);
+
+	if ($vload == 'youtube') {
 		$vvideoid = skeleton_apply_filters('muscle_videobackground_id',$vthemesettings['videobackgroundid']);
 		$vvideodelay = (int)skeleton_apply_filters('muscle_videobackground_delay',$vthemesettings['videobackgrounddelay']);
 		if (!is_numeric($vvideodelay)) {$vvideodelay = 1000;}
@@ -387,14 +392,15 @@ if (skeleton_apply_filters('muscle_videobackground_type',$vvideobackground) == '
 			echo '<input type="hidden" id="videobackgrounddelay" value="'.$vvideodelay.'">';
 			echo '<div id="backgroundvideo"></div></div>';
 		}
-	 }
 	}
+ }
 }
 
 
 // ---------------
 // === Scripts ===
 // ---------------
+// TODO: add script load filters to filters.php examples
 
 // Internet Explorer Support Scripts
 // ---------------------------------
@@ -403,7 +409,8 @@ if (skeleton_apply_filters('muscle_videobackground_type',$vvideobackground) == '
 // - Supersleight (transparent PNGs, for IE6 and below)
 // - Flexibiliity (flexbox support for IE8+9)
 // 1.5.0: moved to skeleton_internet_explorer_scripts hook
-// TODO: could be enqueued first and wrapped instead?
+// 1.8.0: added flexbox polyfill
+// 2.0.1: added individual loading filters
 if (!function_exists('muscle_internet_explorer_scripts')) {
  add_action('wp_head','muscle_internet_explorer_scripts');
  function muscle_internet_explorer_scripts() {
@@ -416,30 +423,42 @@ if (!function_exists('muscle_internet_explorer_scripts')) {
 	// Selectivizr CSS3
 	// ----------------
 	if ( (isset($viesupports['selectivizr'])) &&  ($viesupports['selectivizr'] == '1') ) {
-		$vselectivizr = skeleton_file_hierarchy('both','selectivizr.min.js',$vthemedirs['js']);
-		if (is_array($vselectivizr)) {
-			if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vselectivizr['file']));}
-			echo '<!--[if (gte IE 6)&(lte IE 8)]><script type="text/javascript" src="'.$vselectivizr['url'].'?ver='.$vjscachebust.'"></script><![endif]-->';
+		// 2.0.1: added loading filter
+		$vload = skeleton_apply_filters('muscle_load_selectivizr',true);
+		if ($vload) {
+			$vselectivizr = skeleton_file_hierarchy('both','selectivizr.min.js',$vthemedirs['js']);
+			if (is_array($vselectivizr)) {
+				if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vselectivizr['file']));}
+				echo '<!--[if (gte IE 6)&(lte IE 8)]><script type="text/javascript" src="'.$vselectivizr['url'].'?ver='.$vjscachebust.'"></script><![endif]-->';
+			}
 		}
 	}
 
 	// HTML5 Shiv
 	// ----------
 	if ( (isset($viesupports['html5shiv'])) && ($viesupports['html5shiv'] == '1') ) {
-		$vhtml5 = skeleton_file_hierarchy('both','html5.js',$vthemedirs['js']);
-		if (is_array($vhtml5)) {
-			if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vhtml5['file']));}
-			echo '<!--[if lt IE 9]><script src="'.$vhtml5['url'].'"></script><![endif]-->';
+		// 2.0.1: added loading filter
+		$vload = skeleton_apply_filters('muscle_load_html5shiv',true);
+		if ($vload) {
+			$vhtml5 = skeleton_file_hierarchy('both','html5.js',$vthemedirs['js']);
+			if (is_array($vhtml5)) {
+				if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vhtml5['file']));}
+				echo '<!--[if lt IE 9]><script src="'.$vhtml5['url'].'"></script><![endif]-->';
+			}
 		}
 	}
 
 	// Supersleight
 	// ------------
 	if ( (isset($viesupports['supersleight'])) && ($viesupports['supersleight'] == '1') ) {
-		$vsupersleight = skeleton_file_hierarchy('both','supersleight.js',$vthemedirs['js']);
-		if (is_array($vsupersleight)) {
-			if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vsupersleight['file']));}
-			echo '<!--[if lte IE 6]><script src="'.$vsupersleight['url'].'"></script><![endif]-->';
+		// 2.0.1: added loading filter
+		$vload = skeleton_apply_filters('muscle_load_supersleight',true);
+		if ($vload) {
+			$vsupersleight = skeleton_file_hierarchy('both','supersleight.js',$vthemedirs['js']);
+			if (is_array($vsupersleight)) {
+				if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vsupersleight['file']));}
+				echo '<!--[if lte IE 6]><script src="'.$vsupersleight['url'].'"></script><![endif]-->';
+			}
 		}
 	}
 
@@ -447,10 +466,14 @@ if (!function_exists('muscle_internet_explorer_scripts')) {
 	// -------
 	// 1.8.5: added IE8 DOM polyfill
 	if ( (isset($viesupports['ie8'])) && ($viesupports['ie8'] == '1') ) {
-		$vie8 = skeleton_file_hierarchy('both','ie8.js',$vthemedirs['js']);
-		if (is_array($vie8)) {
-			if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vie8['file']));}
-			echo '<!--[if IE 8]><script src="'.$vie8['url'].'"></script><![endif]-->';
+		// 2.0.1: added loading filter
+		$vload = skeleton_apply_filters('muscle_load_ie8dom',true);
+		if ($vload) {
+			$vie8 = skeleton_file_hierarchy('both','ie8.js',$vthemedirs['js']);
+			if (is_array($vie8)) {
+				if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vie8['file']));}
+				echo '<!--[if IE 8]><script src="'.$vie8['url'].'"></script><![endif]-->';
+			}
 		}
 	}
 
@@ -458,10 +481,14 @@ if (!function_exists('muscle_internet_explorer_scripts')) {
 	// -----------
 	// 1.8.0: added flexbox polyfill
 	if ( (isset($viesupports['flexibility'])) && ($viesupports['flexibility'] == '1') ) {
-		$vflexibility = skeleton_file_hierarchy('both','flexibility.js',$vthemedirs['js']);
-		if (is_array($vflexibility)) {
-			if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vflexibility['file']));}
-			echo '<!--[if (IE 8)|(IE 9)]><script src="'.$vflexibility['url'].'"></script><![endif]-->';
+		// 2.0.1: added loading filter
+		$vload = skeleton_apply_filters('muscle_load_flexibility',true);
+		if ($vload) {
+			$vflexibility = skeleton_file_hierarchy('both','flexibility.js',$vthemedirs['js']);
+			if (is_array($vflexibility)) {
+				if ($vfilemtime) {$vjscachebust = date('ymdHi',filemtime($vflexibility['file']));}
+				echo '<!--[if (IE 8)|(IE 9)]><script src="'.$vflexibility['url'].'"></script><![endif]-->';
+			}
 		}
 	}
 
@@ -470,15 +497,15 @@ if (!function_exists('muscle_internet_explorer_scripts')) {
 
 // PrefixFree
 // ----------
-// 1.8.5: check themeoptions internally to allow filtering
+// 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('muscle_load_prefixfree')) {
  add_action('wp_enqueue_scripts','muscle_load_prefixfree');
  function muscle_load_prefixfree() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings, $vjscachebust, $vthemedirs; $vloadprefixfree = 0;
-	if (isset($vthemesettings['prefixfree'])) {$vloadprefixfree = $vthemesettings['prefixfree'];}
-	$vloadprefixfree = skeleton_apply_filters('muscle_load_prefixfree',$vloadprefixfree);
-	if (!$vloadprefixfree) {return;}
+	global $vthemesettings, $vjscachebust, $vthemedirs; $vload = false;
+	if (isset($vthemesettings['prefixfree'])) {$vload = $vthemesettings['prefixfree'];}
+	$vload = skeleton_apply_filters('muscle_load_prefixfree',$vload);
+	if (!$vload) {return;}
 
 	$vprefixfree = skeleton_file_hierarchy('both','prefixfree.js',$vthemedirs['js']);
 	if (is_array($vprefixfree)) {
@@ -517,82 +544,86 @@ if (!function_exists('muscle_load_prefixfree')) {
 
 // NWWatcher Selector Javascript
 // -----------------------------
-// TODO: check themeoptions internally to allow filtering
-if ($vthemesettings['nwwatcher'] == '1') {
-	if (!function_exists('muscle_load_nwwatcher')) {
-	 add_action('wp_enqueue_scripts','muscle_load_nwwatcher');
-	 function muscle_load_nwwatcher() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-		global $vthemesettings, $vthemedirs, $vjscachebust;
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_load_nwwatcher')) {
+ add_action('wp_enqueue_scripts','muscle_load_nwwatcher');
+ function muscle_load_nwwatcher() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['nwwatcher'])) {$vload = $vthemesettings['nwwatcher'];}
+	$vload = skeleton_apply_filters('muscle_load_nwwatcher',$vload);
+	if (!$vload) {return;}
 
-		$vnwwatcher = skeleton_file_hierarchy('both','nwwatcher.js',$vthemedirs['js']);
-		if (is_array($vnwwatcher)) {
-			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vnwwatcher['file']));}
-			wp_enqueue_script('nwwatcher',$vnwwatcher['url'],array(),$vjscachebust,true);
-		}
-	 }
+	$vnwwatcher = skeleton_file_hierarchy('both','nwwatcher.js',$vthemedirs['js']);
+	if (is_array($vnwwatcher)) {
+		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vnwwatcher['file']));}
+		wp_enqueue_script('nwwatcher',$vnwwatcher['url'],array(),$vjscachebust,true);
 	}
+ }
+}
 
-	// NWEvents Event Manager (NWWatcher dependent)
-	// --------------------------------------------
-	if ($vthemesettings['nwevents'] == '1') {
-		if (!function_exists('muscle_load_nwevents')) {
-		 add_action('wp_enqueue_scripts','muscle_load_nwevents');
-		 function muscle_load_nwevents() {
-			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-			global $vthemesettings, $vthemedirs, $vjscachebust;
+// NWEvents Event Manager (NWWatcher dependent)
+// --------------------------------------------
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_load_nwevents')) {
+ add_action('wp_enqueue_scripts','muscle_load_nwevents');
+ function muscle_load_nwevents() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['nwevents'])) {$vload = $vthemesettings['nwevents'];}
+	$vload = skeleton_apply_filters('muscle_load_nwevents',$vload);
+	if (!$vload) {return;}
 
-			$vnwevents = skeleton_file_hierarchy('both','nwevents.js',$vthemedirs['js']);
-			if (is_array($vnwevents)) {
-				if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vprefixfree['file']));}
-				wp_enqueue_script('nwevents',$vnwevents,array('nwwatcher'),$vjscachebust,true);
-			}
-		 }
-		}
+	$vnwevents = skeleton_file_hierarchy('both','nwevents.js',$vthemedirs['js']);
+	if (is_array($vnwevents)) {
+		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vprefixfree['file']));}
+		wp_enqueue_script('nwevents',$vnwevents,array('nwwatcher'),$vjscachebust,true);
 	}
+ }
 }
 
 // Media Queries Support
 // ---------------------
-// note: apparently for these, the 'best place is in the footer' - so not enqueued
-// TODO: check themeoptions internally to allow filtering
-if ($vthemesettings['mediaqueries'] != 'off') {
-	if (!function_exists('muscle_media_queries_script')) {
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_media_queries_script')) {
+ // note enqueue exception: apparently for these the 'best place is in the footer'
+ add_action('wp_footer','muscle_media_queries_script');
+ function muscle_media_queries_script() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = 'off';
+	if (isset($vthemesettings['mediaqueries'])) {$vload = $vthemesettings['mediaqueries'];}
+	$vload = skeleton_apply_filters('muscle_load_mediaqueries',$vload);
+	// 2.0.2: fix to simplified load variable typo
+	if ( (!$vload) || ($vload == 'off') ) {return;}
 
-	 add_action('wp_footer','muscle_media_queries_script');
-	 function muscle_media_queries_script() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-		global $vthemesettings, $vthemedirs, $vjscachebust;
-
-		if ($vthemesettings['mediaqueries'] == 'respond') {
-			$vrespond = skeleton_file_hierarchy('both','respond.min.js',$vthemedirs['js']);
-			if (is_array($vrespond)) {
-				if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vrespond['file']));}
-				echo '<script type="text/javascript" src="'.$vrespond['url'].'?ver='.$vjscachebust.'"></script>';
-			}
+	if ($vthemesettings['mediaqueries'] == 'respond') {
+		$vrespond = skeleton_file_hierarchy('both','respond.min.js',$vthemedirs['js']);
+		if (is_array($vrespond)) {
+			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vrespond['file']));}
+			echo '<script type="text/javascript" src="'.$vrespond['url'].'?ver='.$vjscachebust.'"></script>';
 		}
-		if ($vthemesettings['mediaqueries'] == 'mediaqueries') {
-			$vmediaqueries = skeleton_file_hierarchy('both','css3-mediaqueries.js',$vthemedirs['js']);
-			if (is_array($vmediaqueries)) {
-				if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmediaqueries['file']));}
-				echo '<script type="text/javascript" src="'.$vmediaqueries['url'].'?ver='.$vjscachebust.'"></script>';
-			}
-		}
-	 }
 	}
+	if ($vthemesettings['mediaqueries'] == 'mediaqueries') {
+		$vmediaqueries = skeleton_file_hierarchy('both','css3-mediaqueries.js',$vthemedirs['js']);
+		if (is_array($vmediaqueries)) {
+			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmediaqueries['file']));}
+			echo '<script type="text/javascript" src="'.$vmediaqueries['url'].'?ver='.$vjscachebust.'"></script>';
+		}
+	}
+ }
 }
 
 // Load FastClick
 // --------------
-// 1.8.5: check themeoptions internally to allow filtering
+// 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('muscle_load_fastclick')) {
  add_action('wp_enqueue_scripts','muscle_load_fastclick');
  function muscle_load_fastclick() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadfastclick = 0;
-	if (isset($vthemesettings['loadfastclick'])) {$vloadfastclick = $vthemesettings['loadfastclick'];}
-	$vloadfastclick = skeleton_apply_filters('muscle_load_fastclick',$vloadfastclick);
-	if (!$vloadfastclick) {return;}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['loadfastclick'])) {$vload = $vthemesettings['loadfastclick'];}
+	$vload = skeleton_apply_filters('muscle_load_fastclick',$vload);
+	if (!$vload) {return;}
 
 	// 1.8.5: adding missing filemtime cachebusting option
 	$vfastclick = skeleton_file_hierarchy('both','fastclick.js',$vthemedirs['js']);
@@ -605,15 +636,16 @@ if (!function_exists('muscle_load_fastclick')) {
 
 // Load Mousewheel
 // ---------------
-// 1.8.5: check themeoptions internally to allow filtering
+// 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('muscle_load_mousewheel')) {
  add_action('wp_enqueue_scripts','muscle_load_mousewheel');
  function muscle_load_mousewheel() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadmouswheel = 0;
-	if (isset($vthemesettings['loadmousewheel'])) {$vloadmouswheel = $vthemesettings['loadmousewheel'];}
-	$vloadfastclick = skeleton_apply_filters('muscle_load_mousewheel',$vloadmouswheel);
-	if (!$vloadmouswheel) {return;}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['loadmousewheel'])) {$vload = $vthemesettings['loadmousewheel'];}
+	// 2.0.1: fix to reused code typo in filter variable
+	$vload = skeleton_apply_filters('muscle_load_mousewheel',$vload);
+	if (!$vload) {return;}
 
 	// 1.9.0: fix to file hierarchy call (both not url)
 	$vmousewheel = skeleton_file_hierarchy('both','mousewheel.js',$vthemedirs['js']);
@@ -626,67 +658,75 @@ if (!function_exists('muscle_load_mousewheel')) {
 
 // Load CSS.Supports
 // -----------------
-// TODO: check themeoptions internally to allow filtering
-if ($vthemesettings['loadcsssupports'] == '1')  {
-	if (!function_exists('muscle_load_csssupports')) {
-	 add_action('wp_enqueue_scripts','muscle_load_csssupports');
-	 function muscle_load_csssupports() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-		global $vthemesettings, $vthemedirs, $vjscachebust;
+// 2.0.1: check themeoptions internally to allow filtering
+if (!function_exists('muscle_load_csssupports')) {
+ add_action('wp_enqueue_scripts','muscle_load_csssupports');
+ function muscle_load_csssupports() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
 
-		$vcsssupports = skeleton_file_hierarchy('url','CSS.supports.js',$vthemedirs['js']);
-		if (is_array($vcsssupports)) {
-			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vcsssupports['file']));}
-			wp_enqueue_script('csssupports',$vcsssupports,array(),$vjscachebust,true);
-		}
-	 }
+	if (isset($vthemesettings['loadcsssupports'])) {$vload = $vthemesettings['loadcsssupports'];}
+	$vload = skeleton_apply_filters('muscle_load_csssupports',$vload);
+	if (!$vload) {return;}
+
+	$vcsssupports = skeleton_file_hierarchy('url','CSS.supports.js',$vthemedirs['js']);
+	if (is_array($vcsssupports)) {
+		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vcsssupports['file']));}
+		wp_enqueue_script('csssupports',$vcsssupports,array(),$vjscachebust,true);
 	}
+ }
 }
 
 // MatchMedia.js
 // -------------
-// TODO: check themeoptions internally to allow filtering?
-if ($vthemesettings['loadmatchmedia'] == '1') {
-	if (!function_exists('muscle_match_media_script')) {
-	 add_action('wp_enqueue_scripts','muscle_match_media_script');
-	 function muscle_match_media_script() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-		global $vthemetoptions, $vthemedirs, $vjscachebust;
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_match_media_script')) {
+ add_action('wp_enqueue_scripts','muscle_match_media_script');
+ function muscle_match_media_script() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	// 2.0.1: fix to old themeoptions global typo
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['loadmatchmedia'])) {$vloadmatchmedia = $vthemesettings['loadmatchmedia'];}
+	$vload = skeleton_apply_filters('muscle_load_matchmedia',$vload);
+	if (!$vload) {return;}
+
+	// 1.9.5: fixed to file hierarchy call
+	$vmatchmedia = skeleton_file_hierarchy('both','matchMedia.js',$vthemedirs['js']);
+	if (is_array($vmatchmedia)) {
+		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmatchmedia['file']));}
+		wp_enqueue_script('matchmedia',$vmatchmedia['url'],array('jquery'),$vjscachebust,true);
 
 		// 1.9.5: fixed to file hierarchy call
-		$vmatchmedia = skeleton_file_hierarchy('both','matchMedia.js',$vthemedirs['js']);
-		if (is_array($vmatchmedia)) {
-			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmatchmedia['file']));}
-			wp_enqueue_script('matchmedia',$vmatchmedia['url'],array('jquery'),$vjscachebust,true);
-
-			// 1.9.5: fixed to file hierarchy call
-			$vmatchmedialistener = skeleton_file_hierarchy('both','matchMedia.addListener.js',$vthemedirs['js']);
-			if (is_array($vmatchmedialistener)) {
-				if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmatchmedialistener['file']));}
-				wp_enqueue_script('matchmedialistener',$vmatchmedialistener['url'],array('jquery','matchmedia'),$vjscachebust,true);
-			}
+		$vmatchmedialistener = skeleton_file_hierarchy('both','matchMedia.addListener.js',$vthemedirs['js']);
+		if (is_array($vmatchmedialistener)) {
+			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmatchmedialistener['file']));}
+			wp_enqueue_script('matchmedialistener',$vmatchmedialistener['url'],array('jquery','matchmedia'),$vjscachebust,true);
 		}
-	 }
 	}
+ }
 }
 
 // Load Modernizr
 // --------------
-// TODO: check themeoptions internally to allow filtering
-if ( ($vthemesettings['loadmodernizr'] != '') && ($vthemesettings['loadmodernizr'] != 'off') ) {
-	add_action('wp_enqueue_scripts','muscle_load_modernizr');
-}
+// 2.0.1: check themesettings internally to allow filtering
 if (!function_exists('muscle_load_modernizr')) {
+ add_action('wp_enqueue_scripts','muscle_load_modernizr');
  function muscle_load_modernizr() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings, $vjscachebust;
+	global $vthemesettings, $vjscachebust; $vload = 'off';
 
-	if ($vthemesettings['modernizer'] == 'production') {
-		// with fallback to development version
+	if (isset($vthemesettings['load'])) {$vload = $vthemesettings['loadmodernizr'];}
+	$vload = skeleton_apply_filters('muscle_load_modernizr',$vload);
+	// 2.0.2: fix to simplified load variable typo
+	if ( (!$vload) || ($vload == 'off') ) {return;}
+
+	// 2.0.1: use filtered value here also
+	if ($vload == 'production') {
+		// (with fallback to development version)
 		$vmodernizr = skeleton_file_hierarchy('both','modernizr.js',array('includes/foundation5/js/vendor','javascripts','js','assets/js'));
 	}
-	elseif ($vthemesettings['modernizer'] == 'development') {
-		// with fallback to production version
+	elseif ($vload == 'development') {
+		// (with fallback to production version)
 		$vmodernizr = skeleton_file_hierarchy('both','modernizr.js',array('javascripts','includes/foundation5/js/vendor','js','assets/js'));
 	}
 	if (is_array($vmodernizr)) {
@@ -702,17 +742,17 @@ if (!function_exists('muscle_load_modernizr')) {
 
 // Load Smooth Scrolling
 // ---------------------
-// 1.8.5: check themeoptions internally to allow filtering
+// 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('muscle_smooth_scrolling')) {
  add_action('wp_footer','muscle_smooth_scrolling');
  function muscle_smooth_scrolling() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings; $vsmoothscrolling = 0;
-	if (isset($vthemesettings['smoothscrolling'])) {$vsmoothscrolling = $vthemesettings['smoothscrolling'];}
-	$vsmoothscrolling = skeleton_apply_filters('muscle_smooth_scrolling',$vsmoothscrolling);
-	if (!$vsmoothscrolling) {return;}
+	global $vthemesettings; $vload = false;
+	if (isset($vthemesettings['smoothscrolling'])) {$vload = $vthemesettings['smoothscrolling'];}
+	$vload = skeleton_apply_filters('muscle_smooth_scrolling',$vload);
+	if (!$vload) {return;}
 
-	// adds a hidden input that is picked up by init.js
+	// adds a hidden input that is detected by init.js
 	echo "<input type='hidden' id='smoothscrolling' name='smoothscrolling' value='yes'>";
  }
 }
@@ -724,18 +764,17 @@ if (!function_exists('muscle_load_matchheight')) {
  add_action('wp_enqueue_scripts','muscle_load_matchheight');
  function muscle_load_matchheight() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-
-	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadmatchheight = 0;
-	if (isset($vthemesettings['loadmatchheight'])) {$vloadmatchheight = $vthemesettings['loadmatchheight'];}
-	$vloadmatchheight = skeleton_apply_filters('muscle_load_matchheight',$vloadmatchheight);
-	if (!$vloadmatchheight) {return;}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['loadmatchheight'])) {$vload = $vthemesettings['loadmatchheight'];}
+	$vload = skeleton_apply_filters('muscle_load_matchheight',$vload);
+	if (!$vload) {return;}
 
 	$vmatchheight = skeleton_file_hierarchy('both','jquery.matchHeight.js',$vthemedirs['js']);
 	if (is_array($vmatchheight)) {
 		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vjscachebust = date('ymdHi',filemtime($vmatchheight['file']));}
 		wp_enqueue_script('matchheight',$vmatchheight['url'],array('jquery'),$vjscachebust,true);
 
-		// add run trigger to footer
+		// add run trigger to footer (detected by init.js)
 		add_action('wp_footer','muscle_run_matchheight');
 		if (!function_exists('muscle_run_matchheight')) {
 		 function muscle_run_matchheight() {
@@ -750,21 +789,21 @@ if (!function_exists('muscle_load_matchheight')) {
 // Load Sticky Kit
 // ---------------
 // 1.5.0: Added Sticky Kit Loading
-// 1.8.5: check themeoptions internally to allow filtering
+// 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('muscle_load_stickykit')) {
  add_action('wp_enqueue_scripts','muscle_load_stickykit');
  function muscle_load_stickykit() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	// 1.8.5: seems to cause customizer some troubles
-	// 1.9.9: add pagenow check for same reason
+	// 1.9.9: add pagenow check also for same reason
 	global $pagenow;
 	if ( ($pagenow == 'customizer.php') || (is_customize_preview()) ) {return;}
 
-	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadstickykit = 0;
-	if (isset($vthemesettings['loadstickykit'])) {$vloadstickykit = $vthemesettings['loadstickykit'];}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['loadstickykit'])) {$vload = $vthemesettings['loadstickykit'];}
 	// 1.9.9: fix to incorrect filter name typo
-	$vloadstickykit = skeleton_apply_filters('muscle_load_stickykit',$vloadstickykit);
-	if (!$vloadstickykit) {return;}
+	$vload = skeleton_apply_filters('muscle_load_stickykit',$vload);
+	if (!$vload) {return;}
 
 	$vstickykit = skeleton_file_hierarchy('both','jquery.sticky-kit.min.js',$vthemedirs['js']);
 	if (is_array($vstickykit)) {
@@ -796,16 +835,15 @@ if (!function_exists('muscle_load_stickykit')) {
 
 // Load FitVids
 // ------------
-// 1.8.5: check themeoptions internally to allow filtering
-
+// 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('muscle_load_fitvids')) {
  add_action('wp_enqueue_scripts','muscle_load_fitvids');
  function muscle_load_fitvids() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadfitvids = 0;
-	if (isset($vthemesettings['loadfitvids'])) {$vloadfitvids = $vthemesettings['loadfitvids'];}
-	$vloadfitvids = skeleton_apply_filters('muscle_load_fitvids',$vloadfitvids);
-	if (!$vloadfitvids) {return;}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['loadfitvids'])) {$vload = $vthemesettings['loadfitvids'];}
+	$vload = skeleton_apply_filters('muscle_load_fitvids',$vload);
+	if (!$vload) {return;}
 
 	$vfitvids = skeleton_file_hierarchy('both','jquery.fitvids.js',$vthemedirs['js']);
 	if (is_array($vfitvids)) {
@@ -838,15 +876,15 @@ if (!function_exists('muscle_load_fitvids')) {
 // Load ScrollToFixed
 // ------------------
 // 1.5.0: added Scroll To Fixed library
-// 1.8.5: check themeoptions internally to allow filtering
+// 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('muscle_load_scrolltofixed')) {
  add_action('wp_enqueue_scripts','muscle_load_scrolltofixed');
  function muscle_load_scrolltofixed() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings, $vthemedirs, $vjscachebust; $vloadscrolltofixed = 0;
-	if (isset($vthemesettings['loadscrolltofixed'])) {$vloadscrolltofixed = $vthemesettings['loadscrolltofixed'];}
-	$vloadscrolltofixed = skeleton_apply_filters('muscle_load_scrolltofixed',$vloadscrolltofixed);
-	if (!$vloadscrolltofixed) {return;}
+	global $vthemesettings, $vthemedirs, $vjscachebust; $vload = false;
+	if (isset($vthemesettings['loadscrolltofixed'])) {$vload = $vthemesettings['loadscrolltofixed'];}
+	$vload = skeleton_apply_filters('muscle_load_scrolltofixed',$vload);
+	if (!$vload) {return;}
 
 	$vscrolltofixed = skeleton_file_hierarchy('both','jquery-scrolltofixed.min.js',$vthemedirs['js']);
 	if (is_array($vscrolltofixed)) {
@@ -863,20 +901,30 @@ if (!function_exists('muscle_logo_resize')) {
  add_action('wp_footer','muscle_logo_resize');
  function muscle_logo_resize() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-    global $vthemesettings; $vlogoresize = 0;
-    if (isset($vthemesettings['logoresize'])) {$vlogoresize = $vthemesettings['logoresize'];}
-    $vlogoresize = skeleton_apply_filters('muscle_logo_resize',$vlogoresize);
-    if (!$vlogoresize) {return;}
+    global $vthemesettings; $vload = false;
+    if (isset($vthemesettings['logoresize'])) {$vload = $vthemesettings['logoresize'];}
+    $vload = skeleton_apply_filters('muscle_logo_resize',$vload);
+    if (!$vload) {return;}
+
+    // add run trigger to footer (detected by init.js)
     echo '<input type="hidden" id="logoresize" name="logoresize" value="yes">';
  }
 }
-
 
 // ------------------
 // === Thumbnails ===
 // ------------------
 
-// Allow thumbnail size override on upload for CPTs
+// TODO: jpeg quality filter?
+// add_filter('jpeg_quality', 'muscle_jpeg_quality');
+// if (!function_exists('muscle_jpeg_quality')) {
+//  function muscle_jpeg_quality() {
+//		global $vthemesettings;
+//		return $vthemesettings['jpegquality'];
+// 	}
+// }
+
+// Allow Thumbnail Size override on upload for CPTs
 // ------------------------------------------------
 // (note: post type support for the CPT must be active via theme options)
 // each filter must be explicity set, eg. muscle_custom_post_type_thumbsize_video
@@ -888,13 +936,20 @@ if (!function_exists('muscle_thumbnail_size_custom')) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 	// rather funny way of doing it but seems to work fine
 	// as this is for the admin post/page editing screen
-	// TODO: check if this works for new posts also (no post ID)?
-	$vposttype = get_post_type($_REQUEST['post_id']);
+	if (isset($_REQUEST['post_id'])) {
+		$vpostid = $_REQUEST['post_id'];
+		$vposttype = get_post_type($vpostid);
+	} else {
+		// TODO: what to do for new posts (ie. with no post ID yet)?
+		return;
+	}
 
 	// get default thumbnail size options (as in theme setup)
 	global $vthemesettings;
 	$vthumbnailwidth = skeleton_apply_filters('skeleton_thumbnail_width',250);
 	$vthumbnailheight = skeleton_apply_filters('skeleton_thumbnail_height',250);
+
+	// get croppping options
 	$vcrop = get_option('thumbnail_crop');
 	$vthumbnailcrop = $vthemesettings['thumbnailcrop'];
 	if ($vthumbnailcrop == 'nocrop') {$vcrop = false;}
@@ -950,94 +1005,98 @@ if (!function_exists('muscle_fading_thumbnails')) {
  }
 }
 
+
 // ---------------
 // === Reading ===
 // ---------------
 
 // Include/Exclude Categories from Home (Blog) Page
 // ------------------------------------------------
-if ($vthemesettings['homecategorymode'] != 'all') {
-	if ( ($vthemesettings['homecategorymode'] == 'include') || ($vthemesettings['homecategorymode'] == 'exclude') || ($vthemesettings['homecategorymode'] == 'includeexclude') ) {
+if (!function_exists('muscle_select_home_categories')) {
+ add_filter('pre_get_posts','muscle_select_home_categories');
+ function muscle_select_home_categories($query) {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-		// Selected Categories
-		// -------------------
-		if (!function_exists('muscle_select_home_categories')) {
-		 add_filter('pre_get_posts','muscle_select_home_categories');
-		 function muscle_select_home_categories($vquery) {
-			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+	if ($query->is_home()) {
+		global $vthemesettings; $vmode = false;
+		if (isset($vthemesettings['homecategorymode'])) {$vmode = $vthemesettings['homecategorymode'];}
+		$vmode = skeleton_apply_filters('muscle_home_category_mode',$vmode);
+		if ( (!$vmode) || ($vmode == 'all') ) {return;}
+		if ( ($vmode != 'include') && ($vmode != 'exclude') && ($vmode != 'includeexclude') ) {return;}
 
-			if ($vquery->is_home()) {
-				global $vthemesettings;
+		// 2.0.0: added category mode/include/exclude filters
+		// TODO: add to filters.php list/example
+		$vincludecategories = skeleton_apply_filters('muscle_home_include_categories',$vthemesettings['homeincludecategories']);
+		$vexcludecategories = skeleton_apply_filters('muscle_home_exclude_categories',$vthemesettings['homeexcludecategories']);
 
-				// 2.0.0: added category mode/include/exclude filters
-				// TODO: add to filters.php list/example
-				$vhomecategorymode = apply_filters('muscle_home_category_mode',$vthemesettings['homecategorymode']);
-				$vincludecategories = apply_filters('muscle_home_include_categories',$vthemesettings['homeincludecategories']);
-				$vexcludecategories = apply_filters('muscle_home_exclude_categories',$vthemesettings['homeexcludecategories']);
+		// 2.0.1: revamped include / exclude logic
+		$vcategories = get_categories(); $vselected = array();
+		$vincluded = false; $vexcluded = false;
+		if (is_array($vincludecategories)) {$vincluded = true;}
+		if (is_array($vexcludecategories)) {$excluded = true;}
 
-				$vcategories = get_categories();
-
-				foreach ($vcategories as $vcategory) {
-					$vcatid = $vcategory->cat_ID;
-					if ( ($vhomecategorymode == 'include') || ($vhomecategorymode == 'includeexclude') ) {
-						if (isset($vincludecategories[$vcatid])) {$vselected[] = $vcatid;}
-					}
-					if ( ($vhomecategorymode == 'exclude') || ($vhomecategorymode == 'includeexclude') ) {
-						if (isset($vexcludecategories[$vcatid])) {$vselected[] = '-'.$vcatid;}
-					}
-				}
-
-				if (count($vselected) > 0) {
-					$vcatstring = implode(' ',$vselected);
-					$vquery->set('cat',$vcatstring);
-				}
+		foreach ($vcategories as $vcategory) {
+			$vcatid = $vcategory->cat_ID;
+			if ( ($vincluded) && ( ($vmode == 'include') || ($vmode == 'includeexclude') ) ) {
+				if (isset($vincludecategories[$vcatid])) {$vselected[] = $vcatid;}
 			}
-			return $vquery;
-		 }
-	 	}
-	}
-}
+			if ( ($vexcluded) && ( ($vmode == 'exclude') || ($vmode == 'includeexclude') ) ) {
+				if (isset($vexcludecategories[$vcatid])) {$vselected[] = '-'.$vcatid;}
+			}
+		}
 
+		if (count($vselected) > 0) {
+			$vcatstring = implode(' ',$vselected);
+			$query->set('cat',$vcatstring);
+		}
+	}
+	return $query;
+ }
+}
 
 // Number of Search Results per Page
 // ---------------------------------
-if (is_numeric($vthemesettings['searchresults'])) {
-	add_action('pre_get_posts', 'muscle_search_results_per_page');
-	if (!function_exists('muscle_search_results_per_page')) {
-	 function muscle_search_results_per_page($vquery) {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-		global $vthemesettings, $wp_the_query;
-		// 2.0.0: added muscle_search_results filter
-		// TODO: add to filters.php list/example
-		$vsearchresults = apply_filters('muscle_search_results',$vthemesettings['searchresults']);
-		if ( (!is_admin()) && ($vquery === $wp_the_query) && ($vquery->is_search()) ) {
-			$vquery->set('posts_per_page', $vsearchresults);
+// 2.0.1: filter themesettings internally
+add_action('pre_get_posts', 'muscle_search_results_per_page');
+if (!function_exists('muscle_search_results_per_page')) {
+ function muscle_search_results_per_page($query) {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+	global $vthemesettings, $wp_the_query;
+	// 2.0.0: added muscle_search_results filter
+	// TODO: add to filters.php examples
+	$vsearchresults = skeleton_apply_filters('muscle_search_results',$vthemesettings['searchresults']);
+	$vsearchresults = absint($vsearchresults);
+	if (is_numeric($vsearchresults)) {
+		if ( (!is_admin()) && ($query === $wp_the_query) && ($query->is_search()) ) {
+			$query->set('posts_per_page', $vsearchresults);
 		}
-		return $vquery;
-	 }
 	}
+	return $query;
+ }
 }
 
 // Make Custom Post Types Searchable
 // ---------------------------------
-$vsearchablecpts = false;
-if (is_array($vthemesettings['searchablecpts'])) {
-	foreach ($vthemesettings['searchablecpts'] as $vcpt) {if ($vcpt == '1') {$vsearchablecpts = true;} }
-}
-if ($vsearchablecpts) {
-	if (!function_exists('muscle_searchable_cpts')) {
-	 function muscle_searchable_cpts($query) {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+// 2.0.1: filter themesettings internally
+if (!function_exists('muscle_searchable_cpts')) {
+ if (is_search()) {add_filter('the_search_query','muscle_searchable_cpts');}
+ function muscle_searchable_cpts($query) {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+	global $vthemesettings; $vsearchablecpts = false;
+	if (isset($vthemesettings['searchablecpts'])) {$vsearchablecpts = $vthemesettings['searchablecpts'];}
+	$vsearchablecpts = skeleton_apply_filters('muscle_searchable_cpts',$vsearchablecpts);
 
-		global $vthemesettings;
-		foreach ($vthemesettings['searchablecpts'] as $vcpt) {
-			if ($vcpt == '1') {$vsearchablecpts[] = $vcpt;}
+	// 2.0.1: fix to search logic array here
+	if ( (is_array($vsearchablecpts)) && (count($vsearchablecpts) > 0) ) {
+		$vcpts = array();
+		foreach ($vsearchablecpts as $vcpt => $vvalue) {
+			if ($vvalue == '1') {$vcpts[] = $vcpt;}
 		}
-		if ($query->is_search) {$query->set('post_type', $vsearchablecpts);}
-		return $query;
-	 }
-	 if (is_search()) {add_filter('the_search_query','muscle_searchable_cpts');}
+		if ($query->is_search) {$query->set('post_type', $vcpts);}
 	}
+
+	return $query;
+ }
 }
 
 // Jetpack Infinite Scroll Support
@@ -1046,37 +1105,39 @@ if ($vsearchablecpts) {
 // also could use AJAX Load More: https://wordpress.org/plugins/ajax-load-more/
 // Loading Span selector: span.infinite-loader (default image: /images/infinite-loader.gif)
 // Load More Button selector: div.infinite-handler (for click only, not scroll)
-if ( ($vthemesettings['infinitescroll'] == 'scroll') || ($vthemesettings['infinitescroll'] == 'click') ) {
-	if (!function_exists('muscle_jetpack_scroll_setup')) {
-	 function muscle_jetpack_scroll_setup() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
-		global $vthemesettings;
-		$vtype = $vthemesettings['infinitescroll'];
-		$vfootersidebars = $vthemesettings['footersidebars'];
-		if ($vfootersidebars > 0) {$vfooterwidgets[0] = 'footer-widget-area-1';}
-		if ($vfootersidebars > 1) {$vfooterwidgets[1] = 'footer-widget-area-2';}
-		if ($vfootersidebars > 2) {$vfooterwidgets[2] = 'footer-widget-area-3';}
-		if ($vfootersidebars > 3) {$vfooterwidgets[3] = 'footer-widget-area-4';}
+if (!function_exists('muscle_jetpack_scroll_setup')) {
+ add_action('after_setup_theme', 'muscle_jetpack_scroll_setup');
+ function muscle_jetpack_scroll_setup() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings; $vload = false;
+	if (isset($vthemesettings['infinitescroll'])) {$vload = $vthemesettings['infinitescroll'];}
+	$vload = skeleton_apply_filters('muscle_load_infinitescroll',$vload);
+	if ( ($vload != 'scroll') && ($vload != 'click') ) {return;}
 
-		$vsettings = array(
-			'type' => $vtype,
-			'container' => 'content',
-			'footer' => 'footer',
-			'footer_widgets', $vfooterwidgets,
-			'wrapper' => 'infinite-wrap',
-			'render' => 'muscle_infinite_scroll_loop'
-		);
+	$vfootersidebars = $vthemesettings['footersidebars'];
+	if ($vfootersidebars > 0) {$vfooterwidgets[0] = 'footer-widget-area-1';}
+	if ($vfootersidebars > 1) {$vfooterwidgets[1] = 'footer-widget-area-2';}
+	if ($vfootersidebars > 2) {$vfooterwidgets[2] = 'footer-widget-area-3';}
+	if ($vfootersidebars > 3) {$vfooterwidgets[3] = 'footer-widget-area-4';}
 
-		// 1.8.0: added override filters
-		$vpostsperpage = skeleton_apply_filters('skeleton_infinite_scroll_numposts','');
-		if (is_numeric($vpostsperpage)) {$vsettings['posts_per_page'] = $vpostsperpage;}
-		$vsettings = skeleton_apply_filters('skeleton_infinite_scroll_settings',$vsettings);
+	$vsettings = array(
+		'type' => $vload,
+		'container' => 'content',
+		'footer' => 'footer',
+		'footer_widgets', $vfooterwidgets,
+		'wrapper' => 'infinite-wrap',
+		'render' => 'muscle_infinite_scroll_loop'
+	);
 
-		add_theme_support('infinite-scroll', $vsettings);
-	 }
-	}
+	// 1.8.0: added override filters
+	$vpostsperpage = skeleton_apply_filters('skeleton_infinite_scroll_numposts','');
+	if (is_numeric($vpostsperpage)) {$vsettings['posts_per_page'] = $vpostsperpage;}
+	$vsettings = skeleton_apply_filters('skeleton_infinite_scroll_settings',$vsettings);
 
+	add_theme_support('infinite-scroll', $vsettings);
+
+	// 2.0.1: moved this function inside load function
 	if (!function_exists('muscle_infinite_scroll_loop')) {
 	 function muscle_infinite_scroll_loop() {
 		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
@@ -1087,9 +1148,11 @@ if ( ($vthemesettings['infinitescroll'] == 'scroll') || ($vthemesettings['infini
 			hybrid_get_content_template();
 		}
 	 }
-	 add_action('after_setup_theme', 'muscle_jetpack_scroll_setup');
 	}
+
+ }
 }
+
 
 
 // -----------------------------
@@ -1124,10 +1187,10 @@ if (!function_exists('muscle_excerpts_with_shortcodes')) {
 
 	$text = get_the_content('');
 	// $text = strip_shortcodes( $text ); // modification
-	$text = apply_filters( 'the_content', $text );
+	$text = skeleton_apply_filters( 'the_content', $text );
 	$text = str_replace(']]>', ']]&gt;', $text);
-	$excerpt_length = apply_filters( 'excerpt_length', 55 );
-	$excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
+	$excerpt_length = skeleton_apply_filters( 'excerpt_length', 55 );
+	$excerpt_more = skeleton_apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
 	$text = wp_trim_words( $text, $excerpt_length, $excerpt_more );
 	$doingexcerpt = false; return $text;
  }
@@ -1179,7 +1242,7 @@ if ($vthemesettings['readmoreanchor'] != '') {
 		global $vthemesettings;
 		// 2.0.0: added muscle_read_more_anchor filter
 		// TODO: add to filters.php list/examples
-		$vreadmoreanchor = apply_filters('muscle_read_more_anchor',$vthemesettings['readmoreanchor']);
+		$vreadmoreanchor = skeleton_apply_filters('muscle_read_more_anchor',$vthemesettings['readmoreanchor']);
 		return ' <a href="'.get_permalink().'">'.$vreadmoreanchor.'</a>';
 	 }
 	}
@@ -1200,7 +1263,7 @@ if ($vthemesettings['readmorebefore'] != '') {
 		global $vthemesettings;
 		// 2.0.0: added muscle_read_more_before filter
 		// TODO: add to filters.php list/examples
-		$vreadmorebefore = apply_filters('muscle_read_more_filter',$vthemesettings['readmorebefore']);
+		$vreadmorebefore = skeleton_apply_filters('muscle_read_more_filter',$vthemesettings['readmorebefore']);
 		if (function_exists('muscle_continue_reading_link')) {
 			return '<div class="readmore">'.$vthemesettings['readmorebefore'].muscle_continue_reading_link().'</div>';
 		} elseif (function_exists('skeleton_continue_reading_link')) {
@@ -1334,25 +1397,27 @@ if ($vcptsinfeed) {
 // -------------------------------
 // 1.8.5: added this option
 // ref: http://wordpress.stackexchange.com/a/227455/76440
-
+// TODO: make this option filterable
 if ( (isset($vthemesettings['pagecontentfeeds'])) && ($vthemesettings['pagecontentfeeds'] == '1') ) {
 
 	// 2.0.0: fix to query object typo
 	add_action('pre_get_posts', 'rss_page_feed_full_content');
 	if (!function_exists('muscle_rss_page_feed_full_content')) {
- 	 function rss_page_feed_full_content($vquery) {
+ 	 function rss_page_feed_full_content($query) {
  	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		// check feed request and for single page only
-		if ($vquery->is_main_query() && $vquery->is_feed() && $vquery->is_page()) {
+		if ($query->is_main_query() && $query->is_feed() && $query->is_page()) {
 			// set the post type to page
-			$vquery->set('post_type', array('page'));
+			$query->set('post_type', array('page'));
 			// allow for page comments feed via ?withcomments=1
 			if ( (isset($_GET['withcomments'])) && ($_GET['withcomments'] == '1') ) {return;}
 			// set the comment feed to false
-			$vquery->is_comment_feed = false;
+			$query->is_comment_feed = false;
 		}
 
-		if ( ($vquery->is_feed()) && (THEMEDEBUG) ) {echo "<!-- Feed Query: "; print_r($vquery); echo " -->";}
+		if ( ($query->is_feed()) && (THEMEDEBUG) ) {
+			echo "<!-- Feed Query: "; print_r($query); echo " -->";
+		}
 	 }
 	}
 
@@ -1368,6 +1433,7 @@ if ( (isset($vthemesettings['pagecontentfeeds'])) && ($vthemesettings['pageconte
 	}
 
 	// TODO: test strip_shortcode result on multiple installs
+	// (this code causing some troubles)
 	// add_filter('the_excerpt_rss','muscle_rss_page_excerpt');
 	// if (!function_exists('muscle_rss_page_excerpt')) {
 	// function muscle_rss_page_excerpt($excerpt) {
@@ -1391,26 +1457,27 @@ if ( (isset($vthemesettings['pagecontentfeeds'])) && ($vthemesettings['pageconte
 
 // Load the Dashboard Feed
 // -----------------------
-if (is_admin()) {
-	if (!function_exists('muscle_add_bioship_dashboard_feed_widget')) {
-		function muscle_add_bioship_dashboard_feed_widget() {
-			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-			global $wp_meta_boxes, $current_user;
-			if ( (current_user_can('manage_options')) || (current_user_can('update_themes')) ) {
-				// 1.9.9: fix to undefined index warning
-				$vfeedloaded = false;
-				foreach (array_keys($wp_meta_boxes['dashboard']['normal']['core']) as $vname) {
-					if ($vname == 'bioship') {$vfeedloaded = true;}
-				}
-				if (!$vfeedloaded) {wp_add_dashboard_widget('bioship','BioShip News','muscle_bioship_dashboard_feed_widget');}
-			}
-		}
+if (!function_exists('muscle_add_bioship_dashboard_feed_widget')) {
+	$vrequesturi = $_SERVER['REQUEST_URI'];
+	// 2.0.1: fix for network string match typo
+	if ( (preg_match('|index.php|i', $vrequesturi))
+	  || (substr($vrequesturi,-(strlen('/wp-admin/'))) == '/wp-admin/')
+	  || (substr($vrequesturi,-(strlen('/wp-admin/network/'))) == '/wp-admin/network/') ) {
+		add_action('wp_dashboard_setup', 'muscle_add_bioship_dashboard_feed_widget');
+	}
 
-		$vrequesturi = $_SERVER['REQUEST_URI'];
-		if ( (preg_match('|index.php|i', $vrequesturi))
-		  || (substr($vrequesturi,-(strlen('/wp-admin/'))) == '/wp-admin/')
-		  || (substr($vrequesturi,-(strlen('/wp-admin/network'))) == '/wp-admin/network/') ) {
-			add_action('wp_dashboard_setup', 'muscle_add_bioship_dashboard_feed_widget');
+	function muscle_add_bioship_dashboard_feed_widget() {
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+		if ( (current_user_can('manage_options')) || (current_user_can('update_themes'))
+		  || (current_user_can('edit_theme_options')) ) {
+			// 1.9.9: fix to undefined index warning
+			global $wp_meta_boxes; $vfeedloaded = false;
+			foreach (array_keys($wp_meta_boxes['dashboard']['normal']['core']) as $vname) {
+				if ($vname == 'bioship') {$vfeedloaded = true;}
+			}
+			if (!$vfeedloaded) {
+				wp_add_dashboard_widget('bioship',__('BioShip News','bioship'),'muscle_bioship_dashboard_feed_widget');
+			}
 		}
 	}
 }
@@ -1423,18 +1490,20 @@ if (is_admin()) {
 if (!function_exists('muscle_bioship_dashboard_feed_widget')) {
  function muscle_bioship_dashboard_feed_widget($vdisplayupdates=true,$vdisplaylinks=false) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemedirs;
 
 	// Display Updates Available
 	// -------------------------
 	if (!function_exists('admin_theme_updates_available')) {
 		// 2.0.0: fix to file hierarchy search dir
-		global $vthemedirs; $vadmin = skeleton_file_hierarchy('file','admin.php',$vthemedirs['admin']); include_once($vadmin);
+		$vadmin = skeleton_file_hierarchy('file','admin.php',$vthemedirs['admin']);
+		include_once($vadmin);
 	}
 	if ($vdisplayupdates) {echo admin_theme_updates_available();}
 
 	// Load the Update News Feed
 	// -------------------------
-	$vbaseurl = BIOSHIPHOME;
+	$vbaseurl = THEMEHOMEURL;
 	$vrssurl = $vbaseurl."/feed/";
 
 	// 1.8.0: set transient for daily feed update only
@@ -1454,9 +1523,9 @@ if (!function_exists('muscle_bioship_dashboard_feed_widget')) {
 
 	// 2.0.0: add documentation, development and extensions links
 	if ($vdisplaylinks) {
-		echo "<center><b><a href='".BIOSHIPHOME."/documentation/' class='themefeedlink' target=_blank>Documentation</a></b> | ";
-		echo "<b><a href='".BIOSHIPHOME."/development/' class='themefeedlink' target=_blank>Development</a></b> | ";
-		echo "<b><a href='".BIOSHIPHOME."/extensions/' class='themefeedlink' target=_blank>Extensions</a></b></center><br>";
+		echo "<center><b><a href='".THEMEHOMEURL."/documentation/' class='themefeedlink' target=_blank>Documentation</a></b> | ";
+		echo "<b><a href='".THEMEHOMEURL."/development/' class='themefeedlink' target=_blank>Development</a></b> | ";
+		echo "<b><a href='".THEMEHOMEURL."/extensions/' class='themefeedlink' target=_blank>Extensions</a></b></center><br>";
 	}
 
 	// 1.8.5: fix to typo on close div ruining admin page
@@ -1500,7 +1569,6 @@ if (!function_exists('muscle_process_rss_feed')) {
 // === Admin ===
 // -------------
 
-
 // Add Post Thumbnail Column to Post/Page list
 // -------------------------------------------
 // FIXME: do not think this function is working, but not a priority
@@ -1536,134 +1604,151 @@ if ( (isset($vthemesettings['adminthumbnailcolumn'])) && ($vthemesettings['admin
 
 // Add "All Options" Page to Settings Menu
 // ---------------------------------------
-if ($vthemesettings['alloptionspage'] == '1') {
-	if (!function_exists('muscle_all_options_link')) {
-	 function muscle_all_options_link() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+// 2.0.1: filter option internally
+if (!function_exists('muscle_all_options_link')) {
+ add_action('admin_menu', 'muscle_all_options_link', 0);
+ function muscle_all_options_link() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings; $vaddlink = false;
+	if (isset($vthemesettings['alloptionspage'])) {$vaddlink = $vthemesettings['alloptionspage'];}
+	$vaddlink = skeleton_apply_filters('muscle_all_options_page',$vaddlink);
+	if ($vaddlink == '1') {
 		add_options_page(__('All Options','bioship'), __('All Options','bioship'), 'manage_options', 'options.php');
-	 }
-	 add_action('admin_menu', 'muscle_all_options_link', 0);
 	}
+ }
 }
 
 // Remove Update Notice
 // --------------------
-if ($vthemesettings['removeupdatenotice'] == '1') {
-	if (!function_exists('muscle_remove_update_notice')) {
-	 add_action('init','muscle_remove_update_notice');
-	 function muscle_remove_update_notice() {
-	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-	 	// 1.9.8: replaced deprecated function get_currentuserinfo
-		global $current_user; wp_get_current_user();
-		if (!current_user_can('update_plugins')) {
-			add_action( 'init', create_function( '$a', "remove_action( 'init', 'wp_version_check' );" ), 2 );
-			add_filter( 'pre_option_update_core', create_function( '$a', "return null;" ) );
-		}
-	 }
+if (!function_exists('muscle_remove_update_notice')) {
+ add_action('init','muscle_remove_update_notice',1);
+ function muscle_remove_update_notice() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings; $vremove = false;
+	if (isset($vthemesettings['removeupdatenotice'])) {$vremove = $vthemesettings['removeupdatenotice'];}
+	$vremove = skeleton_apply_filters('muscle_remove_update_notice',$vremove);
+	if ($vremove != '1') {return;}
+
+	if (!current_user_can('update_plugins')) {
+		// 2.0.1: simplify to remove version check action here
+		remove_action('init', 'wp_version_check');
+		add_filter('pre_option_update_core', create_function('$a', "return null;"));
 	}
+ }
 }
 
 // Stop New User Notifications
 // ---------------------------
-if ($vthemesettings['disablenotifications'] == '1') {
-	if (!function_exists('muscle_stop_new_user_notifications')) {
-		add_action('phpmailer_init', 'muscle_stop_new_user_notifications');
-		function muscle_stop_new_user_notifications() {
-		 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_stop_new_user_notifications')) {
+ add_action('phpmailer_init', 'muscle_stop_new_user_notifications');
+ function muscle_stop_new_user_notifications() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings; $vdisable = false;
+	if (isset($vthemesettings['disablenotifications'])) {$vdisable = $vthemesettings['disablenotifications'];}
+	$vdisable = skeleton_apply_filters('muscle_stop_new_user_notifications',$vdisable);
+	if ($vdisable != '1') {return;}
 
-			global $phpmailer;
-			if (is_multisite()) {
-				$subject = 'New User Registration: ';
-				if (substr($phpmailer->Subject,0,strlen($subject)) == $subject) {
-					$phpmailer = new PHPMailer(true);
-				}
-			}
-			else {
-				$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
-				$subject = array(
-					sprintf(__('[%s] New User Registration'), $blogname),
-					sprintf(__('[%s] Password Lost/Changed'), $blogname)
-				);
-				if (in_array($phpmailer->Subject,$subject)) {
-					$phpmailer = new PHPMailer(true);
-				}
-			}
+	global $phpmailer;
+	if (is_multisite()) {
+		$subject = 'New User Registration: ';
+		if (substr($phpmailer->Subject,0,strlen($subject)) == $subject) {
+			$phpmailer = new PHPMailer(true);
 		}
 	}
+	else {
+		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+		$subject = array(
+			sprintf(__('[%s] New User Registration'), $blogname),
+			sprintf(__('[%s] Password Lost/Changed'), $blogname)
+		);
+		if (in_array($phpmailer->Subject,$subject)) {$phpmailer = new PHPMailer(true);}
+	}
+ }
 }
 
 // Disable Self Pings
 // ------------------
-if ($vthemesettings['disableselfpings'] == '1') {
-	if (!function_exists('muscle_disable_self_pings')) {
-	 add_action('pre_ping','muscle_disable_self_pings');
-	 // 2.0.0: remove unneeded pass by reference in argument
-	 function muscle_disable_self_pings($vlinks) {
-	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-	 	// 1.5.5: fix to use home_url for theme check
-	 	$vhome = home_url(); // $vhome = get_option('home');
-		foreach ($vlinks as $vi => $vlink) {if (0 === strpos($vlink,$vhome)) {unset($vlinks[$vi]);} }
-	 }
-	}
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_disable_self_pings')) {
+ add_action('pre_ping','muscle_disable_self_pings');
+ // 2.0.0: remove unneeded pass by reference in argument
+ function muscle_disable_self_pings($vlinks) {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+	global $vthemesettings; $vdisable = false;
+	if (isset($vthemesettings['disableselfpings'])) {$vdisable = $vthemesettings['disableselfpings'];}
+	$vdisable = skeleton_apply_filters('muscle_disable_self_pings',$vdisable);
+	if ($vdisable != '1') {return;}
+
+	// 1.5.5: fix to use home_url for theme check
+	$vhome = home_url(); // $vhome = get_option('home');
+	foreach ($vlinks as $vi => $vlink) {if (0 === strpos($vlink,$vhome)) {unset($vlinks[$vi]);} }
+ }
 }
 
 // Cleaner Admin Bar (remove WP links)
 // -----------------------------------
-if ($vthemesettings['cleaneradminbar'] == '1') {
-	if (!function_exists('muscle_cleaner_adminbar')) {
-	 add_action('wp_before_admin_bar_render','muscle_cleaner_adminbar');
-	 function muscle_cleaner_adminbar() {
-		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-		global $wp_admin_bar;
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_cleaner_adminbar')) {
+ add_action('wp_before_admin_bar_render','muscle_cleaner_adminbar');
+ function muscle_cleaner_adminbar() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings; $vclean = false;
+	if (isset($vthemesettings['cleaneradminbar'])) {$vclean = $vthemesettings['cleaneradminbar'];}
+	$vclean = skeleton_apply_filters('muscle_cleaner_admin_bar',$vclean);
+	if ($vclean != '1') {return;}
 
-		// 1.8.0: added array filter for altering adminbar link removal
-		$vremoveitems = array('wp-logo','about','wporg','documentation','support-forums','feedback');
-		$vremoveitems = skeleton_apply_filters('admin_adminbar_remove_items',$vremoveitems);
+	global $wp_admin_bar;
+	// 1.8.0: added array filter for altering adminbar link removal
+	$vremoveitems = array('wp-logo','about','wporg','documentation','support-forums','feedback');
+	$vremoveitems = skeleton_apply_filters('admin_adminbar_remove_items',$vremoveitems);
 
-		if (count($vremoveitems) > 0) {
-			foreach ($vremoveitems as $vremoveitem) {$wp_admin_bar->remove_menu($vremoveitem);}
-		}
-	 }
+	if (count($vremoveitems) > 0) {
+		foreach ($vremoveitems as $vremoveitem) {$wp_admin_bar->remove_menu($vremoveitem);}
 	}
+ }
 }
 
 // Include CPTs in the Dashboard 'Right Now'
 // -----------------------------------------
-if ($vthemesettings['cptsrightnow'] == '1') {
-	if (!function_exists('muscle_right_now_content_table_end')) {
-	 function muscle_right_now_content_table_end() {
-	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+// 2.0.1: check themesettings internally to allow filtering
+if (!function_exists('muscle_right_now_content_table_end')) {
+ add_action('right_now_content_table_end','muscle_right_now_content_table_end');
+ function muscle_right_now_content_table_end() {
+	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+	global $vthemesettings; $vmodify = false;
+	if (isset($vthemesettings['cptsrightnow'])) {$vmodify = $vthemesettings['cptsrightnow'];}
+	$vmodify = skeleton_apply_filters('muscle_cpts_right_now',$vmodify);
+	if ($vmodify != '1') {return;}
 
-		$args = array('public' => true,'_builtin' => false);
-		$output = 'object';
-		$operator = 'and';
-		$post_types = get_post_types( $args , $output , $operator );
-		foreach($post_types as $post_type) {
-			$num_posts = wp_count_posts($post_type->name);
-			$num = number_format_i18n($num_posts->publish);
-			$text = _n( $post_type->labels->singular_name, $post_type->labels->name, intval($num_posts->publish));
-			if (current_user_can('edit_posts')) {
-				$num = "<a href='edit.php?post_type=$post_type->name'>$num</a>";
-				$text = "<a href='edit.php?post_type=$post_type->name'>$text</a>";
-			}
-			echo '<tr><td class="first num b b-' . $post_type->name . '">' . $num . '</td>';
-			echo '<td class="text t ' . $post_type->name . '">' . $text . '</td></tr>';
+	$args = array('public' => true,'_builtin' => false);
+	$output = 'object'; $operator = 'and';
+	$post_types = get_post_types( $args , $output , $operator );
+
+	foreach($post_types as $post_type) {
+		$num_posts = wp_count_posts($post_type->name);
+		$num = number_format_i18n($num_posts->publish);
+		$text = _n( $post_type->labels->singular_name, $post_type->labels->name, intval($num_posts->publish));
+		if (current_user_can('edit_posts')) {
+			$num = "<a href='edit.php?post_type=$post_type->name'>$num</a>";
+			$text = "<a href='edit.php?post_type=$post_type->name'>$text</a>";
 		}
-		$taxonomies = get_taxonomies( $args , $output , $operator );
-		foreach ($taxonomies as $taxonomy) {
-			$num_terms  = wp_count_terms($taxonomy->name);
-			$num = number_format_i18n($num_terms);
-			$text = _n( $taxonomy->labels->singular_name, $taxonomy->labels->name , intval( $num_terms ));
-			if (current_user_can('manage_categories')) {
-				$num = "<a href='edit-tags.php?taxonomy=$taxonomy->name'>$num</a>";
-				$text = "<a href='edit-tags.php?taxonomy=$taxonomy->name'>$text</a>";
-			}
-			echo '<tr><td class="first b b-' . $taxonomy->name . '">' . $num . '</td>';
-			echo '<td class="t ' . $taxonomy->name . '">' . $text . '</td></tr>';
-		}
-	 }
-	 add_action('right_now_content_table_end','muscle_right_now_content_table_end');
+		echo '<tr><td class="first num b b-' . $post_type->name . '">' . $num . '</td>';
+		echo '<td class="text t ' . $post_type->name . '">' . $text . '</td></tr>';
 	}
+	$taxonomies = get_taxonomies( $args , $output , $operator );
+	foreach ($taxonomies as $taxonomy) {
+		$num_terms  = wp_count_terms($taxonomy->name);
+		$num = number_format_i18n($num_terms);
+		$text = _n( $taxonomy->labels->singular_name, $taxonomy->labels->name , intval( $num_terms ));
+		if (current_user_can('manage_categories')) {
+			$num = "<a href='edit-tags.php?taxonomy=$taxonomy->name'>$num</a>";
+			$text = "<a href='edit-tags.php?taxonomy=$taxonomy->name'>$text</a>";
+		}
+		echo '<tr><td class="first b b-' . $taxonomy->name . '">' . $num . '</td>';
+		echo '<td class="t ' . $taxonomy->name . '">' . $text . '</td></tr>';
+	}
+ }
 }
 
 // Login Header URL
@@ -1686,15 +1771,15 @@ if (!function_exists('muscle_login_headertitle')) {
  }
 }
 
-
 // Login Page Logo
 // ---------------
+// (adds a #loginwrapper element to help styling)
+// 1.8.5: fun with login wrapper hacks!
 if (!function_exists('muscle_login_styles')) {
  add_action('login_head', 'muscle_login_styles');
  function muscle_login_styles() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
-	// 1.8.5: fun with login wrapper hacks
 	add_filter('login_body_class','muscle_login_body_hack',999);
 	if (!function_exists('muscle_login_body_hack')) {
 	 function muscle_login_body_hack($vclasses) {
@@ -1717,14 +1802,13 @@ if (!function_exists('muscle_login_styles')) {
 	if (!function_exists('muscle_close_login_wrapper')) {
 	 function muscle_close_login_wrapper() {
 	 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
-		skin_dynamic_login_css_inline();
+		bioship_skin_dynamic_login_css_inline();
 		echo "</div><!-- /#loginwrapper -->";
 	 }
 	}
 	// 1.8.5: moved actual styling to skin.php
  }
 }
-
 
 
 // ====================
@@ -2013,7 +2097,12 @@ if (!function_exists('muscle_open_graph_override_image_fields')) {
 // -----------
 // (does not require Hybrid Core to be loaded)
 // (note: Hybrid Hook Widgets is available also)
-if ( (isset($vthemesettings['hybridhook'])) && ($vthemesettings['hybridhook'] == '1') ) {
+// 2.0.1: filter Hybrid Hook loading here
+$vloadhybridhook = false;
+if (isset($vthemesettings['hybridhook'])) {$vloadhybridhook = $vthemesettings['hybridhook'];}
+$vloadhybridhook = skeleton_apply_filters('muscle_load_hybrid_hook',$vloadhybridhook);
+
+if ($vloadhybridhook == '1') {
 	// 1.8.0: changed hybrid hook location to /includes/ subfolder
 	$vhybridhook = skeleton_file_hierarchy('file','hybrid-hook.php',array('includes/hybrid-hook'));
 	if ($vhybridhook) {
@@ -2078,10 +2167,12 @@ if ( (isset($vthemesettings['hybridhook'])) && ($vthemesettings['hybridhook'] ==
 // === Foundation ===
 // ------------------
 // ref: http://foundation.zurb.com/docs
+// 2.0.1: filter loading of Foundation here
+$vloadfoundation = false;
+if (isset($vthemesettings['loadfoundation'])) {$vloadfoundation = $vthemesettings['loadfoundation'];}
+$vloadfoundation = skeleton_apply_filters('muscle_load_foundation',$vloadfoundation);
 
-// Load Foundation
-// ---------------
-if ( ($vthemesettings['loadfoundation'] != '') && ($vthemesettings['loadfoundation'] != 'off') ) {
+if ( ($vloadfoundation) && ($vloadfoundation != 'off') ) {
 	if (!function_exists('muscle_load_foundation')) {
 	 add_action('wp_enqueue_scripts','muscle_load_foundation');
 	 function muscle_load_foundation() {
@@ -2157,9 +2248,12 @@ if ( ($vthemesettings['loadfoundation'] != '') && ($vthemesettings['loadfoundati
 // ----------------------
 // === Theme My Login ===
 // ----------------------
+// 2.0.1: filter TML Template loading
+$vtmltemplates = false;
+if (isset($vthemesettings['tmltemplates'])) {$vtmltemplates = $vthemesettings['tmltemplates'];}
+$vtmltemplates = skeleton_apply_filters('muscle_load_tml_templates',$vtmltemplates);
 
-if ( ($vthemesettings['tmltemplates'] != '') && ($vthemesettings['tmltemplates'] != '0') ) {
-
+if ($vtmltemplates == '1') {
 	// Improve TML Template Hierarchy
 	// ------------------------------
 	if (!function_exists('muscle_tml_template_paths')) {
@@ -2199,11 +2293,11 @@ if ( ($vthemesettings['tmltemplates'] != '') && ($vthemesettings['tmltemplates']
 	// --------------------------
 	if ($vthemesettings['registerbuttonurl'] != '') {
 		if (!function_exists('muscle_register_button_url')) {
-			add_filter('register_button_url','muscle_register_button_url');
-			function muscle_register_button_url($vbuttonurl) {
-				if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-				global $vthemesettings; return $vthemesettings['registerbuttonurl'];
-			}
+		 add_filter('register_button_url','muscle_register_button_url');
+		 function muscle_register_button_url($vbuttonurl) {
+			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+			global $vthemesettings; return $vthemesettings['registerbuttonurl'];
+		 }
 		}
 	}
 
@@ -2225,7 +2319,8 @@ if ( ($vthemesettings['tmltemplates'] != '') && ($vthemesettings['tmltemplates']
 		if (!function_exists('muscle_register_form_image')) {
 		 add_filter('register_form_image','muscle_register_form_image');
 		 function muscle_register_form_image() {
-			if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
+
+		if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 			global $vthemesettings;
 			if ($vthemesettings['loginlogo'] == 'custom') {$vimage = $vthemesettings['header_logo'];}
 			if ($vthemesettings['loginlogo'] == 'upload') {$vimage = $vthemesettings['loginlogourl'];}
@@ -2352,7 +2447,9 @@ if (!function_exists('muscle_theme_switch_admin_fix')) {
 						}
 					}
 					if ( ($datamethod != 'cookie') && (is_user_logged_in()) ) {
-						global $current_user; wp_get_current_user();
+						// 2.0.1: allow for fallback for older installs
+						if (function_exist('wp_get_current_user')) {$current_user = wp_get_current_user();}
+						else {global $current_user; get_currentuserinfo();}
 						$usermetadata = get_user_meta($current_user->ID,$datakey,true);
 						if (is_array($usermetadata)) {
 							// attempt to match referer data with stored transient request
@@ -2459,7 +2556,9 @@ if (!function_exists('muscle_theme_switch_admin_fix')) {
 				}
 				if ( ($datamethod != 'cookie') && (is_user_logged_in()) ) {
 					// check existing usermeta data
-					global $current_user; wp_get_current_user();
+					// 2.0.1: allow for fallback for older installs
+					if (function_exists('wp_get_current_user')) {$current_user; wp_get_current_user();}
+					else {global $current_user; get_currentuserinfo();}
 					$usermetadata = get_user_meta($current_user->ID,$datakey,true);
 					if (is_array($usermetadata)) {
 						$existingmatch = false;

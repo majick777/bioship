@@ -4,9 +4,7 @@
 
 if (THEMETRACE) {skeleton_trace('T','Header Widget Area Template',__FILE__);}
 
-// 1.9.8: removed old override check
-
-do_action('skeleton_before_header_widgets');
+do_action('bioship_before_header_widgets');
 
 	if (is_active_sidebar('header-widget-area')) : ?>
 
@@ -20,6 +18,6 @@ do_action('skeleton_before_header_widgets');
 
 	<?php endif;
 
-do_action('skeleton_after_header_widgets');
+do_action('bioship_after_header_widgets');
 
 ?>

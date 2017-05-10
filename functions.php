@@ -26,7 +26,8 @@
 // -------------------------------
 // === functions.php Structure ===
 // -------------------------------
-// - Setup Theme and load Theme Settings
+// - [optional] maybe load Child Theme functions.php
+// - setup Theme and load Theme Settings (functions.php)
 // - maybe load Admin-only functions (admin.php)
 // - [optional] maybe load Hybrid Core Framework
 // - Require Head and Template Setup (skull.php)
@@ -53,6 +54,7 @@
 // =================
 // Theme Directories
 // =================
+// see documentation for more details
 
 // Assets
 // ------
@@ -86,8 +88,14 @@
 // ---------------
 // Theme Constants
 // ---------------
-// BIOSHIPVERSION 	- version of this theme framework
-// BIOSHIPHOME		- static URL of BioShip website
+// see documentation for more details
+
+// THEMEVERSION 	- current version of BioShip Framework
+// THEMECHILDVERSION - Child Theme version (or parent if no child)
+// THEMEHOMEURL		- static URL of the BioShip website
+// THEMESUPPORT		- static URL of Support website (WordQuest)
+
+// THEMESSL			- if the current protocol is SSL
 // THEMEKEY 		- options key value for theme options
 // THEMECHILD 		- if using a Child Theme
 // THEMEPARENT 		- parent Theme template slug (if any)
@@ -108,25 +116,36 @@
 // === SETUP ===
 // -------------
 
+// define DIRECTORY_SEPARATOR short pseudonym
+// ------------------------------------------
+if (!defined('DIRSEP')) {define('DIRSEP',DIRECTORY_SEPARATOR);}
+
 // set Framework Version
 // ---------------------
-$vbioshipversion = '2.0.0';
-define('BIOSHIPVERSION', $vbioshipversion);
-// 2.0.0: added BioShip Home constant
-define('BIOSHIPHOME','http://bioship.space');
+// 2.0.1: get theme version direct from style.css
+$vstylecsspath = dirname(__FILE__).DIRSEP.'style.css';
+$vthemeheaders = get_file_data($vstylecsspath,array('Version'=>'Version'));
+define('THEMEVERSION', $vthemeheaders['Version']);
 
 // set WordQuest Theme 'plugin' Info
 // ---------------------------------
-global $wordquestplugins;
-$wordquestplugins['bioship']['version'] = BIOSHIPVERSION;
-$wordquestplugins['bioship']['title'] = 'BioShip Theme';
-$wordquestplugins['bioship']['wporg'] = false;
+global $wordquestplugins; $vslug = 'bioship';
+$wordquestplugins['bioship']['version'] = THEMEVERSION;
+$wordquestplugins['bioship']['title'] = __('BioShip Theme','bioship');
 $wordquestplugins['bioship']['settings'] = 'bioship';
 $wordquestplugins['bioship']['plan'] = 'free';
+$wordquestplugins['bioship']['hasplans'] = false;
+$wordquestplugins['bioship']['wporg'] = false;
 
-// define DIRECTORY_SEPARATOR short pseudonym
-// ------------------------------------------
-if (!defined('DIRSEP')) {$vdirsep = DIRECTORY_SEPARATOR; define('DIRSEP',$vdirsep);}
+// set Framework URLs
+// ------------------
+// 2.0.0: added BioShip Home URL constant
+// 2.0.1: change constant name for consistency
+define('THEMEHOMEURL','http://bioship.space');
+// 2.0.1: added support forum website URL
+define('THEMESUPPORT','http://wordquest.org');
+// 2.0.1: set Theme SSL constant also
+if (!defined('THEMESSL')) {$vthemessl = is_ssl(); define('THEMESSL',$vthemessl);}
 
 // set Global Theme Directories and URLs
 // -------------------------------------
@@ -137,8 +156,8 @@ $vthemestyledir = get_stylesheet_directory().DIRSEP;
 $vthemestyleurl = trailingslashit(get_stylesheet_directory_uri());
 $vthemetemplatedir = get_template_directory().DIRSEP;
 $vthemetemplateurl = trailingslashit(get_template_directory_uri());
-// 1.8.0: force SSL recheck
-if (is_ssl()) {
+// 1.8.0: enforce SSL recheck of theme URLs
+if (THEMESSL) {
 	$vthemestyleurl = str_replace('http://','https://',$vthemestyleurl);
 	$vthemetemplateurl = str_replace('http://','https://',$vthemetemplateurl);
 }
@@ -157,8 +176,10 @@ $vthemedirs['img'] = array('images','img','icons','assets/img');
 // maybe set Helper for Windows paths
 // ----------------------------------
 // (may help paths on some local dev Windows IIS environments)
-// TODO: improve this to an actual OS check and test?
-if (!defined('THEMEWINDOWS')) {if (strstr(ABSPATH,'\\')) {define('THEMEWINDOWS',true);} else {define('THEMEWINDOWS',false);} }
+if (!defined('THEMEWINDOWS')) {
+	// TODO: improve this to an actual OS check and retest?
+	if (strstr(ABSPATH,'\\')) {define('THEMEWINDOWS',true);} else {define('THEMEWINDOWS',false);}
+}
 if (THEMEWINDOWS) {
 	$vthemetemplatedir = str_replace('/','\\',$vthemetemplatedir);
 	$vthemestyledir = str_replace('/','\\',$vthemestyledir);
@@ -182,13 +203,11 @@ if (!function_exists('skeleton_timer_time')) {
 // 1.8.0: added this for direct file writing
 if (!function_exists('skeleton_write_to_file')) {
  function skeleton_write_to_file($vfilepath,$vdata) {
- 	// note: you could uncomment this line and remove dashes to bypass WP Filesystem
- 	// $vfh = f-o-p-e-n($vfilepath,'w'); f-w-r-i-t-e($vfh,$vdata); f-c-l-o-s-e($vfh); return;
-
 	// force direct-only write method using WP Filesystem
 	global $wp_filesystem;
 	if (empty($wp_filesystem)) {
-		if (!function_exists('WP_Filesytem')) {require_once(ABSPATH.DIRSEP.'wp-admin'.DIRSEP.'includes'.DIRSEP.'file.php');}
+		$vfilesystem = ABSPATH.DIRSEP.'wp-admin'.DIRSEP.'includes'.DIRSEP.'file.php';
+		if (!function_exists('WP_Filesytem')) {require_once($vfilesystem);}
 		WP_Filesystem(); // initialize WP Filesystem
 	}
 	$vfiledir = dirname($vfilepath);
@@ -219,8 +238,8 @@ if (!function_exists('skeleton_write_debug_file')) {
  }
 }
 
-// Apply Filters with Debugging
-// ----------------------------
+// Apply Filters with Debug Tracer
+// -------------------------------
 if (!function_exists('skeleton_apply_filters')) {
  function skeleton_apply_filters($vfilter,$vvalue,$vcaller=false) {
 	$vnewvalue = apply_filters($vfilter,$vvalue);
@@ -254,7 +273,9 @@ if (!function_exists('skeleton_fix_serialized')) {
 if (!function_exists('skeleton_fix_str_length')) {
  function skeleton_fix_str_length($matches) {
     $string = $matches[2];
-    $right_length = strlen($string); // yes, strlen even for UTF-8 characters, PHP wants the mem size, not the char count
+    // yes, strlen even for UTF-8 characters
+    // PHP wants the mem size, not the char count
+    $right_length = strlen($string);
     return 's:' . $right_length . ':"' . $string . '";';
  }
 }
@@ -297,9 +318,10 @@ if (!function_exists('skeleton_get_theme_settings')) {
 				if (THEMEDEBUG) {echo "<!-- Unserialized Successfully -->";}
 				return $vunserialized;
 			} else {
-				// and here is the problem... finally! yeesh.
-				// sometimes the data JUST DOES NOT UNSERIALIZE - FOR NO CLEAR REASON
+				// and here is the problem (read insane WTF bug)... finally! yeesh.
+				// ?sometimes? the data JUST DOES NOT UNSERIALIZE - FOR NO CLEAR REASON
 				// it just returns false even though the serialized data is there
+				// and does not appear to be at all corrupt and works in other contexts
 
 				// attempt to fix serialized settings, but sometimes works sometimes not :-/
 				// $vrepaired = skeleton_fix_serialized($vsettings);
@@ -433,13 +455,14 @@ if (!function_exists('skeleton_file_hierarchy')) {
 
 	global $vthemestyledir, $vthemestyleurl, $vthemetemplatedir, $vthemetemplateurl;
 
-	// 1.8.5: just in case of bad argument fix
+	// 1.8.5: just in case of bad argument fix ("I'm right", "No, I'm right!" ...)
 	if (!is_array($vsearchroots)) {$vsearchroots = array('stylesheet','template');}
 
 	// 1.8.0: just use THEMEWINDOWS here instead of everywhere else...
-	$vfiledirs = $vdirs; $vi = 0;
+	// 2.0.1: use numerical index when looping arrays
+	$vfiledirs = $vdirs;
 	if ( (THEMEWINDOWS) && (count($vdirs) > 0) ) {
-		foreach ($vdirs as $vdir) {$vfiledirs[$vi] = str_replace('/','\\',$vdir); $vi++;}
+		foreach ($vdirs as $vi => $vdir) {$vfiledirs[$vi] = str_replace('/','\\',$vdir);}
 	}
 
 	// note: this debug not called for filters.php as too early
@@ -450,9 +473,8 @@ if (!function_exists('skeleton_file_hierarchy')) {
 	}
 
 	// check stylesheet subdirectory(s) loop
-	$vi = 0;
 	if (count($vdirs) > 0) {
-		foreach ($vdirs as $vdir) {
+		foreach ($vdirs as $vi => $vdir) {
 			// 1.8.0: added absolute path override possibility (prototype)
 			// (to be used via resource path filters)
 			if (strstr($vdir,'#')) {
@@ -488,9 +510,9 @@ if (!function_exists('skeleton_file_hierarchy')) {
 					if ($vtype == 'both') {return array('file'=>$vfile, 'url'=>$vurl);}
 				}
 			}
-			$vi++;
 		}
 	}
+
 	// check stylesheet directory
 	if (in_array('stylesheet',$vsearchroots)) {
 		$vfile = $vthemestyledir.$vfilename;
@@ -507,9 +529,8 @@ if (!function_exists('skeleton_file_hierarchy')) {
 	if ($vthemestyledir == $vthemetemplatedir) {return false;}
 
 	// check template subdirectory(s) loop
-	$vi = 0;
 	if (count($vdirs) > 0) {
-		foreach ($vdirs as $vdir) {
+		foreach ($vdirs as $vi => $vdir) {
 			// 1.8.0: allow for root file to take precedence if specified
 			if ($vdir == '') {
 				$vfile = $vthemetemplatedir.$vfilename;
@@ -530,7 +551,6 @@ if (!function_exists('skeleton_file_hierarchy')) {
 					if ($vtype == 'both') {return array('file'=>$vfile, 'url'=>$vurl);}
 				}
 			}
-			$vi++;
 		}
 	}
 	// check template directory
@@ -549,8 +569,8 @@ if (!function_exists('skeleton_file_hierarchy')) {
  }
 }
 
-// Theme Backwards Compatiblity
-// ----------------------------
+// Load Theme Backwards Compatiblity
+// ---------------------------------
 // used (sparsely) for any function/filter name changes
 // 1.8.5: load theme backwards compatibility file
 $vcompat = skeleton_file_hierarchy('file','compat.php');
@@ -559,7 +579,7 @@ if ($vcompat) {include_once($vcompat);}
 // ----------------------
 // Get Current Theme Data
 // ----------------------
-
+// note: pre-3.4 compatibility loaded above
 $vtheme = wp_get_theme();
 
 // Theme Test Drive Determine Theme function (modified)
@@ -657,12 +677,18 @@ $vthemedirs['img'] = skeleton_apply_filters('skeleton_img_dirs',$vthemedirs['img
 
 // set Global Theme Name and Parent/Child
 // --------------------------------------
-$vthemedisplayname = (string)$vtheme['Name'];
-$vthemename = preg_replace("/\W/","-",strtolower($vthemedisplayname));
-define('THEMEDISPLAYNAME',$vthemedisplayname);
+$vthemedisplayname = (string)$vtheme['Name']; define('THEMEDISPLAYNAME',$vthemedisplayname);
+// 2.0.5: define THEMESLUG for dashes not underscores
+$vthemename = preg_replace("/\W/","-",strtolower($vthemedisplayname)); define('THEMESLUG',$vthemename);
 if (is_child_theme()) {$vthemechild = true; $vthemetemplate = (string)$vtheme['Template'];}
 				 else {$vthemechild = false; $vthemetemplate = false;}
 define('THEMECHILD',$vthemechild); define('THEMEPARENT',$vthemetemplate);
+
+// set Child Theme Version for Cache Busting
+// -----------------------------------------
+// 2.0.1: simplify to set child theme version constant
+if (!THEMECHILD) {$vchildversion = THEMEVERSION;} else {$vchildversion = $vtheme['Version'];}
+define('THEMECHILDVERSION', $vchildversion);
 
 // set Theme Debug Mode Switch
 // ---------------------------
@@ -704,7 +730,7 @@ if (THEMEDEBUG) {global $pagenow; echo "<!-- Pagenow: ".$pagenow." -->";}
 // set Debug Directory
 // -------------------
 // 1.9.8: set debug directory global value
-if (is_child_theme()) {global $vthemestyledir; $vthemedebugdir = $vthemestyledir.'debug';}
+if (THEMECHILD) {global $vthemestyledir; $vthemedebugdir = $vthemestyledir.'debug';}
 else {global $vthemetemplatedir; $vthemedebugdir = $vthemetemplatedir.'debug';}
 $vthemedebugdir = skeleton_apply_filters('skeleton_debug_dirpath',$vthemedebugdir);
 if (!is_dir($vthemedebugdir)) {wp_mkdir_p($vthemedebugdir);}
@@ -734,6 +760,7 @@ if (!function_exists('skeleton_trace')) { // still overrideable
 }
 if (!defined('THEMETRACE')) {define('THEMETRACE',false);}
 if ( (THEMETRACE) && (!function_exists('skeleton_trace')) ) {
+	// dummy function to avoid potential fatal errors in edge cases
 	function skeleton_trace($varg1=null,$varg2=null,$varg3=null,$varg4=null) {return;}
 }
 
@@ -784,8 +811,8 @@ if (!function_exists('skeleton_customizer_convert_posted')) {
 }
 
 
-// maybe Load Titan or Options Framework
-// -------------------------------------
+// maybe Load Titan (or Options) Framework
+// ---------------------------------------
 // if Titan is present it is loaded, otherwise things "should" still run okay.
 
 // 1.8.5: convert previous version file switches
@@ -828,10 +855,9 @@ if (!$voptionsload) {
 
 	// 1.8.0: do a check as Titan may already active as a plugin
 	// note: TitanFramework class itself is loaded after_theme_setup (so not available yet)
-	if (class_exists('TitanFrameworkPlugin')) {
-		// 1.8.5: use loaded Titan Framework plugin
-		define('THEMETITAN',true);
-	} else {
+	// 1.8.5: maybe use the already loaded Titan Framework plugin
+	if (class_exists('TitanFrameworkPlugin')) {define('THEMETITAN',true);}
+	else {
 		if ($vtitanload) {
 			$vtitan = skeleton_file_hierarchy('file','titan-framework-embedder.php',array('includes/titan','includes'));
 			if ($vtitan) {require_once($vtitan); define('THEMETITAN',true);} // initialize Titan now
@@ -839,9 +865,8 @@ if (!$voptionsload) {
 
 		if ( (!$vtitanload) || (!$vtitan) ) {
 			// lack of Titan Framework indicates it was not found
-			// - possibly this is the WordPress.Org version of the theme -
-			// TEMP: use Titan Checker to generate Titan Framework plugin install admin notice (via TGMPA)
-			// TODO: exclude+add zip (via svn:ignore?) the /titan directory from the WordPress.Org version?
+			// - possibly this indicates it is a WordPress.Org version of the theme -
+			// TODO: exclude (via svn:ignore?) the /titan directory from the WordPress.Org version?
 
 			$vtitanchecker = skeleton_file_hierarchy('file','titan-framework-checker.php',array('includes','includes/titan'));
 			if ($vtitanchecker) {require_once($vtitanchecker);} // note: this also calls a unique instance of TGMPA
@@ -895,7 +920,7 @@ else {
 
 	// Customizer Live Preview Values
 	// ------------------------------
-	// !! TODO: retest with Options Framework+Customizer !!
+	// ! TODO: retest with Options Framework + Customizer combo !
 	global $pagenow;
 	if ( (is_customize_preview()) && ($pagenow != 'customizer.php') ) {
 		// !!! WARNING: DEBUG OUTPUT IN CUSTOMIZER CAN PREVENT SAVING !!!
@@ -1049,7 +1074,7 @@ if (!THEMEOPT) {
 	// note: http://badfunproductions.com/use-is_customize_preview-and-not-is_admin-with-theme-customization-api/
 	global $pagenow;
 	if ( (is_customize_preview()) && ($pagenow != 'customize.php') ) {
-		// !!! WARNING: DEBUG OUTPUT IN CUSTOMIZER CAN PREVENT SAVING !!!
+		// !! WARNING: DEBUG OUTPUT IN CUSTOMIZER CAN PREVENT SAVING !!
 		// TODO: debug these values to a file instead?
 		// echo "<!-- Customize Preview Theme Options -->";
 		if (isset($_POST['customized'])) {$vpostedvalues = json_decode(wp_unslash($_POST['customized']), true);}
@@ -1080,43 +1105,42 @@ if (!THEMEOPT) {
 
 // maybe Load Theme Admin Specific Functions
 // -----------------------------------------
-$vloadadmin = false; if (is_admin()) {$vloadadmin = true;}
+$vloadadmin = false; $vadmin = false;
+if (is_admin()) {$vloadadmin = true;}
 // 1.9.5: load for theme dump or if theme settings are empty to maybe force update settings
 if ( ($vthemesettings == '') || (isset($_REQUEST['themedump'])) ) {$vloadadmin = true;}
 // 1.8.0: allow for backup/restore/import/export theme options AJAX requests
 if (isset($_REQUEST['action'])) {if (strstr($_REQUEST['action'],'_theme_options')) {$vloadadmin = true;} }
-if ($vloadadmin) {$vadmin = skeleton_file_hierarchy('file','admin.php',$vthemedirs['admin']); if ($vadmin) {include($vadmin);} }
+if ($vloadadmin) {$vadmin = skeleton_file_hierarchy('file','admin.php',$vthemedirs['admin']);}
+if ($vadmin) {include($vadmin);}
 
 // set HTML Comment Wrapper Constant
 // ---------------------------------
 $vhtmlcomments = false;
-if (isset($vthemesettings['htmlcomments'])) {if ($vthemesettings['htmlcomments'] == '1') {$vhtmlcomments = true;} }
-$vhtmlcomments = skeleton_apply_filters('skeleton_html_comments',$vhtmlcomments);
-if (!defined('THEMECOMMENTS')) {define('THEMECOMMENTS',$vhtmlcomments);}
-
-// set Theme Versions for Cache Busting
-// ------------------------------------
-if (!THEMECHILD) {$vthemeversion = $vchildversion = $vtheme['Version'];} // simplified
-else {$vparent = $vtheme->parent(); $vthemeversion = $vparent['Version']; $vchildversion = $vtheme['Version'];}
+if (!defined('THEMECOMMENTS')) {
+	if ( (isset($vthemesettings['htmlcomments'])) && ($vthemesettings['htmlcomments'] == '1') ) {$vhtmlcomments = true;}
+	$vhtmlcomments = skeleton_apply_filters('skeleton_html_comments',$vhtmlcomments);
+	define('THEMECOMMENTS',$vhtmlcomments);
+}
 
 // set Javascript Cache Busting
 // ----------------------------
-$vcachebust = $vthemesettings['javascriptcachebusting'];
+global $vjscachebust; $vcachebust = $vthemesettings['javascriptcachebusting'];
 if ( ($vcachebust == 'yearmonthdate') || ($vcachebust == '') ) {$vjscachebust = date('ymd').'0000';}
 if ($vcachebust == 'yearmonthdatehour') {$vjscachebust = date('ymdH').'00';}
 if ($vcachebust == 'datehourminutes') {$vjscachebust = date('ymdHi');}
-if ($vcachebust == 'themeversion') {$vjscachebust = $vthemeversion;}
-if ($vcachebust == 'childversion') {$vjscachebust = $vchildversion;} // simplified
+if ($vcachebust == 'themeversion') {$vjscachebust = THEMEVERSION;}
+if ($vcachebust == 'childversion') {$vjscachebust = THEMECHILDVERSION;}
 if ($vcachebust == 'filemtime') {clearstatcache();} // 1.9.5: clear stat cache here
 
 // set Stylesheet Cache Busting
 // ----------------------------
-$vcachebust = $vthemesettings['stylesheetcachebusting'];
+global $vcsscachebust; $vcachebust = $vthemesettings['stylesheetcachebusting'];
 if ( ($vcachebust == 'yearmonthdate') || ($vcachebust == '') ) {$vcsscachebust = date('ymd').'0000';}
 if ($vcachebust == 'yearmonthdatehour') {$vcsscachebust = date('ymdH').'00';}
 if ($vcachebust == 'datehourminutes') {$vcsscachebust = date('ymdHi');}
-if ($vcachebust == 'themeversion') {$vcsscachebust = $vthemeversion;}
-if ($vcachebust == 'childversion') {$vcsscachebust = $vchildversion;} // simplified
+if ($vcachebust == 'themeversion') {$vcsscachebust = THEMEVERSION;}
+if ($vcachebust == 'childversion') {$vcsscachebust = THEMECHILDVERSION;}
 if ($vcachebust == 'filemtime') {clearstatcache();} // 1.9.5: clear stat cache here
 
 
@@ -1124,12 +1148,12 @@ if ($vcachebust == 'filemtime') {clearstatcache();} // 1.9.5: clear stat cache h
 // ---------------------------
 // ref: http://docs.woothemes.com/document/third-party-custom-theme-compatibility/
 // WARNING: Do NOT create a woocommerce.php page template for your theme!
-// This is a 'beginner mistake' as it prevents you from over-riding default templates
-// such as single-product.php and archive-product.php (see class-wc-template-loader.php)
+// This is a 'beginner mistake' as it prevents you from overriding default templates
+// such as single-product.php and archive-product.php later (see class-wc-template-loader.php)
 $vwoosupport = skeleton_apply_filters('skeleton_declare_woocommerce_support',false);
 if ($vwoosupport) {add_theme_support('woocommerce');}
 else {
-	// 1.8.0: auto-remove 'this theme does not declare WooCommerce support' notice
+	// 1.8.0: auto-remove the 'this theme does not declare WooCommerce support' notice
 	if (class_exists('WC_Admin_Notices')) {
 		if (!function_exists('skeleton_remove_woocommerce_theme_notice')) {
 			add_action('admin_notices','skeleton_remove_woocommerce_theme_notice');
@@ -1171,7 +1195,8 @@ if (THEMEDEBUG) {
 
 // Skeleton Options
 // ----------------
-// [deprecated] transitional from SMPL Skeleton Theme, here for for option name references...
+// [deprecated] transitional from SMPL Skeleton Theme options,
+// will remain here for old option name cross-references...
 if (!function_exists('skeleton_options')) {
  function skeleton_options($vname,$vdefault) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__,func_get_args());}
@@ -1199,16 +1224,6 @@ if (!function_exists('skeleton_options')) {
 	return (skeleton_apply_filters('skeleton_options_'.$vname,$vvalue));
  }
 }
-
-// Fix to silly default timezone warning for strtotime() and date()
-// Ref: http://fuel-efficient-vehicles.org/pwsdb/?p=181
-// This should really not be needed as it is done in wp-settings.php anyway,
-// but for some reason got a warning that this fixed, here in case ever needed..?
-// add_action('plugins_loaded','skeleton_timezone_fix');
-// function skeleton_timezone_fix() {@date_default_timezone_set(date_default_timezone_get());}
-
-// this helps remove this ugly warning coming from some unknown plugins at times...
-// add_filter('deprecated_constructor_trigger_error', '__return_false');
 
 
 // ------------------
@@ -1501,18 +1516,20 @@ if ($vmuscle) {require_once($vmuscle);}
 // note: skin.php is used for outputting the Dynamic CSS
 // but all the Skin trigger and enqueueing functions here
 
-// 1.8.5: fix to admin script enqueue typo - argh seriously?
-if (is_admin()) {add_action('admin_enqueue_scripts','skin_enqueue_admin_styles');}
-else {add_action('wp_enqueue_scripts','skin_enqueue_styles');}
+// 1.8.5: fix to admin script enqueue typo
+if (is_admin()) {add_action('admin_enqueue_scripts','bioship_skin_enqueue_admin_styles');}
+else {add_action('wp_enqueue_scripts','bioship_skin_enqueue_styles');}
 
 // Frontend Stylesheets
 // --------------------
-if (!function_exists('skin_enqueue_styles')) {
- function skin_enqueue_styles() {
+// 2.0.2: use THEMESLUG constant insted of vthemename
+if (!function_exists('bioship_skin_enqueue_styles')) {
+ function bioship_skin_enqueue_styles() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
-	global $vthemename, $vthemesettings, $vcsscachebust, $vthemedirs;
+	global $vthemesettings, $vcsscachebust, $vthemedirs;
 
+	// maybe use file modified time cachebusting
 	$vfilemtime = false; if ($vthemesettings['stylesheetcachebusting'] == 'filemtime') {$vfilemtime = true;}
 
 	// Combined Stylesheet
@@ -1522,14 +1539,15 @@ if (!function_exists('skin_enqueue_styles')) {
 		if (!is_array($vcorestyles)) {$vcombinefail = true;}
 		else {
 			if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vcorestyles['file']));}
-			wp_register_style('core-styles', $vcorestyles['url'], array(), $vcsscachebust);
-			wp_enqueue_style('core-styles'); $vcoredep = array('core-styles');
+			// 2.0.1: add themename prefix to style handle
+			wp_register_style(THEMESLUG.'-core', $vcorestyles['url'], array(), $vcsscachebust);
+			wp_enqueue_style(THEMESLUG.'-core'); $vcoredep = array($vthemename.-'core-styles');
+
+			// theme style.css (note: must be separate or CSS breaks)
+			if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime(get_stylesheet(THEMESLUG)));}
+			// 2.0.1: add themename prefix to style handle
+			wp_enqueue_style(THEMESLUG.'-styles', get_stylesheet_uri(THEMESLUG), $vcoredep, $vcsscachebust);
 		}
-
-		// theme style.css (note: must be separate or CSS breaks)
-		if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime(get_stylesheet($vthemename)));}
-		wp_enqueue_style('bioship-style', get_stylesheet_uri($vthemename), $vcoredep, $vcsscachebust);
-
 	}
 
 	// or Individual Stylesheets
@@ -1559,12 +1577,11 @@ if (!function_exists('skin_enqueue_styles')) {
 		elseif ( ($vthemesettings['cssreset'] == 'none') || ($vthemesettings['cssreset'] == '') ) {$vmaindep = array();}
 
 		// Layout Stylesheets
-		// 1.5.0: these have been entirely replaced with dynamic grid
+		// 1.5.0: [deprecated] these entirely replaced with new dynamic grid
 		// (skeleton-960, skeleton-1140, skeleton-1200)
 
 		// Dynamic Grid Stylesheet
 		// -----------------------
-
 		// 1.8.0: allow for direct load method
 		// 1.5.0: added dynamic grid stylesheet
 		if ($vthemesettings['themecssmode'] == 'adminajax') {
@@ -1573,7 +1590,7 @@ if (!function_exists('skin_enqueue_styles')) {
 
 		// 1.8.0: pass content width for calculating content grid
 		// 1.8.5: fix to grid URL query separater for admin ajax method
-		// TODO: use wp_localize_script for variables instead?
+		// TODO: maybe use wp_localize_script for variables instead?
 		global $vthemelayout;
 		if (strstr($vgridurl,'?')) {$vgridurl .= '&';} else {$vgridurl .= '?';}
 		// 1.9.5: pass raw content width (with padding not yet removed)
@@ -1586,7 +1603,7 @@ if (!function_exists('skin_enqueue_styles')) {
 		$vcontentpadding = skeleton_apply_filters('skeleton_raw_content_padding',$vthemesettings['contentpadding']);
 		$vgridurl .= '&contentpadding='.urlencode($vcontentpadding);
 
-		// TODO: pass filtered options for grid spacing? (padding/margins)
+		// TODO: maybe pass filtered options for grid spacing? (padding/margins)
 		// $vgridurl .= '&gridspacing='.$vthemelayout['gridspace'];
 		// $vgridurl .= '&contentspacing='.$vthemelayout['contentspace'];
 
@@ -1604,7 +1621,8 @@ if (!function_exists('skin_enqueue_styles')) {
 
 		// Load grid.php directly or via admin-ajax.php
 		// --------------------------------------------
-		wp_enqueue_style('grid', $vgridurl, $vmaindep, $vcsscachebust);
+		// 2.0.1: add themename prefix to style handle
+		wp_enqueue_style(THEMESLUG.'-grid', $vgridurl, $vmaindep, $vcsscachebust);
 
 		// Grid URL for Customizer Preview
 		// -------------------------------
@@ -1632,7 +1650,8 @@ if (!function_exists('skin_enqueue_styles')) {
 		$vmobile = skeleton_file_hierarchy('both','mobile.css',$vthemedirs['css']);
 		if (is_array($vmobile)) {
 			if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vmobile['file']));}
-			wp_enqueue_style('mobile',$vmobile['url'], $vmaindep, $vcsscachebust);
+			// 2.0.1: add themename prefix to style handle
+			wp_enqueue_style(THEMESLUG.'-mobile',$vmobile['url'], $vmaindep, $vcsscachebust);
 		}
 
 		// Main Theme Stylesheets
@@ -1653,8 +1672,9 @@ if (!function_exists('skin_enqueue_styles')) {
 		$vskeletoncss = skeleton_file_hierarchy('both','skeleton.css',$vthemedirs['css']);
 		if (is_array($vskeletoncss)) {
 			if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vskeletoncss['file']));}
-			wp_enqueue_style('skeleton-style', $vskeletoncss['url'], $vmaindep, $vcsscachebust);
-			$vdep = array('skeleton-style');
+			// 2.0.1: add themename prefix to style handle
+			wp_enqueue_style(THEMESLUG.'-skeleton', $vskeletoncss['url'], $vmaindep, $vcsscachebust);
+			$vdep = array(THEMESLUG.'-skeleton');
 		}
 
 		// style.css
@@ -1663,7 +1683,8 @@ if (!function_exists('skin_enqueue_styles')) {
 		// 2.0.0: fix for filemtime cachebusting stylesheet filepath
 		$vstylesheetpath = get_stylesheet_directory().DIRSEP.'style.css';
 		if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vstylesheetpath));}
-		wp_enqueue_style('bioship-style', get_stylesheet_uri($vthemename), $vdep, $vcsscachebust);
+		// 2.0.1: add themename prefix to style handle
+		wp_enqueue_style(THEMESLUG.'-styles', get_stylesheet_uri(THEMESLUG), $vdep, $vcsscachebust);
 
 	}
 
@@ -1672,7 +1693,8 @@ if (!function_exists('skin_enqueue_styles')) {
 	$vsuperfish = skeleton_file_hierarchy('both','superfish.css',$vthemedirs['css']);
 	if (is_array($vsuperfish)) {
 		if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vsuperfish['file']));}
-		wp_enqueue_style('superfish',$vsuperfish['url'], $vcoredep, $vcsscachebust, 'screen, projection');
+		// 2.0.1: add themename prefix to style handle
+		wp_enqueue_style(THEMESLUG.'-superfish',$vsuperfish['url'], $vcoredep, $vcsscachebust, 'screen, projection');
 	}
 
 	// custom.css
@@ -1681,7 +1703,8 @@ if (!function_exists('skin_enqueue_styles')) {
 	$vcustomcss = skeleton_file_hierarchy('both','custom.css',$vthemedirs['css']);
 	if (is_array($vcustomcss)) {
 		if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vcustomcss['file']));}
-		wp_enqueue_style('custom-css', $vcustomcss['url'], $vcoredep, $vcsscachebust);
+		// 2.0.1: add themename prefix to style handle, remove css suffix
+		wp_enqueue_style(THEMESLUG.'-custom', $vcustomcss['url'], $vcoredep, $vcsscachebust);
 	}
 
 	// Hybrid Cleaner Gallery
@@ -1692,7 +1715,7 @@ if (!function_exists('skin_enqueue_styles')) {
 		$vgallerycss = skeleton_file_hierarchy('both','gallery.css',array($vhybriddir.'/css','css'));
 		if (is_array($vgallerycss)) {
 			if ($vfilemtime) {$vcsscachebust = date('ymdHi',filemtime($vgallerycss['file']));}
-			wp_enqueue_style('gallery', $vgallerycss['url'], array(), $vcsscachebust);
+			wp_enqueue_style('hybrid-gallery', $vgallerycss['url'], array(), $vcsscachebust);
 		}
 	}
 
@@ -1701,8 +1724,10 @@ if (!function_exists('skin_enqueue_styles')) {
 	// 1.8.0: moved here for better enqueueing
 	// 1.5.0: tested direct skin loader option for performance
 	$vcssmode = $vthemesettings['themecssmode'];
-	if ($vcssmode == 'adminajax') {$vskinurl = admin_url('admin-ajax.php').'?action=skin_dynamic_css';}
-	elseif ( ($vcssmode == 'direct') || ($vcssmode == '') ) {$vskinurl = skeleton_file_hierarchy('url','skin.php',$vthemedirs['core']);}
+	if ($vcssmode == 'direct') {$vskinurl = skeleton_file_hierarchy('url','skin.php',$vthemedirs['core']);}
+	else {$vskinurl = admin_url('admin-ajax.php').'?action=bioship_skin_dynamic_css';}
+
+	if (THEMEDEBUG) {echo "<!-- SKIN URL: ".$vskinurl." -->";}
 
 	// 1.8.5: set anyway to allow for Multiple Themes/Theme Test Drive override
 	$vskintheme = get_stylesheet();
@@ -1713,8 +1738,8 @@ if (!function_exists('skin_enqueue_styles')) {
 
 	// 1.8.0: allow for header/footer inline page load
 	// 1.8.5: fix to wrap header/footer output in style tags!
-	if ($vthemesettings['themecssmode'] == 'header') {add_action('wp_head','skin_dynamic_css_inline');}
-	elseif ($vthemesettings['themecssmode'] == 'footer') {add_action('wp_footer','skin_dynamic_css_inline');}
+	if ($vthemesettings['themecssmode'] == 'header') {add_action('wp_head','bioship_skin_dynamic_css_inline');}
+	elseif ($vthemesettings['themecssmode'] == 'footer') {add_action('wp_footer','bioship_skin_dynamic_css_inline');}
 	else {
 		if ($vfilemtime) {
 			$vtime = time();
@@ -1722,7 +1747,8 @@ if (!function_exists('skin_enqueue_styles')) {
 			if ( (isset($vthemesettings['savedtime'])) && ($vthemesettings['savetime'] != '') ) {$vtime = $vthemesettings['savetime'];}
 			$vcsscachebust = date('ymdHi',$vtime);
 		}
-		wp_enqueue_style('skin', $vskinurl, array(), $vcsscachebust);
+		// 2.0.1: add themename prefix to style handle
+		wp_enqueue_style(THEMESLUG.'-skin', $vskinurl, array(), $vcsscachebust);
 	}
 
 	// 1.9.5: disable emojis option
@@ -1733,7 +1759,7 @@ if (!function_exists('skin_enqueue_styles')) {
 
 	// deregister WP PageNavi Style
 	// ----------------------------
-	// (native style support via SMPL skeleton.css styles)
+	// (native style support via imported skeleton.css styles)
 	if (!function_exists('skeleton_deregister_styles')) {
 		function skeleton_deregister_styles() {wp_deregister_style('wp-pagenavi');}
 		add_action('wp_print_styles','skeleton_deregister_styles',100);
@@ -1741,27 +1767,51 @@ if (!function_exists('skin_enqueue_styles')) {
 
 	// Typography Heading Fonts
 	// ------------------------
-	do_action('skin_typography');
+	do_action('bioship_skin_typography');
+
+	// Better WordPress Minify Integration
+	// -----------------------------------
+	// 2.0.2: automatically ignore some styles for BWP plugin
+	// (as bwp_minify_ignore filter has been missed)
+	global $bwp_minify;
+	if ( (is_object($bwp_minify)) && (property_exists($bwp_minify,'print_positions')) ) {
+		$vpositions = $bwp_minify->print_positions;
+		if ( (is_array($vpositions)) && (isset($vpositions['style_ignore'])) ) {
+			$vhandles = $vpositions['style_ignore'];
+			$vnominifystyles = array(THEMESLUG.'-core', THEMESLUG.'-skeleton', THEMESLUG.'-mobile', THEMESLUG.'-styles');
+			$vnominifystyles = apply_filters('bioship_bwp_nominify_styles', $vnominifystyles);
+			foreach ($vnominifystyles as $vhandle) {
+				if (!in_array($vhandle,$vhandles)) {$vhandles[] = $vhandle;}
+			}
+			if ($vhandles != $vpositions['style_ignore']) {
+				$vpositions['style_ignore'] = $vhandles;
+				$bwp_minify->print_positions = $vpositions;
+				if (THEMEDEBUG) {echo "<!-- BWP Ignore Styles: "; print_r($vhandles); echo " -->";}
+			}
+		}
+	}
+
  }
 }
 
 // Enqueue Admin Stylesheets
 // -------------------------
-if (!function_exists('skin_enqueue_admin_styles')) {
- function skin_enqueue_admin_styles() {
+if (!function_exists('bioship_skin_enqueue_admin_styles')) {
+ function bioship_skin_enqueue_admin_styles() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
  	// 1.9.8: fix add missing global vcsscachebust here
-	global $vthemesettings, $vthemedirs, $vcsscachebust;
+	global $vthemename, $vthemesettings, $vthemedirs, $vcsscachebust;
 
 	// Dynamic Admin Stylesheet
 	// ------------------------
 	if ($vthemesettings['dynamicadmincss'] != '') {
 
-		// TODO: maybe add separate option for admin styles loading mode?
 		$vcssmode = $vthemesettings['themecssmode'];
+		// 2.0.1: maybe use separate option for admin styles loading mode?
+		if (isset($vthemesettings['admincssmode'])) {$vcssmode = $vthemesettings['admincssmode'];}
 
-		if ($vcssmode == 'adminajax') {$vskinurl = admin_url('admin-ajax.php').'?action=skin_dynamic_admin_css';}
+		if ($vcssmode == 'adminajax') {$vskinurl = admin_url('admin-ajax.php').'?action=bioship_skin_dynamic_admin_css';}
 		elseif ($vcssmode == 'direct') {
 			$vskinurl = skeleton_file_hierarchy('url','skin.php',$vthemedirs['core']);
 			// 1.8.5: set admin styles load via querystring
@@ -1776,14 +1826,16 @@ if (!function_exists('skin_enqueue_admin_styles')) {
 		// $vskinurl .= 'theme='.$_REQUEST['theme'];
 
 		// 1.8.5: wrap in style for inline header/footer printing
-		if ($vthemesettings['themecssmode'] == 'header') {add_action('admin_head','skin_dynamic_admin_css_inline');}
-		elseif ($vthemesettings['themecssmode'] == 'footer') {add_action('admin_footer','skin_dynamic_admin_css_inline');}
+		if ($vthemesettings['themecssmode'] == 'header') {add_action('admin_head','bioship_skin_dynamic_admin_css_inline');}
+		elseif ($vthemesettings['themecssmode'] == 'footer') {add_action('admin_footer','bioship_skin_dynamic_admin_css_inline');}
 		else {
 			if ($vthemesettings['stylesheetcachebusting'] == 'filemtime') {
-				$vtime = time(); // $vtime = $vthemesettings['savetime'];
+				$vtime = time();
+				if (isset($vthemesettings['savetime'])) {$vtime = $vthemesettings['savetime'];}
 				$vcsscachebust = date('ymdHi',$vtime);
 			}
-			wp_enqueue_style('admin-skin', $vskinurl, array(), $vcsscachebust);
+			// 2.0.1: prefix style handle with theme name
+			wp_enqueue_style($vthemename.'-admin-skin', $vskinurl, array(), $vcsscachebust);
 		}
 	}
 
@@ -1819,9 +1871,9 @@ if (!function_exists('skin_enqueue_admin_styles')) {
 // autoload any requested fonts from Google Fonts...
 // 1.5.0: fix for Prefixfree and Google Fonts CORS conflict (see muscle.php)
 
-if (!function_exists('skin_typography_loader')) {
- add_action('skin_typography','skin_typography_loader');
- function skin_typography_loader() {
+if (!function_exists('bioship_skin_typography_loader')) {
+ add_action('bioship_skin_typography','bioship_skin_typography_loader');
+ function bioship_skin_typography_loader() {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings;
@@ -1921,11 +1973,11 @@ if (!function_exists('skin_typography_loader')) {
 
 // AJAX Skin CSS Loader
 // --------------------
-add_action('wp_ajax_skin_dynamic_css', 'skin_dynamic_css');
-add_action('wp_ajax_nopriv_skin_dynamic_css', 'skin_dynamic_css');
+add_action('wp_ajax_bioship_skin_dynamic_css', 'bioship_skin_dynamic_css');
+add_action('wp_ajax_nopriv_bioship_skin_dynamic_css', 'bioship_skin_dynamic_css');
 
-if (!function_exists('skin_dynamic_css')) {
- function skin_dynamic_css() {
+if (!function_exists('bioship_skin_dynamic_css')) {
+ function bioship_skin_dynamic_css() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
  	global $vthemedirs;
 	$vloadskin = skeleton_file_hierarchy('file','skin.php',$vthemedirs['core']);
@@ -1933,10 +1985,10 @@ if (!function_exists('skin_dynamic_css')) {
  }
 }
 // 1.8.5: for printing inline header/footer styles
-if (!function_exists('skin_dynamic_css_inline')) {
- function skin_dynamic_css_inline() {
+if (!function_exists('bioship_skin_dynamic_css_inline')) {
+ function bioship_skin_dynamic_css_inline() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
- 	echo "<style id='dynamic-styles'>"; skin_dynamic_css(true); echo "</style>";
+ 	echo "<style id='dynamic-styles'>"; bioship_skin_dynamic_css(true); echo "</style>";
  }
 }
 
@@ -1965,12 +2017,12 @@ if (!function_exists('skeleton_grid_dynamic_css_inline')) {
 
 // AJAX Admin CSS Loader
 // ---------------------
-add_action('wp_ajax_skin_dynamic_admin_css', 'skin_dynamic_admin_css');
-add_action('wp_ajax_nopriv_skin_dynamic_admin_css', 'skin_dynamic_admin_css');
+add_action('wp_ajax_skin_dynamic_admin_css', 'bioship_skin_dynamic_admin_css');
+add_action('wp_ajax_nopriv_skin_dynamic_admin_css', 'bioship_skin_dynamic_admin_css');
 
 // 1.8.5: added optional login style argument
-if (!function_exists('skin_dynamic_admin_css')) {
- function skin_dynamic_admin_css($vloginstyles = false) {
+if (!function_exists('bioship_skin_dynamic_admin_css')) {
+ function bioship_skin_dynamic_admin_css($vloginstyles = false) {
 	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
 	global $vthemedirs; $vadminstyles = true; // admin-only styles switch
 	$vloadskin = skeleton_file_hierarchy('file','skin.php',$vthemedirs['core']);
@@ -1978,17 +2030,17 @@ if (!function_exists('skin_dynamic_admin_css')) {
  }
 }
 // 1.8.5: for printing inline header/footer styles
-if (!function_exists('skin_dynamic_admin_css_inline')) {
- function skin_dynamic_admin_css_inline() {
+if (!function_exists('bioship_skin_dynamic_admin_css_inline')) {
+ function bioship_skin_dynamic_admin_css_inline() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
- 	echo "<style id='dynamic-admin-styles'>"; skin_dynamic_admin_css(); echo "</style>";
+ 	echo "<style id='dynamic-admin-styles'>"; bioship_skin_dynamic_admin_css(); echo "</style>";
  }
 }
 // 1.8.5: for printing inline login-only styles
-if (!function_exists('skin_dynamic_login_css_inline')) {
- function skin_dynamic_login_css_inline() {
+if (!function_exists('bioship_skin_dynamic_login_css_inline')) {
+ function bioship_skin_dynamic_login_css_inline() {
  	if (THEMETRACE) {skeleton_trace('F',__FUNCTION__,__FILE__);}
- 	echo "<style id='dynamic-login-styles'>"; skin_dynamic_admin_css(true); echo "</style>";
+ 	echo "<style id='dynamic-login-styles'>"; bioship_skin_dynamic_admin_css(true); echo "</style>";
  }
 }
 
@@ -2011,8 +2063,8 @@ if (!function_exists('skeleton_theme_update_checker')) {
 		if ($vthemeupdater) {
 			require_once($vthemeupdater);
 			// 1.5.0: use custom theme update server location
-			$vjsoninfo = BIOSHIPHOME.'/download/?action=get_metadata&slug=bioship';
-			// $vjsoninfo = BIOSHIPHOME.'/download/version.json'; // for 1.4.5 to 1.5.0 only
+			$vjsoninfo = THEMEHOMEURL.'/download/?action=get_metadata&slug=bioship';
+			// $vjsoninfo = THEMEHOMEURL.'/download/version.json'; // for 1.4.5 to 1.5.0 only
 			$vupdatechecker = new ThemeUpdateChecker('bioship', $vjsoninfo);
 			// 1.8.5: add default sidebar option values
 			if (!is_array(get_option('bioship_sidebar_options'))) {
@@ -2023,8 +2075,10 @@ if (!function_exists('skeleton_theme_update_checker')) {
 			// 1.8.0: default sidebar ads to off for WordPress.Org guideline compliance
 			// 1.8.5: switched this to single option array value
 			if (!is_array(get_option('bioship_sidebar_options'))) {
-				$vsidebaroptions = array('reportboxoff' => '', 'donationboxoff' => '', 'adsboxoff' => 'checked', 'installdate' => date('Y-m-d'));
-				add_option('bioship_sidebar_options',$vsidebaroptions);
+				// 2.0.2: added first installed version record
+				$vsidebaroptions = array('reportboxoff'=>'', 'donationboxoff'=>'', 'adsboxoff'=>'checked',
+					'installdate'=>date('Y-m-d'), 'installversion'=>THEMEVERSION);
+				add_option('bioship_sidebar_options', $vsidebaroptions);
 			}
 
 			// 1.8.5: maybe disable directory clearing to keep installed theme bundles

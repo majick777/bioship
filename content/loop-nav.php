@@ -11,7 +11,7 @@
 
 	/* Post/Page Navigation */
 
-	do_action('skeleton_page_navi');
+	do_action('bioship_page_navi');
 
 	//	<!-- .loop-nav --><div class="loop-nav">
 	//		<#php previous_post_link( '<div class="prev">' . __( 'Previous '.$vposttypedisplay.': %link', 'bioship' ) . '</div>', '%title' ); #>
@@ -22,7 +22,7 @@
 	// If viewing the blog, an archive, or search results.
 
 	// 1.8.0: fix to use same function now
-	do_action('skeleton_page_navi');
+	do_action('bioship_page_navi');
 
 	// loop_pagination(
 	//	array(

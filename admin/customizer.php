@@ -6,6 +6,9 @@ if (!function_exists('add_action')) {exit;}
 // Options for Customizer API
 // ==========================
 
+// CHECKME: Kirki: Typo found in field xxxxx ("setting" instead of "settings") ???
+// --------
+
 // Development Note: Due to the difficulty in implementing the complex WordPress Customizer API,
 // feature requests and fixes for Customizer *Live Preview* will receive a *very low* priority.
 

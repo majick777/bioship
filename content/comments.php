@@ -10,7 +10,7 @@ if ( post_password_required() ) {return;}
 
 ?>
 
-<?php do_action('skeleton_before_comments'); ?>
+<?php do_action('bioship_before_comments'); ?>
 
 <div id="comments">
 
@@ -79,4 +79,4 @@ if ( post_password_required() ) {return;}
 
 </div>
 
-<?php do_action('skeleton_after_comments'); ?>
+<?php do_action('bioship_after_comments'); ?>

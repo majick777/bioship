@@ -4,19 +4,22 @@
 
 if (THEMETRACE) {skeleton_trace('T','Frontpage Subsidebar Template',__FILE__);}
 
-if (is_active_sidebar('subfrontpage')) { // if the sidebar has widgets
+$vtemplate = str_replace('.php','',basename(__FILE__));
+$vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
-	do_action('skeleton_before_subsidebar'); ?>
+if (is_active_sidebar('subfrontpage')) {
+
+	do_action('bioship_before_subsidebar'); ?>
 
 		<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-subsidiary -->';} ?>
-		<aside <?php hybrid_attr('sidebar','subsidiary'); ?>>
+		<aside <?php hybrid_attr('sidebar','subsidiary',$vargs); ?>>
 
-			<?php dynamic_sidebar('subfrontpage'); // Displays the primary page sidebar. ?>
+			<?php dynamic_sidebar('subfrontpage'); ?>
 
 		</aside>
 		<?php if (THEMECOMMENTS) {echo '<!-- /#sidebar-subsidiary -->';} ?>
 
-	<?php do_action('skeleton_after_subsidebar');
+	<?php do_action('bioship_after_subsidebar');
 
 }
 

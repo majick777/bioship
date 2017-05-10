@@ -23,6 +23,8 @@
 
 // TODO: add Page Elements for a Styling Reference?
 
+if (!function_exists('__')) {function __($a) {return $a;} }
+if (!function_exists('apply_filters')) {function apply_filters($a,$b) {return $b;} }
 
 							// ======================================== \\
 							// === LAYOUT HOOK AND ACTION REFERENCE === \\
@@ -64,40 +66,40 @@ $l = array();	// translated labels array
 // === Start Wrap Container ===
 // ----------------------------
 /* header.php */ 						$j = 0;				$l[$i] = __('Start Wrap Container','bioship');
-$k = 'skeleton_before_container';		$s[$i][$j++] = $k;	$l[$k] = __('Before Wrap Container','bioship'); 	// (no default)
-$k = 'skeleton_container_open';			$s[$i][$j++] = $k;	$l[$k] = __('Wrap Container Open','bioship');
+$k = 'bioship_before_container';		$s[$i][$j++] = $k;	$l[$k] = __('Before Wrap Container','bioship'); 	// (no default)
+$k = 'bioship_container_open';			$s[$i][$j++] = $k;	$l[$k] = __('Wrap Container Open','bioship');
  $f = 'skeleton_main_wrapper_open'; 	$p[$k][$f] = 5;		$l[$f] = __('Main DIV Wrapper Open','bioship');
 
 // --------------
 // === Header ===
 // --------------
 /* header.php */						$j = 0;	$i++;		$l[$i] = __('Header','bioship');
-$k = 'skeleton_before_header';			$s[$i][$j++] = $k;	$l[$k] = __('Before Header Area','bioship');
+$k = 'bioship_before_header';			$s[$i][$j++] = $k;	$l[$k] = __('Before Header Area','bioship');
  $f = 'skeleton_top_banner';			$p[$k][$f] = 2;		$l[$f] = __('Full Width Top Banner','bioship');
 ## 	* Content Sidebar *  							 5		## 'Login Sidebar' default top position
  $f = 'skeleton_secondary_menu';		$p[$k][$f] = 8;		$l[$f] = __('Secondary Navigation Menu','bioship');
 
-$k = 'skeleton_header'; $j++;			$s[$i][$j++] = $k;	$l[$k] = __('Main Header','bioship');
+$k = 'bioship_header'; $j++;			$s[$i][$j++] = $k;	$l[$k] = __('Main Header','bioship');
  $f = 'skeleton_header_open';	 		$p[$k][$f] = 0;
  $f = 'skeleton_header_nav';	 		$p[$k][$f] = 2;		$l[$f] = __('Header Menu','bioship');
  $f = 'skeleton_header_logo';			$p[$k][$f] = 4;		$l[$f] = __('Site Logo/Title','bioship');
  $f = 'skeleton_header_widgets';		$p[$k][$f] = 6;		$l[$f] = __('Header Widget Area','bioship');
  $f = 'skeleton_header_extras';			$p[$k][$f] = 8;		$l[$f] = __('HTML Area','bioship');
  $f = 'skeleton_header_close'; 			$p[$k][$f] = 10;
-$k ='skeleton_before_header_widgets'; 	$s[$i][$j++] = $k; $l[$k] = __('Before Header Widgets','bioship'); 		// (no default)
+$k ='bioship_before_header_widgets'; 	$s[$i][$j++] = $k; $l[$k] = __('Before Header Widgets','bioship'); 		// (no default)
 	## 	* HEADER SIDEBAR *									/* sidebar/header.php */
-$k = 'skeleton_after_header_widgets';	$s[$i][$j++] = $k; 	$l[$k] = __('After Header Widgets','bioship'); 		// (no default)
+$k = 'bioship_after_header_widgets';	$s[$i][$j++] = $k; 	$l[$k] = __('After Header Widgets','bioship'); 		// (no default)
 
-$k = 'skeleton_after_header'; 			$s[$i][$j++] = $k;	$l[$k] = __('After Header Area','bioship');
+$k = 'bioship_after_header'; 			$s[$i][$j++] = $k;	$l[$k] = __('After Header Area','bioship');
  $f = 'skeleton_header_banner';			$p[$k][$f] = 5;		$l[$f] = __('After Header Banner','bioship');
 
 // ----------------------
 // === Navigation Bar ===
 // ----------------------
 /* header.php */						$j = 0;	$i++;		$l[$i] = __('Navigation Bar','bioship');
-$k = 'skeleton_before_navbar';			$s[$i][$j++] = $k;	$l[$k] = __('Before Main NavBar','bioship'); 		// (no default)
+$k = 'bioship_before_navbar';			$s[$i][$j++] = $k;	$l[$k] = __('Before Main NavBar','bioship'); 		// (no default)
 
-$k = 'skeleton_navbar';					$s[$i][$j++] = $k;	$l[$k] = __('Main Navigation Bar','bioship');
+$k = 'bioship_navbar';					$s[$i][$j++] = $k;	$l[$k] = __('Main Navigation Bar','bioship');
  $f = 'skeleton_main_menu_open';		$p[$k][$f] = 0;
  $f = 'skeleton_sidebar_mobile_button'; $p[$k][$f] = 2;		$l[$f] = __('Mobile Button for Sidebar','bioship');
  $f = 'skeleton_main_menu_mobile_button'; $p[$k][$f] = 4;	$l[$f] = __('Mobile Button for Main Menu','bioship');
@@ -105,7 +107,7 @@ $k = 'skeleton_navbar';					$s[$i][$j++] = $k;	$l[$k] = __('Main Navigation Bar'
  $f = 'skeleton_main_menu';				$p[$k][$f] = 8;		$l[$f] = __('Superfish Dropdown Main Menu','bioship');
  $f = 'skeleton_main_menu_close';		$p[$k][$f] = 10;
 
-$k = 'skeleton_after_navbar';			$s[$i][$j++] = $k; 	$l[$k] = __('After Main NavBar','bioship');
+$k = 'bioship_after_navbar';			$s[$i][$j++] = $k; 	$l[$k] = __('After Main NavBar','bioship');
  $f = 'skeleton_clear_div';				$p[$k][$f] = 0;
  $f = 'skeleton_navbar_banner';		 	$p[$k][$f] = 4;		$l[$f] = __('Full Width Navbar Banner','bioship');
  $f = 'skeleton_clear_div';			 	$p[$k][$f] = 8;
@@ -114,20 +116,20 @@ $k = 'skeleton_after_navbar';			$s[$i][$j++] = $k; 	$l[$k] = __('After Main NavB
 // === Main Sidebar ===
 // --------------------
 /* /sidebar/{sidebar}.php */ 			$j = 0;	$i++;		$l[$i] = __('Primary Sidebar','bioship');
-$k = 'skeleton_before_sidebar';			$s[$i][$j++] = $k;	$l[$k] = __('Before Main Sidebar','bioship');
+$k = 'bioship_before_sidebar';			$s[$i][$j++] = $k;	$l[$k] = __('Before Main Sidebar','bioship');
  $f = 'skeleton_sidebar_open';			$p[$k][$f] = 5;
 ##			 * SIDEBAR *									## see skeleton_get_sidebar in skeleton.php
-$k = 'skeleton_after_sidebar';			$s[$i][$j++] = $k;	$l[$k] = __('After Sidebar','bioship');
+$k = 'bioship_after_sidebar';			$s[$i][$j++] = $k;	$l[$k] = __('After Sidebar','bioship');
  $f = 'skeleton_sidebar_close';			$p[$k][$f] = 5;
 
 // -------------------
 // === Sub Sidebar ===
 // -------------------
 /* /sidebar/{subsidebar}.php */ 		$j = 0;	$i++;		$l[$i] = __('Subsidiary Sidebar','bioship');
-$k = 'skeleton_before_subsidebar';		$s[$i][$j++] = $k;	$l[$k] = __('Before SubSidebar','bioship');
+$k = 'bioship_before_subsidebar';		$s[$i][$j++] = $k;	$l[$k] = __('Before SubSidebar','bioship');
  $f = 'skeleton_subsidebar_open';		$p[$k][$f] = 5;
 ##			* SUBSIDEBAR *									## see skeleton_get_sidebar in skeleton.php
-$k ='skeleton_after_subsidebar';		$s[$i][$j++] = $k;	$l[$k] = __('After SubSidebar','bioship');
+$k ='bioship_after_subsidebar';			$s[$i][$j++] = $k;	$l[$k] = __('After SubSidebar','bioship');
  $f = 'skeleton_subsidebar_close';	 	$p[$k][$f] = 5;
 
 
@@ -135,33 +137,33 @@ $k ='skeleton_after_subsidebar';		$s[$i][$j++] = $k;	$l[$k] = __('After SubSideb
 // === Content Area ===
 // --------------------
 /* index.php */ 						$j = 0;	$i++;		$l[$i] = __('Start Content Area','bioship');
-$k = 'skeleton_before_content';			$s[$i][$j++] = $k;	$l[$k] = __('Before Content Area','bioship');
+$k = 'bioship_before_content';			$s[$i][$j++] = $k;	$l[$k] = __('Before Content Area','bioship');
 ##		* Content Sidebar *  		 	$p[$k][$f] = 5;		## 'Before Content Sidebar' default position
  $f = 'skeleton_content_open';			$p[$k][$f] = 10;	$l[$f] = __('Content Wrap Open','bioship');
-$k = 'skeleton_front_page_top';			$s[$i][$j++] = $k;	$l[$k] = __('Frontpage Only Top','bioship');
+$k = 'bioship_front_page_top';			$s[$i][$j++] = $k;	$l[$k] = __('Frontpage Only Top','bioship');
  $f = 'skeleton_front_page_content';	$p[$k][$f] = 5;		$l[$k] = __('Frontpage Only Content','bioship');
-$k = 'skeleton_home_page_top';			$s[$i][$j++] = $k;	$l[$k] = __('Home (Blog) Only Top','bioship');
+$k = 'bioship_home_page_top';			$s[$i][$j++] = $k;	$l[$k] = __('Home (Blog) Only Top','bioship');
  $f = 'skeleton_home_page_content';		$p[$k][$f] = 5;		$l[$k] = __('Home (Blog) Only Content','bioship');
-$k = 'skeleton_before_loop';			$s[$i][$j++] = $k;	$l[$k] = __('Before Any Loop','bioship');
+$k = 'bioship_before_loop';				$s[$i][$j++] = $k;	$l[$k] = __('Before Any Loop','bioship');
  $f = 'skeleton_breadcrumbs';			$p[$k][$f] = 5;		$l[$k] = __('Breadcrumbs','bioship');
-$k = 'skeleton_before_archive';			$s[$i][$j++] = $k;	$l[$k] = __('Before Any Archive Loop','bioship');
-$k = 'skeleton_before_category';		$s[$i][$j++] = $k;	$l[$k] = __('Before Category Archive Loop','bioship');
-$k = 'skeleton_before_taxonomy';		$s[$i][$j++] = $k;	$l[$k] = __('Before Taxonomy Archive Loop','bioship');
-$k = 'skeleton_before_tags';			$s[$i][$j++] = $k;	$l[$k] = __('Before Tag Archive Loop','bioship');
-$k = 'skeleton_before_author';			$s[$i][$j++] = $k;	$l[$k] = __('Before Author Archive Loop','bioship');
+$k = 'bioship_before_archive';			$s[$i][$j++] = $k;	$l[$k] = __('Before Any Archive Loop','bioship');
+$k = 'bioship_before_category';			$s[$i][$j++] = $k;	$l[$k] = __('Before Category Archive Loop','bioship');
+$k = 'bioship_before_taxonomy';			$s[$i][$j++] = $k;	$l[$k] = __('Before Taxonomy Archive Loop','bioship');
+$k = 'bioship_before_tags';				$s[$i][$j++] = $k;	$l[$k] = __('Before Tag Archive Loop','bioship');
+$k = 'bioship_before_author';			$s[$i][$j++] = $k;	$l[$k] = __('Before Author Archive Loop','bioship');
  $f = 'skeleton_author_bio_top';		$p[$k][$f] = 5;		$l[$f] = __('Author Archive Top Bio','bioship');
-$k = 'skeleton_before_date';			$s[$i][$j++] = $k;	$l[$k] = __('Before Date Archive Loop','bioship');
+$k = 'bioship_before_date';				$s[$i][$j++] = $k;	$l[$k] = __('Before Date Archive Loop','bioship');
 
 // ------------------------
 // === Start Entry Loop ===
 // ------------------------
 /* content/content.php */				$j = 0;	$i++;		$l[$i] = __('Start Entry Loop','bioship');
-$k = 'skeleton_before_entry'; 			$s[$i][$j++] = $k;  $l[$k] = __('Before Entry','bioship');				 // (no default)
-$k = 'skeleton_attachment_media_handler'; $s[$i][$j++] = $k; $l[$k] = __('Media Handler Action','bioship');
+$k = 'bioship_before_entry'; 			$s[$i][$j++] = $k;  $l[$k] = __('Before Entry','bioship');				 // (no default)
+$k = 'bioship_media_handler'; 			$s[$i][$j++] = $k; $l[$k] = __('Media Handler Action','bioship');
  $f = 'skeleton_media_handler';			$p[$k][$f] = 5;		$l[$k] = __('Attachment Media Handler','bioship');
 
 // Entry Header
-$k = 'skeleton_entry_header';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Header Hook','bioship');
+$k = 'bioship_entry_header';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Header Hook','bioship');
  $f = 'skeleton_entry_header_open';	 	$p[$k][$f] = 0;
  $f = 'skeleton_entry_header_title';	$p[$k][$f] = 2;		$l[$f] = __('Post/Page Title','bioship');
  $f = 'skeleton_entry_header_subtitle'; $p[$k][$f] = 4;		$l[$f] = __('Post/Page SubTitle','bioship');
@@ -169,23 +171,23 @@ $k = 'skeleton_entry_header';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Header Hoo
  $f = 'skeleton_entry_header_close'; 	$p[$k][$f] = 10;
 
 // Thumbnail
-$k = 'skeleton_thumbnail';				$s[$i][$j++] = $k;  $l[$k] = __('Thumbnail or Featured Image','bioship');
+$k = 'bioship_thumbnail';				$s[$i][$j++] = $k;  $l[$k] = __('Thumbnail or Featured Image','bioship');
  $f = 'skeleton_echo_thumbnail';		$p[$k][$f] = 5;		$l[$f] = __('Echo Thumbnail','bioship');
- $k = 'skeleton_before_thumbnail';		$s[$i][$j++] = $k;	$l[$k] = __('Before Thumbnail','bioship').' *';
+ $k = 'bioship_before_thumbnail';		$s[$i][$j++] = $k;	$l[$k] = __('Before Thumbnail','bioship').' *';
 //		*** Thumbnail ***									// before/after hooks only fired if thumbnail content
- $k = 'skeleton_after_thumbnail';		$s[$i][$j++] = $k;	$l[$k] = __('After Thumbnail','bioship').' *';
+ $k = 'bioship_after_thumbnail';		$s[$i][$j++] = $k;	$l[$k] = __('After Thumbnail','bioship').' *';
 
 // -------------------------------------------
 // === Excerpt for all multi-post Displays ===
 // -------------------------------------------
 /* not is_singular() */					$j = 0;	$i++;		$l[$i] = __('Post Excerpts','bioship');
-$k = 'skeleton_before_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('Before Excerpt','bioship');			// (no default)
-$k = 'skeleton_the_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('Main Excerpt Output Hook','bioship');
+$k = 'bioship_before_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('Before Excerpt','bioship');			// (no default)
+$k = 'bioship_the_excerpt';				$s[$i][$j++] = $k;	$l[$k] = __('Main Excerpt Output Hook','bioship');
  $f = 'skeleton_echo_the_excerpt';		$p[$k][$f] = 5;		$l[$f] = __('Main Excerpt Output','bioship');
 // 		*** the_excerpt() ***							 	// WordPress core function call
-$k = 'skeleton_after_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('After Excerpt','bioship'); 			// (no default)
+$k = 'bioship_after_excerpt';			$s[$i][$j++] = $k;	$l[$k] = __('After Excerpt','bioship'); 			// (no default)
 
-$k = 'skeleton_entry_footer';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Footer','bioship');
+$k = 'bioship_entry_footer';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Footer','bioship');
  $f = 'skeleton_entry_footer_open'; 	$p[$k][$f] = 0;		$l[$f] = __('Bottom Meta Open','bioship');
  $f = 'skeleton_entry_footer_meta'; 	$p[$k][$f] = 6;		$l[$f] = __('Entry Meta Bottom','bioship');
  $f = 'skeleton_entry_footer_close';	$p[$k][$f] = 10;	$l[$f] = __('Bottom Meta Close','bioship');
@@ -196,38 +198,38 @@ $k = 'skeleton_entry_footer';			$s[$i][$j++] = $k;	$l[$k] = __('Entry Footer','b
 // === Full Content for Posts/Pages/CPTs ===
 // =========================================
 /* is_singular() */						$j = 0;	$i++;		$l[$i] = __('Singular Content','bioship');
-$k = 'skeleton_before_singular'; 		$s[$i][$j++] = $k;	$l[$k] = __('Before Singular Content','bioship');
+$k = 'bioship_before_singular'; 		$s[$i][$j++] = $k;	$l[$k] = __('Before Singular Content','bioship');
  $f = 'skeleton_breadcrumbs';			$p[$k][$f] = 5;		$l[$k] = __('Breadcrumbs','bioship');
 
 // Author Bio (top)
-$k = 'skeleton_author_bio_top';			$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Top Position','bioship');
- $k = 'skeleton_before_author_bio';		$s[$i][$j++] = $k;	$l[$k] = __('Before Author Bio','bioship').' *';
+$k = 'bioship_author_bio_top';			$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Top Position','bioship');
+ $k = 'bioship_before_author_bio';		$s[$i][$j++] = $k;	$l[$k] = __('Before Author Bio','bioship').' *';
 //    	*** Author Bio Box ***								// before/after hooks only fired if Bio content
- $k = 'skeleton_after_author_bio';		$s[$i][$j++] = $k;	$l[$k] = __('After Author Bio','bioship').' *';
+ $k = 'bioship_after_author_bio';		$s[$i][$j++] = $k;	$l[$k] = __('After Author Bio','bioship').' *';
 
 // MAIN CONTENT
-$k = 'skeleton_before_the_content';		$s[$i][$j++] = $k;	$l[$k] = __('Before the Content','bioship');		// (no default)
-// $k = 'skeleton_the_content';								// Main Content output hook
+$k = 'bioship_before_the_content';		$s[$i][$j++] = $k;	$l[$k] = __('Before the Content','bioship');		// (no default)
+// $k = 'bioship_the_content';								// Main Content output hook
 // 	$f = 'skeleton_echo_the_content';					5	// Simple Wrapper Function
 //		  *** the_content() ***	 							// WordPress core function call
-$k = 'skeleton_after_the_content';		$s[$i][$j++] = $k;	$l[$k] = __('After the Content','bioship');			// (no default)
+$k = 'bioship_after_the_content';		$s[$i][$j++] = $k;	$l[$k] = __('After the Content','bioship');			// (no default)
 
 // Entry Footer (duplicate of excerpt entry footer above)
 
 // Author Bio (bottom)
-$k = 'skeleton_author_bio_bottom';		$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Bottom Position','bioship');
-// $k =	'skeleton_before_author_bio';							// no need to declare duplicate hook
+$k = 'bioship_author_bio_bottom';		$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Bottom Position','bioship');
+// $k =	'bioship_before_author_bio';							// no need to redeclare (duplicate hook)
 // 	  	 *** Author Bio Box ***									// before/after hooks only fired if Bio content
-// $k = 'skeleton_after_author_bio'; 							// no need to declare duplicate hook
+// $k = 'bioship_after_author_bio'; 							// no need to redeclare (duplicate hook)
 
-$k = 'skeleton_after_singular';			$s[$i][$j++] = $k;	$l[$k] = __('After Singular Content','bioship');
+$k = 'bioship_after_singular';			$s[$i][$j++] = $k;	$l[$k] = __('After Singular Content','bioship');
 
 // Comments
 /* content/comments.php */
-// $k = 'skeleton_comments';								// see skeleton_comments in skeleton.php
-$k = 'skeleton_before_comments';		$s[$i][$j++] = $k;	$l[$k] = __('Before Comments','bioship');
+// $k = 'bioship_comments';								// see skeleton_comments in skeleton.php
+$k = 'bioship_before_comments';			$s[$i][$j++] = $k;	$l[$k] = __('Before Comments','bioship');
 // 		*** Comments ***
-$k = 'skeleton_after_comments';			$s[$i][$j++] = $k;	$l[$k] = __('After Comments','bioship');
+$k = 'bioship_after_comments';			$s[$i][$j++] = $k;	$l[$k] = __('After Comments','bioship');
 // =================================
 // END SINGLE CONTENT
 // ------------------
@@ -237,18 +239,18 @@ $k = 'skeleton_after_comments';			$s[$i][$j++] = $k;	$l[$k] = __('After Comments
 // === End Entry Loop ===
 // ======================
 										$j = 0;	$i++;		$l[$i] = __('End Entry Loop','bioship');
-$k = 'skeleton_after_entry';			$s[$i][$j++] = $k;	$l[$k] = __('After Entry','bioship'); 			// (no default)
-$k = 'skeleton_page_navi';				$s[$i][$j++] = $k;	$l[$k] = __('Page Navigation','bioship');
+$k = 'bioship_after_entry';				$s[$i][$j++] = $k;	$l[$k] = __('After Entry','bioship'); 			// (no default)
+$k = 'bioship_page_navi';				$s[$i][$j++] = $k;	$l[$k] = __('Page Navigation','bioship');
  $f = 'skeleton_page_navigation';		$p[$k][$f] = 5;		$l[$k] = __('Page Navigation','bioship');
-$k = 'skeleton_after_date';				$s[$i][$j++] = $k;	$l[$k] = __('After Date Archive Loop','bioship');
-$k = 'skeleton_after_author';			$s[$i][$j++] = $k;	$l[$k] = __('After Author Archive Loop','bioship');
+$k = 'bioship_after_date';				$s[$i][$j++] = $k;	$l[$k] = __('After Date Archive Loop','bioship');
+$k = 'bioship_after_author';			$s[$i][$j++] = $k;	$l[$k] = __('After Author Archive Loop','bioship');
  $f = 'skeleton_author_bio_bottom';		$p[$k][$f] = 0;		$l[$f] = __('Author Archive Bottom Bio','bioship');
-$k = 'skeleton_after_tags';				$s[$i][$j++] = $k;	$l[$k] = __('After Tag Archive Loop','bioship');
-$k = 'skeleton_after_taxonomy';			$s[$i][$j++] = $k;	$l[$k] = __('After Taxonomy Archive Loop','bioship');
-$k = 'skeleton_after_category';			$s[$i][$j++] = $k;	$l[$k] = __('After Category Archive Loop','bioship');
-$k = 'skeleton_after_archive';			$s[$i][$j++] = $k;	$l[$k] = __('After Any Archive Loop','bioship');
-$k = 'skeleton_after_loop';				$s[$i][$j++] = $k;	$l[$k] = __('After Any Loop','bioship');		// (no default)
-$k = 'skeleton_after_content';		 	$s[$i][$j++] = $k;	$l[$k] = __('After Content','bioship');			// (no default)
+$k = 'bioship_after_tags';				$s[$i][$j++] = $k;	$l[$k] = __('After Tag Archive Loop','bioship');
+$k = 'bioship_after_taxonomy';			$s[$i][$j++] = $k;	$l[$k] = __('After Taxonomy Archive Loop','bioship');
+$k = 'bioship_after_category';			$s[$i][$j++] = $k;	$l[$k] = __('After Category Archive Loop','bioship');
+$k = 'bioship_after_archive';			$s[$i][$j++] = $k;	$l[$k] = __('After Any Archive Loop','bioship');
+$k = 'bioship_after_loop';				$s[$i][$j++] = $k;	$l[$k] = __('After Any Loop','bioship');		// (no default)
+$k = 'bioship_after_content';		 	$s[$i][$j++] = $k;	$l[$k] = __('After Content','bioship');			// (no default)
  $f = 'skeleton_content_close';			$p[$k][$f] = 0;		$l[$f] = __('Content Wrap Close','bioship');
  $f = 'skeleton_clear_div';				$p[$k][$f] = 2;
 ##		* Content Sidebar *				 			  5		## 'Below Content Sidebar' Default Position
@@ -259,32 +261,31 @@ $k = 'skeleton_after_content';		 	$s[$i][$j++] = $k;	$l[$k] = __('After Content'
 // === Footer ===
 // --------------
 /* footer.php */						$j = 0;	$i++;		$l[$i] = __('Footer','bioship');
-$k = 'skeleton_before_footer';			$s[$i][$j++] = $k;	$l[$k] = __('Before Footer','bioship');
+$k = 'bioship_before_footer';			$s[$i][$j++] = $k;	$l[$k] = __('Before Footer','bioship');
  $f = 'skeleton_footer_banner';		 	$p[$k][$f] = 5;		$l[$k] = __('Full Width Footer Banner','bioship');
-
-$k = 'skeleton_footer';					$s[$i][$j++] = $k;	$l[$k] = __('Main Footer','bioship');
+// * wp_footer *
+$k = 'bioship_footer';					$s[$i][$j++] = $k;	$l[$k] = __('Main Footer','bioship');
  $f = 'skeleton_footer_open';			$p[$k][$f] = 0;
  $f = 'skeleton_footer_extras'; 		$p[$k][$f] = 2;		$l[$f] = __('Footer Extra HTML Area','bioship');
  $f = 'skeleton_footer_widgets';		$p[$k][$f] = 4;		$l[$f] = __('Footer Widget Area','bioship');
  $f = 'skeleton_footer_nav';			$p[$k][$f] = 6;		$l[$f] = __('Footer Menu','bioship');
  $f = 'skeleton_footer_credits'; 		$p[$k][$f] = 8;		$l[$f] = __('Site Credits','bioship');
  $f = 'skeleton_footer_close';			$p[$k][$f] = 10;
-$k = 'skeleton_before_footer_widgets';	$s[$i][$j++] = $k;	$l[$k] = __('Before Footer Widget','bioship');	// (no default)
+$k = 'bioship_before_footer_widgets';	$s[$i][$j++] = $k;	$l[$k] = __('Before Footer Widget','bioship');	// (no default)
 	## * FOOTER SIDEBARS *									## /* sidebar/footer.php */
-$k = 'skeleton_after_footer_widgets';	$s[$i][$j++] = $k;	$l[$k] = __('After Footer Widget','bioship');	// (no default)
-$k = 'skeleton_after_footer';			$s[$i][$j++] = $k;	$l[$k] = __('After Footer','bioship');
+$k = 'bioship_after_footer_widgets';	$s[$i][$j++] = $k;	$l[$k] = __('After Footer Widget','bioship');	// (no default)
+$k = 'bioship_after_footer';			$s[$i][$j++] = $k;	$l[$k] = __('After Footer','bioship');
  $f = 'skeleton_bottom_banner';		 	$p[$k][$f] = 5;		$l[$f] = __('Full Width Bottom Banner','bioship');
 
 // --------------------------
 // === End Wrap Container ===
 // --------------------------
 /* footer.php */						$j = 0;	$i++;		$l[$i] = __('End Wrap Container','bioship');
-$k = 'skeleton_container_close';		$s[$i][$j++] = $k;	$l[$k] = __('Main Container Close','bioship');
+$k = 'bioship_container_close';			$s[$i][$j++] = $k;	$l[$k] = __('Main Container Close','bioship');
  $f = 'skeleton_main_wrapper_close';	$p[$k][$f] = 5;		$l[$f] = __('Main DIV Wrapper Close','bioship');
-$k = 'skeleton_after_container';		$s[$i][$j++] = $k; 	$l[$k] = __('After Wrap Container','bioship');
+$k = 'bioship_after_container';			$s[$i][$j++] = $k; 	$l[$k] = __('After Wrap Container','bioship');
 
 /* footer.php */
-// * wp_footer *
 // </BODY>
 // </HTML>
 
@@ -438,5 +439,76 @@ if (THEMEDEBUG) {
 // skeleton_footer_nav_position
 // skeleton_footer_credits_position
 // skeleton_footer_wrap_close_position
+
+
+// ==================
+// Old Skeleton Hooks
+// ==================
+$s = array();
+$s['skeleton_container_open']['skeleton_main_wrapper_open'] = 5;
+$s['skeleton_before_header']['skeleton_top_banner'] = 2;
+// $s['skeleton_before_header']['* Content Sidebar *'] = 5;
+$s['skeleton_before_header']['skeleton_secondary_menu'] = 8;
+$s['skeleton_header']['skeleton_header_open'] = 0;
+$s['skeleton_header']['skeleton_header_nav'] = 2;
+$s['skeleton_header']['skeleton_header_logo'] = 4;
+$s['skeleton_header']['skeleton_header_widgets'] = 6;
+$s['skeleton_header']['skeleton_header_extras'] = 8;
+$s['skeleton_header']['skeleton_header_close'] = 10;
+$s['skeleton_after_header']['skeleton_header_banner'] = 5;
+$s['skeleton_navbar']['skeleton_main_menu_open'] = 0;
+$s['skeleton_navbar']['skeleton_sidebar_mobile_button'] = 2;
+$s['skeleton_navbar']['skeleton_main_menu_mobile_button'] = 4;
+$s['skeleton_navbar']['skeleton_subsidebar_mobile_button'] = 6;
+$s['skeleton_navbar']['skeleton_main_menu'] = 8;
+$s['skeleton_navbar']['skeleton_main_menu_close'] = 10;
+$s['skeleton_after_navbar']['skeleton_clear_div'] = 0;
+$s['skeleton_after_navbar']['skeleton_navbar_banner'] = 4;
+$s['skeleton_after_navbar']['skeleton_clear_div'] = 8;
+$s['skeleton_before_sidebar']['skeleton_sidebar_close'] = 5;
+$s['skeleton_before_subsidebar']['skeleton_subsidebar_open'] = 5;
+$s['skeleton_after_subsidebar']['skeleton_subsidebar_close'] = 5;
+// $s['skeleton_before_content']['* Content Sidebar *'] = 5;
+$s['skeleton_before_content']['skeleton_content_open'] = 10;
+$s['skeleton_front_page_top']['skeleton_front_page_content'] = 5;
+$s['skeleton_home_page_top']['skeleton_home_page_content'] = 5;
+$s['skeleton_before_loop']['skeleton_breadcrumbs'] = 5;
+$s['skeleton_before_author']['skeleton_author_bio_top'] = 5;
+$s['skeleton_attachment_media_handler']['skeleton_media_handler'] = 5;
+$s['skeleton_entry_header']['skeleton_entry_header_open'] = 0;
+$s['skeleton_entry_header']['skeleton_entry_header_title'] = 2;
+$s['skeleton_entry_header']['skeleton_entry_header_subtitle'] = 4;
+$s['skeleton_entry_header']['skeleton_entry_header_meta'] = 6;
+$s['skeleton_entry_header']['skeleton_entry_header_close'] = 10;
+$s['skeleton_thumbnail']['skeleton_echo_thumbnail'] = 5;
+$s['skeleton_the_excerpt']['skeleton_echo_the_excerpt'] = 5;
+$s['skeleton_entry_footer']['skeleton_entry_footer_open'] = 0;
+$s['skeleton_entry_footer']['skeleton_entry_footer_meta'] = 6;
+$s['skeleton_entry_footer']['skeleton_entry_footer_close'] = 10;
+$s['skeleton_before_singular']['skeleton_breadcrumbs'] = 5;
+$s['skeleton_the_content']['skeleton_echo_the_content'] = '';
+$s['skeleton_page_navi']['skeleton_page_navigation'] = 5;
+$s['skeleton_after_author']['skeleton_author_bio_bottom'] = 0;
+$s['skeleton_after_content']['skeleton_content_close'] = 0;
+$s['skeleton_after_content']['skeleton_clear_div'] = 2;
+// $s['skeleton_after_content']['* Content Sidebar *'] = 5;
+$s['skeleton_before_footer']['skeleton_footer_banner'] = 5;
+$s['skeleton_footer']['skeleton_footer_open'] = 0;
+$s['skeleton_footer']['skeleton_footer_extras'] = 2;
+$s['skeleton_footer']['skeleton_footer_widgets'] = 4;
+$s['skeleton_footer']['skeleton_footer_nav'] = 6;
+$s['skeleton_footer']['skeleton_footer_credits'] = 8;
+$s['skeleton_footer']['skeleton_footer_close'] = 10;
+$s['skeleton_after_footer']['skeleton_bottom_banner'] = 5;
+$s['skeleton_container_close']['skeleton_main_wrapper_close'] = 5;
+
+foreach ($s as $hook => $functions) {
+	foreach ($functions as $function => $priority) {
+		$newpriority = apply_filters($function.'_position', $priority);
+		if ($newpriority != $priority) {$s[$hook][$function] = $newpriority; }
+	}
+}
+// print_r($s);
+$vthemehooks['skeleton'] = $s;
 
 ?>

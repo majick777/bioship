@@ -8,48 +8,48 @@
 <?php if (THEMECOMMENTS) : ?><!-- article.entry --><?php endif; ?>
 <article <?php hybrid_attr('post');?>>
 
-	<?php do_action('skeleton_before_entry'); ?>
+	<?php do_action('bioship_before_entry'); ?>
 
 
 	<?php /* Entry Header */ ?>
 
-	<?php do_action('skeleton_entry_header'); ?>
+	<?php do_action('bioship_entry_header'); ?>
 
 
 	<?php /* Thumbnail */ ?>
 
-	<?php do_action('skeleton_thumbnail'); // 1.5.0: changed to an action hook ?>
+	<?php do_action('bioship_thumbnail'); ?>
 
 
 	<?php /* Entry Content Summary */ ?>
 
 	<?php if (is_archive() || is_search() || (!is_singular($vposttype)) ) : ?>
 
-		<?php do_action('skeleton_before_excerpt'); ?>
+		<?php do_action('bioship_before_excerpt'); ?>
 
 		<?php if (THEMECOMMENTS) : ?><!-- .entry-summary --><?php endif; ?>
 		<div <?php hybrid_attr('entry-summary'); ?>>
 
-			<?php do_action('skeleton_the_excerpt'); // 1.5.0: changed to an action hook ?>
+			<?php do_action('bioship_the_excerpt'); ?>
 
 		</div><?php if (THEMECOMMENTS) : ?><!-- /.entry-summary --><?php endif; ?>
 
-		<?php do_action('skeleton_after_excerpt'); ?>
+		<?php do_action('bioship_after_excerpt'); ?>
 
 
 		<?php /* Entry Footer */ ?>
 
-		<?php do_action('skeleton_entry_footer'); ?>
+		<?php do_action('bioship_entry_footer'); ?>
 
 
 	<?php else : ?>
 
-		<?php do_action('skeleton_before_singular'); ?>
+		<?php do_action('bioship_before_singular'); ?>
 
 
 		<?php /* Author Bio (top) */ ?>
 
-		<?php do_action('skeleton_author_bio_top'); // 1.5.0: changed to action hook ?>
+		<?php do_action('bioship_author_bio_top'); ?>
 
 
 		<?php /* Entry Content (Full) */ ?>
@@ -57,7 +57,7 @@
 		<?php if (THEMECOMMENTS) : ?><!-- .entry-content --><?php endif; ?>
 		<div <?php hybrid_attr('entry-content'); ?>>
 
-			<?php do_action('skeleton_the_content'); // 1.5.0: changed to an action hook ?>
+			<?php do_action('bioship_the_content'); ?>
 
 			<div class="clear"></div>
 
@@ -66,23 +66,23 @@
 
 		<?php /* Author Bio (bottom) */ ?>
 
-		<?php do_action('skeleton_author_bio_top'); // 1.5.0: changed to an action hook ?>
+		<?php do_action('bioship_author_bio_bottom'); ?>
 
 
 		<?php /* Entry Footer */ ?>
 
-		<?php do_action('skeleton_entry_footer'); ?>
+		<?php do_action('bioship_entry_footer'); ?>
 
 
-		<?php do_action('skeleton_after_singular'); ?>
+		<?php do_action('bioship_after_singular'); ?>
 
 
 		<?php /* Comments */ ?>
 
-		<?php do_action('skeleton_comments'); // 1.5.0: changed to an action hook ?>
+		<?php do_action('bioship_comments'); ?>
 
 	<?php endif; ?>
 
-	<?php do_action('skeleton_after_entry'); ?>
+	<?php do_action('bioship_after_entry'); ?>
 
 </article><?php if (THEMECOMMENTS) : ?><!-- /article.entry --><?php endif; ?>
