@@ -727,7 +727,9 @@ if (!function_exists('bioship_number_to_word')) {
 // used (sparsely) for any function/filter name changes
 // 1.8.5: load theme backwards compatibility file
 $vcompat = bioship_file_hierarchy('file', 'compat.php');
-if ($vcompat) {include_once($vcompat);}
+// 2.0.5: add ability to turn compat.php loading off with a file (as pre-filters)
+$vcompatoff = bioship_file_hierarchy('file', 'compat-off.php');
+if ( ($vcompat) && (!$vcompatoff) ) {include_once($vcompat);}
 
 
 // ------------------
