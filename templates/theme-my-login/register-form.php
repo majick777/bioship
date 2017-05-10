@@ -30,8 +30,8 @@ Theme My Login will always look in your theme's directory first, before using th
 
 		<p class="submit">
 
-			<?php $registerbuttonurl = apply_filters('register_button_url',get_option('registerbuttonurl'));
-			$registerbuttontext = esc_attr(apply_filters('register_button_text','Register'));
+			<?php $registerbuttonurl = apply_filters('register_button_url', get_option('registerbuttonurl'));
+			$registerbuttontext = esc_attr(apply_filters('register_button_text', __('Register')));
 			if ($registerbuttonurl != '') { ?>
 				<input type="image" name="wp-submit" id="wp-submit<?php $template->the_instance(); ?>" src="<?php echo $registerbuttonurl; ?>" />
 			<?php }	else { ?>

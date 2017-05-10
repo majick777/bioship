@@ -2,7 +2,7 @@
 
 	/* Comments Error (via Hybrid Base) */
 
-	if (THEMETRACE) {skeleton_trace('T',__('Comments Error Template','bioship'),__FILE__);}
+	if (THEMETRACE) {bioship_trace('T',__('Comments Error Template','bioship'),__FILE__);}
 
 ?>
 

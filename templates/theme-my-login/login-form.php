@@ -6,7 +6,7 @@ Theme My Login will always look in your theme's directory first, before using th
 ?>
 <div class="login" id="theme-my-login<?php $template->the_instance(); ?>">
 
-	<?php $vloginimageurl = apply_filters('login_form_image','');
+	<?php $vloginimageurl = apply_filters('login_form_image', '');
 		if ($vloginimageurl != '') { ?>
 		<img src='<?php echo $vloginimageurl; ?>' border='0'><br><br>
 	<?php } ?>
@@ -34,8 +34,8 @@ Theme My Login will always look in your theme's directory first, before using th
 		</p>
 		<p class="submit">
 
-			<?php $loginbuttonurl = apply_filters('login_button_url',get_option('loginbuttonurl'));
-			$loginbuttontext = esc_attr(apply_filters('login_button_text','Log In'));
+			<?php $loginbuttonurl = apply_filters('login_button_url', get_option('loginbuttonurl'));
+			$loginbuttontext = esc_attr(apply_filters('login_button_text', __('Log In')));
 			if ($loginbuttonurl != '') { ?>
 				<input type="image" name="wp-submit" id="wp-submit<?php $template->the_instance(); ?>" src="<?php echo $loginbuttonurl; ?>" />
 			<?php }	else { ?>

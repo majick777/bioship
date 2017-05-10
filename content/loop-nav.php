@@ -1,8 +1,10 @@
 <?php
 
-	/* Loop Navigation (via Hybrid Base) */
+/* Loop Navigation (via Hybrid Base) */
 
-	if (THEMETRACE) {skeleton_trace('T',__('Loop Nav Template','bioship'),__FILE__);}
+if (THEMETRACE) {bioship_trace('T',__('Loop Nav Template','bioship'),__FILE__);}
+
+// TODO: deprecate and simply call page_navi action?
 
 ?>
 

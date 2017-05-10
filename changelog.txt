@@ -1,14 +1,34 @@
+= 2.0.5 = 
+- Added: Freemius SDK Library for Themes 1.2.2.5
+- Added: Auto-ignore core styles/scripts for BWP Minify
+- Added: Matching translation POT file to /languages
+- Added: Content repeater template for Ajax Load More
+- Added: Tracer calls within Customizer functions
+- Added: Tracer trace for any fired BioShip action hooks
+- Updated: respaced comma spacing syntax in all functions/files
+- Updated: check wp-load.php before using direct skin method
+- Updated: all grid.php variables loaded from querystring
+- Updated: backwards compatibility for old skeleton actions
+- Changed: all remaining functions to bioship_ prefix
+- Changed: Hybrid Hook theme prefix to bioship to match actions
+- Changed: image size names to bioship- prefix 
+- Improved: automatically regenerate thumbnails for new sizes
+- Removed: unnecessary wp-load.php process from grid.php
+- Removed: legacy skeleton theme template files
+- Fixed: subsidiary sidebar class names mismatches
+- Fixed: theme options display version for child theme
+- Option: JPEG Quality filter to Muscle -> Thumbnails
+
 = 2.0.2 = 
 - Added: Admin Notice message helper function
 - Added: Auto-ignore core styles/scripts for BWP Minify
 - Added: THEMESLUG constant (for dashes not underscores)
 - Updated: WordQuest Helper Library to 1.6.7
-- Updated: added recording of first installed version
 - Changed: all grid_ functions to bioship_grid_ prefix
 - Fixed: some simplified script load check typos
 
 = 2.0.1: =
-- Fixed: title-tag (or no title-tag!) theme supports
+- Fixed: title-tag (or no title-tag!) Theme Supports
 - Changed: all skin_ functions to bioship_skin_ prefix
 - Changed: all skeleton_ action hooks to bioship_ prefix
 - Updated: theme slug prefix to script and style handles

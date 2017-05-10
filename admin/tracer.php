@@ -12,6 +12,36 @@
 
 if (!function_exists('add_action')) {exit;}
 
+
+// 2.0.5: add this to help debug action load order
+if (!function_exists('bioship_all_actions_filters')) {
+
+ add_action('all', 'bioship_all_actions_filters');
+
+ function bioship_all_actions_filters() {
+	if (THEMEDEBUG) {
+		$vfilter = current_filter();
+		if (substr($vfilter,0,strlen(THEMEPREFIX.'_')) == THEMEPREFIX.'_') {
+			if (substr($vfilter,-9,9) != '_position') {
+				echo "<!-- Processing: "; print_r($vfilter);
+				if (!has_filter($vfilter)) {echo " [n/a]";}
+				echo " -->".PHP_EOL;
+			}
+		}
+	}
+ }
+}
+
+
+// TRACER QUERYSTRING USAGE
+// ------------------------
+// ?themetrace=1 		- to do a theme trace (requires manage_options capability)
+// &trace={resource} 	- all, templates, functions, filters, actions	- default: all
+// &tracecalls=1		- whether to trace number of function calls		- default: off
+// &traceargs=1			- whether to trace function arguments			- default: off
+// &tracedisplay=1		- whether to output the trace inline on page	- default: off
+// &instance={instance} - prefix name for the debug trace output file	- default: timedate
+
 // Note: for heavy lifting you can use:
 // add_action('shutdown',function() {echo "<!-- ".var_dump(debug_backtrace())." -->";});
 
@@ -24,9 +54,9 @@ global $vthemetrace; $vthemetrace = array();   // holds theme trace data
 if (isset($_REQUEST['trace'])) {
 	$vthemetracer['trace'] = $_REQUEST['trace'];
 	// help to forget about plurals if debugging as may already be annoyed... O_o
-	if ($vthemetracer['trace'] == 'template') {$vthemetracer['trace'] = 'templates';}
-	elseif ($vthemetracer['trace'] == 'function') {$vthemetracer['trace'] = 'functions';}
-	elseif ($vthemetracer['trace'] == 'filter') {$vthemetracer['trace'] = 'filters';}
+	// 2.0.5: simplify to array check
+	$vtracetypes = array('template', 'function', 'filter', 'action');
+	if (in_array($vthemetracer['trace'], $vtracetypes)) {$vthemetracer['trace'] .= 's';}
 	elseif ($vthemetracer['trace'] == '') {$vthemetracer['trace'] = false;}
 } else {$vthemetracer['trace'] = 'all';}
 
@@ -51,6 +81,13 @@ if ( (isset($_REQUEST['tracefunction'])) && ($_REQUEST['tracefunction'] != '') )
 $vthemetracer['filter'] = false;
 if ( (isset($_REQUEST['tracefilter'])) && ($_REQUEST['tracefilter'] != '') ) {$vthemetracer['filter'] = $_REQUEST['tracefilter'];}
 
+// whether to trace a single template
+// $vthemetracer['template'] = false;
+// if ( (isset($_REQUEST['tracetemplate'])) && ($_REQUEST['tracetemplate'] != '') ) {$vthemetracer['template'] = $_REQUEST['tracetemplate'];}
+// whether to trace a single action
+// $vthemetracer['action'] = false;
+// if ( (isset($_REQUEST['traceaction'])) && ($_REQUEST['traceaction'] != '') ) {$vthemetracer['action'] = $_REQUEST['traceaction'];}
+
 // whether to output trace inline
 $vthemetracer['output'] = false;
 if (isset($_REQUEST['tracedisplay'])) {
@@ -71,13 +108,15 @@ $vthemetrace['start'] = date('Y-m-d--H-i-s',time());
 
 // Tracer Function
 // ---------------
-function skeleton_trace($vresourcetype,$vresourcename,$vfilepath,$vfunctionargs=false) {
+function bioship_trace($vresourcetype, $vresourcename, $vfilepath, $vfunctionargs=false) {
 
 	global $vthemetracer, $vthemetrace, $vthemedebugdir;
 
+	// change trace type short name to long
 	if ($vresourcetype == 'F') {$vresourcetype = 'function';}
 	elseif ($vresourcetype == 'T') {$vresourcetype = 'template';}
 	elseif ($vresourcetype == 'V') {$vresourcetype = 'filter';}
+	elseif ($vresourcetype == 'A') {$vresourcetype = 'action';}
 	else {return;}
 
 	// strip base file path (not used for filters)
@@ -111,8 +150,15 @@ function skeleton_trace($vresourcetype,$vresourcename,$vfilepath,$vfunctionargs=
 			if ($vthemetracer['output']) {echo '<!-- template: '.$vresourcename.' ('.$vfilepath.') -->';}
 		}
 	}
+	elseif ($vresourcetype == 'action') {
+		// 2.0.5: added action tracing...
+		if ( ($vthemetracer['trace'] == 'actions') || ($vthemetracer['trace'] == 'all') ) {
+			$vthemetrace['actions'][] = $vresourcename;
+			$vtracecount = '+'.count($vthemetrace['actions']).'+';
+			if ($vthemetracer['output']) {echo '<!-- action: '.$vresourcename.' -->';}
+		}
+	}
 	elseif ($vresourcetype == 'filter') {
-		// 	TODO: possibly filter calls could be traced too?
 		if ( ($vthemetracer['trace'] == 'filters') || ($vthemetracer['trace'] == 'all') ) {
 			$vthemetrace['filters'][] = $vresourcename;
 			$vtracecount = '<'.count($vthemetrace['filters']).'>';
@@ -122,9 +168,11 @@ function skeleton_trace($vresourcetype,$vresourcename,$vfilepath,$vfunctionargs=
 
 	// add the tracer line to the load record
 	// 1.9.8: fix to tracer line
-	$vmemusage = memory_get_usage(true); $vloadtime = skeleton_timer_time();
-	$vtracerline = $vtracecount.'::'.$vmemusage.'::'.$vloadtime.'::'.$vresourcetype.'::'.$vresourcename.'::'.$vfilepath;
+	$vmemusage = memory_get_usage(true); $vloadtime = bioship_timer_time();
+	// 2.0.5: reorder tracer line output for readability
+	$vtracerline = $vtracecount.'::'.$vresourcetype.'::'.$vresourcename.'::'.$vmemusage.'::'.$vloadtime.'::'.$vfilepath;
 	$vthemetrace['lines'][] = $vtracerline;
+
 	// if ($vthemetracer['output']) {echo '<!-- '.$vtracerline.'-->';}
 
 	// 1.9.8: full trace logging of function/filter arguments passed
@@ -139,7 +187,8 @@ function skeleton_trace($vresourcetype,$vresourcename,$vfilepath,$vfunctionargs=
 				ob_start(); var_dump($vfunctionargs['in']); $vin = ob_get_contents(); ob_end_clean();
 				ob_start(); var_dump($vfunctionargs['out']); $vout = ob_get_contents(); ob_end_clean();
 				$vdumpline = $vresourcetype.': '.$vresourcename.PHP_EOL;
-				$vdumpline = 'value in: '.$vin.PHP_EOL.'value out: '.$vout;
+				// 2.0.5: fix to concatenate properly here
+				$vdumpline .= 'value in: '.$vin.PHP_EOL.'value out: '.$vout;
 			}
 
 			if ($vthemetracer['instance']) {
@@ -158,7 +207,7 @@ function skeleton_trace($vresourcetype,$vresourcename,$vfilepath,$vfunctionargs=
 
 // Trace Processor
 // ---------------
-function skeleton_trace_processsor() {
+function bioship_trace_processsor() {
 
 	global $vthemetracer, $vthemetrace, $vthemedebugdir;
 
@@ -174,11 +223,12 @@ function skeleton_trace_processsor() {
 			if ($vthemetracer['instance'] == '') {$vtraceloadsfile = '';} // no file writing
 			else {$vtraceloadsfile = $vthemedebugdir.DIRSEP.'_'.$vinstance.'--traceload.txt';}
 		} else {$vtraceloadsfile = $vthemedebugdir.DIRSEP.$vthemetrace['start'].'--traceload.txt';}
-		$vtracercontents = implode(PHP_EOL,$vthemetrace['lines']);
+		$vtracercontents = implode(PHP_EOL, $vthemetrace['lines']);
 
 		// being user debug files, these should be fine to write directly
 		if ($vtraceloadsfile != '') {
 			$vfh = @fopen($vtraceloadsfile,'w'); @fwrite($vfh,$vtracercontents); @fclose($vfh);
+			if (!file_exists($vtraceloadsfile)) {return;} // if writing failed
 		}
 	}
 
@@ -224,6 +274,6 @@ function skeleton_trace_processsor() {
 }
 
 // run the trace processor on shutdown
-add_action('shutdown','skeleton_trace_processsor');
+add_action('shutdown', 'bioship_trace_processsor');
 
 ?>

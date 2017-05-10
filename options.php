@@ -33,35 +33,34 @@ if (!function_exists('add_action')) {exit;}
 
 // Convert Options Framework to Titan Framework Options
 // ----------------------------------------------------
-// note: do not change, used as check function in functions.php
-if (!function_exists('optionsframework_to_titan')) {
- function optionsframework_to_titan() {
-	if (THEMETRACE) {skeleton_trace('F','optionsframework_to_titan',__FILE__);}
+// note: do not change, used for checking in functions.php
+if (!function_exists('bioship_optionsframework_to_titan')) {
+ function bioship_optionsframework_to_titan() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemename, $vtitan, $vthemeoptions;
 	$vtitan = TitanFramework::getInstance($vthemename);
 	// 1.9.5: do NOT output generated styles thanks Titan
 	$vtitan->settings['css'] = false;
-
 	// 1.8.5: removed unnecessary styling filter from here
 
 	// Set Custom WebSafe Fonts
 	// ------------------------
 	// (since Titan by default adds ALL the Google Fonts here!)
-	add_filter('titan_websafefonts','custom_titan_websafefonts');
-	function custom_titan_websafefonts($vfonts) {
+	add_filter('titan_websafefonts','bioship_titan_websafe_fonts');
+	function bioship_titan_websafe_fonts($vfonts) {
 		// 1.9.8: use global value to avoid multiple calls
 		global $vthemewebfontstacks;
-		if (!isset($vthemewebfontstacks)) {$vthemewebfontstacks = options_web_font_stacks(array());}
+		if (!isset($vthemewebfontstacks)) {$vthemewebfontstacks = bioship_options_web_font_stacks(array());}
 		return $vthemewebfontstacks;
 	}
 
 	// Custom Filter Google Fonts
 	// --------------------------
 	// note: this filter could be removed if you want all Google Font options
-	add_filter('titan_googlefonts','custom_titan_googlefonts');
-	function custom_titan_googlefonts($vfonts) {
-		$voptionsfonts = options_title_fonts();
+	add_filter('titan_googlefonts','bioship_titan_google_fonts');
+	function bioship_titan_google_fonts($vfonts) {
+		$voptionsfonts = bioship_options_title_fonts();
 		$vi = 0;
 		foreach ($vfonts as $vfont) {
 			$vkeep = false;
@@ -145,10 +144,11 @@ if (!function_exists('optionsframework_to_titan')) {
 	// ----------------------------------------------
 	// 1.8.0: for Titan admin tab and layer filter button compatibility
 	// (this is so as to prevent page refreshes for each tab - a downside of Titan)
-	add_action('tf_admin_page_start','tf_options_tabs');
-	function tf_options_tabs() {
+	add_action('tf_admin_page_start','bioship_titan_options_tabs');
+	if (!function_exists('bioship_titan_options_tab')) {
+	 function bioship_titan_options_tabs() {
 		// replace Titan tabs: ie. foreach ( $this->tabs as $tab ) {$tab->displayTab();}
-		// ...with Options Framework style Titan tabs (from function optionsframework_tabs)
+		// ...with Options Framework style Titan tabs (from optionsframework_tabs)
 
 		global $vthemeoptions; $counter = 0; $menu = ''; $prevclass = '';
 
@@ -165,14 +165,16 @@ if (!function_exists('optionsframework_to_titan')) {
 			}
 		}
 		echo $menu.'</div></h2>';
+	 }
 	}
 
 	// Replace Titan Admin Options Table Output
 	// ----------------------------------------
 	// 1.8.0: restyle and wrap the option sections for one-page tabbing
 	// (this makes options tabs cross-compatible with options framwork javascript)
-	add_action('tf_admin_page_table_start','tf_admin_page_options');
-	function tf_admin_page_options() {
+	add_action('tf_admin_page_table_start','bioship_titan_admin_page_options');
+	if (!function_exists('bioship_titan_admin_page_options')) {
+	 function bioship_titan_admin_page_options() {
 		global $vthemesettings, $vthemename, $vtitan; // $vthemeoptions,
 		// $vtitan = TitanFramework::getInstance($vthemename);
 		$containers = $vtitan->mainContainers;
@@ -216,24 +218,27 @@ if (!function_exists('optionsframework_to_titan')) {
 			ob_end_clean(); echo $optionoutput;
 		}
 		ob_start(); // start output buffer to catch default display
+	 }
 	}
 
 	// Clear Buffer of Default Titan Options Display
 	// ---------------------------------------------
 	// (having fully replaced the Titan tabs/options output - clear default)
-	add_action('tf_admin_page_table_end','tf_admin_page_clean');
-	function tf_admin_page_clean() {ob_end_clean();}
+	add_action('tf_admin_page_table_end','bioship_titan_admin_page_clean');
+	if (!function_exists('bioship_titan_admin_page_clean')) {
+		function bioship_titan_admin_page_clean() {ob_end_clean();}
+	}
 
 	// enqueue the Options Framework tab script for Titan use
 	// ------------------------------------------------------
 	// 1.8.0: use the Options Framework tab script for Titan tabbing
 	// (good to go now that the tabbing has been standardized!)
-	// 1.8.5: replaced this with standalone tab click function in admin.php
-	// add_action('admin_enqueue_scripts','options_titan_tab_script');
-	// if (!function_exists('options_titan_tab_script')) {
-	// function options_titan_tab_script() {
+	// 1.8.5: replaced this with standalone tab click in admin.php
+	// add_action('admin_enqueue_scripts','bioship_options_titan_tab_script');
+	// if (!function_exists('bioship_options_titan_tab_script')) {
+	// function bioship_options_titan_tab_script() {
 	// 	if (strstr($_SERVER['REQUEST_URI'], 'admin.php?page='.$vthemename)) {
-	//		$vtabscripturl = skeleton_file_hierarchy('url','options-custom.js',array('javascripts','includes/options/js'));
+	//		$vtabscripturl = bioship_file_hierarchy('url','options-custom.js',array('javascripts','includes/options/js'));
 	//		if ($vtabscripturl) {wp_enqueue_script('options-custom', $vtabscripturl, array('jquery'), TF_VERSION);}
 	//	}
 	// }
@@ -241,7 +246,7 @@ if (!function_exists('optionsframework_to_titan')) {
 
 	// Enqueue Sticky Kit
 	// ------------------
-	add_action('admin_enqueue_scripts','options_enqueue_stickykit');
+	add_action('admin_enqueue_scripts','bioship_options_enqueue_stickykit');
 
 	return true; // too tru bru, too tru...
  }
@@ -255,9 +260,9 @@ if (!function_exists('optionsframework_to_titan')) {
 // -----------------------------
 // Options Framework Option Name
 // -----------------------------
-if (!function_exists('optionsframework_option_name')) {
- function optionsframework_option_name() {
- 	if (THEMETRACE) {skeleton_trace('F','optionsframework_option_name',__FILE__);}
+if (!function_exists('bioship_optionsframework_option_name')) {
+ function bioship_optionsframework_option_name() {
+ 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
 	$vtheme = wp_get_theme();
 
@@ -281,14 +286,14 @@ if (!function_exists('optionsframework_option_name')) {
 // ----------------------------------
 // 1.8.0: fix for use of plugin_dir_url() in enqueues (as this is not a plugin!)
 // (see class Options_Framework_Admin in class-options-framework-admin.php)
-add_action('admin_enqueue_scripts','optionsframework_resource_url_fix',11);
+add_action('admin_enqueue_scripts','bioship_optionsframework_resource_url_fix',11);
 
-if (!function_exists('optionsframework_resource_url_fix')) {
- function optionsframework_resource_url_fix() {
+if (!function_exists('bioship_optionsframework_resource_url_fix')) {
+ function bioship_optionsframework_resource_url_fix() {
 
 	if ( (!class_exists('Options_Framework')) || (THEMETITAN) ) {return;}
 
-	$voptionsframework = skeleton_file_hierarchy('url','options-framework.php',array('includes/options','options'));
+	$voptionsframework = bioship_file_hierarchy('url','options-framework.php',array('includes/options','options'));
 	if ($voptionsframework) {
 		$voptionsurlpath = str_replace('options-framework.php','',$voptionsframework);
 
@@ -319,17 +324,17 @@ if (!function_exists('optionsframework_resource_url_fix')) {
 	// Enqueue Sticky Kit
 	// ------------------
 	// 1.9.5: moved here from optionsframework_option_name above
-	// add_action('admin_enqueue_scripts','options_enqueue_stickykit');
-	options_enqueue_stickykit();
+	// add_action('admin_enqueue_scripts','bioship_options_enqueue_stickykit');
+	bioship_options_enqueue_stickykit();
  }
 }
 
 // Admin Stickykit Enqueue
 // -----------------------
-if (!function_exists('options_enqueue_stickykit')) {
-	function options_enqueue_stickykit() {
+if (!function_exists('bioship_options_enqueue_stickykit')) {
+	function bioship_options_enqueue_stickykit() {
 		global $vthemesettings, $vjscachebust, $vthemedirs;
-		$vstickykit = skeleton_file_hierarchy('both','jquery.sticky-kit.min.js',$vthemedirs['js']);
+		$vstickykit = bioship_file_hierarchy('both','jquery.sticky-kit.min.js',$vthemedirs['js']);
 		if (is_array($vstickykit)) {
 			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {
 				$vjscachebust = date('ymdHi',filemtime($vstickykit['file']));
@@ -350,11 +355,11 @@ if (!function_exists('options_enqueue_stickykit')) {
 // ref: https://wiki.bath.ac.uk/display/webservices/Fonts+-+readable,+cross-platform+typography
 
 // add the font filter (Options Framework only)
-if (function_exists('add_filter')) {add_filter('of_recognized_font_faces','options_web_font_stacks');}
+if (function_exists('add_filter')) {add_filter('of_recognized_font_faces','bioship_options_web_font_stacks');}
 
-if (!function_exists('options_web_font_stacks')) {
- function options_web_font_stacks($faces) {
-  	if (THEMETRACE) {skeleton_trace('F','options_web_font_stacks',__FILE__);}
+if (!function_exists('bioship_options_web_font_stacks')) {
+ function bioship_options_web_font_stacks($faces) {
+  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
 	// 1.9.0: re-added Raleway, legacy skeleton boilerplate default
 	$fonts = array(
@@ -388,13 +393,12 @@ if (!function_exists('options_web_font_stacks')) {
 // --------------------------
 // Default Google Title Fonts
 // --------------------------
-if (!function_exists('options_title_fonts')) {
- function options_title_fonts() {
-  	if (THEMETRACE) {skeleton_trace('F','options_title_fonts',__FILE__);}
+// ref: http://www.google.com/fonts
+if (!function_exists('bioship_options_title_fonts')) {
+ function bioship_options_title_fonts() {
+  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-	// ref: http://www.google.com/fonts
-
-	// 1.9.0: readded Raleway, legacy skeleton boilerplate default
+	// 1.9.0: re-added Raleway, legacy skeleton boilerplate default
 	$vtitlefonts = array(
 		'Sans-Serif' => 'Sans-Serif',
 		'Serif' => 'Serif',
@@ -453,13 +457,15 @@ if (!function_exists('options_title_fonts')) {
 
 // Trigger Title Font Display
 // --------------------------
-if ( (isset($_GET['show'])) && ($_GET['show'] == 'titlefontexamples') ) {add_action('init','options_title_font_display');}
+if ( (isset($_GET['show'])) && ($_GET['show'] == 'titlefontexamples') ) {
+	add_action('init','bioship_options_title_font_display');
+}
 
 // Title Font Display
 // ------------------
-if (!function_exists('options_title_font_display')) {
- function options_title_font_display() {
-	$titlefonts = options_title_fonts();
+if (!function_exists('bioship_options_title_font_display')) {
+ function bioship_options_title_font_display() {
+	$titlefonts = bioship_options_title_fonts();
 
 	$table = "<center><table>"; $loadfonts = '';
 	foreach ($titlefonts as $fontface => $display) {
@@ -484,13 +490,15 @@ if (!function_exists('options_title_font_display')) {
 
 // Trigger Body Font Display
 // -------------------------
-if ( (isset($_GET['show'])) && ($_GET['show'] == 'bodyfontexamples') ) {add_action('init','options_body_font_display');}
+if ( (isset($_GET['show'])) && ($_GET['show'] == 'bodyfontexamples') ) {
+	add_action('init','bioship_options_body_font_display');
+}
 
 // Display Body Fonts
 // ------------------
-if (!function_exists('options_body_font_display')) {
- function options_body_font_display() {
-	$bodyfonts = options_web_font_stacks(array());
+if (!function_exists('bioship_options_body_font_display')) {
+ function bioship_options_body_font_display() {
+	$bodyfonts = bioship_options_web_font_stacks(array());
 
 	$table = "<center><table>"; $loadfonts = ''; $queried = array();
 	foreach ($bodyfonts as $font => $display) {
@@ -536,8 +544,8 @@ if (!function_exists('options_body_font_display')) {
  * Read more: http://codex.wordpress.org/Function_Reference/load_theme_textdomain
  */
 
-if (!function_exists('optionsframework_options')) {
- function optionsframework_options($vinternal=true) {
+if (!function_exists('bioship_options')) {
+ function bioship_options($vinternal=true) {
 
 	global $vthemename, $vthemesettings;
 
@@ -545,8 +553,8 @@ if (!function_exists('optionsframework_options')) {
 	// ------------
 
 	// Load Font Arrays
-	$title_fonts = options_title_fonts();
-	$body_fonts = options_web_font_stacks(array());
+	$title_fonts = bioship_options_title_fonts();
+	$body_fonts = bioship_options_web_font_stacks(array());
 
 	// Header Typography Options
 	$headertype_options = array(
@@ -1464,7 +1472,7 @@ if (!function_exists('optionsframework_options')) {
 	else {$titlefontslink = '/wp-admin/admin.php?show=titlefontexamples';}
 	$options[] = array(
 		'name' => __('Headings Typography', 'bioship'),
-		'desc' => __('Selected Heading fonts are auto-loaded via Google Fonts.','bioship').' <a href="'.$titlefontslink.'" target=_blank>'.__('Example Title Font Page','bioship').'</a>. '.__('Customize available font selections via the options_title_fonts filter (see filters.php)', 'bioship'),
+		'desc' => __('Selected Heading fonts are auto-loaded via Google Fonts.','bioship').' <a href="'.$titlefontslink.'" target=_blank>'.__('Example Title Font Page','bioship').'</a>. '.__('Customize available font selections via the bioship_options_title_fonts filter (see filters.php)', 'bioship'),
 		'class' => 'skin',
 		'type' => 'info',
 		'page' => 'basic');
@@ -1948,7 +1956,7 @@ if (!function_exists('optionsframework_options')) {
 	// Load jQuery from Google CDN
 	$options[] = array(
 		'name' => __('Load jQuery from Google CDN', 'bioship'),
-		'desc' => __('Loads jQuery from the Google CDN instead of the WordPress copy. Can speed up pageload as it is probably already cached in most browsers. (Automatically falls back to local copy if Google CDN is unreachable.) Similar to ', 'bioship').'<a href="https://wordpress.org/plugins/wp-jquery-plus/" target=_blank>'.__('WP jQuery Plus','bioship').'</a>',
+		'desc' => __('Loads jQuery from the Google CDN instead of the WordPress copy. Can speed up pageload as it is probably already cached in most browsers. (Automatically falls back to local copy if Google CDN is unreachable.)', 'bioship'),
 		'id' => 'jquerygooglecdn',
 		'std' => '0',
 		'class' => 'muscle',
@@ -1959,7 +1967,7 @@ if (!function_exists('optionsframework_options')) {
 	// Load PrefixFree
 	$options[] = array(
 		'name' => __('Load PrefixFree Javascript', 'bioship'),
-		'desc' => __('Auto-adds browser-specific prefixes to unprefixed CSS code (See <a href="http://leaverou.github.io/prefixfree/" target="_blank">PrefixFree</a> for details. Dynamic DOM and jQuery plugins included.)', 'bioship'),
+		'desc' => __('Auto-adds browser-specific prefixes to unprefixed CSS code.','bioship').' ('.__('See','bioship').' <a href="http://leaverou.github.io/prefixfree/" target="_blank">PrefixFree</a> '.__('for details.','bioship').' '.__('Dynamic DOM and jQuery plugins included.', 'bioship').')',
 		'id' => 'prefixfree',
 		'std' => '1',
 		'class' => 'muscle',
@@ -1980,7 +1988,7 @@ if (!function_exists('optionsframework_options')) {
 	$iesupports_default = array('selectivizr'=>'1','html5shiv'=>'1','supersleight'=>'1','flexibility'=>'0');
 	$options[] = array(
 		'name' => __('Internet Exporer Specific Supports', 'bioship'),
-		'desc' => __('Load  ','bioship').'<a href="http://selectivizr.com" target="_blank">'.__('Selectivizr','bioship').'</a>, '.__('HTML5, SuperSleight and/or Flexibility.', 'bioship'),
+		'desc' => __('Load','bioship').' <a href="http://selectivizr.com" target="_blank">Selectivizr</a>, '.__('HTML5, SuperSleight and/or Flexibility.', 'bioship'),
 		'id' => 'iesupports',
 		'std' => $iesupports_default,
 		'default' => $iesupports_default,
@@ -1998,7 +2006,7 @@ if (!function_exists('optionsframework_options')) {
 	);
 	$options[] = array(
 		'name' => __('Media Queries Javascript', 'bioship'),
-		'desc' => __('Polyfill to help fix CSS3 Media Queries for older browsers eg. IE6-IE8. (See ','bioship').'<a href="https://github.com/scottjehl/Respond" target=_blank>'.__('Respond','bioship').'</a> '.__('and','bioship').' <a href="https://code.google.com/p/css3-mediaqueries-js/" target=_blank>'.__('MediaQueries','bioship').'</a>)',
+		'desc' => __('Polyfill to help fix CSS3 Media Queries for older browsers eg. IE6-IE8. (See ','bioship').'<a href="https://github.com/scottjehl/Respond" target=_blank>Respond</a> '.__('and','bioship').' <a href="https://code.google.com/p/css3-mediaqueries-js/" target=_blank>MediaQueries</a>)',
 		'id' => 'mediaqueries',
 		'std' => 'respond',
 		'class' => 'muscle',
@@ -2010,7 +2018,7 @@ if (!function_exists('optionsframework_options')) {
 	// Fastclick Javascript
 	$options[] = array(
 		'name' => __('Load Fastclick Javascript', 'bioship'),
-		'desc' => __('Loads fastclick.js (polyfill to remove click delays on browsers with touch UIs.) Note: required for loading Foundation.', 'bioship'),
+		'desc' => __('Loads fastclick.js (polyfill to remove click delays on browsers with touch UIs.)', 'bioship'),
 		'id' => 'loadfastclick',
 		'std' => '1',
 		'class' => 'muscle',
@@ -2052,10 +2060,10 @@ if (!function_exists('optionsframework_options')) {
 		'page' => 'advanced');
 
 	// Load Modernizr
-	$modernizr_options = array('off'=>'Do Not Load','production'=>'Load Production version','development'=>'Load Development version');
+	$modernizr_options = array('off'=>__('Do Not Load','bioship'), 'production'=>__('Load Production version','bioship'), 'development'=>__('Load Development version','bioship'));
 	$options[] = array(
 		'name' => __('Load Modernizr', 'bioship'),
-		'desc' => __('Whether to load ','bioship').'<a href="http://modernizr.com" target=_blank>'.__('Modernizr','bioship').'</a> '.__('javascript or not, production (~10kb) or development (~50kb) Note: required for loading Foundation.', 'bioship'),
+		'desc' => __('Whether to load','bioship').' <a href="http://modernizr.com" target=_blank>'.__('Modernizr','bioship').'</a> '.__('javascript or not, production (~10kb) or development (~50kb) Note: required for loading Foundation.', 'bioship'),
 		'id' => 'loadmodernizr',
 		'std' => 'off',
 		'class' => 'muscle',
@@ -2155,7 +2163,7 @@ if (!function_exists('optionsframework_options')) {
 	// Sticky Kit Elements
 	$options[] = array(
 		'name' => __('Sticky Kit Elements', 'bioship'),
-		'desc' => __('List of elements to appl Sticky Kit to, comma separated.', 'bioship'),
+		'desc' => __('List of elements to apply Sticky Kit to, comma separated.', 'bioship'),
 		'id' => 'stickyelements',
 		'std' => '#sidebar,#subsidebar',
 		'class' => 'mini muscle',
@@ -2321,7 +2329,7 @@ if (!function_exists('optionsframework_options')) {
 	);
 	$options[] = array(
 		'name' => __('Jetpack Infinite Scroll', 'bioship'),
-		'desc' => __('Adds theme support for Jetpack Infinite Scroll... or you could use the <a href="https://wordpress.org/plugins/ajax-load-more/" target=_blank>AJAX Load More</a> plugin (loop template available in /templates/ajax-load-more/)', 'bioship'),
+		'desc' => __('Adds theme support for Jetpack Infinite Scroll.','bioship').' '.__('Alternatively use','bioship').' <a href="https://wordpress.org/plugins/ajax-load-more/" target=_blank>AJAX Load More</a> ('.__('with loop template','bioship').' <i>/templates/ajax-load-more/</i>)',
 		'id' => 'infinitescroll',
 		'std' => 'disable',
 		'type' => 'select',
@@ -2354,7 +2362,7 @@ if (!function_exists('optionsframework_options')) {
 	// Excerpt Shortcodes
 	$options[] = array(
 		'name' => __('Excerpt Shortcodes', 'bioship'),
-		'desc' => __('Process Shortcodes in Excerpts (Note: formatting is still stripped from shortcode output.)', 'bioship'),
+		'desc' => __('Process Shortcodes in Excerpts. (Note: formatting is still stripped from shortcode output.)', 'bioship'),
 		'id' => 'excerptshortcodes',
 		'std' => '1',
 		'class' => 'muscle',
@@ -2366,7 +2374,7 @@ if (!function_exists('optionsframework_options')) {
 	// 1.8.5: number sanitization
 	$options[] = array(
 		'name' => __('Excerpt Length', 'bioship'),
-		'desc' => __('Number of words to show in Excerpts (blank for default 55, 0 for full content.)', 'bioship'),
+		'desc' => __('Number of words to show in Excerpts.','bioship').' ('.__('Blank for default of 55, 0 for full content.', 'bioship').')',
 		'id' => 'excerptlength',
 		'std' => '100',
 		'class' => 'mini muscle',
@@ -2411,22 +2419,22 @@ if (!function_exists('optionsframework_options')) {
 		'page' => 'advanced');
 
 	// Post Meta Formatting Reference
-	$rvdesc = __('Replacement Values:','bioship').'<br>';
+	$rvdesc = __('Replacement Values','bioship').':<br>';
 	$rvdesc .= '#DATELINK# - '.__('Post/Page Permalink with Anchor of Post Date.','bioship').'<br>';
 	$rvdesc .= '#PERMALINK# - '.__('Post/Page Permalink with Anchor "Permalink"','bioship').'<br>';
 	$rvdesc .= '#PARENTPAGE# - '.__('Linkless name of the Page Parent (if any)','bioship').'<br>';
 	$rvdesc .= '#PARENTLINK# - '.__('Linked name of the Page Parent (if any)','bioship').'<br>';
 	$rvdesc .= '#CATEGORIES# - '.__('Linked comma separated post category list (<i>get_the_category_list</i>)','bioship').'<br>';
-	$rvdesc .= '#CATSLIST# - '.__('Outputs "Category: " {get_the_category_list} (but blank if none)','bioship').'<br>';
-	$rvdesc .= '#POSTTAGS# - '.__('Linked comma separated post tag list (<i>get_the_tag_list</i>)','bioship').'<br>';
-	$rvdesc .= '#TAGSLIST# - '.__('Outputs "Tagged: " {get_the_tag_list} (but blank if none)','bioship').'<br>';
+	$rvdesc .= '#CATSLIST# - '.__('Outputs "Category: "','bioship').' {<i>get_the_category_list</i>} ('.__('but blank if none','bioship').')<br>';
+	$rvdesc .= '#POSTTAGS# - '.__('Linked comma separated post tag list','bioship').' (<i>get_the_tag_list</i>)<br>';
+	$rvdesc .= '#TAGSLIST# - '.__('Outputs "Tagged: "','bioship').' {<i>get_the_tag_list</i>} ('.__('but blank if none','bioship').')<br>';
 	$rvdesc .= '#COMMENTS# - '.__('Number of Comments with Comments Link','bioship').'<br>';
-	$rvdesc .= '#COMMENTSPOPUP# - '.__('Number of Comments with Popup Link (<i>comments_popup_link</i>)','bioship').'<br>';
-	$rvdesc .= '#AUTHORNAME# - '.__('Linkless Author Display Name (<i>the_author</i>)','bioship').'<br>';
-	$rvdesc .= '#AUTHORURL# - '.__('Author Posts Link URL (only) - no anchor (<i>author_posts_link</i>)','bioship').'<br>';
-	$rvdesc .= '#AUTHOR# - '.__('Author Posts Link with Author name anchor (<i>author_posts_link</i>)','bioship').'<br>';
-	$rvdesc .= '#AUTHORLINK# - '.__('Author Link with View (posttype) by Author anchor (<i>author_posts_link</i>)','bioship').'<br>';
-	$rvdesc .= '#EDITLINK# - '.__('Post/Page (admin/editor) Edit Link (<i>edit_post_link</i>)','bioship').'<br>';
+	$rvdesc .= '#COMMENTSPOPUP# - '.__('Number of Comments with Popup Link','bioship').' (<i>comments_popup_link</i>)<br>';
+	$rvdesc .= '#AUTHORNAME# - '.__('Linkless Author Display Name','bioship').' (<i>the_author</i>)<br>';
+	$rvdesc .= '#AUTHORURL# - '.__('Author Posts Link URL (only) - no anchor','bioship').' (<i>author_posts_link</i>)<br>';
+	$rvdesc .= '#AUTHOR# - '.__('Author Posts Link with Author name anchor','bioship').' (<i>author_posts_link</i>)<br>';
+	$rvdesc .= '#AUTHORLINK# - '.__('Author Link with View (posttype) by Author anchor','bioship').' (<i>author_posts_link</i>)<br>';
+	$rvdesc .= '#EDITLINK# - '.__('Post/Page (admin/editor) Edit Link','bioship').' (<i>edit_post_link</i>)<br>';
 	$rvdesc .= __('Note: Categories and Tags works for Custom Post Type taxonomies. :-)','bioship').'<br>';
 
 	$options[] = array(
@@ -2482,7 +2490,7 @@ if (!function_exists('optionsframework_options')) {
 
 	$options[] = array(
 		'name' => __('Custom Post Type Metas', 'bioship'),
-		'desc' => __('Meta Top and Bottom for Custom Post Types can be set via filters.php in your Child Theme.', 'bioship'),
+		'desc' => __('Note: Meta Top and Bottom for Custom Post Types can be set via filters.', 'bioship'),
 		'class' => 'muscle',
 		'type' => 'info',
 		'page' => 'advanced');
@@ -2523,7 +2531,7 @@ if (!function_exists('optionsframework_options')) {
 	$cpt_defaults = array('post'=>'1');
 	$options[] = array(
 		'name' => __('Author Bio Box', 'bioship'),
-		'desc' => __('Show Author Biography Box for selected Post Types (Only if Author description is not empty!)', 'bioship'),
+		'desc' => __('Show Author Biography Box for selected Post Types.','bioship').' ('.__('Only if author description is not empty!','bioship').')',
 		'id' => 'authorbiocpts',
 		'std' => $cpt_defaults,
 		'type' => 'multicheck',
@@ -2541,7 +2549,7 @@ if (!function_exists('optionsframework_options')) {
 	);
 	$options[] = array(
 		'name' => __('Bio Box Position', 'bioship'),
-		'desc' => __('Where to show the Author Bio Box for select posted types. (Position filter available.)', 'bioship'),
+		'desc' => __('Where to show the Author Bio Box for select posted types.', 'bioship'),
 		'id' => 'authorbiopos',
 		'std' => 'bottom',
 		'type' => 'select',
@@ -2555,7 +2563,7 @@ if (!function_exists('optionsframework_options')) {
 	// 1.8.5: number sanitization
 	$options[] = array(
 		'name' => __('Author Avatar Size', 'bioship'),
-		'desc' => __('The squared size of the Author Avatar in the Bio Box (default 60)', 'bioship'),
+		'desc' => __('The squared size of the Author Avatar in the Bio Box (default 64)', 'bioship'),
 		'id' => 'authoravatarsize',
 		'std' => '64',
 		'class' => 'mini muscle',
@@ -2642,7 +2650,7 @@ if (!function_exists('optionsframework_options')) {
 	$subtitle_defaults = array('post'=>'1','page'=>'1');
 	$options[] = array(
 		'name' => __('Subtitle Support', 'bioship'),
-		'desc' => __('Add Subtitles Field to specified Post Types.<br>(Requires ','bioship').'<a href="http://wordpress.org/plugins/wp-subtitle/" target="_blank">'.__('WP Subtitle','bioship').'</a>'.__(' to be installed.)', 'bioship'),
+		'desc' => __('Add Subtitles Field to specified Post Types.','bioship').'<br>('.__('Requires','bioship').' <a href="http://wordpress.org/plugins/wp-subtitle/" target="_blank">'.__('WP Subtitle','bioship').'</a>',
 		'id' => 'subtitlecpts',
 		'std' => $subtitle_defaults,
 		'class' => 'muscle',
@@ -2676,7 +2684,7 @@ if (!function_exists('optionsframework_options')) {
 	// 1.8.5: sanitize number callback
 	$options[] = array(
 		'name' => __('RSS Item Excerpt Length', 'bioship'),
-		'desc' => __('Number of words to show in RSS Feed Excerpts (blank for excerpt default, 0 for full content.)', 'bioship'),
+		'desc' => __('Number of words to show in RSS Feed Excerpts.','bioship').' ('.__('Blank for excerpt default, 0 for full content.','bioship').')',
 		'id' => 'rssexcerptlength',
 		'std' => '',
 		'class' => 'mini muscle',
@@ -2688,7 +2696,7 @@ if (!function_exists('optionsframework_options')) {
 	// 1.8.5: sanitize number callback
 	$options[] = array(
 		'name' => __('RSS Publish Delay', 'bioship'),
-		'desc' => __('Delays Publishing of Post to RSS Feed for x minutes. Helpful to let you fix typos etc. Blank or 0 for off.', 'bioship'),
+		'desc' => __('Delays Publishing of Post to RSS Feed for x minutes. Helpful to let you fix typos etc.','bioship').' ('.__('Blank or 0 for off.', 'bioship').')',
 		'id' => 'rsspublishdelay',
 		'std' => '10',
 		'class' => 'mini muscle',
@@ -2700,7 +2708,7 @@ if (!function_exists('optionsframework_options')) {
 	$cpt_defaults = array();
 	$options[] = array(
 		'name' => __('Post Types in RSS Feed', 'bioship'),
-		'desc' => __('Include the selected Post Types in the main RSS Feed ( /feed/ ) Uncheck all to not use this post type filtering or if filtering with a plugin.', 'bioship'),
+		'desc' => __('Include the selected Post Types in the main RSS Feed. Uncheck all to not use this post type filtering.', 'bioship'),
 		'id' => 'cptsinfeed',
 		'std' => '',
 		'type' => 'multicheck',
@@ -2712,7 +2720,7 @@ if (!function_exists('optionsframework_options')) {
 	// 1.8.5: added this option
 	$options[] = array(
 		'name' => __('Page Content Feeds', 'bioship'),
-		'desc' => __('Output full page content for page feeds (/page/feed/) instead of page comments (comments will then be available via /pagename/feed/?withcomments=1', 'bioship'),
+		'desc' => __('Output full page content for page feed links','bioship').' (<i>/pagename/feed/</i>) '.__('instead of page comments','bioship').' ('.__('comments will then be available via','bioship').' <i>/pagename/feed/?withcomments=1</i>',
 		'id' => 'pagecontentfeeds',
 		'std' => '0',
 		'class' => 'muscle',
@@ -2754,7 +2762,7 @@ if (!function_exists('optionsframework_options')) {
 	// TODO: may need to remove this option?
 	$options[] = array(
 		'name' => __('Add All Options Page', 'bioship'),
-		'desc' => __('Add an "All Options" Page to the Settings Menu', 'bioship'),
+		'desc' => __('Add an "All Options" Page to the Settings Menu.', 'bioship'),
 		'id' => 'alloptionspage',
 		'std' => '1',
 		'class' => 'muscle',
@@ -2764,7 +2772,7 @@ if (!function_exists('optionsframework_options')) {
 	// Admin Only Update Notice
 	$options[] = array(
 		'name' => __('Admin Only Core Update Notice', 'bioship'),
-		'desc' => __('Only Show Update Core Notice to Admins', 'bioship'),
+		'desc' => __('Only Show Update Core Notice to Admins.', 'bioship'),
 		'id' => 'removeupdatenotice',
 		'std' => '1',
 		'class' => 'muscle',
@@ -2811,7 +2819,7 @@ if (!function_exists('optionsframework_options')) {
 	//	// 'transport' => 'refresh', // no admin bar on customizer pages
 	//	'type' => 'checkbox');
 
-	// FIXME: associated function currently seems broken (old function)
+	// FIXME: currently seems broken (old function)
 	// $options[] = array(
 	//	'name' => __('Show Thumbnail Column in Admin Post List', 'bioship'),
 	//	'desc' => __('Adds a thumbnail display column to the post list screen.', 'bioship'),
@@ -2907,7 +2915,7 @@ if (!function_exists('optionsframework_options')) {
 		'twentyfour' => __('Twenty Four Column Grid','bioship')
 	);
 	$options[] = array( 'name' => __('Layout Grid Columns','bioship'),
-		'desc' => __('Number of Grid Columns used to generate dynamic Layout Grid. (Warning: If you change this, remember to adjust content and sidebar column values too!)','bioship'),
+		'desc' => __('Number of Grid Columns used to generate dynamic Layout Grid.','bioship').' ('.__('Warning: If you change this, remember to adjust content and sidebar column values to match.','bioship').')',
 		'id' => 'gridcolumns',
 		'std' => 'sixteen',
 		'type' => 'select',
@@ -2919,7 +2927,7 @@ if (!function_exists('optionsframework_options')) {
 	// Responsive Grid Breakpoints
 	$options[] = array(
 		'name' => __('Responsive Grid Breakpoints','bioship'),
-		'desc' => __('Dynamic Layout Grid Breakpoints. Media queries are built from these which auto-size the container width based on window width. Default: 320,480,640,768,960,1140,1200','bioship'),
+		'desc' => __('Dynamic Layout Grid Breakpoints. Media queries are built from these which auto-size the container width based on window width.','bioship').' '.__('Default','bioship').': 320,480,640,768,960,1140,1200',
 		'id' => 'breakpoints',
 		'std' => '320,480,640,768,960,1140,1200',
 		'type' => 'text',
@@ -2929,7 +2937,7 @@ if (!function_exists('optionsframework_options')) {
 
 	// Content Grid Columns
 	$options[] = array( 'name' => __('Content Grid Columns','bioship'),
-		'desc' => __('Default Number of Grid Columns used for dynamic Content Grid .container class. (Warning: If you change this, existing content markup will need to be changed to match.)','bioship'),
+		'desc' => __('Default Number of Grid Columns used for dynamic Content Grid.','bioship').' ('.__('Warning: If you change this, existing content markup may need to be changed to match.','bioship').')',
 		'id' => 'contentgridcolumns',
 		'std' => 'twentyfour',
 		'type' => 'select',
@@ -2974,7 +2982,7 @@ if (!function_exists('optionsframework_options')) {
 		'twentythree' => __('23 Columns','bioship'), 'twentyfour' => __('24 Columns','bioship')
 	);
 	$options[] = array( 'name' => __('Content Width','bioship'),
-		'desc' => __('Define the width of your content area in columns (out of total grid columns.)','bioship'),
+		'desc' => __('Define the width of your content area in columns out of total layout grid columns.)','bioship'),
 		'id' => 'content_width',
 		'std' => 'eleven',
 		'type' => 'select',
@@ -2986,7 +2994,7 @@ if (!function_exists('optionsframework_options')) {
 	// Content Padding
 	$options[] = array(
 		'name' => __('Content Padding', 'bioship'),
-		'desc' => __('Sets the CSS padding property for the #contentpadding wrapper around #content. Use px or em or %.<br>Also used to help calculate actual content width area for embeds and images.', 'bioship'),
+		'desc' => __('Sets the CSS padding property for the #contentpadding wrapper around #content. Use px or em or %.','bioship').'<br>'.__('Also used to help calculate actual content width area for embeds and images.', 'bioship'),
 		'id' => 'contentpadding',
 		'std' => '1em 0.75em',
 		'class' => 'mini skeleton',
@@ -3012,7 +3020,7 @@ if (!function_exists('optionsframework_options')) {
 	// (Sidebars are registered so you can add widgets to them and display them in other ways.)
 	$options[] = array(
 		'name' => __('', 'bioship'),
-		'desc' => __('All sidebars are registered regardless of their active state so the you can add widgets while inactive. Note: You can save/restore different widget layouts with the ','bioship').'<a href="https://wordpress.org/plugins/widget-saver/" target=_blank>'.__('Widget Saver','bioship').'</a>'.__(' plugin, or import/export using the ','bioship').'<a href="https://wordpress.org/plugins/widget-settings-importexport/" target=_blank>'.__('Widget Import/Export','bioship').'</a>'.__(' plugin.)', 'bioship'),
+		'desc' => __('All sidebars are registered regardless of their active state so the you can add widgets while inactive. Note: You can save/restore widget layouts with','bioship').' <a href="https://wordpress.org/plugins/widget-saver/" target=_blank>Widget Saver</a>, '.__('or import/export widgets with ','bioship').'<a href="https://wordpress.org/plugins/widget-settings-importexport/" target=_blank>Widget Import/Export</a>',
 		'class' => 'skeleton',
 		'type' => 'info',
 		'page' => 'advanced');
@@ -3045,7 +3053,7 @@ if (!function_exists('optionsframework_options')) {
 		'right' => __('Right Sidebar','bioship'),
 	);
 	$options[] = array( 'name' => __('Sidebar Position','bioship'),
-		'desc' => __('Select a sidebar layout position (left or right). You can also select a wide page layout on a per-page basis via edit screen metabox.','bioship'),
+		'desc' => __('Default primary sidebar layout position.','bioship'),
 		'id' => 'page_layout',
 		'std' => $sidebar_default,
 		'type' => 'select',
@@ -3065,7 +3073,7 @@ if (!function_exists('optionsframework_options')) {
 		'eleven' => __('11 Columns','bioship'), 'twelve' => __('12 Columns','bioship')
 	);
 	$options[] = array( 'name' => __('Sidebar Width','bioship'),
-		'desc' => __('Define the width of primary Sidebar in columns (out of total grid columns.)','bioship'),
+		'desc' => __('Define the width of primary Sidebar in columns out of total layout grid columns.)','bioship'),
 		'id' => 'sidebar_width',
 		'std' => 'five',
 		'type' => 'select',
@@ -3084,7 +3092,7 @@ if (!function_exists('optionsframework_options')) {
 	);
 	$options[] = array(
 		'name' => __('Subsidiary Sidebar', 'bioship'),
-		'desc' => __('Adds a Subsidiary Sidebar Widget Area. Either for posts or pages, or for both posts/pages together, or for posts/pages separately.)', 'bioship'),
+		'desc' => __('Adds a Subsidiary Sidebar Widget Area. Either for posts or pages, or for both posts/pages together, or for posts/pages separately.', 'bioship'),
 		'id' => 'subsidiarysidebar',
 		'std' => 'off',
 		'type' => 'select',
@@ -3101,7 +3109,7 @@ if (!function_exists('optionsframework_options')) {
 	);
 	$options[] = array(
 		'name' => __('Subsidiary Sidebar Position', 'bioship'),
-		'desc' => __('Whether to call the Subsidiary Sidebar external to (towards wrapper), or internal to (towards content), or opposite to (left-content-right) to the Primary Sidebar.)', 'bioship'),
+		'desc' => __('Whether to call the Subsidiary Sidebar external to (towards wrapper), or internal to (towards content), or opposite to the Primary Sidebar.', 'bioship'),
 		'id' => 'subsidiaryposition',
 		'std' => 'opposite',
 		'type' => 'select',
@@ -3119,7 +3127,7 @@ if (!function_exists('optionsframework_options')) {
 	);
 	$options[] = array(
 		'name' => __('Subsidiary Sidebar Columns', 'bioship'),
-		'desc' => __('Number of columns for subsidiary sidebar out of total grid columns.', 'bioship'),
+		'desc' => __('Number of columns for subsidiary sidebar out of total layout grid columns.', 'bioship'),
 		'id' => 'subsidiarycolumns',
 		'std' => 'one',
 		'type' => 'select',
@@ -3149,7 +3157,7 @@ if (!function_exists('optionsframework_options')) {
 	);
 	$options[] = array(
 		'name' => __('Footer Widget Areas', 'bioship'),
-		'desc' => __('Number of Footer Sidebar Widget Areas to make available. (Actual display is split into columns based on widget areas with widgets. To add an empty footer area you could use an empty Text Widget.)', 'bioship'),
+		'desc' => __('Number of Footer Sidebar Widget Areas to make available. Actual display is split into columns based on widget areas with widgets.','bioship'),
 		'id' => 'footersidebars',
 		'std' => '1',
 		'type' => 'select',
@@ -3340,10 +3348,19 @@ if (!function_exists('optionsframework_options')) {
 	// Thumbsize Change Note
 	$options[] = array(
 		'name' => __('Thumbnail Size Changes Reminder', 'bioship'),
-		'desc' => __('If this is a new theme install, or you have changed the explicit thumbnail sizes via filters, you can use the <a href="http://wordpress.org/plugins/regenerate-thumbnails/" target=_blank>Regenerate Thumbnails</a> plugin to re-process your existing thumbnails (Note: Best not do this until theme is active just in case.)', 'bioship'),
+		'desc' => __('If this is a new theme install, or you have changed the explicit thumbnail sizes via filters, you can use','bioship').' <a href="http://wordpress.org/plugins/regenerate-thumbnails/" target=_blank>Regenerate Thumbnails</a> '.__('to re-process your existing thumbnails.', 'bioship'),
 		'class' => 'skeleton',
 		'type' => 'info',
 		'page' => 'basic');
+
+	// JPEG Quality
+	$options[] = array( 'name' => __('JPEG Quality','bioship'),
+		'desc' => __('Set JPEG Quality for Media Library.','bioship').' ('.__('0 or blank for off.','bioship').')',
+		'id' => 'jpegquality',
+		'std' => '90',
+		'type' => 'number',
+		'class' => 'skeleton',
+		'page' => 'advanced');
 
 	// Cropping Options
 	$cropoptions_array = array(
@@ -3360,7 +3377,7 @@ if (!function_exists('optionsframework_options')) {
 		'bottom-right' => __('Bottom Right','bioship')
 	);
 	$options[] = array( 'name' => __('Thumbnail Cropping','bioship'),
-		'desc' => __('Set Default Cropping for Thumbnails. (see filters.php for specific image size cropping)','bioship'),
+		'desc' => __('Set Default Cropping for Thumbnails.','bioship').__('For specific image size cropping use filters.','bioship'),
 		'id' => 'thumbnailcrop',
 		'std' => 'auto',
 		'type' => 'select',
@@ -3407,9 +3424,9 @@ if (!function_exists('optionsframework_options')) {
 	// 1.5.0: Post List Thumbnail Alignment Class
 	$thumbalign_array = array(
 		'none' => __('No Alignment Class','bioship'),
-		'alignleft' => __('Align Left','bioship').' (.alignleft)',
-		'alignright' => __('Align Right','bioship').' (.alignright)',
-		'aligncenter' => __('Align Center','bioship').' (.aligncenter)',
+		'alignleft' => __('Align Left','bioship').' (<i>.alignleft</i>)',
+		'alignright' => __('Align Right','bioship').' (<i>.alignright<i>)',
+		'aligncenter' => __('Align Center','bioship').' (<i>.aligncenter</i>)',
 		'alternateleftright' => __('Alternate Left-Right','bioship'),
 		'alternaterightleft' => __('Alternate Right-Left','bioship')
 	);
@@ -3437,9 +3454,9 @@ if (!function_exists('optionsframework_options')) {
 	// 1.5.0: Post Thumbnail Alignment Class
 	$thumbalign_array = array(
 		'none' => __('No Alignment Class','bioship'),
-		'alignleft' => __('Align Left','bioship').' (.alignleft)',
-		'alignright' => __('Align Right','bioship').' (.alignright)',
-		'aligncenter' => __('Align Center','bioship').' (.aligncenter)'
+		'alignleft' => __('Align Left','bioship').' (<i>.alignleft</i>)',
+		'alignright' => __('Align Right','bioship').' (<i>.alignright</i>)',
+		'aligncenter' => __('Align Center','bioship').' (<i>.aligncenter</i>)'
 	);
 	$options[] = array( 'name' => __('Single Post Thumbnail Alignment','bioship'),
 		'desc' => __('Post Thumbnail alignment class for Single Post display.','bioship'),
@@ -3458,7 +3475,7 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'off',
 		'type' => 'select',
 		'class' => 'skeleton',
-		'transport' => 'refresh', // use active_callback for pages only?
+		'transport' => 'refresh',
 		'options' => $thumb_array,
 		'page' => 'basic');
 
@@ -3469,7 +3486,7 @@ if (!function_exists('optionsframework_options')) {
 		'std' => 'alignleft',
 		'type' => 'select',
 		'class' => 'skeleton',
-		'transport' => 'refresh', // use active_callback for pages only?
+		'transport' => 'refresh',
 		'options' => $thumbalign_array,
 		'page' => 'advanced');
 
@@ -3477,7 +3494,7 @@ if (!function_exists('optionsframework_options')) {
 	$thumbcpt_defaults = array('page'=>'1');
 	$options[] = array(
 		'name' => __('Add Thumbnails Support for Custom Post Types', 'bioship'),
-		'desc' => __('Adds Thumbnail support for selected Custom Post Types. Will not remove existing support. (Custom sizes and alignments can be handled via filters.)', 'bioship'),
+		'desc' => __('Adds Thumbnail support for selected Custom Post Types. Will not remove existing support.', 'bioship'),
 		'id' => 'thumbnailcpts',
 		'std' => $thumbcpt_defaults,
 		'type' => 'multicheck',
@@ -3499,7 +3516,7 @@ if (!function_exists('optionsframework_options')) {
 	// Default Gravatar
 	$options[] = array(
 		'name' => __('Default Gravatar URL', 'bioship'),
-		'desc' => __('Alternatively just put a 96x96 gravatar.png in your Themes /images/ directory.', 'bioship'),
+		'desc' => __('Default','bioship').' 96x96 <i>gravatar.png</i>. ('.__('Alternatively place in your parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'gravatarurl',
 		'std' => '',
 		'class' => 'skeleton',
@@ -3510,7 +3527,7 @@ if (!function_exists('optionsframework_options')) {
 	// 1.8.5: set default to empty, fallback to root handled in function
 	$options[] = array(
 		'name' => __('Favicon.ico URL', 'bioship'),
-		'desc' => __('Default 32x32 or 16x16 favicon.ico icon image. (Alternatively just place in /images/ directory.)', 'bioship'),
+		'desc' => __('Default','bioship').' 32x32 or 16x16 <i>favicon.ico</i>. ('.__('Alternatively place in parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'faviconico',
 		'std' => '',
 		'class' => 'skeleton',
@@ -3520,7 +3537,7 @@ if (!function_exists('optionsframework_options')) {
 	// Favicon.png
 	$options[] = array(
 		'name' => __('Favicon.png URL', 'bioship'),
-		'desc' => __('Default 96x96 favicon.png image. (Alternatively just place in /images/ directory.)', 'bioship'),
+		'desc' => __('Default','bioship').' 96x96 <i>favicon.png</i> ('.__('Alternatively place in parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'faviconpng',
 		'std' => '',
 		'class' => 'skeleton',
@@ -3530,7 +3547,7 @@ if (!function_exists('optionsframework_options')) {
 	// Apple Touch Default
 	$options[] = array(
 		'name' => __('Apple Touch Icon URL', 'bioship'),
-		'desc' => __('Default 57x57 apple-touch-icon.png image. (Alternatively just place in /images/ directory.)', 'bioship'),
+		'desc' => __('Default','bioship').' 57x57 <i>apple-touch-icon.png</i> ('.__('Alternatively place in parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'appletouchicon',
 		'std' => '',
 		'class' => 'skeleton',
@@ -3540,7 +3557,7 @@ if (!function_exists('optionsframework_options')) {
 	// Win8 Tile/Apple Touch 144
 	$options[] = array(
 		'name' => __('Windows 8 Tile/Apple Touch 144', 'bioship'),
-		'desc' => __('Default 144x144 win8-tile.png for Windows 8/Apple Touch.  (Alternatively just place in /images/ directory.)', 'bioship'),
+		'desc' => __('Default','bioship').' 144x144 <i>win8-tile.png</i> '.__('for Windows 8/Apple Touch','bioship').'. ('.__('Alternatively place in child or parent theme','bioship').' <i>/images/</i>)',
 		'id' => 'wineighttile',
 		'std' => '',
 		'class' => 'skeleton',
@@ -3560,7 +3577,7 @@ if (!function_exists('optionsframework_options')) {
 	// Apple Touch Icon Sizes: 57, 72, 76, 114, 120, 144, 152, 180, 192
 	$options[] = array(
 		'name' => __('Enable Apple Touch Icon Sizes', 'bioship'),
-		'desc' => __('Adds header code for all the specific Apple Touch Icon sizes (if found.)<br>Place files in child or parent theme /images/ <br> Filenames: apple-touch-icon-XXXxYYY-precomposed.png - Sizes (square): 57,72,76,114,120,144,152,180,192', 'bioship'),
+		'desc' => __('Adds header code for all the specific Apple Touch Icon sizes (if found.)','bioship').'<br>'.__('Place files in child or parent theme','bioship').' <i>/images/</i> <br>'.__('Filenames','bioship').': <i>apple-touch-icon-XXXxYYY-precomposed.png</i> - '.__('Sizes','bioship').' ('.__('square','bioship').'): 57,72,76,114,120,144,152,180,192',
 		'id' => 'appleiconsizes',
 		'std' => '0',
 		'class' => 'skeleton',
@@ -3570,7 +3587,7 @@ if (!function_exists('optionsframework_options')) {
 	// Apple Startup Image Sizes: 320x460,640x920,640x1096,1024x748,768x1004,1536x2008,2048x1496
 	$options[] = array(
 		'name' => __('Enable Apple Touch Startup Images', 'bioship'),
-		'desc' => __('Adds header code for all the specific Apple Touch Startup Image sizes (if found.)<br>Place files in child or parent theme /images/ <br> Filenames: startup-XXXXxYYYY.png -- Sizes: 320x460,640x920,640x1096,1024x748,768x1004,1536x2008,2048x1496', 'bioship'),
+		'desc' => __('Adds header code for all the specific Apple Touch Startup Image sizes (if found.)','bioship').'<br>'.__('Place files in child or parent theme','bioship').' <i>/images/</i><br>'.__('Filenames','bioship').': <i>startup-XXXXxYYYY.png</i> - '.__('Sizes','bioship').': 320x460,640x920,640x1096,1024x748,768x1004,1536x2008,2048x1496',
 		'id' => 'startupimages',
 		'std' => '0',
 		'class' => 'skeleton',
@@ -3589,7 +3606,7 @@ if (!function_exists('optionsframework_options')) {
 		// 'appleiconsizes' => __('Largest Apple Icon Size','bioship')		// too small
 	);
 	$options[] = array( 'name' => __('Open Graph Default Image','bioship'),
-		'desc' => __('Default Open Graph image, recommended miniumum 200x200 (requires ','bioship').'<a href="http://wordpress.org/plugins/open-graph-protocol-framework/" target=_blank>'.__('Open Graph Protocol','bioship').'</a> '.__('plugin installed and active. If using another Open Graph plugin, ignore this section.) Filter also available.','bioship'),
+		'desc' => __('Recommended miniumum','bioship').' 200x200px '.__('requires','bioship').' <a href="http://wordpress.org/plugins/open-graph-protocol-framework/" target=_blank>'.__('Open Graph Protocol','bioship').'</a> '.__('plugin installed and active.','bioship'),
 		'id' => 'ogdefaultimage',
 		'std' => 'header_logo',
 		'type' => 'select',
@@ -3623,7 +3640,7 @@ if (!function_exists('optionsframework_options')) {
 	// Load Hybrid Core
 	$options[] = array(
 		'name' => __('Load Hybrid Core', 'bioship'),
-		'desc' => __('Loads the Hybrid Core Library Version (highly recommended. also required for all options below)', 'bioship'),
+		'desc' => __('Loads the Hybrid Core Library Version (highly recommended)', 'bioship'),
 		'id' => 'hybridloadcore',
 		'std' => '3',
 		'class' => 'skeleton',
@@ -3634,7 +3651,7 @@ if (!function_exists('optionsframework_options')) {
 	// Hybrid Hook
 	$options[] = array(
 		'name' => __('Hybrid Hook', 'bioship'),
-		'desc' => __('Modified plugin to add HTML block to all available theme Hooks. Note: Does not require Hybrid Core. (hybrid/hybrid-hook/hybrid-hook.php)', 'bioship'),
+		'desc' => __('Modified plugin to add HTML block to all available theme Hooks. Note: Does not require Hybrid Core.', 'bioship').' (<i>includes/hybrid-hook/hybrid-hook.php</i>)',
 		'id' => 'hybridhook',
 		'std' => '0',
 		'class' => 'skeleton',
@@ -3765,12 +3782,7 @@ if (!function_exists('optionsframework_options')) {
 		'page' => 'advanced');
 
 	// note: Foundation 5 Dependencies: modernizr and fastclick (autoloaded for foundation 5)
-
-	$options[] = array( 'name' => __('Foundation Notes','bioship'),
-		'desc' => __('Integration of <a href="http://foundation.zurb.com/docs" target=_blank>Foundation</a> is <i>experimental</i>. Defaults to not load as not needed by most. This is a loader only - do with Foundation what you will. Dependency Notes: Modernizr is required, as is fastclick.js (turn them on in the Muscle Scripts tab or Foundation will not be loaded.)','bioship'),
-		'class' => 'skeleton',
-		'type' => 'info',
-		'page' => 'advanced');
+	// 2.0.5: removed experimental note for Foundation loading
 
 	// 1.8.0: added Foundation version select (directory => label)
 	$version_options = array(

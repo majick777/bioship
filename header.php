@@ -1,5 +1,5 @@
 <!doctype html>
-<?php if (THEMETRACE) {skeleton_trace('T',__('Header Template','bioship'),__FILE__);} ?>
+<?php if (THEMETRACE) {bioship_trace('T',__('Header Template','bioship'),__FILE__);} ?>
 <!--[if lt IE 7 ]><html class="ie ie6" <?php language_attributes();?>><![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" <?php language_attributes();?>><![endif]-->
 <!--[if IE 8 ]><html class="ie ie8" <?php language_attributes();?>><![endif]-->
@@ -17,15 +17,20 @@
 
 <?php
 
-	do_action('bioship_before_container');
-	do_action('bioship_container_open');
+	if (THEMEDEBUG) {
+		global $vthemehooks; echo "<!-- Final Layout Positions: ";
+		print_r($vthemehooks['functions']); echo " -->";
+	}
 
-	do_action('bioship_before_header');
-	do_action('bioship_header');
-	do_action('bioship_after_header');
+	bioship_do_action('bioship_before_container');
+	bioship_do_action('bioship_container_open');
 
-	do_action('bioship_before_navbar');
-	do_action('bioship_navbar');
-	do_action('bioship_after_navbar');
+	bioship_do_action('bioship_before_header');
+	bioship_do_action('bioship_header');
+	bioship_do_action('bioship_after_header');
+
+	bioship_do_action('bioship_before_navbar');
+	bioship_do_action('bioship_navbar');
+	bioship_do_action('bioship_after_navbar');
 
 ?>
