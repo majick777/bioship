@@ -78,8 +78,8 @@ if (THEMEDEBUG) {echo "/* Grid Columns: ".$gridcolumns." */".PHP_EOL;}
 // set Content Grid Columns
 // ------------------------
 $contentcolumns = 24;
-if (isset($_REQUEST['contentcolumns'])) {
-	$columns = $_REQUEST['contentcolumns'];
+if (isset($_REQUEST['contentgridcolumns'])) {
+	$columns = $_REQUEST['contentgridcolumns'];
 	if ( ($columns == 12) || ($columns == 16) || ($columns == 20) ) {
 		$contentcolumns = $columns;
 	}
@@ -241,7 +241,7 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 .one_sixth {width:16%} .five_sixth, .five_sixths {width:83%}
 
 /* Clear and Clearfix */
-// 1.9.8: fix to remove overflow:hidden from clears (causing display height to actually exist?)
+<?php // 1.9.8: fix to remove overflow:hidden from clears (causing display height to actually exist?) ?>
 .container:after {content:"\0020"; display:block; height:0; clear:both; visibility:hidden;}
 .clearfix:before, .clearfix:after {content:"\0020"; display:block; visibility:hidden; width:0; height:0; font-size: 0; line-height: 0;}
 .clear {clear:both; display:block; visibility:hidden; width:0; height:0;}

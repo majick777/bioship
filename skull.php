@@ -69,7 +69,8 @@ if (!function_exists('bioship_register_nav_menus ')) {
 	$vthememenus['header'] = false;
 	if ( (isset($vthemesettings['headermenu'])) && ($vthemesettings['headermenu'] == '1') ) {
 		register_nav_menus(array('header' => __('Header Navigation','bioship')));
-		if (hav_nav_menu('header')) {
+		// 2.0.6: fix to function typo causing fatal error (hav_nav_menu)
+		if (has_nav_menu('header')) {
 			$vthememenus['header'] = bioship_apply_filters('skeleton_menu_header', true);
 		}
 	}
