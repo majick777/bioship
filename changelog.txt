@@ -1,3 +1,10 @@
+= 2.0.6 =
+- Updated: screenshot.jpg with Demo Content for compliance
+- Updated: added frame to Child Theme screenshot.jpg image
+- Fixed: grid.php content columns querytstring setting typo
+- Fixed: some missing apply_filters prefixes in options.php
+- Improved: streamlined some existing skeleton style changes
+
 = 2.0.5 = 
 - Added: Freemius SDK Library for Themes 1.2.2.5
 - Added: Auto-ignore core styles/scripts for BWP Minify

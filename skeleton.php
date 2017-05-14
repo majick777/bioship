@@ -249,6 +249,10 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 
 		// 1.8.5: use home_url not site_url
 		$vhomeurl = esc_url(home_url('/'));
+		// 2.0.6: added site logo and home title link filters
+		$vhomeurl = bioship_apply_filters('skeleton_title_link_url', $vhomeurl);
+		$vlogolinkurl = bioship_apply_filters('skeleton_logo_link_url', $vhomeurl);
+
 		$vblogname = get_bloginfo('name','display');
 		$vblogname = bioship_apply_filters('skeleton_blog_display_name', $vblogname);
 		$vblogdescription = get_bloginfo('description');
@@ -260,8 +264,9 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		// 1.8.5: recombined image/text template for live previewing
 		// 1.8.5: added site text / description text display checkboxes
 		// 1.9.0: fix to logo logic here having separated text display
+		// 2.0.6: display as inline block (for combine logo and site title)
 		$vlogoimagedisplay = ' style="display:none;"';
-		if ($vlogourl) {$vlogoimagedisplay = '';}
+		if ($vlogourl) {$vlogoimagedisplay = ' style="display:inline-block;"';}
 
 		$vsitetitle = false; $vsitedesc = false;
 		if ( (isset($vthemesettings['header_texts']['sitetitle']))
@@ -269,7 +274,7 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		if ( (isset($vthemesettings['header_texts']['sitedescription']))
 		  && ($vthemesettings['header_texts']['sitedescription'] == '1') ) {$vsitedesc = true;}
 
-		// TODO: add/check meta display overrides?
+		// TODO: add/check perpost meta display overrides?
 		// if ($vthemedisplay['sitetitle'] == '') {}
 		// if ($vthemedisplay['sitedesc'] == '') {}
 
@@ -283,25 +288,26 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		// 1.8.5: fix to hybrid attributes names (_ to -)
 		// 1.9.0: added filter to site-description attribute to prevent duplicate ID
 		// 1.9.6: added logo-image ID not just class
+		// 2.0.6: display inline-block for site-logo-text (for combined display)
 		if (THEMECOMMENTS) {$vlogo = '<!-- #site-logo -->';} else {$vlogo = '';}
 		$vlogo .= '<div id="site-logo" class="'.$vlogoclasses.'">'.PHP_EOL;
 		$vlogo .= '	<div class="inner">'.PHP_EOL;
-		$vlogo .= '  <div class="site-logo-image"'.$vlogoimagedisplay.'>'.PHP_EOL;
-		$vlogo .= '		<a class="logotype-img" href="'.$vhomeurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.PHP_EOL;
-		$vlogo .= '			<h1 id="site-title">'.PHP_EOL;
-		$vlogo .= '				<img id="logo-image" class="logo-image" src="'.$vlogourl.'" alt="'.$vblogname.'" border="0">'.PHP_EOL;
-		$vlogo .= '				<div class="alt-logo" style="display:none;"></div>'.PHP_EOL;
+		$vlogo .= ' 	<div class="site-logo-image"'.$vlogoimagedisplay.'>'.PHP_EOL;
+		$vlogo .= '			<a class="logotype-img" href="'.$vlogolinkurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.PHP_EOL;
+		$vlogo .= '				<h1 id="site-title">'.PHP_EOL;
+		$vlogo .= '					<img id="logo-image" class="logo-image" src="'.$vlogourl.'" alt="'.$vblogname.'" border="0">'.PHP_EOL;
+		$vlogo .= '					<div class="alt-logo" style="display:none;"></div>'.PHP_EOL;
+		$vlogo .= '				</h1>'.PHP_EOL;
+		$vlogo .= '			</a>'.PHP_EOL;
+		$vlogo .= ' 	 </div>'.PHP_EOL;
+		$vlogo .= ' 	 <div class="site-logo-text" style="display:inline-block;">'.PHP_EOL;
+		$vlogo .= '			<h1 id="site-title-text" '.hybrid_get_attr('site-title').$vsitetitledisplay.'>'.PHP_EOL;
+		$vlogo .= '				<a class="text" href="'.$vhomeurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.$vblogname.'</a>'.PHP_EOL;
 		$vlogo .= '			</h1>'.PHP_EOL;
-		$vlogo .= '		</a>'.PHP_EOL;
-		$vlogo .= '  </div>'.PHP_EOL;
-		$vlogo .= '  <div class="site-logo-text">'.PHP_EOL;
-		$vlogo .= '		<h1 id="site-title-text" '.hybrid_get_attr('site-title').$vsitetitledisplay.'>'.PHP_EOL;
-		$vlogo .= '			<a class="text" href="'.$vhomeurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.$vblogname.'</a>'.PHP_EOL;
-		$vlogo .= '		</h1>'.PHP_EOL;
-		$vlogo .= '		<div id="site-description"'.$vsitedescdisplay.'>'.PHP_EOL;
-		$vlogo .= '			<span class="site-desc" '.hybrid_get_attr('site-description').'>'.$vblogdescription.'</span>'.PHP_EOL;
-		$vlogo .= '		</div>'.PHP_EOL;
-		$vlogo .= '  </div>'.PHP_EOL;
+		$vlogo .= '			<div id="site-description"'.$vsitedescdisplay.'>'.PHP_EOL;
+		$vlogo .= '				<span class="site-desc" '.hybrid_get_attr('site-description').'>'.$vblogdescription.'</span>'.PHP_EOL;
+		$vlogo .= '			</div>'.PHP_EOL;
+		$vlogo .= ' 	</div>'.PHP_EOL;
 		$vlogo .= '	</div>'.PHP_EOL;
 		$vlogo .= '</div>'.PHP_EOL;
 		if (THEMECOMMENTS) {$vlogo .= '<!-- /#site-logo -->'.PHP_EOL;}
