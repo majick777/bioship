@@ -40,9 +40,9 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 
 	global $vthemename, $vtitan, $vthemeoptions;
 	$vtitan = TitanFramework::getInstance($vthemename);
+	// 1.8.5: removed unnecessary styling filter from here
 	// 1.9.5: do NOT output generated styles thanks Titan
 	$vtitan->settings['css'] = false;
-	// 1.8.5: removed unnecessary styling filter from here
 
 	// Set Custom WebSafe Fonts
 	// ------------------------
@@ -113,9 +113,9 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 
 	// Create the Admin Page
 	// ---------------------
-	$voptionspagename = apply_filters('options_admin_menu_title','BioShip Options');
-	$voptionspageposition = apply_filters('options_admin_menu_position',61);
-	$voptionspageicon = apply_filters('options_admin_menu_icon','dashicons-welcome-view-site'); // "\f115"
+	$voptionspagename = bioship_apply_filters('options_admin_menu_title', __('BioShip Options','bioship'));
+	$voptionspageposition = bioship_apply_filters('options_admin_menu_position', 61);
+	$voptionspageicon = bioship_apply_filters('options_admin_menu_icon', 'dashicons-welcome-view-site'); // "\f115"
 	$voptionspageargs = array('name' => $voptionspagename, 'position' => $voptionspageposition, 'icon' => $voptionspageicon);
 	$vadminpanel = $vtitan->createAdminPanel($voptionspageargs);
 
@@ -272,7 +272,7 @@ if (!function_exists('bioship_optionsframework_option_name')) {
 
 	$themename = $vtheme['Name'];
 	$themename = preg_replace("/\W/", "_", strtolower($themename));
-	$themename = apply_filters('options_framework_themename',$themename);
+	$themename = apply_filters('options_framework_themename', $themename);
 
 	$optionsframework_settings = get_option('optionsframework');
 	$optionsframework_settings['id'] = $themename;
@@ -381,7 +381,7 @@ if (!function_exists('bioship_options_web_font_stacks')) {
 		'"Courier New", Courier, FreeMono, "Nimbus Mono L", monospace' => 'Courier New, Courier, Nimbus Mono L, FreeMono, monospace',
 		'Consolas, "Lucida Console", Monaco, FreeMono, monospace' => 'Consolas, Lucida Console, Monaco, FreeMono, monospace',
 	);
-	return apply_filters('options_font_stacks',$fonts);
+	return bioship_apply_filters('options_font_stacks', $fonts);
 
 	// Some notable alternatives... (see ref URLS for details)
 	// (sans-serif) Trebuchet MS, URW Grotesk T
@@ -451,7 +451,7 @@ if (!function_exists('bioship_options_title_fonts')) {
 		$vtitlefonts = array_merge($vextrafontarray,$vtitlefonts);
 	}
 
-	return apply_filters('options_title_fonts',$vtitlefonts);
+	return bioship_apply_filters('options_title_fonts', $vtitlefonts);
  }
 }
 
@@ -607,7 +607,7 @@ if (!function_exists('bioship_options')) {
 	);
 
 	// If using image radio buttons, define a directory path (unused)
-	$imagepath = apply_filters('options_framework_images_url',get_template_directory_uri().'/images/');
+	$imagepath = bioship_apply_filters('options_framework_images_url', get_template_directory_uri().'/images/');
 
 	// Setup the CPT options array
 	$vcpts[0] = 'page'; $vcpts[1] = 'post';
@@ -968,7 +968,7 @@ if (!function_exists('bioship_options')) {
 	//	'type' => 'info');
 
 	// Text Header Display
-	$textheader_defaults = array('sitetitle'=>'1','sitedescription'=>'1');
+	$textheader_defaults = array('sitetitle'=>'1', 'sitedescription'=>'1');
 	$textheader_options = array('sitetitle'=>__('Display Site Title Headline','bioship'),'sitedescription'=>__('Site Description Tagline','bioship'));
 	$options[] = array(
 		'name' => __('Display Header Text', 'bioship'),
@@ -987,7 +987,7 @@ if (!function_exists('bioship_options')) {
 	$options[] = array( 'name' => __('Site Title Text Style','bioship'),
 		'desc' => __('','bioship'),
 		'id' => 'headline_typography',
-		'std' => array('size' => '40px','face' => 'Open+Sans','style' => 'normal','color' => '#181818'),
+		'std' => array('size' => '40px', 'face' => 'Open+Sans', 'style' => 'normal', 'color' => '#181818'),
 		'default' => array('font-size' => '40px', 'font-style' => 'normal', 'font-weight' => 'normal',
 			 'color' => '#181818', 'font-family' => 'Open Sans'),
 		'show_websafe_fonts' => false,
@@ -1004,9 +1004,9 @@ if (!function_exists('bioship_options')) {
 	$options[] = array( 'name' => __('Site Tagline Text Style','bioship'),
 		'desc' => __('','bioship'),
 		'id' => 'tagline_typography',
-		'std' => array('size' => '24px','face' => 'Open+Sans','style' => 'normal','color' => '#CCCCCC'),
+		'std' => array('size' => '24px', 'face' => 'Open+Sans', 'style' => 'normal', 'color' => '#CCCCCC'),
 		'default' => array('font-size' => '24px', 'font-style' => 'normal', 'font-weight' => 'normal',
-			 'color' => '#CCCCCC', 'font-family' => 'Open Sans'),
+			 'color' => '#999999', 'font-family' => 'Open Sans'),
 		'show_websafe_fonts' => false,
 		'enqueue' => false,
 		// 'css' => '#header span.site-desc {value;}',
@@ -1043,7 +1043,7 @@ if (!function_exists('bioship_options')) {
 	$options[] = array( 'name' => __('Main Menu Item Typography','bioship'),
 		'desc' => __('Typography for top level menu items.','bioship'),
 		'id' => 'navmenu_typography',
-		'std' => array('size' => '20px','face' => 'Open Sans','style' => 'bold','color' => '#222222'),
+		'std' => array('size' => '20px', 'face' => 'Open Sans', 'style' => 'bold', 'color' => '#222222'),
 		'default' => array('font-size' => '14px', 'font-style' => 'normal', 'font-weight' => 'bold',
 			 'color' => '#222222', 'font-family' => 'Open Sans'),
 		'show_google_fonts' => true,
@@ -1059,7 +1059,7 @@ if (!function_exists('bioship_options')) {
 	$options[] = array( 'name' => __('Main SubMenu Item Typography','bioship'),
 		'desc' => __('Typography for secondary level submenu items.','bioship'),
 		'id' => 'navsubmenu_typography',
-		'std' => array('size' => '16px','face' => 'Open Sans','style' => 'bold','color' => '#444444'),
+		'std' => array('size' => '16px', 'face' => 'Open Sans', 'style' => 'bold', 'color' => '#444444'),
 		'default' => array('font-size' => '14px', 'font-style' => 'normal', 'font-weight' => 'bold',
 			 'color' => '#444444', 'font-family' => 'Open Sans'),
 		'show_google_fonts' => true,
@@ -3943,7 +3943,7 @@ if (!function_exists('bioship_options')) {
 	// -----------------------
 	// -- END THEME OPTIONS --
 
-	$options = apply_filters('options_themeoptions',$options);
+	$options = bioship_apply_filters('options_themeoptions', $options);
 	return $options;
  }
 }
