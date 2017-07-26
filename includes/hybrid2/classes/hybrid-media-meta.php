@@ -1,9 +1,9 @@
 <?php
 /**
- * Class for getting and formatting attachment metadata.  The class currently handles attachment metadata for 
- * the image, audio, and video mime types.  It may handle other types in the future, depending on the direction 
- * of WordPress core.  The purpose of this class is wrap up the return values of the core WP function 
- * `wp_get_attachment_metadata()` into a more usuable format for theme authors so that they can easily display 
+ * Class for getting and formatting attachment metadata.  The class currently handles attachment metadata for
+ * the image, audio, and video mime types.  It may handle other types in the future, depending on the direction
+ * of WordPress core.  The purpose of this class is wrap up the return values of the core WP function
+ * `wp_get_attachment_metadata()` into a more usuable format for theme authors so that they can easily display
  * data related to media in their themes.
  *
  * @package    Hybrid
@@ -176,7 +176,7 @@ class Hybrid_Media_Meta {
 		/* If an ISO is set, add it to the $items array. */
 		if ( !empty( $this->meta['image_meta']['iso'] ) ) {
 			$this->items['iso'] = array(
-				absint( $this->meta['image_meta']['iso'] ), 
+				absint( $this->meta['image_meta']['iso'] ),
 				'<abbr title="' . __( 'International Organization for Standardization', 'hybrid-core' ) . '">' . __( 'ISO', 'hybrid-core' ) . '</abbr>'
 			);
 		}
@@ -205,8 +205,8 @@ class Hybrid_Media_Meta {
 	/**
 	 * Adds and formats audio metadata for the items array.
 	 *
-	 * Note that we're purposely leaving out the "transcript/lyrics" metadata in this instance.  This 
-	 * is because it doesn't fit in well with how other metadata works on display.  There's a separate 
+	 * Note that we're purposely leaving out the "transcript/lyrics" metadata in this instance.  This
+	 * is because it doesn't fit in well with how other metadata works on display.  There's a separate
 	 * function for that called `hybrid_get_audio_transcript()`.
 	 *
 	 * @since  2.0.0

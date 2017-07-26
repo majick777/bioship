@@ -1,3 +1,25 @@
+= 2.0.8 =
+- Changed: misc WordPress.Org compliance changes
+- Improved: Author Bio box to work outside of the loop
+- Fixed: global Site Icon and Favicons conflict
+- Fixed: full width content grid columns for mobile queries
+- Fixed: Discreet Text Widget dependency on Text Widget
+- Added: Classic Text Widget class for WP 4.8
+- Added: HTML Comments Output Function
+
+= 2.0.7 = 
+- Changed: /javascripts to /scripts (file hierarchy unchanged)
+- Removed: unused adapt.js and adapt.min.js scripts
+- Disabled: XML exporting removed as not importing
+- Fixed: text domain variations to bioship text domain (+kirki)
+- Fixed: some incorrect text domain typos
+- Fixed: navigation menu text hover color targeting
+- Fixed: inconsistent line breaks for foundation.selected.js
+- Fixed: Theme Admin page notices output
+- Fixed: Theme Settings file import bugs
+- Added: serialized format Theme Settings export option
+- Added: documentation link to admin menu
+
 = 2.0.6 =
 - Updated: screenshot.jpg with Demo Content for compliance
 - Updated: added frame to Child Theme screenshot.jpg image

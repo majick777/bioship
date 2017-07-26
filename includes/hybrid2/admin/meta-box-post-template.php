@@ -1,8 +1,8 @@
 <?php
 /**
- * Adds the template meta box to the post editing screen for public post types.  This feature allows users and 
- * devs to create custom templates for any post type, not just pages as default in WordPress core.  The 
- * functions in this file create the template meta box and save the template chosen by the user when the 
+ * Adds the template meta box to the post editing screen for public post types.  This feature allows users and
+ * devs to create custom templates for any post type, not just pages as default in WordPress core.  The
+ * functions in this file create the template meta box and save the template chosen by the user when the
  * post is saved.  This file is only used if the theme supports the 'hybrid-core-template-hierarchy' feature.
  *
  * @package    HybridCore
@@ -23,7 +23,7 @@ add_action( 'add_attachment',  'hybrid_meta_box_post_save_template'        );
 add_action( 'edit_attachment', 'hybrid_meta_box_post_save_template'        );
 
 /**
- * Adds the post template meta box for all public post types, excluding the 'page' post type since WordPress 
+ * Adds the post template meta box for all public post types, excluding the 'page' post type since WordPress
  * core already handles page templates.
  *
  * @since  1.2.0
@@ -56,7 +56,7 @@ function hybrid_meta_box_post_add_template( $post_type, $post ) {
  * @param  string $post_type The post type of the current post being edited.
  * @param  object $post      The current post being edited.
  * @return void
- */ 
+ */
 function hybrid_meta_box_post_remove_template( $post_type, $post ) {
 
 	/* Removes meta box from pages since this is a built-in WordPress feature. */
@@ -105,7 +105,7 @@ function hybrid_meta_box_post_display_template( $object, $box ) {
 }
 
 /**
- * Saves the post template meta box settings as post metadata. Note that this meta is sanitized using the 
+ * Saves the post template meta box settings as post metadata. Note that this meta is sanitized using the
  * hybrid_sanitize_meta() callback function prior to being saved.
  *
  * @since  1.2.0

@@ -16,7 +16,7 @@ if (is_string($vposttypes)) {$vposttype = $vposttypes;}
 /* Before Content Hook */
 bioship_do_action('bioship_before_content');
 
-if (THEMECOMMENTS) {echo "<!-- #maincontent -->";}
+bioship_html_comment('#maincontent');
 $vattributes = hybrid_get_attr('content');
 echo '<main '.$vattributes.'>';
 
@@ -120,7 +120,7 @@ echo '<main '.$vattributes.'>';
 	bioship_do_action('bioship_after_loop');
 
 echo "</main>";
-if (THEMECOMMENTS) {echo "<!-- /#maincontent -->";}
+bioship_html_comment('/#maincontent');
 
 /* After Content Hook */
 bioship_do_action('bioship_after_content');

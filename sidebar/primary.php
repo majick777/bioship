@@ -8,13 +8,12 @@ if (is_active_sidebar('primary')) {
 
 	bioship_do_action('bioship_before_sidebar'); ?>
 
-		<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-primary -->';} ?>
+		<?php bioship_html_comment('#sidebar-primary'); ?>
 		<aside <?php hybrid_attr('sidebar', 'primary'); ?>>
 
 			<?php dynamic_sidebar('primary'); ?>
 
-		</aside>
-		<?php if (THEMECOMMENTS) {echo '<!-- /#sidebar-primary -->';} ?>
+		</aside><?php bioship_html_comment('/#sidebar-primary'); ?>
 
 	<?php bioship_do_action('bioship_after_sidebar');
 

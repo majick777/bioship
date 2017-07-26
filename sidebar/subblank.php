@@ -9,13 +9,12 @@ $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 bioship_do_action('bioship_before_subsidebar'); ?>
 
-	<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-subsidiary -->';} ?>
+	<?php bioship_html_comment('#sidebar-subsidiary'); ?>
 	<aside <?php hybrid_attr('sidebar', 'subsidiary', $vargs); ?>>
 
 		&nbsp;
 
-	</aside>
-	<?php if (THEMECOMMENTS) {echo '<!-- /#sidebar-subsidiary -->';} ?>
+	</aside><?php bioship_html_comment('/#sidebar-subsidiary'); ?>
 
 <?php bioship_do_action('bioship_after_subsidebar');
 

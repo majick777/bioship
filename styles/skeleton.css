@@ -415,7 +415,7 @@ q {font-style: italic;}
 
 /* Images */
 
-img.scale-with-grid,.entry-content img, .entry-summary img, 
+img.scale-with-grid, .entry-content img, .entry-summary img, 
 .comment-content img, .widget img, .wp-caption {
 	max-width: 100% !important;
 	height: auto;
@@ -481,7 +481,7 @@ table td {padding: 5px;}
 li.widget-container {list-style: none;}
 
 .widget-container {
-	margin: 0 0 28px 0;
+	margin: 14px 0 14px 0;
 	padding-top: 0px;
 }
 
@@ -498,6 +498,8 @@ li.widget-container {list-style: none;}
 .widget-container select {max-width: 100%;}
 
 .widget_search #s {width: 60%;}
+
+.widget_search input.search-field {margin-top: 10px;}
 
 .widget_search label span {display: none;}
 

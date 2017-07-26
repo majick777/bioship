@@ -27,7 +27,7 @@
 
 		<div class="media-info">
 
-			<h3><?php _e( 'Video Info', 'hybrid-base' ); ?></h3>
+			<h3><?php _e( 'Video Info', 'bioship' ); ?></h3>
 
 			<?php hybrid_media_meta(); ?>
 

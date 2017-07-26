@@ -1,13 +1,13 @@
 <?php
 /**
- * Deprecated functions that should be avoided in favor of newer functions. Developers should not use 
- * these functions in their parent themes and users should not use these functions in their child themes.  
- * All deprecated functions will be removed at some point in a future release.  If your theme is using one 
+ * Deprecated functions that should be avoided in favor of newer functions. Developers should not use
+ * these functions in their parent themes and users should not use these functions in their child themes.
+ * All deprecated functions will be removed at some point in a future release.  If your theme is using one
  * of these, you should use the listed alternative or remove it from your theme if necessary.
  *
- * This file also maintains a list of "removed" functions.  Removed functions simply exist as function names 
- * for an added layer of protection in the off-chance that a developer failed to switch over to an 
- * alternative when the function was first deprecated.  Removed functions are periodically permanently 
+ * This file also maintains a list of "removed" functions.  Removed functions simply exist as function names
+ * for an added layer of protection in the off-chance that a developer failed to switch over to an
+ * alternative when the function was first deprecated.  Removed functions are periodically permanently
  * removed from the code base.
  *
  * Functions deprecated prior to the 2.0.0 version are no longer available.
@@ -30,7 +30,7 @@
  * @access     public
  * @return     void
  */
-function hybrid_add_shortcodes() {}
+// function h-y-b-r-i-d_a-d-d_s-h-o-r-t-c-o-d-e-s() {}
 
 /**
  * Shortcode to display the current year.

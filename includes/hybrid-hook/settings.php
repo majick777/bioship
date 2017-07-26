@@ -23,7 +23,7 @@ function hybrid_hook_settings_page_init() {
 	add_action( 'admin_init', 'hybrid_hook_register_settings' );
 
 	/* Add Hybrid Hook settings page. */
-	@$hybrid_hook->settings_page = add_theme_page( __( 'Hybrid Hook', 'hybrid-hook' ), __( 'Hybrid Hook', 'hybrid-hook' ), 'edit_theme_options', 'hybrid-hook-settings', 'hybrid_hook_settings_page' );
+	@$hybrid_hook->settings_page = add_theme_page( __( 'Hybrid Hook', 'bioship' ), __( 'Hybrid Hook', 'bioship' ), 'edit_theme_options', 'hybrid-hook-settings', 'hybrid_hook_settings_page' );
 
 	/* Add media for the settings page. */
 	add_action( "load-{$hybrid_hook->settings_page}", 'hybrid_hook_admin_enqueue_style' );
@@ -112,11 +112,11 @@ function hybrid_hook_settings_page() {
 
 		<?php /* s-c-r-e-e-n_i-c-o-n(-)-; */ ?>
 
-		<h2><?php _e( 'Hybrid Hook Settings', 'hybrid-hook' ); ?></h2>
+		<h2><?php _e( 'Hybrid Hook Settings', 'bioship' ); ?></h2>
 
-		<?php // if ( 'hybrid' !== get_template() ) echo '<div class="error"><p><strong>' . sprintf( __( "The theme you're currently using is incompatible with this plugin. Hybrid Hook was designed to work with the %s theme.", 'hybrid-hook' ), '<a href="http://themehybrid.com/themes/hybrid" title="' . __( 'Hybrid WordPress Theme', 'hybrid-hook' ) . '">' . __( 'Hybrid', 'hybrid-hook' ) . '</a>' ) . '</strong></p></div>'; ?>
+		<?php // if ( 'hybrid' !== get_template() ) echo '<div class="error"><p><strong>' . sprintf( __( "The theme you're currently using is incompatible with this plugin. Hybrid Hook was designed to work with the %s theme.", 'bioship' ), '<a href="http://themehybrid.com/themes/hybrid" title="' . __( 'Hybrid WordPress Theme', 'bioship' ) . '">' . __( 'Hybrid', 'bioship' ) . '</a>' ) . '</strong></p></div>'; ?>
 
-		<?php if ( isset( $_GET['settings-updated'] ) && 'true' == esc_attr( $_GET['settings-updated'] ) ) echo '<div class="updated"><p><strong>' . __( 'Settings saved.', 'hybrid-hook' ) . '</strong></p></div>'; ?>
+		<?php if ( isset( $_GET['settings-updated'] ) && 'true' == esc_attr( $_GET['settings-updated'] ) ) echo '<div class="updated"><p><strong>' . __( 'Settings saved.', 'bioship' ) . '</strong></p></div>'; ?>
 
 		<div id="poststuff">
 
@@ -131,7 +131,7 @@ function hybrid_hook_settings_page() {
 					<div class="post-box-container column-2 side"><?php do_meta_boxes( $hybrid_hook->settings_page, 'side', null ); ?></div>
 				</div>
 
-				<?php submit_button( esc_attr__( 'Update Settings', 'hybrid-hook' ) ); ?>
+				<?php submit_button( esc_attr__( 'Update Settings', 'bioship' ) ); ?>
 
 			</form>
 

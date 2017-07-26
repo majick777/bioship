@@ -17,7 +17,7 @@ elseif ($vfooterwidgets == "4") {$vfootergrid = "one-quarter one_quarter";} // i
 
 <?php if ($vfooterwidgets) : ?>
 
-	<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-footer -->';} ?>
+	<?php bioship_html_comment('#sidebar-footer'); ?>
 	<div <?php hybrid_attr('sidebar', 'footer'); ?>>
 
 		<?php bioship_do_action('bioship_before_footer_widgets'); ?>
@@ -57,7 +57,7 @@ elseif ($vfooterwidgets == "4") {$vfootergrid = "one-quarter one_quarter";} // i
 		<?php bioship_do_action('bioship_after_footer_widgets'); ?>
 
 	</div>
-	<?php if (THEMECOMMENTS) {echo '<!-- /#sidebar-footer -->';} ?>
+	<?php bioship_html_comment('/#sidebar-footer'); ?>
 
 	<div class="clear"></div>
 

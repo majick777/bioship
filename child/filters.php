@@ -1291,7 +1291,7 @@ function muscle_list_meta_format_top($vformat) {
 	// override whether the entry meta top is shown in a post list
 	// eg. for a 'video' post type, don't show the entry meta in post list
 	# if (get_post_type() == 'video') {return '0';}
-	return $vdefault;
+	return $vformat;
 }
 
 // /= List Entry Meta Bottom =/
@@ -1302,7 +1302,7 @@ function muscle_list_meta_format_bottom($vformat) {
 	// override whether the entry meta bottom is shown in a post list
 	// eg. for a 'video' post type, do show the entry meta bottom in post list
 	# if (get_post_type() == 'video') {return '1';}
-	return $vdefault;
+	return $vformat;
 }
 
 // /= Entry Meta Top Override =/

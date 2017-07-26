@@ -16,7 +16,7 @@ Theme My Login will always look in your theme's directory first, before using th
 
 		<?php if ( has_action( 'personal_options' ) ) : ?>
 
-		<h3><?php _e( 'Personal Options' ); ?></h3>
+		<h3><?php _e( 'Personal Options', 'bioship' ); ?></h3>
 
 		<table class="form-table">
 		<?php do_action( 'personal_options', $profileuser ); ?>
@@ -26,31 +26,31 @@ Theme My Login will always look in your theme's directory first, before using th
 
 		<?php do_action( 'profile_personal_options', $profileuser ); ?>
 
-		<h3><?php _e( 'Name' ); ?></h3>
+		<h3><?php _e( 'Name', 'bioship' ); ?></h3>
 
 		<table class="form-table">
 		<tr>
-			<th><label for="user_login"><?php _e( 'Username' ); ?></label></th>
-			<td><input type="text" name="user_login" id="user_login" value="<?php echo esc_attr( $profileuser->user_login ); ?>" disabled="disabled" class="regular-text" /> <span class="description"><?php _e( 'Your username cannot be changed.', 'theme-my-login' ); ?></span></td>
+			<th><label for="user_login"><?php _e( 'Username', 'bioship' ); ?></label></th>
+			<td><input type="text" name="user_login" id="user_login" value="<?php echo esc_attr( $profileuser->user_login ); ?>" disabled="disabled" class="regular-text" /> <span class="description"><?php _e( 'Your username cannot be changed.', 'bioship' ); ?></span></td>
 		</tr>
 
 		<tr>
-			<th><label for="first_name"><?php _e( 'First Name' ); ?></label></th>
+			<th><label for="first_name"><?php _e( 'First Name', 'bioship' ); ?></label></th>
 			<td><input type="text" name="first_name" id="first_name" value="<?php echo esc_attr( $profileuser->first_name ); ?>" class="regular-text" /></td>
 		</tr>
 
 		<tr>
-			<th><label for="last_name"><?php _e( 'Last Name' ); ?></label></th>
+			<th><label for="last_name"><?php _e( 'Last Name', 'bioship' ); ?></label></th>
 			<td><input type="text" name="last_name" id="last_name" value="<?php echo esc_attr( $profileuser->last_name ); ?>" class="regular-text" /></td>
 		</tr>
 
 		<tr>
-			<th><label for="nickname"><?php _e( 'Nickname' ); ?> <span class="description"><?php _e( '(required)' ); ?></span></label></th>
+			<th><label for="nickname"><?php _e( 'Nickname', 'bioship' ); ?> <span class="description"><?php _e( '(required)', 'bioship' ); ?></span></label></th>
 			<td><input type="text" name="nickname" id="nickname" value="<?php echo esc_attr( $profileuser->nickname ); ?>" class="regular-text" /></td>
 		</tr>
 
 		<tr>
-			<th><label for="display_name"><?php _e( 'Display name publicly as' ); ?></label></th>
+			<th><label for="display_name"><?php _e( 'Display name publicly as', 'bioship' ); ?></label></th>
 			<td>
 				<select name="display_name" id="display_name">
 				<?php
@@ -86,16 +86,16 @@ Theme My Login will always look in your theme's directory first, before using th
 		</tr>
 		</table>
 
-		<h3><?php _e( 'Contact Info' ); ?></h3>
+		<h3><?php _e( 'Contact Info', 'bioship' ); ?></h3>
 
 		<table class="form-table">
 		<tr>
-			<th><label for="email"><?php _e( 'E-mail' ); ?> <span class="description"><?php _e( '(required)' ); ?></span></label></th>
+			<th><label for="email"><?php _e( 'Email', 'bioship' ); ?> <span class="description"><?php _e( '(required)', 'bioship' ); ?></span></label></th>
 			<td><input type="text" name="email" id="email" value="<?php echo esc_attr( $profileuser->user_email ); ?>" class="regular-text" /></td>
 		</tr>
 
 		<tr>
-			<th><label for="url"><?php _e( 'Website' ); ?></label></th>
+			<th><label for="url"><?php _e( 'Website', 'bioship' ); ?></label></th>
 			<td><input type="text" name="url" id="url" value="<?php echo esc_attr( $profileuser->user_url ); ?>" class="regular-text code" /></td>
 		</tr>
 
@@ -111,13 +111,13 @@ Theme My Login will always look in your theme's directory first, before using th
 		?>
 		</table>
 
-		<h3><?php _e( 'About Yourself' ); ?></h3>
+		<h3><?php _e( 'About Yourself', 'bioship' ); ?></h3>
 
 		<table class="form-table">
 		<tr>
-			<th><label for="description"><?php _e( 'Biographical Info' ); ?></label></th>
+			<th><label for="description"><?php _e( 'Biographical Info', 'bioship' ); ?></label></th>
 			<td><textarea name="description" id="description" rows="5" cols="30"><?php echo esc_html( $profileuser->description ); ?></textarea><br />
-			<span class="description"><?php _e( 'Share a little biographical information to fill out your profile. This may be shown publicly.' ); ?></span></td>
+			<span class="description"><?php _e( 'Share a little biographical information to fill out your profile. This may be shown publicly.', 'bioship' ); ?></span></td>
 		</tr>
 
 		<?php
@@ -125,11 +125,11 @@ Theme My Login will always look in your theme's directory first, before using th
 		if ( $show_password_fields ) :
 		?>
 		<tr id="password">
-			<th><label for="pass1"><?php _e( 'New Password' ); ?></label></th>
-			<td><input type="password" name="pass1" id="pass1" size="16" value="" autocomplete="off" /> <span class="description"><?php _e( 'If you would like to change the password type a new one. Otherwise leave this blank.' ); ?></span><br />
-				<input type="password" name="pass2" id="pass2" size="16" value="" autocomplete="off" /> <span class="description"><?php _e( 'Type your new password again.' ); ?></span><br />
-				<div id="pass-strength-result"><?php _e( 'Strength indicator', 'theme-my-login' ); ?></div>
-				<p class="description indicator-hint"><?php _e( 'Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).' ); ?></p>
+			<th><label for="pass1"><?php _e( 'New Password', 'bioship' ); ?></label></th>
+			<td><input type="password" name="pass1" id="pass1" size="16" value="" autocomplete="off" /> <span class="description"><?php _e( 'If you would like to change the password type a new one. Otherwise leave this blank.', 'bioship' ); ?></span><br />
+				<input type="password" name="pass2" id="pass2" size="16" value="" autocomplete="off" /> <span class="description"><?php _e( 'Type your new password again.', 'bioship' ); ?></span><br />
+				<div id="pass-strength-result"><?php _e( 'Strength indicator', 'bioship' ); ?></div>
+				<p class="description indicator-hint"><?php _e( 'Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).', 'bioship' ); ?></p>
 			</td>
 		</tr>
 		<?php endif; ?>
@@ -144,7 +144,7 @@ Theme My Login will always look in your theme's directory first, before using th
 				<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $current_user->ID ); ?>" />
 
 				<?php $profilebuttonurl = apply_filters('profile_button_url', get_option('profilebuttonurl'));
-				$profilebuttontext = esc_attr(apply_filters('profile_button_text', __('Update Profile')));
+				$profilebuttontext = esc_attr(apply_filters('profile_button_text', __('Update Profile', 'bioship')));
 				if ($profilebuttonurl != '') { ?>
 					<input type="image" me="submit" src="<?php echo $profilebuttonurl; ?>" />
 				<?php }	else { ?>
