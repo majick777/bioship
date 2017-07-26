@@ -3,11 +3,11 @@ Theme Name: BioShip
 Theme URI: http://bioship.space
 Details URI: http://bioship.space/news/
 Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
-Version: 2.0.6
+Version: 2.0.8
 Status: publish
 Author: majick
 Author URI: http://wordquest.org
-Tags: fluid-layout, responsive-layout, one-column, two-columns, three-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
+Tags: one-column, two-columns, three-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
 License: GPLv2 or later
 License URI: http://www.opensource.org/licenses/gpl-license.php
 Requires at least: 3.4
@@ -36,6 +36,7 @@ body.sidebar-right.subsidebar-left #wrap #content {float: right;}
 
 /* Random Style Fixes... */
 
+#site-logo .site-logo-image, #site-logo .site-logo-text {display:inline-block;}
 .mobilebutton {display:none;} #mainmenubutton {text-align:center;}
 body .mobilebutton a.button {padding: 5px !important; font-size: 13px !important;}
 #sidebar-header {float: right;}
@@ -51,6 +52,7 @@ form.search-form {overflow: hidden;}
 .loop-nav .prev, .loop-nav .next, #nav-below .nav-next, #nav-below .nav-prev {
 	display: inline-block; font-weight: bold;
 }
+p.comments-closed.pings-closed {display: none;}
 
 /* Infinite Scroll Support */
 span.infinite-loader {url('../images/infinite-loader.gif');}

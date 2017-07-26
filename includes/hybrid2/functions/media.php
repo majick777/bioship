@@ -17,7 +17,7 @@ add_filter( 'image_size_names_choose', 'hybrid_image_size_names_choose' );
 add_filter( 'wp_get_attachment_id3_keys', 'hybrid_attachment_id3_keys', 5, 3 );
 
 /**
- * Adds theme "post-thumbnail" size plus an internationalized version of the image size name to the 
+ * Adds theme "post-thumbnail" size plus an internationalized version of the image size name to the
  * "add media" modal.  This allows users to insert the image within their post content editor.
  *
  * @since  1.3.0
@@ -36,7 +36,7 @@ function hybrid_image_size_names_choose( $sizes ) {
 }
 
 /**
- * Creates custom labels for ID3 tags that are used on the front end of the site when displaying 
+ * Creates custom labels for ID3 tags that are used on the front end of the site when displaying
  * media within the theme, typically on attachment pages.
  *
  * @since  2.0.0

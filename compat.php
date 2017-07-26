@@ -131,7 +131,7 @@ foreach ($s as $hook => $functions) {
 		}
 	}
 }
-$vthemehooks['skeleton'] = $s; unset($s); // print_r($s);
+global $vthemehooks; $vthemehooks['skeleton'] = $s; unset($s);
 
 
 // =======
@@ -184,7 +184,9 @@ function bioship_compat_actions() {
 			if (strpos($voldhook, $voldprefix) === 0) {
 				if (THEMEDEBUG) {echo "<!-- Transferring Hook: ".$voldhook." for Theme Prefix Compatibility -->";}
 				$vnewhook = THEMEPREFIX.'_'.substr($voldhook, strlen($voldprefix), strlen($voldhook));
-				if (!property_exists($wp_filter[$vnewhook], 'callbacks')) {
+				// 2.0.8: add extra check before property_exists check
+				if ( (!isset($wp_filter[$vnewhook]))
+				  || (!property_exists($wp_filter[$vnewhook], 'callbacks')) ) {
 					$wp_filter[$vnewhook] = $wp_filter[$voldhook];
 					unset($wp_filter[$voldhook]);
 				} else {

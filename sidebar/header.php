@@ -8,13 +8,12 @@ bioship_do_action('bioship_before_header_widgets');
 
 	if (is_active_sidebar('header-widget-area')) : ?>
 
-		<?php if (THEMECOMMENTS) {echo '<!-- #sidebar-header -->';} ?>
+		<?php bioship_html_comment('#sidebar-header'); ?>
 		<div <?php hybrid_attr('sidebar', 'header'); ?>>
 
 			<?php dynamic_sidebar('header-widget-area'); ?>
 
-		</div>
-		<?php if (THEMECOMMENTS) {echo '<!-- /#sidebar-header -->';} ?>
+		</div><?php bioship_html_comment('/#sidebar-header'); ?>
 
 	<?php endif;
 

@@ -1210,9 +1210,9 @@
 	// convert to json
 	$json = json_encode($data);
 
-	// write to file
-	$filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'bioship-scaffold.json';
-	$fh = fopen($filename,'w');	fwrite($fh,$data); fclose($fh);
+	// maybe write to file
+	// $filename = dirname(__FILE__).DIRECTORY_SEPARATOR.'bioship-scaffold.json';
+	// $fh = fopen($filename,'w');	fwrite($fh,$data); fclose($fh);
 
 	// all done here.
 

@@ -20,7 +20,7 @@ add_filter( 'the_title', 'hybrid_untitled_post' );
 /**
  * This function is for adding extra support for features not default to the core post types.
  * Excerpts are added to the 'page' post type.  Comments and trackbacks are added for the
- * 'attachment' post type.  Technically, these are already used for attachments in core, but 
+ * 'attachment' post type.  Technically, these are already used for attachments in core, but
  * they're not registered.
  *
  * @since 0.8.0
@@ -38,7 +38,7 @@ function hybrid_add_post_type_support() {
 }
 
 /**
- * Checks if a post of any post type has a custom template.  This is the equivalent of WordPress' 
+ * Checks if a post of any post type has a custom template.  This is the equivalent of WordPress'
  * is_page_template() function with the exception that it works for all post types.
  *
  * @since  1.2.0
@@ -71,8 +71,8 @@ function hybrid_has_post_template( $template = '' ) {
 }
 
 /**
- * The WordPress.org theme review requires that a link be provided to the single post page for untitled 
- * posts.  This is a filter on 'the_title' so that an '(Untitled)' title appears in that scenario, allowing 
+ * The WordPress.org theme review requires that a link be provided to the single post page for untitled
+ * posts.  This is a filter on 'the_title' so that an '(Untitled)' title appears in that scenario, allowing
  * for the normal method to work.
  *
  * @since  1.6.0
@@ -92,8 +92,8 @@ function hybrid_untitled_post( $title ) {
 }
 
 /**
- * Retrieves the file with the highest priority that exists.  The function searches both the stylesheet 
- * and template directories.  This function is similar to the locate_template() function in WordPress 
+ * Retrieves the file with the highest priority that exists.  The function searches both the stylesheet
+ * and template directories.  This function is similar to the locate_template() function in WordPress
  * but returns the file name with the URI path instead of the directory path.
  *
  * @since  1.5.0

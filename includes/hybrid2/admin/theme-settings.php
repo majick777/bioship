@@ -1,15 +1,15 @@
 <?php
 /**
- * Handles the display and functionality of the theme settings page. This feature is merely a wrapper for the 
- * WordPress Settings API.  It creates the appropriate screen and HTML output for the settings page. This file 
+ * Handles the display and functionality of the theme settings page. This feature is merely a wrapper for the
+ * WordPress Settings API.  It creates the appropriate screen and HTML output for the settings page. This file
  * is only loaded if the theme supports the 'hybrid-core-theme-settings' feature.
  *
- * Note that the use of this feature is discouraged.  Theme authors are recommended to use the WordPress 
- * Theme Customizer API instead.  However, there are scenarios where non-stylistic theme options are needed. 
+ * Note that the use of this feature is discouraged.  Theme authors are recommended to use the WordPress
+ * Theme Customizer API instead.  However, there are scenarios where non-stylistic theme options are needed.
  * That's the purpose of this feature.
  *
- * To register default settings, devs should use the `{$prefix}_default_theme_settings` filter hook.  To 
- * validate/sanitize data from custom settings, devs should use the `sanitize_option_{$prefix}_theme_settings` 
+ * To register default settings, devs should use the `{$prefix}_default_theme_settings` filter hook.  To
+ * validate/sanitize data from custom settings, devs should use the `sanitize_option_{$prefix}_theme_settings`
  * filter hook.  Use `appearance_page-theme-settings` as the `$page` ID when registering settings sections
  * and settings fields.
  *
@@ -35,7 +35,7 @@ function hybrid_settings_field_id( $setting ) {
 }
 
 /**
- * Creates a settings field name attribute for use on the theme settings page.  This is a helper function for 
+ * Creates a settings field name attribute for use on the theme settings page.  This is a helper function for
  * use with the WordPress settings API.
  *
  * @since  1.0.0
@@ -129,12 +129,12 @@ final class Hybrid_Theme_Settings{
 	public function admin_menu() {
 
 		/* Add the theme settings page. */
-		$this->settings_page = add_theme_page( 
+		$this->settings_page = add_theme_page(
 			/* Translators: %s is the theme name. */
-			sprintf( esc_html__( '%s Theme Settings', 'hybrid-core' ), $this->theme->display( 'Name', false, true ) ), 
-			esc_html__( 'Theme Settings', 'hybrid-core' ), 
-			'edit_theme_options', 
-			'theme-settings', 
+			sprintf( esc_html__( '%s Theme Settings', 'hybrid-core' ), $this->theme->display( 'Name', false, true ) ),
+			esc_html__( 'Theme Settings', 'hybrid-core' ),
+			'edit_theme_options',
+			'theme-settings',
 			array( $this, 'settings_page' )
 		);
 
@@ -167,7 +167,7 @@ final class Hybrid_Theme_Settings{
 
 		/* Get the plugin settings from the database. */
 		$this->settings = get_option(
-			"{$this->prefix}_theme_settings", 
+			"{$this->prefix}_theme_settings",
 			hybrid_get_default_theme_settings()
 		);
 	}
@@ -196,7 +196,7 @@ final class Hybrid_Theme_Settings{
 
 			<h2><?php
 				/* Translators: %s is the theme name. */
-				printf( __( '%s Theme Settings', 'hybrid-core' ), $this->theme->display( 'Name', false, true ) ); 
+				printf( __( '%s Theme Settings', 'hybrid-core' ), $this->theme->display( 'Name', false, true ) );
 			?></h2>
 
 			<?php settings_errors(); ?>

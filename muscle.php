@@ -64,8 +64,18 @@ if (!function_exists('bioship_muscle_get_display_overrides')) {
 	// 1.8.0: removed perpoststyles from overrides, now retrieved separately
 
 	// TODO: archive overrides via custom post types/panel?
-	if (is_numeric($vresource)) {$vthemedisplay = get_post_meta($vresource, '_displayoverrides', true);}
-	else {$vthemedisplay = array();}
+	if (is_numeric($vresource)) {
+		// 2.0.8: use prefixed post meta key
+		$vthemedisplay = get_post_meta($vresource, '_'.THEMEPREFIX.'_display_overrides', true);
+		if (!$vthemedisplay) {
+			// 2.0.8: maybe convert old meta key to prefixed meta key
+			$voldpostmeta = get_post_meta($vresource, '_displayoverrides', true);
+			if ( ($voldpostmeta) && (is_array($voldpostmeta)) ) {
+				$vthemedisplay = $voldpostmeta; delete_post_meta($vresource, '_displayoverrides');
+				update_post_meta($vresource, '_'.THEMEPREFIX.'_display_overrides', $vthemedisplay);
+			}
+		}
+	} else {$vthemedisplay = array();}
 
 	// 1.8.5: added wrapper, headernav, footernav, breadcrumb, pagenavi
 	// TODO: sitelogo, sitetitle, sitedesc?
@@ -80,13 +90,12 @@ if (!function_exists('bioship_muscle_get_display_overrides')) {
 		$vthemedisplay = array();
 		foreach ($vdisplaykeys as $vdisplaykey) {
 			// 1.9.8: fix from vpostid to vresource variable
-			$vthemedisplay[$vdisplaykey] = get_post_meta($vresource,'_hide'.$vdisplaykey, true);
+			$vthemedisplay[$vdisplaykey] = get_post_meta($vresource, '_hide'.$vdisplaykey, true);
 			if ( (!$vthemedisplay[$vdisplaykey]) || ($vthemedisplay[$vdisplaykey] == '') ) {$voverride[$vdisplaykey] = '0';}
 		}
-		delete_post_meta($vresource, '_displayoverrides');
-		add_post_meta($vresource, '_displayoverrides', $vthemedisplay, true);
-	}
-	else {
+		delete_post_meta($vresource, '_'.THEMEPREFIX.'_display_overrides');
+		add_post_meta($vresource, '_'.THEMEPREFIX.'_display_overrides', $vthemedisplay, true);
+	} else {
 		// fix for any empty values to avoid undefined index warnings
 		foreach ($vdisplaykeys as $vdisplaykey) {
 			if (!isset($vthemedisplay[$vdisplaykey])) {$vthemedisplay[$vdisplaykey] = '0';}
@@ -112,8 +121,18 @@ if (!function_exists('bioship_muscle_get_templating_overrides')) {
 	global $vthemeoverride;
 
 	// TODO: archive overrides via custom post type?
-	if (is_numeric($vresource)) {$vthemeoverride = get_post_meta($vresource, '_templatingoverrides', true);}
-	else {$vthemeoverride = array();}
+	if (is_numeric($vresource)) {
+		// 2.0.8: use prefixed post meta key
+		$vthemeoverride = get_post_meta($vresource, '_'.THEMEPREFIX.'_templating_overrides', true);
+		if (!$vthemeoverride) {
+			// 2.0.8: maybe convert old meta key to prefixed meta key
+			$voldpostmeta = get_post_meta($vresource, '_templatingoverrides', true);
+			if ( ($voldpostmeta) && (is_array($voldpostmeta)) ) {
+				$vthemeoverride = $voldpostmeta; delete_post_meta($vresource, '_templatingoverrides');
+				update_post_meta($vresource, '_'.THEMEPREFIX.'_templating_overrides', $vthemeoverride);
+			}
+		}
+	} else {$vthemeoverride = array();}
 
 	// note: output override keys (not implemented)
 	// $voverridekeys = array(
@@ -134,7 +153,11 @@ if (!function_exists('bioship_muscle_get_templating_overrides')) {
 
 	// check thumbnail size force off option
 	// 1.9.8: fix to undefined vpostid variable
-	if (get_post_meta($vresource, '_thumbnailsize', true) == 'off') {$vthemeoverride['image'] == 'off';}
+	// 2.0.8: check prefixed post meta value for thumbnail size
+	if ( (get_post_meta($vresource, '_thumbnailsize', true) == 'off')
+	  || (get_post_meta($vresource, '_'.THEMEPREFIX.'_thumbnail_size', true) == 'off') )  {
+		$vthemeoverride['image'] == 'off';
+	}
 
 	$vthemeoverride = bioship_apply_filters('muscle_templating_overrides', $vthemeoverride);
 
@@ -215,11 +238,23 @@ if (!is_admin()) {
 		// PerPost Styles
 		// --------------
 		// 1.9.5: moved singular post check to here
-		// TODO: get archive overrides from special custom post type?
+		$vperpoststyles = '';
 		if (is_singular()) {
 			global $post; $vpostid = $post->ID;
-			$vperpoststyles = get_post_meta($vpostid, '_perpoststyles', true);
-		} else {$vperpoststyles = '';}
+			// 2.0.8: use prefixed post meta key
+			$vperpoststyles = get_post_meta($vpostid, '_'.THEMEPREFIX.'_perpoststyles', true);
+			// 2.0.8: maybe convert old post meta key
+			if (!$vperpoststyles) {
+				$voldpostmeta = get_post_meta($vpostid, '_perpoststyles', true);
+				if ($voldpostmeta) {
+					$vperpoststyles = $voldpostmeta; delete_post_meta($vpostid, '_perpoststyles');
+					update_post_meta($vpostid, '_'.THEMEPREFIX.'_perpoststyles', $vperpoststyles);
+				}
+			}
+		} else {
+			// TODO: get archive-specific style overrides from special post/page option?
+
+		}
 
 		if ( ($vperpoststyles) && ($vperpoststyles != '') ) {$vstyles .= $vperpoststyles.PHP_EOL;}
 
@@ -235,8 +270,21 @@ if (!function_exists('bioship_muscle_thumbnail_size_perpost')) {
  add_filter('skeleton_post_thumbnail_size','bioship_muscle_thumbnail_size_perpost');
  function bioship_muscle_thumbnail_size_perpost($vsize) {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-	global $post; if ( (!isset($post)) || (!is_object($post)) ) {return $vsize;}
-	$vthumbsize = get_post_meta($post->ID, '_thumbnailsize', true);
+
+	global $post;
+	if ( (!isset($post)) || (!is_object($post)) ) {return $vsize;}
+	$vpostid = $post->ID;
+
+	// 2.0.8: use prefixed post meta key
+	$vthumbsize = get_post_meta($vpostid, '_'.THEMEPREFIX.'_thumbnailsize', true);
+	if (!$vthumbsize) {
+		$voldpostmeta = get_post_meta($vpostid, '_thumbnailsize', true);
+		if ($voldpostmeta) {
+			$vthumbsize = $voldpostmeta; delete_post_meta($vpostid, '_thumbnailsize');
+			update_post_meta($vpostid, '_'.THEMEPREFIX.'_thumbnailsize', $vthumbsize);
+		}
+	}
+
 	// TODO: maybe double check thumbnail size is still available before using it?
 	// $vthumbsizes = array_merge(array('small', 'medium', 'large'), get_intermediate_image_sizes());
 	if ( ($vthumbsize) && ($vthumbsize != '') ) {return $vthumbsize;}
@@ -252,7 +300,17 @@ if (!function_exists('bioship_muscle_get_content_filter_overrides')) {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	// 1.9.5: fix to remove filters metakey (previously _disablefilters)
-	$vremovefilters = get_post_meta($vpostid, '_removefilters', true);
+	// 2.0.8: use prefixed post meta key
+	$vremovefilters = get_post_meta($vpostid, '_'.THEMEPREFIX.'_removefilters', true);
+
+	if (!$vremovefilters) {
+	 	// 2.0.8: maybe convert old post meta key
+		$voldpostmeta = get_post_meta($vpostid, '_removefilters', true);
+		if ($voldpostmeta) {
+			$vremovefilters = $voldpostmeta; delete_post_meta($vpostid, '_removefilters');
+			update_post_meta($vpostid, '_'.THEMEPREFIX.'_removefilters', $vremovefilters);
+		}
+	}
 
 	// 1.8.0: maybe convert to single filter meta array
 	if ( ($vremovefilters == '') || (!is_array($vremovefilters)) ) {
@@ -260,10 +318,10 @@ if (!function_exists('bioship_muscle_get_content_filter_overrides')) {
 		$vfilters = array('wpautop', 'wptexturize', 'convertsmilies', 'convertchars');
 		foreach ($vfilters as $vfilter) {
 			$vremovefilters[$vfilter] = get_post_meta($vpostid, '_disable'.$vfilter, true);
-			delete_post_meta($vpostid,'_disable'.$vfilter);
+			delete_post_meta($vpostid, '_disable'.$vfilter);
 		}
-		delete_post_meta($vpostid, '_removefilters');
-		add_post_meta($vpostid, '_removefilters', $vremovefilters, true);
+		delete_post_meta($vpostid, '_bioship_removefilters');
+		add_post_meta($vpostid, '_bioship_removefilters', $vremovefilters, true);
 	}
 
 	// 1.8.0: added this conditional filter
@@ -323,6 +381,58 @@ if (!function_exists('bioship_muscle_default_gravatar')) {
  }
 }
 
+// Classic Text Widget
+// -------------------
+// 2.0.8: copied from WP 4.7.5 for Discreet Text Widget basis
+// (since WP 4.8 changes WP_Widget_Text class and breaks DiscreetTextWidget)
+if (!class_exists('WP_Widget_Classic_Text')) {
+ class WP_Widget_Classic_Text extends WP_Widget {
+
+	public function __construct() {
+		$widget_ops = array(
+			'classname' => 'widget_text',
+			'description' => __('Arbitrary text or HTML.','bioship'),
+			'customize_selective_refresh' => true,
+		);
+		$control_ops = array( 'width' => 400, 'height' => 350 );
+		parent::__construct('text', __('Text','bioship'), $widget_ops, $control_ops);
+	}
+
+	public function widget( $args, $instance ) {
+		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title'], $instance, $this->id_base);
+		$widget_text = ! empty( $instance['text'] ) ? $instance['text'] : '';
+		$text = apply_filters( 'widget_text', $widget_text, $instance, $this );
+		echo $args['before_widget'];
+		if (!empty($title)) {echo $args['before_title'].$title.$args['after_title'];}
+		echo '<div class="textwidget">';
+		echo !empty( $instance['filter'] ) ? wpautop( $text ) : $text;
+		echo '</div>';
+		echo $args['after_widget'];
+	}
+
+	public function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = sanitize_text_field($new_instance['title']);
+		if (current_user_can('unfiltered_html')) {$instance['text'] = $new_instance['text'];}
+		else {$instance['text'] = wp_kses_post($new_instance['text']);}
+		$instance['filter'] = !empty($new_instance['filter']);
+		return $instance;
+	}
+
+	public function form($instance) {
+		$instance = wp_parse_args( (array) $instance, array('title' => '', 'text' => '' ));
+		$filter = isset($instance['filter']) ? $instance['filter'] : 0;
+		$title = sanitize_text_field($instance['title']);
+		echo '<p><label for="'.$this->get_field_id('title').'">'.__('Title:','bioship').'</label>';
+		echo '<input class="widefat" id="'.$this->get_field_id('title').'" name="'.$this->get_field_name('title').'" type="text" value="'.esc_attr($title).'" /></p>';
+		echo '<p><label for="'.$this->get_field_id('text').'">'.__('Content:','bioship').'</label>';
+		echo '<textarea class="widefat" rows="16" cols="20" id="'.$this->get_field_id('text').'" name="'.$this->get_field_name('text').'">'.esc_textarea($instance['text']).'</textarea></p>';
+		echo '<p><input id="'.$this->get_field_id('filter').'" name="'.$this->get_field_name('filter').'" type="checkbox"'.checked($filter).' />&nbsp;';
+		echo '<label for="'.$this->get_field_id('filter').'">'.__('Automatically add paragraphs','bioship').'</label></p>';
+	}
+ }
+}
+
 // Discreet Text Widget
 // --------------------
 // most super useful widget, especially when used with shortcodes
@@ -335,12 +445,14 @@ if (!function_exists('bioship_muscle_discreet_text_widget')) {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 	// 1.9.8: added class check (for no conflict with content sidebars plugin)
 	if (!class_exists('DiscreetTextWidget')) {
-		class DiscreetTextWidget extends WP_Widget_Text {
+		// 2.0.8: extend classic text widget class
+		class DiscreetTextWidget extends WP_Widget_Classic_Text {
 			function __construct() {
 				$vwidgetops = array('classname' => 'discreet_text_widget', 'description' => __('Arbitrary text or HTML, only shown if not empty.','bioship'));
 				$vcontrolops = array('width' => 400, 'height' => 350);
 				// 1.9.8: fix to deprecated class construction method
-				call_user_func(array(get_parent_class(get_parent_class($this)), '__construct'), 'discrete_text', __('Discreet Text','csidebars'), $vwidgetops, $vcontrolops);
+				// 2.0.7: fix to incorrect text domain (csidebars)
+				call_user_func(array(get_parent_class(get_parent_class($this)), '__construct'), 'discrete_text', __('Discreet Text','bioship'), $vwidgetops, $vcontrolops);
 				// parent::__construct('discrete_text', __('Discreet Text','bioship'), $vwidgetops, $vcontrolops);
 				// $this->WP_Widget('discrete_text', __('Discreet Text','bioship'), $vwidgetops, $vcontrolops);
 			}
@@ -1320,12 +1432,15 @@ if (!function_exists('bioship_muscle_wp_subtitle_custom_support')) {
 	if (function_exists('get_the_subtitle')) {
 		global $vthemesettings;
 		$vcptsubtitles = $vthemesettings['subtitlecpts'];
-		foreach ($vcptsubtitles as $vcpt => $vvalue) {
-			if ($vvalue) {
-				if ( ($vcpt != 'post') && ($vcpt != 'page') ) {add_post_type_support($vcpt, 'wps_subtitle');}
-			} else {
-				if ($vcpt == 'post') {remove_post_type_support('post', 'wps_subtitle');}
-				if ($vcpt == 'page') {remove_post_type_support('page', 'wps_subtitle');}
+		// 2.0.8: fix for possible empty subtitle setting
+		if (is_array($vcptsubtitles)) {
+			foreach ($vcptsubtitles as $vcpt => $vvalue) {
+				if ($vvalue) {
+					if ( ($vcpt != 'post') && ($vcpt != 'page') ) {add_post_type_support($vcpt, 'wps_subtitle');}
+				} else {
+					if ($vcpt == 'post') {remove_post_type_support('post', 'wps_subtitle');}
+					if ($vcpt == 'page') {remove_post_type_support('page', 'wps_subtitle');}
+				}
 			}
 		}
 	}
@@ -1621,17 +1736,29 @@ if (!function_exists('bioship_muscle_display_post_thumbnail_column')) {
 // ---------------------------------------
 // 2.0.1: filter option internally
 if (!function_exists('bioship_muscle_all_options_link')) {
- add_action('admin_menu', 'bioship_muscle_all_options_link', 0);
+ add_action('admin_menu', 'bioship_muscle_all_options_link', 11);
  function bioship_muscle_all_options_link() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings; $vaddlink = false;
+	global $vthemesettings, $submenu; $vaddlink = false;
 	if (isset($vthemesettings['alloptionspage'])) {$vaddlink = $vthemesettings['alloptionspage'];}
 	$vaddlink = bioship_apply_filters('muscle_all_options_page', $vaddlink);
 	if ($vaddlink == '1') {
-		add_options_page(__('All Options','bioship'), __('All Options','bioship'), 'manage_options', 'options.php');
+		// 2.0.7: change this to use add_theme_page
+		// add_options_page(__('All Options','bioship'), __('All Options','bioship'), 'manage_options', 'options.php');
+		add_theme_page(__('All Options','bioship'), __('All Options','bioship'), 'manage_options', 'options.php');
+
+		// 2.0.7: then shift from theme to settings menu
+		foreach ($submenu['options-general.php'] as $vkey => $vvalues) {$vlastkey = $vkey + 1;}
+		foreach ($submenu['themes.php'] as $vkey => $vvalues) {
+			if ($vvalues[2] == 'options.php') {
+				$submenu['options-general.php'][$vlastkey] = $vvalues;
+				unset($submenu['themes.php'][$vkey]);
+			}
+		}
 	}
  }
 }
+
 
 // Remove Update Notice
 // --------------------
@@ -1647,7 +1774,7 @@ if (!function_exists('bioship_muscle_remove_update_notice')) {
 	if (!current_user_can('update_plugins')) {
 		// 2.0.1: simplify to remove version check action here
 		remove_action('init', 'wp_version_check');
-		add_filter('pre_option_update_core', create_function('$a', "return null;"));
+		add_filter('pre_option_update_core', 'bioship_return_null');
 	}
  }
 }
@@ -1666,16 +1793,18 @@ if (!function_exists('bioship_muscle_stop_new_user_notifications')) {
 
 	global $phpmailer;
 	if (is_multisite()) {
-		$subject = 'New User Registration: ';
+		// 2.0.7: added missing translation wrapper
+		$subject = __('New User Registration', 'bioship');
 		if (substr($phpmailer->Subject, 0, strlen($subject)) == $subject) {
 			$phpmailer = new PHPMailer(true);
 		}
 	}
 	else {
 		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+		// 2.0.7: added missing text domain
 		$subject = array(
-			sprintf(__('[%s] New User Registration'), $blogname),
-			sprintf(__('[%s] Password Lost/Changed'), $blogname)
+			sprintf(__('[%s] New User Registration', 'bioship'), $blogname),
+			sprintf(__('[%s] Password Lost/Changed', 'bioship'), $blogname)
 		);
 		if (in_array($phpmailer->Subject, $subject)) {$phpmailer = new PHPMailer(true);}
 	}
@@ -1739,29 +1868,37 @@ if (!function_exists('bioship_muscle_right_now_content_table_end')) {
 	$args = array('public' => true,'_builtin' => false);
 	$output = 'object'; $operator = 'and';
 	$post_types = get_post_types($args, $output, $operator);
-
 	foreach($post_types as $post_type) {
 		$num_posts = wp_count_posts($post_type->name);
 		$num = number_format_i18n($num_posts->publish);
-		$text = _n( $post_type->labels->singular_name, $post_type->labels->name, intval($num_posts->publish));
+		// 2.0.7: added missing text domain
+		$singular = $post_type->labels->singular_name;
+		$label = $post_type->labels->name;
+		$postcount = intval($num_posts->publish);
+		$text = _n($singular, $label, $postcount, 'bioship');
 		if (current_user_can('edit_posts')) {
-			$num = "<a href='edit.php?post_type=$post_type->name'>$num</a>";
-			$text = "<a href='edit.php?post_type=$post_type->name'>$text</a>";
+			$num = "<a href='edit.php?post_type=$post_type->name'>".$num."</a>";
+			$text = "<a href='edit.php?post_type=$post_type->name'>".$text."</a>";
 		}
-		echo '<tr><td class="first num b b-' . $post_type->name . '">' . $num . '</td>';
-		echo '<td class="text t ' . $post_type->name . '">' . $text . '</td></tr>';
+		echo '<tr><td class="first num b b-'.$post_type->name.'">'.$num.'</td>';
+		echo '<td class="text t '.$post_type->name.'">'.$text.'</td></tr>';
 	}
+
 	$taxonomies = get_taxonomies( $args , $output , $operator );
 	foreach ($taxonomies as $taxonomy) {
 		$num_terms  = wp_count_terms($taxonomy->name);
 		$num = number_format_i18n($num_terms);
-		$text = _n( $taxonomy->labels->singular_name, $taxonomy->labels->name , intval( $num_terms ));
+		// 2.0.7: added missing text domain
+		$singular = $taxonomy->labels->singular_name;
+		$label = $taxonomy->labels->name;
+		$termcount = intval($num_terms);
+		$text = _n($singular, $label, $termcount, 'bioship');
 		if (current_user_can('manage_categories')) {
-			$num = "<a href='edit-tags.php?taxonomy=$taxonomy->name'>$num</a>";
-			$text = "<a href='edit-tags.php?taxonomy=$taxonomy->name'>$text</a>";
+			$num = "<a href='edit-tags.php?taxonomy=".$taxonomy->name."'>".$num."</a>";
+			$text = "<a href='edit-tags.php?taxonomy=".$taxonomy->name."'>".$text."</a>";
 		}
-		echo '<tr><td class="first b b-' . $taxonomy->name . '">' . $num . '</td>';
-		echo '<td class="t ' . $taxonomy->name . '">' . $text . '</td></tr>';
+		echo '<tr><td class="first b b-'.$taxonomy->name.'">'.$num.'</td>';
+		echo '<td class="t '.$taxonomy->name.'">'.$text.'</td></tr>';
 	}
  }
 }
@@ -1941,7 +2078,7 @@ if (function_exists('wc_get_template_part')) {
 if (!function_exists('bioship_muscle_open_graph_default_image')) {
 
  // 2.0.5: move filter inside for consistency
- add_filter('open_graph_protocol_metas','bioship_muscle_open_graph_default_image');
+ add_filter('open_graph_protocol_metas', 'bioship_muscle_open_graph_default_image');
 
  function bioship_muscle_open_graph_default_image($vmetas) {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
@@ -1949,7 +2086,7 @@ if (!function_exists('bioship_muscle_open_graph_default_image')) {
 	global $vthemename, $vthemesettings, $vthemedirs;
 
 	// allow for open graph image override filter
-	// see next func for i-built custom field override
+	// see next func for in-built custom field override
 	// you can add more conditional overrides via filters.php
 	$vimage = array();
 	if (isset($vmetas['og:image:width'])) {$vimage[0] = $vmetas['og:image:width'];}
@@ -1996,8 +2133,8 @@ if (!function_exists('bioship_muscle_open_graph_default_image')) {
 	// default (fallback) open graph image option
 	if (!isset($vmetas['og:image'])) {
 
-		// maybe pick the largest size if set to precomposed apple touch icons
 		// 1.9.6: removed this code as even 192 does not meet OG minimum of 200
+		// maybe pick the largest size if set to precomposed apple touch icons
 		// if ($vthemesettings['ogdefaultimage'] == 'appletouchicon') {
 		//	$vsizes = array('192','180','152','144','120','114','75','72');
 		//	$vfound = false;
@@ -2009,16 +2146,20 @@ if (!function_exists('bioship_muscle_open_graph_default_image')) {
 		//	}
 		// }
 		// else {
-			// otherwise, set the url based on the theme options => suboption
+			// set the url based on the theme options => suboption
 			$vkey = $vthemesettings['ogdefaultimage'];
 			if ($vkey == '') {$vkey = 'header_logo';}
 			// 1.9.5: fix for uploaded default image
-			$vurl = $vthemesettings[$vkey];
-			if (THEMEDEBUG) {echo "<!-- Open Graph Default Image URL: ".$vthemesettings[$vkey]." -->";}
+			// 2.0.8: added new open graph image off option
+			if ($vkey == 'none') {$vurl = '';}
+			elseif ($vkey == 'site_icon') {$vurl = get_site_icon_url();}
+			else {$vurl = $vthemesettings[$vkey];}
 		// }
 
-		// allow for default image filter
+		if (THEMEDEBUG) {echo "<!-- Open Graph Default Image URL: ".$vurl." -->";}
+		// allow for default open graph image filter
 		$vurl = bioship_apply_filters('muscle_open_graph_default_image_url', $vurl);
+		if (THEMEDEBUG) {echo "<!-- Filtered OpenGraph URL: ".$vurl." -->";}
 
 		if ($vurl != '') {
 			// best to cache image size like in skin.php header logo for getimagesize
@@ -2471,9 +2612,8 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 					}
 					if ( ($datamethod != 'cookie') && (is_user_logged_in()) ) {
 						// 2.0.1: allow for fallback for older installs
-						if (function_exists('wp_get_current_user')) {$current_user = wp_get_current_user();}
-						else {global $current_user; get_currentuserinfo();}
-						$usermetadata = get_user_meta($current_user->ID,$datakey,true);
+						$current_user = bioship_get_current_user();
+						$usermetadata = get_user_meta($current_user->ID, $datakey, true);
 						if (is_array($usermetadata)) {
 							// attempt to match referer data with stored transient request
 							foreach ($usermetadata as $transientkey) {
@@ -2580,8 +2720,8 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 				if ( ($datamethod != 'cookie') && (is_user_logged_in()) ) {
 					// check existing usermeta data
 					// 2.0.1: allow for fallback for older installs
-					if (function_exists('wp_get_current_user')) {$current_user; wp_get_current_user();}
-					else {global $current_user; get_currentuserinfo();}
+					// 2.0.7: use new prefixed current user function
+					$current_user = bioship_get_current_user();
 					$usermetadata = get_user_meta($current_user->ID, $datakey, true);
 					if (is_array($usermetadata)) {
 						$existingmatch = false;

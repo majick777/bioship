@@ -1,6 +1,6 @@
 <?php
 /**
- * General template functions.  These functions are for use throughout the theme's various template files.  
+ * General template functions.  These functions are for use throughout the theme's various template files.
  * Their main purpose is to handle many of the template tags that are currently lacking in core WordPress.
  *
  * @package    HybridCore
@@ -118,8 +118,8 @@ function hybrid_get_child_theme_link() {
 }
 
 /**
- * Gets the "blog" (posts page) page URL.  `home_url()` will not always work for this because it 
- * returns the front page URL.  Sometimes the blog page URL is set to a different page.  This 
+ * Gets the "blog" (posts page) page URL.  `home_url()` will not always work for this because it
+ * returns the front page URL.  Sometimes the blog page URL is set to a different page.  This
  * function handles both scenarios.
  *
  * @since  2.0.0
@@ -139,7 +139,7 @@ function hybrid_get_blog_url() {
 }
 
 /**
- * Outputs the site title. 
+ * Outputs the site title.
  *
  * @since  0.1.0
  * @access public
@@ -202,7 +202,7 @@ function hybrid_loop_title() {
 }
 
 /**
- * Gets the loop title.  This function should only be used on archive-type pages, such as archive, blog, and 
+ * Gets the loop title.  This function should only be used on archive-type pages, such as archive, blog, and
  * search results pages.  It outputs the title of the page.
  *
  * @link   http://core.trac.wordpress.org/ticket/21995
@@ -217,7 +217,7 @@ function hybrid_get_loop_title() {
 	if ( is_home() && !is_front_page() )
 		$loop_title = get_post_field( 'post_title', get_queried_object_id() );
 
-	elseif ( is_category() ) 
+	elseif ( is_category() )
 		$loop_title = single_cat_title( '', false );
 
 	elseif ( is_tag() )
@@ -274,7 +274,7 @@ function hybrid_loop_description() {
 }
 
 /**
- * Gets the loop description.  This function should only be used on archive-type pages, such as archive, blog, and 
+ * Gets the loop description.  This function should only be used on archive-type pages, such as archive, blog, and
  * search results pages.  It outputs the description of the page.
  *
  * @link   http://core.trac.wordpress.org/ticket/21995

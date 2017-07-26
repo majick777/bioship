@@ -11,18 +11,22 @@
  *
 **/
 
-// TODO: check for possible CSS fallback usage...
+// TODO: check for possible CSS fallback usage..?
 // ref: http://modernweb.com/2013/07/08/using-css-fallback-properties-for-better-cross-browser-compatibility/
-// TODO: when using Titan/Options Framework rgba colour picker
+
+// TODO: when using Titan+Options Framework use rgba colour picker
 // ref: https://css-tricks.com/rgba-browser-support/
 
 // Output CSS Header
 // -----------------
 // 1.8.5: undefined variable fix
-if (!isset($vincluded)) {$vincluded = false;}
+if (!isset($vincludedskin)) {$vincludedskin = false;}
 if (!isset($vadminstyles)) {$vadminstyles = false;}
+// 2.0.8: yet another undefined variable fix
+if (!isset($vloginstyles)) {$vloginstyles = false;}
 // 1.8.5: no header for inline style output fix
-if ( (!$vincluded) && (!$vadminstyles) ) {
+// 2.0.7: disambiguate vincluded to vincludedskin
+if ( (!$vincludedskin) && (!$vadminstyles) ) {
 	header("Content-type: text/css; charset: UTF-8");
 }
 
@@ -119,7 +123,7 @@ if (strstr($_SERVER['REQUEST_URI'], 'skin.php')) {
 		include_once(ABSPATH.WPINC.'/default-constants.php');
 		wp_initial_constants();
 		wp_plugin_directory_constants();
-		// wp_cookie_constants(); // ??
+		// wp_cookie_constants();
 	}
 
 	// CHECKME: does this load MU Plugins?
@@ -129,14 +133,6 @@ if (strstr($_SERVER['REQUEST_URI'], 'skin.php')) {
 // ---------------------------
 // 1.8.0: move here for dual framework compatibility
 if (!defined('WP_CONTENT_URL')) {define('WP_CONTENT_URL', get_option('siteurl').'/wp-content');}
-
-// add Default Skin value filters
-// ------------------------------
-// 2.0.2: [deprecated] use replacement function not filter
-// if (function_exists('add_filter')) {
-	// add_filter('skin_dynamic_css', 'skin_css_replace_values');
-	// add_filter('skin_dynamic_admin_css', 'skin_css_replace_values');
-// }
 
 
 // ---------------------
@@ -338,7 +334,7 @@ if ($vthemetestdrive) {$vtheme = $vthemetestdrive;}
 // -----------
 // 1.8.5: allow for debugging
 // TODO: maybe use improved debug switching from functions.php?
-if (!$vincluded) {
+if (!$vincludedskin) {
 	if (!defined('THEMEDEBUG')) {
 		// 1.9.8: fix for undefined vthemekey variable
 		$vthemekey = preg_replace("/\W/", "_", strtolower($vtheme['Name']));
@@ -362,7 +358,9 @@ $vthemename = preg_replace("/\W/", "-", strtolower($vthemename));
 
 // Options Framework (if Titan is off)
 $vthemeframework = get_option($vthemename.'_framework');
-if (THEMEDEBUG) {echo "/* ".$vthemename.'_framework : '.$vthemeframework." */";}
+if ( (THEMEDEBUG) && ($vthemeframework) ) {
+	echo "/* ".$vthemename.'_framework : '.$vthemeframework." */";
+}
 if ($vthemeframework == 'options') {
 	$vthemename = str_replace("-", "_", $vthemename);
 	$vthemesettings = get_option($vthemename);
@@ -377,9 +375,15 @@ if ($vthemeframework == 'options') {
 	// 1.9.5: added theme settings to file fallback
 	if ( (!$vsettings) || (!$vthemesettings) ) {
 		$vsavedfile = get_stylesheet_directory().'/debug/'.$vthemekey.'.txt';
-		echo "/* ".$vsavedfile." */";
+		echo "/* Using Saved Theme Settings: ".$vsavedfile." */";
 		if (file_exists($vsavedfile)) {
-			$vsaveddata = file_get_contents($vsavedfile);
+			// 2.0.8: fix for undefined function (depending on method)
+			if (function_exists('bioship_file_get_contents')) {
+				$vsaveddata = bioship_file_get_contents($vsavedfile);
+			} else {
+				$vfilearray = @file($vsavedfile);
+				$vsaveddata = implode('', $vfilearray);
+			}
 			if ( (strlen($vsaveddata) > 0) && (is_serialized($vsaveddata)) ) {
 				$vunserialized = unserialize($vsaveddata);
 				if ($vunserialized) {$vthemesettings = $vunserialized;}
@@ -632,8 +636,9 @@ if ($vextrabuttons != '') {
 // ------
 // 1.8.5: added input styling options (available here for login form)
 // 1.9.6: added missing number input type, select option and optgroup
+// 2.0.8: added missing body prefix to number input selector
 if ( (isset($vthemesettings['inputcolor'])) || (isset($themeoptions['inputbgcolor'])) ) {
-	$vinputs = "body input[type='text'], body input[type='checkbox'], body input[type='password'], input[type='number'], body select, body select option, body select optgroup, body textarea {";
+	$vinputs = "body input[type='text'], body input[type='checkbox'], body input[type='password'], body input[type='number'], body select, body select option, body select optgroup, body textarea {";
 	if ($vthemesettings['inputcolor'] != '') {$vinputs .= "color: ".$vthemesettings['inputcolor']."; ";}
 	if ($vthemesettings['inputbgcolor'] != '') {$vinputs .= "background-color: ".$vthemesettings['inputbgcolor'].";";}
 	$vinputs .= "}".PHP_EOL.PHP_EOL;
@@ -662,7 +667,12 @@ $vlinks .= PHP_EOL;
 // 1.8.5: moved login background image url rule
 $vbody = '';
 if ($vthemesettings['body_bg_color'] != '') {$vbody .= "background-color: ".$vthemesettings['body_bg_color'].";";}
-if ($vthemesettings['background_image'] != '') {$vbody .= " background-image: url('".$vthemesettings['background_image']."');";}
+// ???: maybe use Customizer background image as override?
+// $vbackgroundimage = get_theme_mod('background_image');
+// if (!$vbackgroundimage) {
+	$vbackgroundimage = $vthemesettings['background_image'];
+// }
+if ($vthemesettings['background_image'] != '') {$vbody .= " background-image: url('".$vbackgroundimage."');";}
 if ($vthemesettings['background_size'] != '') {$vbody .= " background-size: ".$vthemesettings['background_size'].";";}
 if ($vthemesettings['background_position'] != '') {$vbody .= " background-position: ".$vthemesettings['background_position'].";";}
 if ($vthemesettings['background_repeat'] != '') {$vbody .= " background-repeat: ".$vthemesettings['background_repeat'].";";}
@@ -738,6 +748,9 @@ if ($vadminstyles) {
 		// ----------------------------
 		if ( (isset($vthemesettings['loginwrapbgcolor'])) && ($vthemesettings['loginwrapbgcolor'] != '') ) {
 			$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #nav, body.login #backtoblog {background-color: ".$vthemesettings['loginwrapbgcolor'].";}".PHP_EOL;
+		} else {
+			// 2.0.8: if background empty explicitly set transparency for consistency
+			$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #nav, body.login #backtoblog {background-color: transparent; box-shadow: none;}".PHP_EOL;
 		}
 
 		// 1.8.5: added missing 'none' setting handler
@@ -817,27 +830,25 @@ if ($vmaximumwidth > 320) {echo "#wrap {max-width: ".$vmaximumwidth."em;}".PHP_E
 // -----------------
 $vheader = '';
 if ($vthemesettings['headerbgcolor'] != '') {$vheader .= "background-color: ".$vthemesettings['headerbgcolor'].";";}
-if ($vthemesettings['header_background_image'] != '') {
-	$vheader .= " background-image: url('".$vthemesettings['header_background_image']."');";
+// ???: maybe use header_image as override
+// $vheaderimage = get_theme_mod('header_image');
+// if (!$vheaderimage) {
+	$vheaderimage = $vthemesettings['header_background_image'];
+// }
+
+if ($vheaderimage != '') {
+	$vheader .= " background-image: url('".$vheaderimage."');";
 
 	$vcachekey = 'header_image';
 
 	// 1.8.5: allow for header image background size refresh via querystring
 	// (can be used to recheck image size - if you overwrite the image but keep same URL)
-	if ( (isset($_GET['header_image_size'])) && ($_GET['header_image_size'] == 'refresh') ) {delete_option($vthemename.'_'.$vcachekey);}
+	if ( (isset($_GET['header_image_size'])) && ($_GET['header_image_size'] == 'refresh') ) {
+		delete_option($vthemename.'_'.$vcachekey);
+	}
 
 	// 1.8.5: improved image size handling function
-	$vimagesize = bioship_skin_get_image_size($vthemesettings['header_background_image'], $vcachekey);
-	if (!$vimagesize) {
-		// hmmmm... no allow_url_fopen and no filepath found (and all our lovely automated code has failed)
-		// if this is happening to you, you may need to set an explicit filter for this in your filters.php
-		// TODO: rethink this as filters maybe not loaded?
-		$vfilteredsize = apply_filters('muscle_skin_header_size', array());
-
-		if ( (isset($vfilteredsize[0])) && (isset($vfilteredsize[1])) ) {
-			$vimagesize[0] = intval($vimagesize[0]); $vimagesize[1] = intval($vimagesize[1]);
-		}
-	}
+	$vimagesize = bioship_skin_get_image_size($vheaderimage, $vcachekey);
 
 	if ($vimagesize) {
 		// 1.8.5: account for maximum layout width and maybe scale to it
@@ -853,8 +864,14 @@ if ($vthemesettings['header_background_image'] != '') {
 			$vheight = round( ($vimagesize[1] / 16 * $vfontpercent / 100), 3, PHP_ROUND_HALF_DOWN);
 			$vheader .= " height: ".$vheight."em;";
 		}
+	} else {
+		// hmmmm... no allow_url_fopen and no filepath found
+		// (and all our lovely automated code has failed)
+		// you will just have to set it manually friend
+		// 2.0.8: removed unused and unusable filter
 	}
 }
+
 if ($vthemesettings['header_background_size'] != '') {$vheader .= " background-size: ".$vthemesettings['header_background_size'].";";}
 if ($vthemesettings['header_background_position'] != '') {$vheader .= " background-position: ".$vthemesettings['header_background_position'].";";}
 if ($vthemesettings['header_background_repeat'] != '') {$vheader .= " background-repeat: ".$vthemesettings['header_background_repeat'].";";}
@@ -939,7 +956,10 @@ if ( (isset($vthemesettings['navmenuhovercolor'])) && ($vthemesettings['navmenuh
 if ( (isset($vthemesettings['navmenuhoverbgcolor'])) && ($vthemesettings['navmenuhoverbgcolor'] != '') ) {
 	$vnavmenuhoverrules .= "background-color: ".$vthemesettings['navmenuhoverbgcolor'].";";
 }
-if ($vnavmenuhoverrules != '') {$vnavmenurules .= "#navigation #mainmenu ul li:hover {".$vnavmenuhoverrules."}".PHP_EOL;}
+if ($vnavmenuhoverrules != '') {
+	// 2.0.7: fix to text hover color targeting
+	$vnavmenurules .= "#navigation #mainmenu ul li:hover, #navigation #mainmenu ul li:hover a {".$vnavmenuhoverrules."}".PHP_EOL;
+}
 
 if ($vnavmenurules != '') {echo $vnavmenurules.PHP_EOL;}
 

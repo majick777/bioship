@@ -4,11 +4,18 @@
 /* BioShip Doc Creator */
 // =================== //
 
-// Note: Load this file in your browser for documentation index.
+// Load this file in your browser for documentation index.
 
-define('DOCDEBUG',false); // define('DOCDEBUG',true);
+define('THEMEDOCDEBUG',false); // define('THEMEDOCDEBUG',true);
 
-if (!isset($vincluded)) {
+if (!defined('THEMEHOMEURL')) {define('THEMEHOMEURL', 'http://bioship.space');}
+if (!defined('THEMESUPPORT')) {define('THEMESUPPORT', 'http://wordquest.org');}
+
+
+// Serve Documentation Section (if not included)
+// ---------------------------------------------
+if (!isset($vincludeddocs)) {
+
 	if (isset($_REQUEST['page'])) {$vpage = $_REQUEST['page'];} else {$vpage = '';}
 
 	if ( ($vpage == 'home') || ($vpage == '') ) {echo bioship_docs_index(true);}
@@ -213,7 +220,7 @@ function bioship_docs_install_guide($vwrap) {
 
 	$vhtml .= '<h3>Basic Install</h3>
 	(recommended for fresh or development sites)<br><br>
-	<b>1</b>. Download the <a href="http://bioship.space/download/download-latest/">BioShip ZIP</a> (right-click and "Save Linked Content As") to your computer.<br>
+	<b>1</b>. Download the <a href="'.THEMEHOMEURL.'/download/download-latest/">BioShip ZIP</a> (right-click and "Save Linked Content As") to your computer.<br>
 	<b>2</b>. Login to your Wordpress admin area if you are not already.<br>
 	<b>3</b>. Visit your Wordpress admin <i>Themes</i> page and upload via the <i>Add New -> Upload</i> page.<br>
 	<b>4</b>. Activate the theme once it is uploaded.<br>
@@ -224,7 +231,7 @@ function bioship_docs_install_guide($vwrap) {
 	<b>1</b>. Login to your Wordpress admin area if you are not already.<br>
 	<b>2</b>. Install the <a href="http://wordpress.org/plugins/theme-test-drive/" target=_blank>Theme Test Drive</a> Plugin from your Wordpress admin <i>Plugins</i> page via <i>Add New</i> and activate.<br>
 	<b>3</b>. Visit your <i>Theme Test Drive</i> settings page under the <i>Appearance</i> admin menu.<br>
-	<b>4</b>. Copy the URL of the <a href="http://bioship.space/download/download-latest/">BioShip ZIP</a> (right-click and "Copy Link Address") and paste into the Easy Install section and Install.<br>
+	<b>4</b>. Copy the URL of the <a href="'.THEMEHOMEURL.'/download/download-latest/">BioShip ZIP</a> (right-click and "Copy Link Address") and paste into the Easy Install section and Install.<br>
 	<b>5</b>. Now, you can either:<br>
 	<b>a</b>. Activate the Theme Test Drive for the BioShip theme with Level 10 (administrator) privileges. Remember the theme test
 	drive for the theme will be active for all administrators until you disable it via this page! You can now access the <i>Theme Options</i>
@@ -251,7 +258,7 @@ function bioship_docs_install_guide($vwrap) {
 
 	$vhtml .= '<h5>Manual Theme Update</h5>
 	(for super-fast update testing)<br><br>
-	<b>1</b>. Download the latest <a href="http://bioship.space/download/download-latest/">BioShip ZIP</a> (right-click and "Save Linked Content As") to your computer.<br>
+	<b>1</b>. Download the latest <a href="'.THEMEHOMEURL.'/download/download-latest/">BioShip ZIP</a> (right-click and "Save Linked Content As") to your computer.<br>
 	<b>2</b>. Unzip the file locally, then upload it by FTP to:	<i>/wp-content/themes/bioship-new/</i><br>
 	(make sure you log in FTP as the correct user so owner/group permissions match your install!)<br>
 	<b>3</b>. Rename the existing <i>/bioship/</i> subdirectory to <i>/bioship-old/</i><br>
@@ -350,7 +357,7 @@ function bioship_docs_framework_guide($vwrap) {
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
 	$vhtml .= "Available BioShip Theme Options are separated into Skin, Muscle and Skeleton sections for all Frameworks! :-)<br>";
-	$bhtml .= "This helps organize the design, functionality and templating options respectively (see <a href='http://bioship.space/'>BioShip Home</a>)<br><br>";
+	$bhtml .= "This helps organize the design, functionality and templating options respectively (see <a href='".THEMEHOMEURL."/'>BioShip Home</a>)<br><br>";
 
 	$vhtml .= "<h3>Options Frameworks</h3>";
 
@@ -367,7 +374,7 @@ function bioship_docs_framework_guide($vwrap) {
 	$vhtml .= "If you are curious, this step was taken by the Theme Review Team to provide a more consistent experience for the end user.<br>";
 	$vhtml .= "Personally I prefer using Options or Titan Framework to the Customizer, but all options are available so it is up to you! :-)<br>";
 	$vhtml .= "If you are using the WP.Org version of BioShip, you will need to install Titan Framework <i>as a plugin</i> to access Titan page.<br>";
-	$vhtml .= "If you would prefer to use bundled Titan or Options Framework, reinstall the theme from <a href='http://bioship.space/' target=_blank>BioShip.Space</a>.<br>";
+	$vhtml .= "If you would prefer to use bundled Titan or Options Framework, reinstall the theme from <a href='".THEMEHOMEURL."/' target=_blank>BioShip.Space</a>.<br>";
 	$vhtml .= "(Note the file <i>update-checker.php</i> is removed from the WP.Org version so that updates are via the WordPress.Org repository.)<br>";
 
 	$vhtml .= "<h4>Titan Framework</h4>";
@@ -437,7 +444,7 @@ function bioship_docs_framework_guide($vwrap) {
 	// TODO: add more extensive information on Foundation here ...
 
 	$vhtml .= "<h3>BioShip Extensions</h3>";
-	$vhtml .= "For further extensions, see the online <a href='http://bioship.space/documentation/extensions/'>BioShip Extensions</a> page.<br><br>";
+	$vhtml .= "For further extensions, see the online <a href='".THEMEHOMEURL."/documentation/extensions/'>BioShip Extensions</a> page.<br><br>";
 
 	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
 
@@ -466,18 +473,21 @@ function bioship_docs_option_list($vwrap) {
 	if ($vselected != '') {$vhtml .= "scrolltohash('".$vselected."');";}
 	$vhtml .= "</script>";
 
-	// declare some dummy functions to allow direct loading of options.php
+	// declare some dummy functions to allow include of options.php
 	if (!function_exists('bioship_options')) {
 		if (!function_exists('add_action')) {function add_action() {} }
 		if (!function_exists('bioship_trace')) {function bioship_trace() {} }
 		if (!function_exists('apply_filters')) {function apply_filters($f,$v) {return $v;} }
 		if (!function_exists('get_categories')) {function get_categories() {} }
-		if (!function_exists('__')) {function __($v,$d) {return $v;} }
 		if (!function_exists('get_template_directory_uri')) {function get_template_directory_uri() {} }
 		if (!function_exists('get_post_types')) {function get_post_types() {} }
 		if (!function_exists('is_rtl')) {function is_rtl() {} }
 		if (!function_exists('get_option')) {function get_option() {} }
 		if (!function_exists('get_intermediate_image_sizes')) {function get_intermediate_image_sizes() {} }
+		// 2.0.7: changed dummy translation  arguments to pass theme check
+		if (!function_exists('__')) {function __($s, $d = 'bioship', $a = 'bioship') {return $s;} }
+		// 2.0.8: fix to missing prefixed function
+		if (!function_exists('bioship_apply_filters')) {function bioship_apply_filters($f,$v) {return $v;} }
 		include(dirname(dirname(__FILE__)).'/options.php');
 	}
 
@@ -646,9 +656,13 @@ function bioship_docs_filter_list($vwrap) {
 	if ($vwrap) {$vfilterfile = dirname(dirname(__FILE__)).'/child/filters.php';}
 	else {$vfilterfile = get_template_directory().'/child/filters.php';}
 
-	$vfilterdocs = file_get_contents($vfilterfile);
+	// 2.0.7: do not use file_get_contents - just to pass Theme Check
+	// ref: https://wordpress.stackexchange.com/questions/166161/why-cant-the-wp-filesystem-api-read-googlefonts-json#comment240513_166172
+	// $vfilterdocs = file_get_contents($vfilterfile);
+	$vfilearray = file($vfilterfile);
+	$vfilterdocs = implode('', $vfilearray);
 
-	// TODO: get/move filter file introduction here
+	// TODO: get/move filter file introduction here?
 
 	// skip section index as creating it
 
@@ -734,7 +748,7 @@ function bioship_docs_filter_list($vwrap) {
 				$vexample .= substr($vtempb,0,$vpos);
 				$vtempb = trim( substr($vtempb,$vpos,strlen($vtempb)) );
 
-				if (DOCDEBUG) {
+				if (THEMEDOCDEBUG) {
 					if (!strstr($vexample,'return')) {
 						echo "Warning: no return for ".$vfilter.":<br>".PHP_EOL;
 						echo $vfilters[$vfilter]['content'];
@@ -910,7 +924,7 @@ function bioship_docs_file_hierarchy($vwrap) {
 		<tr><td>index.php</td><td>Default Index Template</td></tr>
 		<tr><td>index-loop.php</td><td>Default Loop Template</td></tr>
 		<tr><td>footer.php</td><td>Default Footer Template</td></tr>
-		<tr><td><b>Template Directories</b></td><?tr>
+		<tr><td><b>Template Directories</b></td></tr>
 		<tr><td>/content/</td><td>Content Templates</td></tr>
 		<tr><td>/content/format/</td><td>Post Format Templates</td></tr>
 		<tr><td>/sidebar/</td><td>Sidebar Templates</td></tr>
@@ -1378,9 +1392,7 @@ function bioship_docs_layout_hooks($vwrap) {
 			$vhtml .= "<b>Error: Layout Hooks file was not found!?</b>";
 			$vhtml .= "</body></html>"; echo $vhtml; return;
 		}
-
-		// Dummy Translation Function (for now)
-		if (!function_exists('__')) { function __($v,$t=null) {return $v;} }
+		if (!function_exists('__')) {function __($s, $d = 'bioship', $a = 'bioship') {return $s;} }
 		include($vhookfile);
 	}
 
@@ -1511,8 +1523,8 @@ function bioship_docs_theme_values($vwrap) {
 		<tr><td>THEMESLUG</td><td colspan='2'>sanitized lowercase and hyphenated) theme name</td><td>string</td></tr>
 		<tr><td>THEMEKEY</td><td colspan='2'>options table key value for theme options</td><td>string</td></tr>
 		<tr><td>THEMEDISPLAYNAME</td><td colspan='2'>the Display Name of currently active Theme</td><td>string</td></tr>
-		<tr><td>THEMEHOMEURL</td><td colspan='2'>static URL of the BioShip website</td><td><a href='http://bioship.space' target=_blank>http://bioship.space</a></td></tr>
-		<tr><td>THEMESUPPORT</td><td colspan='2'>static URL of Support website (WordQuest)</td><td><a href='http://wordquest.org' target=_blank>http://wordquest.org</a></td></tr>
+		<tr><td>THEMEHOMEURL</td><td colspan='2'>static URL of the BioShip website</td><td><a href='".THEMEHOMEURL."' target=_blank>".THEMEHOMEURL."</a></td></tr>
+		<tr><td>THEMESUPPORT</td><td colspan='2'>static URL of Support website (WordQuest)</td><td><a href='".THEMESUPPORT."' target=_blank>".THEMESUPPORT."</a></td></tr>
 		<tr height='10'><td> </td></tr>
 		<tr><td><b>Load States</b></td></tr>
 		<tr><td>THEMESSL</td><td colspan='2'>whether to load SSL resources (is_ssl)</td><td>true/false</td></tr>

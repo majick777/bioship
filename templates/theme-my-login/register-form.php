@@ -15,23 +15,23 @@ Theme My Login will always look in your theme's directory first, before using th
 	<?php $template->the_errors(); ?>
 	<form name="registerform" id="registerform<?php $template->the_instance(); ?>" action="<?php $template->the_action_url( 'register' ); ?>" method="post">
 		<p>
-			<label for="user_login<?php $template->the_instance(); ?>"><?php _e( 'Username' ); ?></label>
+			<label for="user_login<?php $template->the_instance(); ?>"><?php _e( 'Username', 'bioship' ); ?></label>
 			<input type="text" name="user_login" id="user_login<?php $template->the_instance(); ?>" class="input" value="<?php $template->the_posted_value( 'user_login' ); ?>" size="20" />
 		</p>
 
 		<p>
-			<label for="user_email<?php $template->the_instance(); ?>"><?php _e( 'E-mail' ); ?></label>
+			<label for="user_email<?php $template->the_instance(); ?>"><?php _e( 'E-mail', 'bioship' ); ?></label>
 			<input type="text" name="user_email" id="user_email<?php $template->the_instance(); ?>" class="input" value="<?php $template->the_posted_value( 'user_email' ); ?>" size="20" />
 		</p>
 
 		<?php do_action( 'register_form' ); ?>
 
-		<p id="reg_passmail<?php $template->the_instance(); ?>"><?php echo apply_filters( 'tml_register_passmail_template_message', __( 'A password will be e-mailed to you.' ) ); ?></p>
+		<p id="reg_passmail<?php $template->the_instance(); ?>"><?php echo apply_filters( 'tml_register_passmail_template_message', __( 'A password will be e-mailed to you.', 'bioship' ) ); ?></p>
 
 		<p class="submit">
 
 			<?php $registerbuttonurl = apply_filters('register_button_url', get_option('registerbuttonurl'));
-			$registerbuttontext = esc_attr(apply_filters('register_button_text', __('Register')));
+			$registerbuttontext = esc_attr(apply_filters('register_button_text', __('Register','bioship')));
 			if ($registerbuttonurl != '') { ?>
 				<input type="image" name="wp-submit" id="wp-submit<?php $template->the_instance(); ?>" src="<?php echo $registerbuttonurl; ?>" />
 			<?php }	else { ?>

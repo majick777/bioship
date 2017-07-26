@@ -1,6 +1,6 @@
 <?php
 /**
- * General template functions.  These functions are for use throughout the theme's various template files.  
+ * General template functions.  These functions are for use throughout the theme's various template files.
  * Their main purpose is to handle many of the template tags that are currently lacking in core WordPress.
  *
  * @package    HybridCore
@@ -52,7 +52,7 @@ function hybrid_wp_link() {
  * @return string
  */
 function hybrid_get_wp_link() {
-	return sprintf( '<a class="wp-link" href="http://wordpress.org" title="%s">%s</a>', esc_attr__( 'State-of-the-art semantic personal publishing platform', 'hybrid-core' ), __( 'WordPress', 'hybrid-core' ) );
+	return sprintf( '<a class="wp-link" href="http://wordpress.org" title="%s">%s</a>', esc_attr__( 'State-of-the-art semantic personal publishing platform', 'bioship' ), __( 'WordPress', 'bioship' ) );
 }
 
 /**
@@ -79,7 +79,7 @@ function hybrid_get_theme_link() {
 	$name  = $theme->display( 'Name', false, true );
 
 	/* Translators: Theme name. */
-	$title = sprintf( __( '%s WordPress Theme', 'hybrid-core' ), $name );
+	$title = sprintf( __( '%s WordPress Theme', 'bioship' ), $name );
 
 	return sprintf( '<a class="theme-link" href="%s" title="%s">%s</a>', esc_url( $uri ), esc_attr( $title ), $name );
 }
@@ -112,14 +112,14 @@ function hybrid_get_child_theme_link() {
 	$name  = $theme->display( 'Name', false, true );
 
 	/* Translators: Theme name. */
-	$title = sprintf( __( '%s WordPress Theme', 'hybrid-core' ), $name );
+	$title = sprintf( __( '%s WordPress Theme', 'bioship' ), $name );
 
 	return sprintf( '<a class="child-link" href="%s" title="%s">%s</a>', esc_url( $uri ), esc_attr( $title ), $name );
 }
 
 /**
- * Gets the "blog" (posts page) page URL.  `home_url()` will not always work for this because it 
- * returns the front page URL.  Sometimes the blog page URL is set to a different page.  This 
+ * Gets the "blog" (posts page) page URL.  `home_url()` will not always work for this because it
+ * returns the front page URL.  Sometimes the blog page URL is set to a different page.  This
  * function handles both scenarios.
  *
  * @since  2.0.0
@@ -139,7 +139,7 @@ function hybrid_get_blog_url() {
 }
 
 /**
- * Outputs the site title. 
+ * Outputs the site title.
  *
  * @since  0.1.0
  * @access public
@@ -202,7 +202,7 @@ function hybrid_loop_title() {
 }
 
 /**
- * Gets the loop title.  This function should only be used on archive-type pages, such as archive, blog, and 
+ * Gets the loop title.  This function should only be used on archive-type pages, such as archive, blog, and
  * search results pages.  It outputs the title of the page.
  *
  * @link   http://core.trac.wordpress.org/ticket/21995
@@ -217,7 +217,7 @@ function hybrid_get_loop_title() {
 	if ( is_home() && !is_front_page() )
 		$loop_title = get_post_field( 'post_title', get_queried_object_id() );
 
-	elseif ( is_category() ) 
+	elseif ( is_category() )
 		$loop_title = single_cat_title( '', false );
 
 	elseif ( is_tag() )
@@ -274,7 +274,7 @@ function hybrid_loop_description() {
 }
 
 /**
- * Gets the loop description.  This function should only be used on archive-type pages, such as archive, blog, and 
+ * Gets the loop description.  This function should only be used on archive-type pages, such as archive, blog, and
  * search results pages.  It outputs the description of the page.
  *
  * @link   http://core.trac.wordpress.org/ticket/21995
@@ -302,25 +302,25 @@ function hybrid_get_loop_description() {
 		$loop_desc = get_the_author_meta( 'description', get_query_var( 'author' ) );
 
 	elseif ( is_search() )
-		$loop_desc = sprintf( __( 'You are browsing the search results for &#8220;%s&#8221;', 'hybrid-core' ), get_search_query() );
+		$loop_desc = sprintf( __( 'You are browsing the search results for &#8220;%s&#8221;', 'bioship' ), get_search_query() );
 
 	elseif ( is_post_type_archive() )
 		$loop_desc = get_post_type_object( get_query_var( 'post_type' ) )->description;
 
 	elseif ( is_time() )
-		$loop_desc = __( 'You are browsing the site archives by time.', 'hybrid-core' );
+		$loop_desc = __( 'You are browsing the site archives by time.', 'bioship' );
 
 	elseif ( is_day() )
-		$loop_desc = sprintf( __( 'You are browsing the site archives for %s.', 'hybrid-core' ), hybrid_single_day_title( '', false ) );
+		$loop_desc = sprintf( __( 'You are browsing the site archives for %s.', 'bioship' ), hybrid_single_day_title( '', false ) );
 
 	elseif ( is_month() )
-		$loop_desc = sprintf( __( 'You are browsing the site archives for %s.', 'hybrid-core' ), single_month_title( ' ', false ) );
+		$loop_desc = sprintf( __( 'You are browsing the site archives for %s.', 'bioship' ), single_month_title( ' ', false ) );
 
 	elseif ( is_year() )
-		$loop_desc = sprintf( __( 'You are browsing the site archives for %s.', 'hybrid-core' ), hybrid_single_year_title( '', false ) );
+		$loop_desc = sprintf( __( 'You are browsing the site archives for %s.', 'bioship' ), hybrid_single_year_title( '', false ) );
 
 	elseif ( is_archive() )
-		$loop_desc = __( 'You are browsing the site archives.', 'hybrid-core' );
+		$loop_desc = __( 'You are browsing the site archives.', 'bioship' );
 
 	return apply_filters( 'hybrid_loop_description', $loop_desc );
 }
@@ -336,7 +336,7 @@ function hybrid_get_loop_description() {
  */
 function hybrid_single_archive_title( $prefix = '', $display = true ) {
 
-	$title = $prefix . __( 'Archives', 'hybrid-core' );
+	$title = $prefix . __( 'Archives', 'bioship' );
 
 	if ( false === $display )
 		return $title;
@@ -374,7 +374,7 @@ function hybrid_single_author_title( $prefix = '', $display = true ) {
  */
 function hybrid_single_year_title( $prefix = '', $display = true ) {
 
-	$title = $prefix . get_the_date( _x( 'Y', 'yearly archives date format', 'hybrid-core' ) );
+	$title = $prefix . get_the_date( _x( 'Y', 'yearly archives date format', 'bioship' ) );
 
 	if ( false === $display )
 		return $title;
@@ -394,7 +394,7 @@ function hybrid_single_year_title( $prefix = '', $display = true ) {
 function hybrid_single_week_title( $prefix = '', $display = true ) {
 
 	/* Translators: 1 is the week number and 2 is the year. */
-	$title = $prefix . sprintf( __( 'Week %1$s of %2$s', 'hybrid-core' ), get_the_time( _x( 'W', 'weekly archives date format', 'hybrid-core' ) ), get_the_time( _x( 'Y', 'yearly archives date format', 'hybrid-core' ) ) );
+	$title = $prefix . sprintf( __( 'Week %1$s of %2$s', 'bioship' ), get_the_time( _x( 'W', 'weekly archives date format', 'bioship' ) ), get_the_time( _x( 'Y', 'yearly archives date format', 'bioship' ) ) );
 
 	if ( false === $display )
 		return $title;
@@ -413,7 +413,7 @@ function hybrid_single_week_title( $prefix = '', $display = true ) {
  */
 function hybrid_single_day_title( $prefix = '', $display = true ) {
 
-	$title = $prefix . get_the_date( _x( 'F j, Y', 'daily archives date format', 'hybrid-core' ) );
+	$title = $prefix . get_the_date( _x( 'F j, Y', 'daily archives date format', 'bioship' ) );
 
 	if ( false === $display )
 		return $title;
@@ -432,7 +432,7 @@ function hybrid_single_day_title( $prefix = '', $display = true ) {
  */
 function hybrid_single_hour_title( $prefix = '', $display = true ) {
 
-	$title = $prefix . get_the_time( _x( 'g a', 'hour archives time format', 'hybrid-core' ) );
+	$title = $prefix . get_the_time( _x( 'g a', 'hour archives time format', 'bioship' ) );
 
 	if ( false === $display )
 		return $title;
@@ -452,7 +452,7 @@ function hybrid_single_hour_title( $prefix = '', $display = true ) {
 function hybrid_single_minute_title( $prefix = '', $display = true ) {
 
 	/* Translators: Minute archive title. %s is the minute time format. */
-	$title = $prefix . sprintf( __( 'Minute %s', 'hybrid-core' ), get_the_time( _x( 'i', 'minute archives time format', 'hybrid-core' ) ) );
+	$title = $prefix . sprintf( __( 'Minute %s', 'bioship' ), get_the_time( _x( 'i', 'minute archives time format', 'bioship' ) ) );
 
 	if ( false === $display )
 		return $title;
@@ -471,7 +471,7 @@ function hybrid_single_minute_title( $prefix = '', $display = true ) {
  */
 function hybrid_single_minute_hour_title( $prefix = '', $display = true ) {
 
-	$title = $prefix . get_the_time( _x( 'g:i a', 'minute and hour archives time format', 'hybrid-core' ) );
+	$title = $prefix . get_the_time( _x( 'g:i a', 'minute and hour archives time format', 'bioship' ) );
 
 	if ( false === $display )
 		return $title;
@@ -491,7 +491,7 @@ function hybrid_single_minute_hour_title( $prefix = '', $display = true ) {
 function hybrid_search_title( $prefix = '', $display = true ) {
 
 	/* Translators: %s is the search query. The HTML entities are opening and closing curly quotes. */
-	$title = $prefix . sprintf( __( 'Search results for &#8220;%s&#8221;', 'hybrid-core' ), get_search_query() );
+	$title = $prefix . sprintf( __( 'Search results for &#8220;%s&#8221;', 'bioship' ), get_search_query() );
 
 	if ( false === $display )
 		return $title;
@@ -510,7 +510,7 @@ function hybrid_search_title( $prefix = '', $display = true ) {
  */
 function hybrid_404_title( $prefix = '', $display = true ) {
 
-	$title = $prefix . __( '404 Not Found', 'hybrid-core' );
+	$title = $prefix . __( '404 Not Found', 'bioship' );
 
 	if ( false === $display )
 		return $title;

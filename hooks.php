@@ -107,9 +107,9 @@ $k = 'bioship_navbar';							$s[$i][$j++] = $k;	$l[$k] = __('Main Navigation Bar
  $f = 'bioship_skeleton_main_menu_close';		$p[$k][$f] = 10;
 
 $k = 'bioship_after_navbar';					$s[$i][$j++] = $k; 	$l[$k] = __('After Main NavBar','bioship');
- $f = 'bioship_skeleton_clear_div';				$p[$k][$f] = 0;
+ $f = 'bioship_skeleton_echo_clear_div';		$p[$k][$f] = 0;
  $f = 'bioship_skeleton_navbar_banner';			$p[$k][$f] = 4;		$l[$f] = __('Full Width Navbar Banner','bioship');
- $f = 'bioship_skeleton_clear_div';				$p[$k][$f] = 8;
+ $f = 'bioship_skeleton_echo_clear_div';		$p[$k][$f] = 8;
 
 // --------------------
 // === Main Sidebar ===
@@ -251,7 +251,7 @@ $k = 'bioship_after_archive';					$s[$i][$j++] = $k;	$l[$k] = __('After Any Arch
 $k = 'bioship_after_loop';						$s[$i][$j++] = $k;	$l[$k] = __('After Any Loop','bioship');		// (no default)
 $k = 'bioship_after_content';		 			$s[$i][$j++] = $k;	$l[$k] = __('After Content','bioship');			// (no default)
  $f = 'bioship_skeleton_content_close';			$p[$k][$f] = 0;		$l[$f] = __('Content Wrap Close','bioship');
- $f = 'bioship_skeleton_clear_div';				$p[$k][$f] = 2;
+ $f = 'bioship_skeleton_echo_clear_div';		$p[$k][$f] = 2;
 ##		* Content Sidebar *						 			  5		## 'Below Content Sidebar' Default Position
 // ----------------------------
 // END SIDEBAR AND CONTENT AREA
@@ -262,6 +262,7 @@ $k = 'bioship_after_content';		 			$s[$i][$j++] = $k;	$l[$k] = __('After Content
 /* footer.php */								$j = 0;	$i++;		$l[$i] = __('Footer','bioship');
 $k = 'bioship_before_footer';					$s[$i][$j++] = $k;	$l[$k] = __('Before Footer','bioship');
  $f = 'bioship_skeleton_footer_banner';			$p[$k][$f] = 5;		$l[$k] = __('Full Width Footer Banner','bioship');
+ $f = 'bioship_skeleton_echo_clear_div';		$p[$k][$f] = 10;
 // * wp_footer *
 $k = 'bioship_footer';							$s[$i][$j++] = $k;	$l[$k] = __('Main Footer','bioship');
  $f = 'bioship_skeleton_footer_open';			$p[$k][$f] = 0;

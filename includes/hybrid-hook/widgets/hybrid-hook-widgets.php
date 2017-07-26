@@ -7,7 +7,7 @@
  * Author: Justin Tadlock
  * Author URI: http://justintadlock.com
  *
- * This plugin was created so that users with little or no XHTML and PHP 
+ * This plugin was created so that users with little or no XHTML and PHP
  * knowledge could take advantage of Hybrid's built-in hook system.  It allows
  * them to add widgets to specific action hooks.  The user must have WordPress
  * version 2.8 or higher installed to use this plugin.
@@ -59,17 +59,17 @@ add_action( 'comment_form', 'hook_widgets_comment_form', 11 );
  * @since 0.1
  */
 function hook_widgets_register() {
-	register_sidebar( array( 'name' => __('Hook: Before HTML ', 'hook_widgets'), 'id' => 'hook-before-html', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: After HTML', 'hook_widgets'), 'id' => 'hook-after-html', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: Before Header', 'hook_widgets'), 'id' => 'hook-before-header', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: Header', 'hook_widgets'), 'id' => 'hook-header', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: After Header', 'hook_widgets'), 'id' => 'hook-after-header', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: Before Container', 'hook_widgets'), 'id' => 'hook-before-container', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: After Container', 'hook_widgets'), 'id' => 'hook-after-container', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: Before Footer', 'hook_widgets'), 'id' => 'hook-before-footer', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: Footer', 'hook_widgets'), 'id' => 'hook-footer', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: After Footer', 'hook_widgets'), 'id' => 'hook-after-footer', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
-	register_sidebar( array( 'name' => __('Hook: Comment Form', 'hook_widgets'), 'id' => 'hook-comment-form', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: Before HTML ', 'bioship'), 'id' => 'hook-before-html', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: After HTML', 'bioship'), 'id' => 'hook-after-html', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: Before Header', 'bioship'), 'id' => 'hook-before-header', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: Header', 'bioship'), 'id' => 'hook-header', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: After Header', 'bioship'), 'id' => 'hook-after-header', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: Before Container', 'bioship'), 'id' => 'hook-before-container', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: After Container', 'bioship'), 'id' => 'hook-after-container', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: Before Footer', 'bioship'), 'id' => 'hook-before-footer', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: Footer', 'bioship'), 'id' => 'hook-footer', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: After Footer', 'bioship'), 'id' => 'hook-after-footer', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
+	register_sidebar( array( 'name' => __('Hook: Comment Form', 'bioship'), 'id' => 'hook-comment-form', 'before_widget' => '<div id="%1$s" class="widget %2$s widget-%2$s"><div class="widget-inside">', 'after_widget' => '</div></div>', 'before_title' => '<h3 class="widget-title">', 'after_title' => '</h3>' ) );
 }
 
 /**
