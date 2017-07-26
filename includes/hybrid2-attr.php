@@ -1,10 +1,10 @@
 <?php
 /**
- * HTML attribute functions and filters.  The purposes of this is to provide a way for theme/plugin devs 
- * to hook into the attributes for specific HTML elements and create new or modify existing attributes.  
- * This is sort of like `body_class()`, `post_class()`, and `comment_class()` on steroids.  Plus, it 
- * handles attributes for many more elements.  The biggest benefit of using this is to provide richer 
- * microdata while being forward compatible with the ever-changing Web.  Currently, the default microdata 
+ * HTML attribute functions and filters.  The purposes of this is to provide a way for theme/plugin devs
+ * to hook into the attributes for specific HTML elements and create new or modify existing attributes.
+ * This is sort of like `body_class()`, `post_class()`, and `comment_class()` on steroids.  Plus, it
+ * handles attributes for many more elements.  The biggest benefit of using this is to provide richer
+ * microdata while being forward compatible with the ever-changing Web.  Currently, the default microdata
  * vocabulary supported is Schema.org.
  *
  * @package    HybridCore
@@ -64,9 +64,9 @@ function hybrid_attr( $slug, $context = '' ) {
 }
 
 /**
- * Gets an HTML element's attributes.  This function is actually meant to be filtered by theme authors, plugins, 
- * or advanced child theme users.  The purpose is to allow folks to modify, remove, or add any attributes they 
- * want without having to edit every template file in the theme.  So, one could support microformats instead 
+ * Gets an HTML element's attributes.  This function is actually meant to be filtered by theme authors, plugins,
+ * or advanced child theme users.  The purpose is to allow folks to modify, remove, or add any attributes they
+ * want without having to edit every template file in the theme.  So, one could support microformats instead
  * of microdata, if desired.
  *
  * @since  2.0.0
@@ -192,7 +192,7 @@ function hybrid_attr_sidebar( $attr, $context ) {
 
 	if ( !empty( $context ) ) {
 		/* Translators: The %s is the sidebar name. This is used for the 'aria-label' attribute. */
-		$attr['aria-label'] = esc_attr( sprintf( _x( '%s Sidebar', 'sidebar aria label', 'hybrid-core' ), hybrid_get_sidebar_name( $context ) ) );
+		$attr['aria-label'] = esc_attr( sprintf( _x( '%s Sidebar', 'sidebar aria label', 'bioship' ), hybrid_get_sidebar_name( $context ) ) );
 	}
 
 	$attr['itemscope'] = 'itemscope';
@@ -220,7 +220,7 @@ function hybrid_attr_menu( $attr, $context ) {
 
 	if ( !empty( $context ) ) {
 		/* Translators: The %s is the menu name. This is used for the 'aria-label' attribute. */
-		$attr['aria-label'] = esc_attr( sprintf( _x( '%s Menu', 'nav menu aria label', 'hybrid-core' ), hybrid_get_menu_location_name( $context ) ) );
+		$attr['aria-label'] = esc_attr( sprintf( _x( '%s Menu', 'nav menu aria label', 'bioship' ), hybrid_get_menu_location_name( $context ) ) );
 	}
 
 	$attr['itemscope']  = 'itemscope';
@@ -437,7 +437,7 @@ function hybrid_attr_entry_published( $attr ) {
 	$attr['datetime'] = get_the_time( 'Y-m-d\TH:i:sP' );
 
 	/* Translators: Post date/time "title" attribute. */
-	$attr['title']    = get_the_time( _x( 'l, F j, Y, g:i a', 'post time format', 'hybrid-core' ) );
+	$attr['title']    = get_the_time( _x( 'l, F j, Y, g:i a', 'post time format', 'bioship' ) );
 
 	return $attr;
 }
@@ -562,7 +562,7 @@ function hybrid_attr_comment_published( $attr ) {
 	$attr['datetime'] = get_comment_time( 'Y-m-d\TH:i:sP' );
 
 	/* Translators: Comment date/time "title" attribute. */
-	$attr['title']    = get_comment_time( _x( 'l, F j, Y, g:i a', 'comment time format', 'hybrid-core' ) );
+	$attr['title']    = get_comment_time( _x( 'l, F j, Y, g:i a', 'comment time format', 'bioship' ) );
 	$attr['itemprop'] = 'commentTime';
 
 	return $attr;

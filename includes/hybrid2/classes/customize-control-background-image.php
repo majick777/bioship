@@ -1,7 +1,7 @@
 <?php
 /**
  * Extends the WordPress background image customize control class, which allows a theme to register
- * multiple default backgrounds for the user to choose from.  To use this, the theme author 
+ * multiple default backgrounds for the user to choose from.  To use this, the theme author
  * should remove the 'background_image' control and add this control in its place.
  *
  * @package    Hybrid
@@ -50,7 +50,7 @@ class Hybrid_Customize_Control_Background_Image extends WP_Customize_Background_
 	}
 
 	/**
-	 * Displays the 'default' tab for selecting a background image.  This method plays nicely with the 
+	 * Displays the 'default' tab for selecting a background image.  This method plays nicely with the
 	 * 'default-image' argument for 'custom-background' as well as our custom backgrounds.
 	 *
 	 * @since  2.0.0

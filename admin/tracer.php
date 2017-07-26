@@ -193,12 +193,23 @@ function bioship_trace($vresourcetype, $vresourcename, $vfilepath, $vfunctionarg
 
 			if ($vthemetracer['instance']) {
 				if ($vthemetracer['instance'] == '') {$vdumpfile = '';} // no file writing
-				else {$vdumpfile = $vthemedebugdir.DIRSEP.'_'.$vinstance.'--traceargs.txt';}
-			} else {$vdumpfile = $vthemedebugdir.DIRSEP.$vthemetrace['start'].'--traceargs.txt';}
+				else {$vdumpfile = '_'.$vinstance.'--traceargs.txt';}
+			} else {$vdumpfile = $vthemetrace['start'].'--traceargs.txt';}
 
 			if ($vdumpfile != '') {
-				if (file_exists($vdumpfile)) {$vfh = @fopen($vdumpfile,'a');} else {$vfh = @fopen($vdumpfile,'w');}
-				@fwrite($vfh,$vdumpline); @fclose($vfh);
+				if (file_exists($vdumpfile)) {
+					// 2.0.7: replace direct with WP file system writing
+					// TODO: find and use append method is WP file system?!!?!
+					// $vfh = @fopen($vdumpfile,'a'); @fwrite($vfh,$vdumpline); @fclose($vfh);
+
+					$vcontents = bioship_file_get_contents($vdumpfile);
+					$vnewlines = $vcontents.$vdumpline;
+					bioship_write_debug_file($vdumpfile, $vnewlines);
+				} else {
+					// 2.0.7: replace direct with WP file system debug writing
+					bioship_write_debug_file($vdumpfile, $vdumpline);
+				}
+
 			}
 		}
 	}
@@ -221,13 +232,14 @@ function bioship_trace_processsor() {
 
 		if ($vthemetracer['instance']) {
 			if ($vthemetracer['instance'] == '') {$vtraceloadsfile = '';} // no file writing
-			else {$vtraceloadsfile = $vthemedebugdir.DIRSEP.'_'.$vinstance.'--traceload.txt';}
-		} else {$vtraceloadsfile = $vthemedebugdir.DIRSEP.$vthemetrace['start'].'--traceload.txt';}
+			else {$vtraceloadsfile = '_'.$vinstance.'--traceload.txt';}
+		} else {$vtraceloadsfile = $vthemetrace['start'].'--traceload.txt';}
 		$vtracercontents = implode(PHP_EOL, $vthemetrace['lines']);
 
 		// being user debug files, these should be fine to write directly
 		if ($vtraceloadsfile != '') {
-			$vfh = @fopen($vtraceloadsfile,'w'); @fwrite($vfh,$vtracercontents); @fclose($vfh);
+			// 2.0.7: replace direct with file system debug writing
+			bioship_write_debug_file($vtraceloadsfile, $vtracercontents);
 			if (!file_exists($vtraceloadsfile)) {return;} // if writing failed
 		}
 	}
@@ -251,18 +263,19 @@ function bioship_trace_processsor() {
 
 		// write the call occurences log file
 		$voccurdata = implode(PHP_EOL,$voccurlines);
-		$voccurdata = "Theme Function Call Occurrences:".PHP_EOL.$voccurdata;
-		$vorderedtraces = implode(PHP_EOL,$vthemetrace['calls']);
-		$voccurdata .= PHP_EOL.PHP_EOL."All Function Calls Order:".PHP_EOL.$vorderedtraces;
+		$voccurdata = __('Theme Function Call Occurrences','bioship').':'.PHP_EOL.$voccurdata;
+		$vorderedtraces = implode(PHP_EOL, $vthemetrace['calls']);
+		$voccurdata .= PHP_EOL.PHP_EOL.__('All Function Calls Order','bioship').':'.PHP_EOL.$vorderedtraces;
 
 		if ($vthemetracer['instance']) {
 			if ($vthemetracer['instance'] == '') {$vtracecallsfile = '';} // no file writing
-			else {$vtracecallsfile = $vthemedebugdir.DIRSEP.'_'.$vinstance.'--tracecalls.txt';}
-		} else {$vtracecallsfile = $vthemedebugdir.DIRSEP.$vthemetrace['start'].'--tracecalls.txt';}
+			else {$vtracecallsfile = '_'.$vinstance.'--tracecalls.txt';}
+		} else {$vtracecallsfile = $vthemetrace['start'].'--tracecalls.txt';}
 
 		// being user debug files, these should be fine to write directly
 		if ($vtracecallsfile != '') {
-			$vfh = @fopen($vtracecallsfile,'w'); @fwrite($vfh,$voccurdata); @fclose($vfh);
+			// 2.0.7: replace direct with WP file system debug writing
+			bioship_write_debug_file($vtracecallsfile, $voccurdata);
 		}
 
 		// maybe output at end of screen for source viewing

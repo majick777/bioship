@@ -1016,7 +1016,7 @@ if (!function_exists('bioship_set_sidebar')) {
 
 	// maybe swap mobile button positions to match sidebars
 	// TODO: maybe there is an easier/better way than this?
-	// ...we should check for sidebar content not just positions
+	// ...as we could check for sidebar content not just positions?
 
 	// maybe move mobile subsidebar button to left
 	if ( ( (strstr($vleftsidebar,'sub')) && ($vinnerleftsidebar == '') )
@@ -1031,8 +1031,9 @@ if (!function_exists('bioship_set_sidebar')) {
 		}
 	}
 	// maybe move mobile sidebar button to right
+	// 2.0.7: fix to variable typo (subrighsidebar)
 	if ( ( ($vrightsidebar != '') && (!strstr($vrightsidebar,'sub')) && ($vinnerrightsidebar == '') )
-	  && ( ($vsubrighsidebar != '') && (!strstr($vinnerrightsidebar,'sub')) && ($vrightsidebar == '') ) ) {
+	  && ( ($vinnerrightsidebar != '') && (!strstr($vinnerrightsidebar,'sub')) && ($vrightsidebar == '') ) ) {
 		if (!has_action('wp_footer', 'bioship_mobile_sidebar_button_swap')) {
 			add_action('wp_head', 'bioship_mobile_sidebar_button_swap');
 			if (!function_exists('bioship_mobile_sidebar_button_swap')) {
@@ -1043,16 +1044,18 @@ if (!function_exists('bioship_set_sidebar')) {
 		}
 	}
 
-	// 1.8.5: rename to themesidebars global
+	// 1.8.5: renamed to use themesidebars global
 	$vthemesidebars['output'] = array($vleftoutput, $vinnerleftoutput, $vinnerrightoutput, $vrightoutput);
 
 	// 1.9.9: set theme sidebar states as may have changed
 	$vthemesidebars['sidebar'] = $vsidebar;
 	$vthemesidebars['subsidebar'] = $vsubsidebar;
 
-	if (THEMEDEBUG) {echo "<!-- Stored Sidebars Lengths: ";
+	if (THEMEDEBUG) {
+		echo "<!-- Stored Sidebars Lengths: ";
 		echo strlen($vthemesidebars['output'][0]).','.strlen($vthemesidebars['output'][1]).',';
-		echo strlen($vthemesidebars['output'][2]).','.strlen($vthemesidebars['output'][3]); echo " -->";
+		echo strlen($vthemesidebars['output'][2]).','.strlen($vthemesidebars['output'][3]);
+		echo " -->";
 	}
 
 	// manual debug for full sidebar output
@@ -1361,7 +1364,8 @@ if ($vtitletagsupport) {
 } else {
 	// fallback to wp_title usage
 	add_filter('wp_title', 'bioship_wp_title', 10, 2);
-	add_action('wp_head', 'bioship_wp_title_tag');
+	// 2.0.8: specify priority to match title tag support
+	add_action('wp_head', 'bioship_wp_title_tag', 1);
 }
 
 // Title Tag Filter
@@ -1384,7 +1388,8 @@ if (!function_exists('bioship_wp_render_title_tag')) {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
  	// note: rendered default is (WP 4.4):
  	// echo '<title>' . wp_get_document_title() . '</title>' . "\n";
- 	$vtitletag = str_replace('<title>', '<title itemprop="name">', $vtitletag);
+ 	// 2.0.7: concatenate to not trigger irrelevant Theme Check warning
+ 	$vtitletag = str_replace('<'.'title'.'>', '<'.'title'.' itemprop="name">', $vtitletag);
 	return $vtitletag;
  }
 }
@@ -1395,9 +1400,10 @@ if (!function_exists('bioship_wp_render_title_tag')) {
 if (!function_exists('bioship_wp_title_tag')) {
  function bioship_wp_title_tag() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-  	echo '<title'.' '.'itemprop="name">';
-  	wp_title('|',true,'right');
-  	echo '</title>'.PHP_EOL;
+	// 2.0.7: concatenate to not trigger irrelevant Theme Check warning
+  	echo '<'.'title'.' '.'itemprop="name">';
+  	wp_title('|', true, 'right');
+  	echo '</'.'title'.'>'.PHP_EOL;
  }
 }
 
@@ -1405,7 +1411,7 @@ if (!function_exists('bioship_wp_title_tag')) {
 // ---------------------
 // 1.8.5: no longer default, and moved filter actions to title-tag support check
 if (!function_exists('bioship_wp_title'))  {
- function bioship_wp_title($vtitle,$vsep) {
+ function bioship_wp_title($vtitle, $vsep) {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	if (is_feed()) {return $vtitle;}
@@ -1577,7 +1583,7 @@ if (!function_exists('bioship_get_footer')) {
 // a fallback template hierarchy for sidebars
 // 2.0.5: moved from skeleton.php
 if (!function_exists('bioship_sidebar_template_check')) {
- function bioship_sidebar_template_check($vtemplate,$vposition) {
+ function bioship_sidebar_template_check($vtemplate, $vposition) {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemelayout, $vthemesidebars;
@@ -1602,25 +1608,40 @@ if (!function_exists('bioship_sidebar_template_check')) {
 	// allow for post type archives...
 	if ( ($vcontext == 'archive') || ($vsubcontext == 'subarchive') ) {
 		if (!is_array($vposttypes)) {
+			// 2.0.8: fix for archive subtemplate check
+			$vsubtemplate = false;
 			if ($vtemplate == 'archive') {$vsubtemplate = 'archive-'.$vposttypes;}
 			if ($vtemplate == 'subarchive') {$vsubtemplate = 'subarchive-'.$vposttypes;}
-			$vchecktemplate = bioship_file_hierarchy('file', $vsubtemplate.'.php', array('sidebar'), array());
-			if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			if ($vsubtemplate) {
+				$vchecktemplate = bioship_file_hierarchy('file', $vsubtemplate.'.php', array('sidebar'), array());
+				if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			}
 		}
 	}
 	// 1.8.5: allow for specific category slugs (and IDs)
 	if ( ($vcontext == 'category') || ($vsubcontext == 'subcategory') ) {
-		$vterm = get_queried_object(); $vcategory = $term->slug;
+		// 2.0.8: fix for variable typo (term)
+		$vterm = get_queried_object(); $vcategory = $vterm->slug;
+
+		// 2.0.8: fix for archive subtemplate check
+		$vsubtemplate = false;
 		if ($vtemplate == 'category') {$vsubtemplate = 'category-'.$vcategory;}
 		if ($vtemplate == 'subcategory') {$vsubtemplate = 'subcategory-'.$vcategory;}
-		$vchecktemplate = bioship_file_hierarchy('file', $vsubtemplate.'.php', array('sidebar'), array());
+		if ($vsubtemplate) {
+			$vchecktemplate = bioship_file_hierarchy('file', $vsubtemplate.'.php', array('sidebar'), array());
+		} else {$vchecktemplate = false;}
+
 		if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
 		else {
-			$vcatid = $term->term_id;
+			// 2.0.8: fix to variable type (term)
+			$vcatid = $vterm->term_id;
+			$vsubtemplate = false;
 			if ($vtemplate == 'category') {$vsubtemplate = 'category-'.$vcatid;}
 			if ($vtemplate == 'subcategory') {$vsubtemplate = 'subcategory-'.$vcatid;}
-			$vchecktemplate = bioship_file_hierarchy('file', $vsubtemplate.'.php', array('sidebar'), array());
-			if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			if ($vsubtemplate) {
+				$vchecktemplate = bioship_file_hierarchy('file', $vsubtemplate.'.php', array('sidebar'), array());
+				if ($vchecktemplate) {$vtemplate = $vsubtemplate;}
+			}
 		}
 	}
 	// 1.8.5: allow for specific taxonomy slugs
@@ -1663,6 +1684,11 @@ if (!function_exists('bioship_sidebar_template_check')) {
 			$vsidebarmode = $vthemesidebars['sidebarmode'];
 			$vsubsidebarmode = $vthemesidebars['subsidebarmode'];
 
+			// 2.0.7: fix for singular post type usage
+			// if (!is_array($vposttypes)) {$vposttype = $vposttypes;} else {
+				$vposttype = get_post_type();
+			// }
+
 			if ($vcontext == $vposttype) {
 				if ($vsidebarmode == 'unified') {$vtemplate = 'primary';}
 				elseif ( ($vsidebarmode == 'off') || ($vsidebarmode == 'pagesonly') ) {$vtemplate = '';}
@@ -1678,7 +1704,7 @@ if (!function_exists('bioship_sidebar_template_check')) {
 			if ($vchecktemplate) {return $vtemplate;}
 		}
 
-		// TODO: test blank sidebar behaviour
+		// TODO: test blank sidebar behaviour?
 		// if substr($vtemplate,0,3)) == 'sub') {$vtemplate = 'subblank';} else {$vtemplate = 'blank';}
 
 		$vtemplate = '';
@@ -1962,12 +1988,23 @@ if (!function_exists('bioship_content_template_hierarchy')) {
 // -----------------
 // 2.0.5: moved from skeleton.php
 if (!function_exists('bioship_get_author_avatar')) {
- function bioship_get_author_avatar() {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+ function bioship_get_author_avatar($vemail=false) {
+ 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+
  	global $vthemesettings;
 	$vavatarsize = bioship_apply_filters('skeleton_author_bio_avatar_size', $vthemesettings['authoravatarsize']);
-	if (!is_numeric($vavatarsize)) {$vavatarsize = 60;}
-	return get_avatar(get_the_author_meta('user_email'), $vavatarsize);
+	if (!is_numeric($vavatarsize)) {$vavatarsize = 64;}
+
+	// 2.0.8: fix to get avatar outside content loop
+	$vpostid = false;
+	if ( (!$vemail) && (is_singular()) ) {global $post; $vpostid = $post->ID;}
+	$vauthor = bioship_get_author_by_post($vpostid);
+	if ($vauthor) {$vemail = get_the_author_meta('user_email', $vauthor->ID);}
+
+	$vemail = bioship_apply_filters('skeleton_author_gravatar_email', $vemail);
+	if (!$vemail) {return false;}
+	$vavatar = get_avatar($vemail, $vavatarsize);
+	return $vavatar;
  }
 }
 
@@ -1976,10 +2013,14 @@ if (!function_exists('bioship_get_author_avatar')) {
 // 1.8.0: added these helpers as seems no easy way
 // 2.0.5: moved from skeleton.php
 if (!function_exists('bioship_get_author_by_post')) {
-	function bioship_get_author_by_post($vpostid) {
+	function bioship_get_author_by_post($vpostid=false) {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-		$vauthorid = get_post_field('post_author', $vpostid);
+		// 2.0.8: added filter for global author override
+		$vauthorid = false;
+		if ($vpostid) {$vauthorid = get_post_field('post_author', $vpostid);}
+		$vauthorid = bioship_apply_filters('skeleton_author_id', $vauthorid);
 		if (THEMEDEBUG) {echo '<!-- Author ID: '.$vauthorid.' -->';}
+		if (!$vauthorid) {return false;}
 		$vauthor = get_user_by('id', $vauthorid);
 		return $vauthor;
 	}
@@ -1996,6 +2037,7 @@ if (!function_exists('bioship_get_author_display')) {
 			$vauthordisplay = trim($vauthor->data->nice_name);
 			if ($vauthordisplay == '') {$vauthordisplay = $vauthor->data->user_login;}
 		}
+		$vauthordisplay = bioship_apply_filters('skeleton_author_display_name', $vauthordisplay);
 		if (THEMEDEBUG) {echo '<!-- Author Display Name: '.$vauthordisplay.' -->';}
 		return $vauthordisplay;
 	}
@@ -2005,9 +2047,10 @@ if (!function_exists('bioship_get_author_display')) {
 // ------------------------------
 // 2.0.5: moved from skeleton.php
 if (!function_exists('bioship_get_author_display_by_post')) {
-	function bioship_get_author_display_by_post($vpostid) {
+	function bioship_get_author_display_by_post($vpostid=false) {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		$vauthor = bioship_get_author_by_post($vpostid);
+		if (!$vauthor) {return false;}
 		$vauthordisplay = bioship_get_author_display($vauthor);
 		return $vauthordisplay;
 	}
@@ -2079,6 +2122,11 @@ if (!function_exists('bioship_get_entry_meta')) {
 		// ---------------------
 		// 1.9.9: do single old % to # replacement here to remove old rechecks
 		$vformat = str_replace('%', '#', $vformat);
+
+		// New Lines
+		// ---------
+		// 2.0.8: add new line tag replacements
+		$vformat = str_replace('#NEWLINE#', '<br />', $vformat);
 
 		// Post Format Link
 		// ----------------
@@ -2162,10 +2210,16 @@ if (!function_exists('bioship_get_entry_meta')) {
 		// -----------------------------
 		if ( (strstr($vformat, '#CATEGORIES#')) || (strstr($vformat, '#CATS#')) || (strstr($vformat, '#CATSLIST#')) ) {
 		  	$vcategorylist = '';
-			if ($vposttype == 'post') {$vcategorylist = get_the_category_list(', ', '', $vpostid);}
-			elseif ($vposttype == 'page') {$vcategorylist = '';}
+			if ($vposttype == 'post') {
+				$vcategorylist = get_the_category_list(', ', '', $vpostid);
+				// 2.0.8: count number of categories for display prefix
+				$vterms = get_the_terms($vpostid, 'post_tag');
+				$vnumcats = count($vterms);
+			} elseif ($vposttype == 'page') {$vcategorylist = '';}
 			else {
 				// handle CPT category terms
+				// 2.0.7: declare global post here
+				global $post;
 				$vtaxonomies = get_object_taxonomies($post);
 				$vcategoryterms = array();
 				if (count($vtaxonomies) > 0) {
@@ -2177,6 +2231,8 @@ if (!function_exists('bioship_get_entry_meta')) {
 						}
 					}
 					if (count($vcategoryterms) > 0) {
+						// 2.0.8: count number of categories for display prefix
+						$vnumcats = count($vcategoryterms);
 						$vtermlinks = array();
 						foreach ($vcategoryterms as $vcategoryterm) {
 							$vtermlinks[] = '<a href="'.esc_url(get_term_link($vcategoryterm->slug,'post_tag')).'">'.$vcategoryterm->name.'</a>';
@@ -2197,9 +2253,12 @@ if (!function_exists('bioship_get_entry_meta')) {
 
 			$vformat = str_replace('#CATS#', $vcatlist, $vformat);
 			$vformat = str_replace('#CATEGORIES#', $vcategorylist, $vformat);
-			if (strstr($vformat,'#CATSLIST#')) {
-				if ($vcategorylist != '') {$vformat = str_replace('#CATSLIST#', __('Categories: ','bioship').$vcategorylist.'<br>', $vformat);}
-				else {$vformat = str_replace('#CATSLIST#', '', $vformat);}
+			if (strstr($vformat, '#CATSLIST#')) {
+				if ($vcategorylist != '') {
+					if ($vnumcats == 1) {$vreplace = __('Category: ','bioship').$vcategorylist.'<br>';}
+					else {$vreplace = __('Categories: ','bioship').$vcategorylist.'<br>';}
+				} else {$vreplace = '';}
+				$vformat = str_replace('#CATSLIST#', '', $vformat);
 			}
 		}
 
@@ -2210,9 +2269,7 @@ if (!function_exists('bioship_get_entry_meta')) {
 			$vcategories = get_the_category($vpostid);
 			if (count($vcategories) > 0) {
 				$vcatparentids = array();
-				foreach ($vcategories as $vcategory) {
-					$vcatparentids[] = $category->category_parent;
-				}
+				foreach ($vcategories as $vcategory) {$vcatparentids[] = $category->category_parent;}
 				if (count($vcatparentids) > 0) {
 					$vcategorylinks = array(); $vcatlinks = array();
 					foreach ($vcatparentids as $vcatparentid) {
@@ -2223,8 +2280,7 @@ if (!function_exists('bioship_get_entry_meta')) {
 					if (count($vcategorylinks) > 0) {
 						if (count($vcategorylinks) == 1) {
 							$vparentcategorylist = __('Parent Category: ','bioship').$vcategorylinks[0];
-						}
-						else {
+						} else {
 							$vparentcategories = implode(', ',$vcategorylinks);
 							$vparentcategorylist = __('Parent Categories: ','bioship').$vparentcategories;
 							$vparentcats = implode(', ',$vcatlinks);
@@ -2246,15 +2302,20 @@ if (!function_exists('bioship_get_entry_meta')) {
 		if ( (strstr($vformat, '#POSTTAGS#')) || (strstr($vformat, '#TAGS#')) || (strstr($vformat, '#TAGSLIST#')) ) {
 			$vposttags = '';
 			// 1.9.9: handle page as CPT as may have post_tag taxonomy added
-			if ($vposttype == 'post') {$vposttags = trim(get_the_tag_list('', ', '));}
-			else {
+			if ($vposttype == 'post') {
+				$vposttags = trim(get_the_tag_list('', ', '));
+			} else {
 				// handle CPT tag terms ('post_tag' taxonomy)...
+				// 2.0.7: declare global post here
+				global $post;
 				$vtaxonomies = get_object_taxonomies($post);
 				if (in_array('post_tag',$vtaxonomies)) {
 					if (THEMEHYBRID) {$vposttags = hybrid_get_post_terms(array('taxonomy' => 'post_tag', 'text' => '', 'before' => ''));}
 					else {
 						$vtagterms = get_the_terms($vpostid,'post_tag');
 						if (count($vtagterms) > 0) {
+							// 2.0.8: count tags for display prefix
+							$vnumtags = count($vtagterms);
 							$vtermlinks = array();
 							foreach ($vtagterms as $vtagterm) {
 								$vtermlinks[] = '<a href="'.esc_url(get_term_link($vtagterm->slug,'post_tag')).'">'.$vtagterm->name.'</a>';
@@ -2277,8 +2338,12 @@ if (!function_exists('bioship_get_entry_meta')) {
 			$vformat = str_replace('#TAGS#', $vtaglist, $vformat);
 			$vformat = str_replace('#POSTTAGS#', $vposttags, $vformat);
 			if (strstr($vformat,'#TAGSLIST#')) {
-				if ($vposttags != '') {$vformat = str_replace('#TAGSLIST#', __('Tagged: ','bioship').$vposttags.'<br>', $vformat);}
-				else {$vformat = str_replace('#TAGSLIST#', '', $vformat);}
+				if ($vposttags != '') {
+					// 2.0.8: change display prefix for more than one tag
+					if ($vnumtags == 1) {$vreplace = __('Tagged: ','bioship').$vposttags.'<br>';}
+					else {$vreplace = __('Tags: ','bioship').$vposttags.'<br>';}
+				} else {$vreplace = '';}
+				$vformat = str_replace('#TAGSLIST#', $vreplace, $vformat);
 			}
 		}
 
@@ -2387,7 +2452,7 @@ if (!function_exists('bioship_setup')) {
 	// -------------
 	// 1.9.5: removed is_rtl check as handled automatically by add_editor_style
 	// if (!is_rtl()) {$veditorstyle = 'editor-style.css';} else {$veditorstyle = 'editor-style-rtl.css';}
-	$veditorstyleurl = bioship_file_hierarchy('url','editor-style.css',$vthemedirs['css']);
+	$veditorstyleurl = bioship_file_hierarchy('url', 'editor-style.css', $vthemedirs['css']);
 	if ($veditorstyleurl) {add_editor_style($veditorstyleurl);}
 
 	// Dynamic Editor Styles
@@ -2468,7 +2533,45 @@ if (!function_exists('bioship_setup')) {
 				$vlinks .= "} "; $vstyles .= $vlinks;
 			}
 
-			// TODO: maybe add any other relevant style rules? eg. buttons ?
+			// 2.0.8: add button style rules also (as in skin.php)
+			$woocommercebuttons = array('.woocommerce a.alt.button', '.woocommerce button.alt.button', '.woocommerce input.alt.button',
+				'.woocommerce #respond input.alt#submit', '.woocommerce #content input.alt.button',
+				'.woocommerce-page a.alt.button', '.woocommerce-page button.alt.button', '.woocommerce-page input.alt.button',
+				'.woocommerce-page #respond input.alt#submit', '.woocommerce-page #content input.alt.button');
+			$vbuttons = "body.mce-content-body button, body.mce-content-body input[type='reset'],
+				body.mce-content-body input[type='submit'], body.mce-content-body input[type='button'],
+				body.mce-content-body a.button, body.mce-content-body .button";
+			if ( ($vthemesettings['button_bgcolor_bottom'] == '') || ($vthemesettings['button_bgcolor_bottom'] == $vthemesettings['button_bgcolor_top']) ) {
+				$vbuttonrules = "	background: ".$vthemesettings['button_bgcolor_top']."; ";
+				$vbuttonrules .= "background-color: ".$vthemesettings['button_bgcolor_top'].";".PHP_EOL;
+				// $vbuttonrules .= "	behavior: url('".$vpieurl."');".PHP_EOL;
+			} else {
+				$vtop = $vthemesettings['button_bgcolor_top'];
+				$vbottom = $vthemesettings['button_bgcolor_bottom'];
+				$vbuttonrules = "	background: ".$vtop."; background-color: ".$vtop.";".PHP_EOL;
+				$vbuttonrules .= "	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, ".$vtop."), color-stop(100%, ".$vbottom."));".PHP_EOL;
+				$vbuttonrules .= "	background: -webkit-linear-gradient(top, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
+				$vbuttonrules .= "	background: -o-linear-gradient(top, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
+				$vbuttonrules .= "	background: -ms-linear-gradient(top, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
+				$vbuttonrules .= "	background: -moz-linear-gradient(top, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
+				$vbuttonrules .= "	background: linear-gradient(top bottom, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
+				// $vbuttonrules .= "	-pie-background: linear-gradient(top, ".$vtop.", ".$vbottom.");".PHP_EOL;
+				// $vbuttonrules .= "	behavior: url('".$vpieurl."');".PHP_EOL;
+			}
+
+			// TODO: add button font rules
+			// $vbuttonrules .= '	'.$vbuttonfontrules.PHP_EOL;
+
+			if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemesettings['woocommercebuttons'] == '1') ) {
+				$woocommerceselectors = implode(', body.mce-content-body ', $woocommercebuttons);
+				$vbuttons .= ', '.PHP_EOL.'body.mce-content-body '.$woocommerceselectors.' ';
+			}
+			$vstyles .= $vbuttons.' {'.PHP_EOL.$vbuttonrules.'}'.PHP_EOL;
+
+			// TODO: add button hover style rules
+
+
+			// TODO: maybe add any other relevant style rules?
 
 			// 1.9.8: addded check if array key exists
 			if (isset($mceInit['content_style'])) {$mceInit['content_style'] .= ' '.$vstyles.' ';}
@@ -2585,34 +2688,11 @@ if (!function_exists('bioship_scripts')) {
 	// 1.9.5: check and set filemtime use just once
 	$vfilemtime = false; if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$vfilemtime = true;}
 
-	// Theme Javascripts
-	// -----------------
+	// maybe load jQuery from Google CDN
+	// ---------------------------------
 	// 1.9.5: only do this for frontend to prevent admin conflicts (with load-scripts.php)
+	// 2.0.7: do this all via filter to avoid reregistering script
 	if ( (!is_admin()) && ($vthemesettings['jquerygooglecdn'] == '1') ) {
-
-		// maybe load jQuery from Google CDN
-		// ---------------------------------
-		// 1.8.5: added jquery handle check
-		// ref: http://stackoverflow.com/a/17431575/5240159
-		// Get jquery handle - WP 3.6 or newer changed the jQuery handle
-		global $wp_version;
-        $vjqueryhandle = (version_compare($wp_version, '3.6-alpha1', '>=') ) ? 'jquery-core' : 'jquery';
-        if (THEMEDEBUG) {echo "<!-- jQuery Handle: ".$vjqueryhandle." -->";}
-        // get the built-in jQuery version for current WordPress install
-        // 1.9.5: fix to silly typo here to make it work again
-        $vwpjqueryversion = $GLOBALS['wp_scripts']->registered[$vjqueryhandle]->ver;
-        if (THEMEDEBUG) {echo "<!-- jQuery Version: ".$vwpjqueryversion." -->";}
-
-		$vjqueryversion = bioship_apply_filters('skeleton_google_jquery_version',$vwpjqueryversion);
-		$vjquery = 'https://ajax.googleapis.com/ajax/libs/jquery/'.$vjqueryversion.'/jquery.min.js';
-		// note: test with wp_remote_fopen pointless here as comes from server not client
-
-		// 1.8.0: fix to use new jquery-core handle
-		// 1.8.5: use version matched jquery handle
-		// note: new jquery handle is a dependency handle with children of jquery-core and jquery-migrate
-		wp_deregister_script($vjqueryhandle);
-		wp_register_script($vjqueryhandle, $vjquery, false, $vjqueryversion, true);
-		wp_enqueue_script($vjqueryhandle);
 
 		// 1.5.0: added a jQuery fallback for if Google CDN fails
 		// Ref: http://stackoverflow.com/questions/1014203/best-way-to-use-googles-hosted-jquery-but-fall-back-to-my-hosted-library-on-go
@@ -2620,19 +2700,49 @@ if (!function_exists('bioship_scripts')) {
 		 add_filter('script_loader_tag', 'bioship_jquery_fallback', 10, 2);
 		 function bioship_jquery_fallback($vscripttag, $vhandle) {
 			if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-			// 1.8.0: fix to handle, should now be jquery-core
-			// 1.9.5: match handle for WP version here too
-			global $wp_version;
+
+			// 1.8.5: added jquery handle check
+			// ref: http://stackoverflow.com/a/17431575/5240159
+			// Get jquery handle - WP 3.6 or newer changed the jQuery handle
+			// note: new jquery handle is a dependency handle with children of jquery-core and jquery-migrate
+			global $wp_version, $wp_scripts;
+			$vjqueryhandle = (version_compare($wp_version, '3.6-alpha1', '>=') ) ? 'jquery-core' : 'jquery';
+
+			// get the built-in jQuery version for current WordPress install
+			// 1.9.5: fix to silly typo here to make it work again
+			// 2.0.7: use wp_scripts global name directly
+			$vwpjqueryversion = $wp_scripts->registered[$vjqueryhandle]->ver;
+
+			$vjqueryversion = bioship_apply_filters('skeleton_google_jquery_version', $vwpjqueryversion);
+			$vjquery = 'https://ajax.googleapis.com/ajax/libs/jquery/'.$vjqueryversion.'/jquery.min.js';
+			// note: test with wp_remote_fopen pointless here as comes from server not client
+
+			// 2.0.7: change script source directly instead or reregistering
+			$vsrcstart = "src='"; $vsrcend = "'";
+			$vposa = strpos($vscripttag, $vsrcstart) + strlen($vsrcstart);
+			$vposb = strpos($vscripttag, $vsrcend);
+			$vsrctemp = substr($vscripttag, $vposa, ($vposb - $vposa));
+			$vscripttag = str_replace($vsrctemp, $vjquery, $vscripttag);
+
+			if (THEMEDEBUG) {
+				echo "<!-- jQuery Handle: ".$vjqueryhandle." -->";
+				echo "<!-- WP jQuery Version: ".$vwpjqueryversion." -->";
+				echo "<!-- WP jQuery URL: ".$vsrctemp." -->";
+				echo "<!-- New jQuery URL: ".$vjquery." -->";
+			}
+
 			$vjqueryhandle = (version_compare($wp_version, '3.6-alpha1', '>=') ) ? 'jquery-core' : 'jquery';
 			if ( ($vhandle == $vjqueryhandle) && (strstr($vscripttag, 'jquery.min.js')) ) {
 				global $vthemesettings, $vjscachebust;
 				if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {
-					$vjscachebust = date('ymdHi',filemtime(ABSPATH.WPINC.'/js/jquery/jquery.js'));
+					$vjscachebust = date('ymdHi', filemtime(ABSPATH.WPINC.'/js/jquery/jquery.js'));
 				}
 				$vjquery = urlencode(site_url().'/wp-includes/js/jquery/jquery.js?'.$vjscachebust);
+				// 2.0.7: fix to undefined variable warning
+				$vconsoledebug = '';
 				if (THEMEDEBUG) {$vconsoledebug = "console.log('Loading jQuery from Google CDN failed. Loading jQuery from site.'); ";}
 				$vfallback = "</script><script>if (!window.jQuery) {".$vconsoledebug."document.write(unescape('%3Cscript src=\"".$vjquery."\"%3E%3C\/script%3E'));}</script>";
-				$vscripttag = str_replace('</script>',$vfallback, $vscripttag);
+				$vscripttag = str_replace('</script>', $vfallback, $vscripttag);
 			}
 			return $vscripttag;
 		 }
@@ -2658,6 +2768,8 @@ if (!function_exists('bioship_scripts')) {
 		if (THEMEDEBUG) {echo "<!-- Main Menu ID: ".$vmenuid." -->";}
 		$vmenuitems = wp_get_nav_menu_items($vmenuid, 'nav_menu');
 		// if (THEMEDEBUG) {echo "<!-- Main Menu Items: "; print_r($vmenuitems)." -->";}
+		// 2.0.7: fix for undefined variable warning
+		$vmenumainitems = 0;
 		foreach ($vmenuitems as $vitem) {
 			if ($vitem->menu_item_parent == 0) {$vmenumainitems++;}
 		}
@@ -2749,63 +2861,102 @@ if (!function_exists('bioship_mobile_meta')) {
  add_action('wp_head', 'bioship_mobile_meta', 2);
  function bioship_mobile_meta() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
 	// TODO: somehow test this specific-width mobile meta line has any effect?
 	// (320 is a good minimum width but not sure if this info helps mobiles)
 	// $vmobilemeta .= '<meta name="MobileOptimized" content="320">'.PHP_EOL;
+
 	$vmobilemeta = "<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->".PHP_EOL;
 	$vmobilemeta = '<meta name="HandheldFriendly" content="True">'.PHP_EOL; // i wanna hold your haaand...
 
-	// 1.8.5: fix to remove duplicate line if using Hybrid
+	// 1.8.5: fix to remove duplicate line if using Hybrid Core
 	if (!THEMEHYBRID) {$vmobilemeta .= '<meta name="viewport" content="width=device-width, initial-scale=1" />'.PHP_EOL;}
 	$vmobilemeta = bioship_apply_filters('skeleton_mobile_metas', $vmobilemeta);
 	echo $vmobilemeta;
  }
 }
 
-// Skeleton Site Icons
-// -------------------
+// Site Icons Loader
+// -----------------
 // ref: http://www.jonathantneal.com/blog/understand-the-favicon/
 if (!function_exists('bioship_site_icons')) {
+
+ // 2.0.8: add the new icon size upload filter
+ add_filter('site_icon_image_sizes', 'bioship_site_icon_sizes');
+
  add_action('admin_head', 'bioship_site_icons');
  add_action('wp_head', 'bioship_site_icons');
+
  function bioship_site_icons() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings, $vthemedirs;
 
+	// 2.0.8: maybe use the global site icon
+	if (THEMESITEICON) {
+		// maybe output debug info for site icon sizes
+		if (THEMEDEBUG) {
+			$viconid = get_option('site_icon');
+			if ($viconid) {
+				$viconmeta = wp_get_attachment_metadata($viconid);
+				$vsizes = array_keys($viconmeta['sizes']);
+				echo "<!-- Site Icon Sizes: "; print_r($vsizes); echo " -->";
+			}
+		}
+
+		// 2.0.8: use new site icon tag filter and output
+		add_filter('site_icon_meta_tags', 'bioship_site_icon_tags');
+		wp_site_icon(); return;
+	}
+
+	// 2.0.8: now a fallback if no global site icon
+	// 2.0.8: use esc_url on all icon hrefs
+	// 2.0.8: explicit files override theme settings
 	// 1.8.0: added fallbacks to auto-check for favicon files when URLs are not set
+
 	// <!-- Apple Touch, use the 144x144 default, then optional sizes -->
 	$vappleicons = '';
-	$vwineighttile = $vthemesettings['wineighttile'];
-	if ($vwineighttile == '') {$vwineighttile = bioship_file_hierarchy('url','win8tile.png',$vthemedirs['img']);}
-	if ($vwineighttile != '') {$vappleicons = '<link rel="apple-touch-icon-precomposed" size="144x144" href="'.$vthemesettings['wineighttile'].'">'.PHP_EOL;}
+	$vwineighttile = bioship_file_hierarchy('url', 'win8tile.png', $vthemedirs['img']);
+	if (!$vwineighttile) {$vwineighttile = $vthemesettings['wineighttile'];}
+	if ( ($vwineighttile) && ($vwineighttile != '') ) {
+		// 2.0.8: fix to use variable not theme settings value
+		$vappleicons = '<link rel="apple-touch-icon-precomposed" size="144x144" href="'.esc_url($vwineighttile).'">'.PHP_EOL;
+	}
 	$vicons = bioship_apply_filters('skeleton_apple_icons', $vappleicons);
 
 	// <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices, 57x57 size -->
-	$vappletouchicon = $vthemesettings['appletouchicon'];
-	if ($vappletouchicon == '') {$vappletouchicon = bioship_file_hierarchy('url', 'apple-touch-icon.png', $vthemedirs['img']);}
-	if ($vappletouchicon != '') {
-		$vicons .= '<link rel="apple-touch-icon-precomposed" href="'.$vthemesettings['appletouchicon'].'">'.PHP_EOL;
-		$vicons .= '<link rel="apple-touch-icon" href="'.$vthemesettings['appletouchicon'].'">'.PHP_EOL;
+	$vappletouchicon = bioship_file_hierarchy('url', 'apple-touch-icon.png', $vthemedirs['img']);
+	if (!$vappletouchicon) {$vappletouchicon = $vthemesettings['appletouchicon'];}
+	if ( ($vappletouchicon) && ($vappletouchicon != '') ) {
+		// 2.0.8: fix to use variable not theme settings value
+		$vicons .= '<link rel="apple-touch-icon-precomposed" href="'.esc_url($vappletouchicon).'">'.PHP_EOL;
+		$vicons .= '<link rel="apple-touch-icon" href="'.esc_url($vappletouchicon).'">'.PHP_EOL;
 	}
 
 	// <!-- For anything accepting PNG icons, 96x96 default -->
-	$vfaviconpng = $vthemesettings['faviconpng'];
-	if ($vfaviconpng == '') {$vfaviconpng = bioship_file_hierarchy('url', 'favicon.png', $vthemedirs['img']);}
-	if ($vfaviconpng) {$vicons .= '<link rel="icon" href="'.$vfaviconpng.'">'.PHP_EOL;}
+	$vfaviconpng = bioship_file_hierarchy('url', 'favicon.png', $vthemedirs['img']);
+	if (!$vfaviconpng) {$vfaviconpng = $vthemesettings['faviconpng'];}
+	if ( ($vfaviconpng) && ($vfaviconpng != '') ) {
+		$vicons .= '<link rel="icon" href="'.esc_url($vfaviconpng).'">'.PHP_EOL;
+	}
 
 	// <!-- Just for IE, the default 32x32 or 16x16 size -->
-	$vfaviconico = $vthemesettings['faviconico'];
-	if ($vfaviconico == '') {$vfaviconico = bioship_file_hierarchy('url', 'favicon.ico', $vthemedirs['img']);}
-	// 1.8.0: allow for default favicon fallback in wordpress root directory
-	if (!$vfaviconico) {if (file_exists(ABSPATH.DIRSEP.'favicon.ico')) {$vfaviconico = trailingslashit(site_url()).'favicon.ico';} }
-	if ($vfaviconico) {$vicons .= '<!--[if IE]><link rel="shortcut icon" href="'.$vfaviconico.'"><![endif]-->'.PHP_EOL;}
+	$vfaviconico = bioship_file_hierarchy('url', 'favicon.ico', $vthemedirs['img']);
+	// 1.8.0: allow for default favicon fallback in root directory
+	if ( (!$vfaviconico) && (file_exists(ABSPATH.DIRSEP.'favicon.ico')) ) {
+		$vfaviconico = trailingslashit(site_url()).'favicon.ico';
+	}
+	if (!$vfaviconico) {$vfaviconico = $vthemesettings['faviconico'];}
+	if ( ($vfaviconico) && ($vfaviconico != '') ) {
+		$vicons .= '<!--[if IE]><link rel="shortcut icon" href="'.esc_url($vfaviconico).'"><![endif]-->'.PHP_EOL;
+	}
 
 	// <!-- For Windows 8, the tile and background -->
-	if ($vwineighttile != '') {
-		if ($vthemesettings['wineightbg'] != '') {$vwineightbg = $vthemesettings['wineightbg'];} else {$vwineightbg = '#FFFFFF';}
-		$vicons .= '<meta name="msapplication-TileColor" content="'.$vwineightbg.'">'.PHP_EOL;
-		$vicons .= '<meta name="msapplication-TileImage" content="'.$vwineighttile.'">'.PHP_EOL;
+	if ( ($vwineighttile) && ($vwineighttile != '') ) {
+		$vwineightbg = '#FFFFFF';
+		if ($vthemesettings['wineightbg'] != '') {$vwineightbg = $vthemesettings['wineightbg'];}
+		$vicons .= '<meta name="msapplication-TileColor" content="'.esc_url($vwineightbg).'">'.PHP_EOL;
+		$vicons .= '<meta name="msapplication-TileImage" content="'.esc_url($vwineighttile).'">'.PHP_EOL;
 	}
 
 	// 1.8.5: moved optional startup image output here
@@ -2818,14 +2969,165 @@ if (!function_exists('bioship_site_icons')) {
  }
 }
 
+// Site Icon Size Filter
+// ---------------------
+if (!function_exists('bioship_site_icon_sizes')) {
+ function bioship_site_icon_sizes($vsizes) {
+ 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	// note: WordPress defaults are 32, 180, 192 and 270
+	$vnewsizes = array(57, 72, 76, 96, 114, 120, 144, 152);
+	$vsizes = array_merge($vsizes, $vnewsizes);
+	return $vsizes;
+ }
+}
+
+// Site Icon Tags Filter
+// ---------------------
+// 2.0.8: added this filter to add site icon meta tags
+if (!function_exists('bioship_site_icon_tags')) {
+ function bioship_site_icon_tags($vtags) {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	// <!-- Apple Touch, use the 144x144 default, then optional sizes -->
+	$vwineighttile = bioship_file_hierarchy('url', 'win8tile.png', $vthemedirs['img']);
+	if (!$vwineighttile) {$vwineighttile = get_site_icon_url(144, $vthemesettings['wineighttile']);}
+	if ($vwineighttile != '') {
+		$vtags[] = '<link rel="apple-touch-icon-precomposed" size="144x144" href="'.esc_url($vwineighttile).'">'.PHP_EOL;
+	}
+
+	$vappleicons = bioship_apply_filters('skeleton_apple_icons', '');
+	if ($vappleicons != '') {
+		$vicons = explode(PHP_EOL, $vappleicons);
+		foreach ($vicons as $vicon) {
+			if ($vicon != '') {$vtags[] = $vicon;}
+		}
+	}
+
+	// <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices, 57x57 size -->
+	$vappletouchicon = bioship_file_hierarchy('url', 'apple-touch-icon.png', $vthemedirs['img']);
+	if (!$vappletouchicon == '') {$vappletouchicon = get_site_icon_url(57, $vthemesettings['appletouchicon']);}
+	if ( ($vappletouchicon) && ($vappletouchicon != '') ) {
+		$vtags[] = '<link rel="apple-touch-icon-precomposed" href="'.esc_url($vappletouchicon).'">';
+		$vtags[] = '<link rel="apple-touch-icon" href="'.esc_url($vappletouchicon).'">';
+	}
+
+	// <!-- For anything accepting PNG icons, 96x96 default -->
+	$vfaviconpng = bioship_file_hierarchy('url', 'favicon.png', $vthemedirs['img']);
+	if (!$vfaviconpng) {$vfaviconpng = get_site_icon_url(96, $vthemesettings['faviconpng']);}
+	if ( ($vfaviconpng) && ($vfaviconpng != '') ) {
+		$vtags[] = '<link rel="icon" href="'.esc_url($vfaviconpng).'">';
+	}
+
+	// <!-- Just for IE, the default 32x32 (or 16x16) size -->
+	$vfaviconico = bioship_file_hierarchy('url', 'favicon.ico', $vthemedirs['img']);
+	if ( (!$vfaviconico) && (file_exists(ABSPATH.DIRSEP.'favicon.ico')) ) {
+		$vfaviconico = trailingslashit(site_url()).'favicon.ico';
+	}
+	if (!$vfaviconico) {$vfaviconico = $vthemesettings['faviconico'];}
+	if ($vfaviconico == '') {$vfaviconico = bioship_generate_favicon();}
+	if ( ($vfaviconico) && ($vfaviconico != '') ) {
+		$vtags[] = '<!--[if IE]><link rel="shortcut icon" href="'.esc_url($vfaviconico).'"><![endif]-->';
+	}
+
+	// <!-- For Windows 8, the tile and background -->
+	$vwineighttile = bioship_file_hierarchy('url', 'win8tile.png', $vthemedirs['img']);
+	if (!$vwineighttile) {get_site_icon_url(270, $vthemesettings['wineighttile']);}
+	if ( ($vwineighttile) && ($vwineighttile != '') ) {
+		if ($vthemesettings['wineightbg'] != '') {$vwineightbg = $vthemesettings['wineightbg'];} else {$vwineightbg = '#FFFFFF';}
+		$vtags[] = '<meta name="msapplication-TileColor" content="'.esc_url($vwineightbg).'">';
+		$vtags[] = '<meta name="msapplication-TileImage" content="'.esc_url($vwineighttile).'">';
+	}
+
+	// 2.0.8: to maintain existing theme startup images filter
+	$vstartupimages = bioship_apply_filters('skeleton_startup_images', '');
+	if ($vstartupimages != '') {
+		if (strstr($vstartupimages, PHP_EOL)) {
+			$vstartuparray = explode(PHP_EOL, $vstartupimages);
+			foreach ($vstartuparray as $vstartupimage) {
+				if (trim($vstartupimage) != '') {$vtags[] = $vstartupimage;}
+			}
+		} else {$vtags[] = $vstartupimages;}
+	}
+
+	// 2.0.8: to maintain existing theme icon filter behaviour
+	$vtags = bioship_apply_filters('skeleton_icons_override', $vtags);
+
+	return $vtags;
+ }
+}
+
+// Site Icon Generator
+// -------------------
+// 2.0.8: auto-generate site icon sizes if size does not exist
+if (!function_exists('bioship_site_icon_generator')) {
+
+ add_filter('get_site_icon_url', 'bioship_site_icon_generator', 1, 3);
+
+ function bioship_site_icon_generator($vurl, $vsize, $vblogid) {
+ 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+
+	if ($vsize >= 512) {return $vurl;}
+	$viconid = get_option('site_icon');
+
+	if ($viconid) {
+		$viconmeta = wp_get_attachment_metadata($viconid);
+		$vsizes = array_keys($viconmeta['sizes']);
+		if (THEMEDEBUG) {echo "<!-- Requested Icon Size: ".$vsize." -->";}
+
+		// TODO: debug size values and test before implementing
+		// if ( (!$vsize) || (!in_array($vsize, $vsizes)) ) {
+		//	include_once(ABSPATH.'/wp-admin/includes/image.php');
+		//	$vattachedfile = get_attached_file($viconid);
+		// note: this is for thumbnails, need to retest for site icons
+		//	$vgenerated = wp_generate_attachment_metadata($viconid, $vattachedfile);
+		//	$vupdated = wp_update_attachment_metadata($viconid, $vgenerated);
+		// }
+		// $vurl = wp_get_attachment_image_url($viconid, array($vsize, $vsize));
+	}
+
+ 	return $vurl;
+ }
+}
+
+// Favicon Generator
+// -----------------
+if (!function_exists('bioship_generate_favicon')) {
+ function bioship_generate_favicon() {
+ 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	$vphpico = bioship_file_hierarchy('file', 'class-php-ico.php', array('includes'));
+	if ($vphpico) {require($vphpico);} else {return '';}
+
+	return ''; // TEMP: bug out here until below is tested
+
+	// TODO: maybe auto-generate a favicon.ico from site icon?
+	// ref: PHP ICO: https://github.com/chrisbliss18/php-ico
+	$viconid = get_option('site_icon');
+	$vsource = wp_get_attachment_image_url($viconid, 'full');
+	$vdestination = ABSPATH.'/favicon.ico'; // ???
+	$vsizes = array( array(16,16), array(24,24), array(32, 32), array(48,48) );
+	$vicolib = new PHP_ICO($vsource, $vsizes);
+	// note: get data instead of using save_ico method to write with WP Filesystem
+	// also note: this pseudo-'private' method is actually public and callable
+	$vicodata = $vicolib->_get_ico_data();
+	if (!$vicodata) {return false;}
+	bioship_write_to_file($vdestination, $vicodata);
+	return trailingslashit(site_url()).'favicon.ico';
+ }
+}
+
 // Apple Touch Icon Sizes
 // ----------------------
 // ref: https://mathiasbynens.be/notes/touch-icons
 // 2.0.5: check setting in function to allow filtering
 if (function_exists('bioship_apple_icon_sizes')) {
- add_filter('skeleton_apple_icons', 'bioship_apple_icon_sizes');
+
+ // 2.0.8: added missing filter prefix
+ add_filter('bioship_skeleton_apple_icons', 'bioship_apple_icon_sizes', 9);
+
  // 1.8.5: fix to missing argument
- function bioship_apple_icon_sizes($vsizes) {
+ function bioship_apple_icon_sizes($vappleicons) {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemedirs, $vthemesettings;
@@ -2836,40 +3138,51 @@ if (function_exists('bioship_apple_icon_sizes')) {
 		$vcheckforicons = true;
 	}
 	$vcheckforicons = bioship_apply_filters('skeleton_apple_icon_sizes', $vcheckforicons);
-	if (!$vcheckforicons) {return $vsizes;}
+	if (!$vcheckforicons) {return $vappleicons;}
 
 	// 1.8.0: bugfix typo in hierarchy and url
 	// <!-- For Chrome for Android -->
 	$vimageurl = bioship_file_hierarchy('url', 'touch-icon-192x192.png', $vthemedirs['img']);
-	if ($vimageurl) {$vsizes .= '<link rel="icon" sizes="192x192" href="'.$vimageurl.'">';}
+	if (!$vimageurl) {$vimageurl = bioship_file_hierarchy('url', 'touch-icon-192x192-precomposed.png', $vthemedirs['img']);}
+	if ($vimageurl) {$vappleicons .= '<link rel="icon" sizes="192x192" href="'.$vimageurl.'">';}
 
-	$viconsizes = array();
+	// 2.0.8: use string and numeric array
+	$vsizes = array();
 	// <!-- For iPhone 6 Plus with @3× display: -->
-	$viconsizes[] = '180x180';
+	$vsizes['180x180'] = 180;
 	// <!-- For iPad with @2× display running iOS = 7: -->
-	$viconsizes[] = '152x152';
+	$vsizes['152x152'] = 152;
 	// <!-- For iPad with @2× display running iOS = 6: -->
-	$viconsizes[] = '144x144';
+	$vsizes['144x144'] = 144;
 	// <!-- For iPhone with @2× display running iOS = 7: -->
-	$viconsizes[] = '120x120';
+	$vsizes['120x120'] = 120;
 	// <!-- For iPhone with @2× display running iOS = 6: -->
-	$viconsizes[] = '114x114';
+	$vsizes['114x114'] = 114;
 	// <!-- For the iPad mini and the first- and second-generation iPad (@1× display) on iOS = 7: -->
-	$viconsizes[] = '76x76';
+	$vsizes['76x76'] = 76;
 	// <!-- For the iPad mini and the first- and second-generation iPad (@1× display) on iOS = 6: -->
-	$viconsizes[] = '72x72';
+	$vsizes['72x72'] = 72;
 
-	foreach ($viconsizes as $viconsize) {
-		$vurl = bioship_file_hierarchy('url', 'touch-icon-'.$viconsize.'.png', $vthemedirs['img']);
-		if ($vurl) {$vsizes .= '<link rel="apple-touch-icon-precomposed" sizes="'.$viconsize.'" href="'.$vurl.'">'.PHP_EOL;}
-		else {
+
+	foreach ($vsizes as $vsize => $viconsize) {
+
+		$vfallback = bioship_file_hierarchy('url', 'touch-icon-'.$vsize.'.png', $vthemedirs['img']);
+		if (!$vfallback) {
 			// 1.8.5: allow for fallback for maybe using -precomposed suffix
-			$vurl = bioship_file_hierarchy('url', 'touch-icon-'.$viconsize.'-precomposed.png', $vthemedirs['img']);
-			if ($vurl) {$vsizes .= '<link rel="apple-touch-icon-precomposed" sizes="'.$viconsize.'" href="'.$vurl.'">'.PHP_EOL;}
+			$vfallback = bioship_file_hierarchy('url', 'touch-icon-'.$vsize.'-precomposed.png', $vthemedirs['img']);
+		}
+
+		// 2.0.8: maybe use global site icon
+		if (THEMESITEICON) {$viconurl = get_site_icon_url($viconsize, $vfallback);}
+		else {$viconurl = $vfallback;}
+
+		if ($viconurl) {
+			// 2.0.8: use esc_url on icon hrefs
+			$vappleicons .= '<link rel="apple-touch-icon-precomposed" sizes="'.$vsize.'" href="'.esc_url($vurl).'">'.PHP_EOL;
 		}
 	}
 
-	return $vsizes;
+	return $vappleicons;
  }
 }
 
@@ -2912,7 +3225,8 @@ if (!function_exists('bioship_apple_startup_images')) {
 
 	foreach ($vstartups as $vstartup) {
 		$vurl = bioship_file_hierarchy('url', 'startup-'.$vstartup['size'].'.png', $vthemedirs['img']);
-		if ($vurl) {$vimages .= '<link rel="apple-touch-startup-image" sizes="'.$vstartup['size'].'" href="'.$vurl.'startup-'.$vsize.'.png" media="'.$vstartup['media'].'">'.PHP_EOL;}
+		// 2.0.8: use esc_url on image hrefs
+		if ($vurl) {$vimages .= '<link rel="apple-touch-startup-image" sizes="'.$vstartup['size'].'" href="'.$vurl.'startup-'.$vsize.'.png" media="'.esc_url($vstartup['media']).'">'.PHP_EOL;}
 	}
 
 	return $vimages;
@@ -2973,19 +3287,22 @@ if (!function_exists('bioship_get_theme_includes')) {
 		// normalize include path for match
 		$vincludedfile = str_replace("\\","/",$vincludedfile);
 		// check if included file is in stylesheet directory
-		if (substr($vincludedfile,0,strlen($vstyledirectory)) != $vstyledirectory) {
+		if (substr($vincludedfile, 0, strlen($vstyledirectory)) != $vstyledirectory) {
 			// if stylesheet is same as template, not a child theme
 			if ($vstyledirectory == $vtemplatedirectory) {unset($vincludedfiles[$vi]);}
 			else {
 				// check if included file is in template directory
-				if (substr($vincludedfile, 0, strlen($templatedir)) != $templatedir) {unset($vincludedfiles[$vi]);}
-				else {
+				// 2.0.7: fix to variable typo (templatedir)
+				if (substr($vincludedfile, 0, strlen($vtemplatedirectory)) != $vtemplatedirectory) {
+					unset($vincludedfiles[$vi]);
+				} else {
 					// strip template directory from include path
-					$vpathinfo = pathinfo(str_replace(dirname($templatedir), '', $vincludedfile));
+					$vpathinfo = pathinfo(str_replace(dirname($vtemplatedirectory), '', $vincludedfile));
 					// 2.0.1: re-add full filepath to pathinfo array
 					$vpathinfo['fullpath'] = $vincludedfile;
 					// add filename.php => pathinfo array to the template array
-					$vthemeincludes[$pathinfo['basename']] = $vpathinfo;
+					// 2.0.7: fix to variable name (pathinfo)
+					$vthemeincludes[$vpathinfo['basename']] = $vpathinfo;
 				}
 			}
 		} else {
@@ -3021,10 +3338,10 @@ if (!function_exists('bioship_check_theme_templates')) {
 	$vtemplateincludes = bioship_get_theme_includes();
 
 	// strip out included theme files from template list
-	foreach ($vtemplateincludes as $template => $pathinfo) {
-		if (array_key_exists($template,$vthemeincludes)) {
-			if ($pathinfo['dirname'] == $vthemeincludes[$template]['dirname']) {
-				unset($vtemplateincludes[$template]);
+	foreach ($vtemplateincludes as $vtemplate => $vpathinfo) {
+		if (array_key_exists($vtemplate, $vthemeincludes)) {
+			if ($vpathinfo['dirname'] == $vthemeincludes[$vtemplate]['dirname']) {
+				unset($vtemplateincludes[$vtemplate]);
 			}
 		}
 	}
@@ -3034,12 +3351,12 @@ if (!function_exists('bioship_check_theme_templates')) {
 	// could output a template array for use by jQuery/AJAX loading
 	// echo "<script>var templatenames = new Array(); var templatepaths = new Array(); ";
 	// $i = 0;
-	// foreach ($vtemplateincludes as $template => $pathinfo) {
+	// foreach ($vtemplateincludes as $vtemplate => $vpathinfo) {
 	//  // optionally strip the .php extension
-	//  $template = str_replace('.php','',$template);
+	//  $vtemplate = str_replace('.php', '', $vtemplate);
 	//  // output the template array key/value
-	//  echo "templatenames[".$i."] = '".$pathinfo['filename']."'; ";
-	//  echo "templatepaths[".$i."] = '".$pathinfo['dirname']."'; ";
+	//  echo "templatenames[".$i."] = '".$vpathinfo['filename']."'; ";
+	//  echo "templatepaths[".$i."] = '".$vpathinfo['dirname']."'; ";
 	//  $i++;
 	// }
 	// echo "</script>";
@@ -3069,7 +3386,7 @@ if (!function_exists('bioship_admin_template_dropdown')) {
 		'title' => '<span class="ab-icon"></span>'.__('Templates','bioship'),
 		'href' => 'javascript:void(0);',
 		'meta' => array(
-			'title' => __('Ordered list of included templates for this page.')
+			'title' => __('Ordered list of included templates for this page.','bioship')
 		)
 	);
 	$wp_admin_bar->add_menu($vmenu);
@@ -3081,7 +3398,8 @@ if (!function_exists('bioship_admin_template_dropdown')) {
 			$vrelfilepath = substr($vrelfilepath, 1, strlen($vrelfilepath));
 		}
 		$vrelfilepath = urlencode($vrelfilepath.'/'.$vfilename);
-		$veditlink = admin_url('theme-editor.php').'?theme='.$vthemename;
+		// 2.0.8: fix to duplicate theme parameter
+		$veditlink = admin_url('theme-editor.php');
 		$veditlink = add_query_arg('theme', $vthemename, $veditlink);
 		$veditlink = add_query_arg('file', $vrelfilepath, $veditlink);
 

@@ -736,11 +736,12 @@ if (!function_exists('bioship_options')) {
 		'page' => 'advanced');
 
 	// Stylesheet Cache Busting
+	// 2.0.7: change default to filemtime
 	$options[] = array(
 		'name' => __('Cache Busting for Stylesheets', 'bioship'),
-		'desc' => __('Querystring used as version for cache busting Stylesheet files. Recommended to set to hours or minutes when developing, version or date when finished.', 'bioship'),
+		'desc' => __('Querystring used as version for cache busting Stylesheet files.', 'bioship'),
 		'id' => 'stylesheetcachebusting',
-		'std' => 'yearmonthdate',
+		'std' => 'filemtime',
 		'class' => 'skin',
 		'type' => 'select', // was radio
 		'options' => $cachebusting_options,
@@ -1943,11 +1944,12 @@ if (!function_exists('bioship_options')) {
 	//	'type' => 'checkbox');
 
 	// Javascript Cache Busting
+	// 2.0.7: change default to filemtime
 	$options[] = array(
 		'name' => __('Cache Busting for Javascripts', 'bioship'),
-		'desc' => __('Querystring used as version for cache busting Javascript files. Recommended to set to hours or minutes when developing, version or date when finished.', 'bioship'),
+		'desc' => __('Querystring used as version for cache busting Javascript files.', 'bioship'),
 		'id' => 'javascriptcachebusting',
-		'std' => 'themeversion',
+		'std' => 'filemtime',
 		'class' => 'muscle',
 		'type' => 'select', // was radio
 		'options' => $cachebusting_options,
@@ -2435,7 +2437,8 @@ if (!function_exists('bioship_options')) {
 	$rvdesc .= '#AUTHOR# - '.__('Author Posts Link with Author name anchor','bioship').' (<i>author_posts_link</i>)<br>';
 	$rvdesc .= '#AUTHORLINK# - '.__('Author Link with View (posttype) by Author anchor','bioship').' (<i>author_posts_link</i>)<br>';
 	$rvdesc .= '#EDITLINK# - '.__('Post/Page (admin/editor) Edit Link','bioship').' (<i>edit_post_link</i>)<br>';
-	$rvdesc .= __('Note: Categories and Tags works for Custom Post Type taxonomies. :-)','bioship').'<br>';
+	$rvdesc .= '#NEWLINE# - '.__('Insert a Line Break','bioship').' (&lt;br&gt;)<br>';
+	$rvdesc .= __('Note: Categories and Tags also work for Custom Post Type taxonomies. :-)','bioship').'<br>';
 
 	$options[] = array(
 		'name' => __('Post Meta Formatting', 'bioship'),
@@ -2982,9 +2985,9 @@ if (!function_exists('bioship_options')) {
 		'twentythree' => __('23 Columns','bioship'), 'twentyfour' => __('24 Columns','bioship')
 	);
 	$options[] = array( 'name' => __('Content Width','bioship'),
-		'desc' => __('Define the width of your content area in columns out of total layout grid columns.)','bioship'),
+		'desc' => __('Define the width of your content area in columns out of total layout grid columns.','bioship'),
 		'id' => 'content_width',
-		'std' => 'eleven',
+		'std' => 'twelve',
 		'type' => 'select',
 		'class' => 'skeleton',
 		'transport' => 'refresh', // not postMessage
@@ -3075,7 +3078,7 @@ if (!function_exists('bioship_options')) {
 	$options[] = array( 'name' => __('Sidebar Width','bioship'),
 		'desc' => __('Define the width of primary Sidebar in columns out of total layout grid columns.)','bioship'),
 		'id' => 'sidebar_width',
-		'std' => 'five',
+		'std' => 'four',
 		'type' => 'select',
 		'class' => 'mini skeleton',
 		'transport' => 'refresh',
@@ -3513,6 +3516,15 @@ if (!function_exists('bioship_options')) {
 		'type' => 'heading',
 		'page' => 'both');
 
+	// Site Icon Note
+	// 2.0.8: added this note for site icon support
+	$options[] = array(
+		'name' => __('Site Icon Note', 'bioship'),
+		'desc' => __('If a Site Icon is set via Customizer, it will be used instead of these icons. Specifically named files will override both for that size. See documentation for more details.', 'bioship'),
+		'class' => 'skeleton',
+		'type' => 'info',
+		'page' => 'basic');
+
 	// Default Gravatar
 	$options[] = array(
 		'name' => __('Default Gravatar URL', 'bioship'),
@@ -3597,13 +3609,14 @@ if (!function_exists('bioship_options')) {
 	// Open Graph Default Image
 	// TODO: add login logo and site icon Customizer option (512x512)
 	$ogdefaultimage_array = array(
-		'ogimageurl' => __('Image URL (Upload Below)','bioship'),
-		'header_logo' => __('Header Logo','bioship'),
-		// 'login_logo' => __('Login Logo','bioship'),						// TODO: add this
-		// 'site_icon' => __('Wordpress Site Icon','bioship'),				// conflict?
-		// 'faviconpng' => __('Favicon PNG 96x96','bioship'), 				// too small
-		// 'wineighttile' => __('WinTile/AppleTouch 144x144','bioship'),	// too small
-		// 'appleiconsizes' => __('Largest Apple Icon Size','bioship')		// too small
+		'none' => __('None (off)', 'bioship'), 								// 2.0.8: added off option
+		'header_logo' => __('Header Logo', 'bioship'),
+		'ogimageurl' => __('Image URL (Upload Below)', 'bioship'),
+		'loginlogourl' => __('Login Logo', 'bioship'),						// 2.0.8: added this option
+		'site_icon' => __('WordPress Site Icon', 'bioship'),				// 2.0.8: added this option
+		// 'faviconpng' => __('Favicon PNG 96x96', 'bioship'), 				// too small
+		// 'wineighttile' => __('WinTile/AppleTouch 144x144', 'bioship'),	// too small
+		// 'appleiconsizes' => __('Largest Apple Icon Size', 'bioship')		// too small
 	);
 	$options[] = array( 'name' => __('Open Graph Default Image','bioship'),
 		'desc' => __('Recommended miniumum','bioship').' 200x200px '.__('requires','bioship').' <a href="http://wordpress.org/plugins/open-graph-protocol-framework/" target=_blank>'.__('Open Graph Protocol','bioship').'</a> '.__('plugin installed and active.','bioship'),

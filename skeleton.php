@@ -71,9 +71,9 @@ if (!function_exists('bioship_skeleton_wrapper_open')) {
 		}
 		$vclassstring = implode(' ',$vclasses);
 
-		if (THEMECOMMENTS) {echo '<!-- #wrap.container -->';}
+		bioship_html_comment('#wrap.container');
 		echo '<div id="wrap" class="'.$vclassstring.'">'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- #wrappadding.inner -->'.PHP_EOL;}
+		bioship_html_comment('#wrappadding.inner');
 		echo '	<div id="wrappadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
 }
@@ -88,9 +88,9 @@ if (!function_exists('bioship_skeleton_wrapper_close')) {
 	function bioship_skeleton_wrapper_close() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		echo '	</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#wrappadding.inner -->'.PHP_EOL;}
+		bioship_html_comment('/#wrappadding.inner');
 		echo '</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#wrap.container -->'.PHP_EOL;}
+		bioship_html_comment('/#wrap.container');
 		echo PHP_EOL;
 	}
 }
@@ -168,10 +168,10 @@ if (!function_exists('bioship_skeleton_header_open')) {
 		$vclasses = bioship_apply_filters('skeleton_header_classes', $vclasses);
 		$vheaderclasses = implode(' ',$vclasses);
 
-		if (THEMECOMMENTS) {echo '<!-- #header -->';}
+		bioship_html_comment('#header');
 		$vattributes = hybrid_get_attr('header');
 		echo '<div id="header" class="'.$vheaderclasses.'">'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- #headerpadding.inner -->';}
+		bioship_html_comment('#headerpadding.inner');
 		echo '	<div id="headerpadding" class="inner">'.PHP_EOL;
 		echo '		<header '.$vattributes.'>'.PHP_EOL.PHP_EOL;
 	}
@@ -188,9 +188,9 @@ if (!function_exists('bioship_skeleton_header_close')) {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'		</header>'.PHP_EOL;
 		echo '	</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!--/#headerpadding.inner-->'.PHP_EOL;}
+		bioship_html_comment('/#headerpadding.inner');
 		echo '</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!--/#header-->'.PHP_EOL;}
+		bioship_html_comment('/#header');
 		echo PHP_EOL;
 	}
 }
@@ -208,7 +208,7 @@ if (!function_exists('bioship_skeleton_header_nav')) {
 		global $vthememenus; if (!$vthememenus['header']) {return;}
 
 		// note: can use Hybrid attribute filter to add column classes
-		if (THEMECOMMENTS) {echo '<!-- .header-menu -->';}
+		bioship_html_comment('.header-menu');
 		$vattributes = hybrid_get_attr('menu','header');
 		echo '<div '.$vattributes.'>'.PHP_EOL;
 			$vmenuargs = array(
@@ -226,7 +226,7 @@ if (!function_exists('bioship_skeleton_header_nav')) {
 			$vmenuargs = bioship_apply_filters('skeleton_header_menu_settings', $vmenuargs);
 			wp_nav_menu($vmenuargs);
 		echo '</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /.header-menu -->'.PHP_EOL;}
+		bioship_html_comment('/.header-menu');
 		echo PHP_EOL;
 	}
 }
@@ -265,8 +265,9 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		// 1.8.5: added site text / description text display checkboxes
 		// 1.9.0: fix to logo logic here having separated text display
 		// 2.0.6: display as inline block (for combine logo and site title)
+		// 2.0.7: move inline-block display to style.css for easier overriding
 		$vlogoimagedisplay = ' style="display:none;"';
-		if ($vlogourl) {$vlogoimagedisplay = ' style="display:inline-block;"';}
+		if ($vlogourl) {$vlogoimagedisplay = '';}
 
 		$vsitetitle = false; $vsitedesc = false;
 		if ( (isset($vthemesettings['header_texts']['sitetitle']))
@@ -289,7 +290,9 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		// 1.9.0: added filter to site-description attribute to prevent duplicate ID
 		// 1.9.6: added logo-image ID not just class
 		// 2.0.6: display inline-block for site-logo-text (for combined display)
-		if (THEMECOMMENTS) {$vlogo = '<!-- #site-logo -->';} else {$vlogo = '';}
+		// 2.0.7: move inline block to style.css for easier overriding
+		$vlogo = '';
+		if (THEMECOMMENTS) {$vlogo .= '<!-- #site-logo -->';}
 		$vlogo .= '<div id="site-logo" class="'.$vlogoclasses.'">'.PHP_EOL;
 		$vlogo .= '	<div class="inner">'.PHP_EOL;
 		$vlogo .= ' 	<div class="site-logo-image"'.$vlogoimagedisplay.'>'.PHP_EOL;
@@ -300,7 +303,7 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		$vlogo .= '				</h1>'.PHP_EOL;
 		$vlogo .= '			</a>'.PHP_EOL;
 		$vlogo .= ' 	 </div>'.PHP_EOL;
-		$vlogo .= ' 	 <div class="site-logo-text" style="display:inline-block;">'.PHP_EOL;
+		$vlogo .= ' 	 <div class="site-logo-text">'.PHP_EOL;
 		$vlogo .= '			<h1 id="site-title-text" '.hybrid_get_attr('site-title').$vsitetitledisplay.'>'.PHP_EOL;
 		$vlogo .= '				<a class="text" href="'.$vhomeurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.$vblogname.'</a>'.PHP_EOL;
 		$vlogo .= '			</h1>'.PHP_EOL;
@@ -351,13 +354,13 @@ if (!function_exists('bioship_skeleton_header_extras')) {
 		if ($vheaderextras) {
 			// 1.8.0: changed #header_extras to #header-extras for consistency, added class filter
 			$vheaderextraclasses = bioship_apply_filters('skeleton_header_extras_classes', 'header-extras');
-			if (THEMECOMMENTS) {echo '<!-- #header-extras -->';}
+			bioship_html_comment('#header-extras');
 			echo '<div id="header-extras" class="'.$vheaderextraclasses.'">'.PHP_EOL;
 			echo '	<div class="inner">'.PHP_EOL;
 			echo $vheaderextras.PHP_EOL;
 			echo '	</div>'.PHP_EOL;
 			echo '</div>';
-			if (THEMECOMMENTS) {echo '<!-- /#header-extras -->';}
+			bioship_html_comment('/#header-extras');
 			echo PHP_EOL;
 		}
 	}
@@ -380,7 +383,7 @@ if (!function_exists('bioship_skeleton_main_menu_open')) {
 		global $vthememenus; if (!$vthememenus['primary']) {return;}
 
 		// note: can filter classes using Hybrid attribute filter
-		if (THEMECOMMENTS) {echo '<!-- #navigation -->';}
+		bioship_html_comment('#navigation');
 		$vattributes = hybrid_get_attr('menu', 'primary');
 		echo '<div id="navigation" '.$vattributes.'>'.PHP_EOL.PHP_EOL;
 	}
@@ -425,7 +428,7 @@ if (!function_exists('bioship_skeleton_main_menu_close')) {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		global $vthememenus; if (!$vthememenus['primary']) {return;}
 		echo '</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#navigation -->'.PHP_EOL;}
+		bioship_html_comment('/#navigation');
 		echo PHP_EOL;
 	}
 }
@@ -476,8 +479,8 @@ if (!function_exists('bioship_skeleton_secondary_menu')) {
 		global $vthememenus; if (!$vthememenus['secondary']) {return;}
 
 		// 2.0.5: moved has_nav_menu check to register_nav_menus
-		$vattributes = hybrid_get_attr('menu','secondary');
-		if (THEMECOMMENTS) {echo '<!-- #secondarymenu -->';}
+		$vattributes = hybrid_get_attr('menu', 'secondary');
+		bioship_html_comment('#secondarymenu');
 		echo '<div id="secondarymenu" '.$vattributes.'>'.PHP_EOL;
 		echo '	<div class="inner">'.PHP_EOL;
 			$vmenuargs = array(
@@ -489,7 +492,7 @@ if (!function_exists('bioship_skeleton_secondary_menu')) {
 			wp_nav_menu($vmenuargs);
 		echo '	</div>'.PHP_EOL;
 		echo '</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#secondarymenu -->'.PHP_EOL;}
+		bioship_html_comment('/#secondarymenu');
 		echo PHP_EOL;
 	}
 }
@@ -531,13 +534,13 @@ if (!function_exists('bioship_skeleton_banner_abstract')) {
  		$vclass = bioship_apply_filters('skeleton_banner_class', $vposition);
  		$vclass = bioship_apply_filters('skeleton_banner_class_'.$vposition, $vclass);
  		if ($vclass != $vposition) {$vclass = ' class="'.$vclass.'"';}
-	 	if (THEMECOMMENTS) {echo '<!-- #'.$vposition.'banner -->';}
+	 	bioship_html_comment('#'.$vposition.'banner');
 	 	echo '<div id="'.$vposition.'banner"'.$vclass.'>'.PHP_EOL;
 	 	echo '	<div class="inner">'.PHP_EOL;
  		echo $vbanner.PHP_EOL;
  		echo '	</div>'.PHP_EOL;
  		echo '</div>'.PHP_EOL;
- 		if (THEMECOMMENTS) {echo '<!-- /#'.$vposition.'banner -->'.PHP_EOL;}
+ 		bioship_html_comment('/#'.$vposition.'banner');
  		echo PHP_EOL;
 	}
  }
@@ -703,7 +706,7 @@ if (!function_exists('bioship_skeleton_sidebar_button')) {
 
 		global $vthemesidebars; if (!$vthemesidebars['sidebar']) {return;}
 
-		if (THEMECOMMENTS) {echo '<!-- #sidebarbutton -->';}
+		bioship_html_comment('#sidebarbutton');
 		echo '<div id="sidebarbutton" class="mobilebutton">'.PHP_EOL;
 		echo '	<a class="button" id="sidebarshow" href="javascript:void(0);" onclick="showsidebar();">Show Sidebar</a>'.PHP_EOL;
 		echo '	<a class="button" id="sidebarhide" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">Hide Sidebar</a>'.PHP_EOL;
@@ -712,7 +715,7 @@ if (!function_exists('bioship_skeleton_sidebar_button')) {
 		echo '	<a class="button" id="sidebarshowsmall" href="javascript:void(0);" onclick="showsidebar();">[+] Sidebar</a>'.PHP_EOL;
 		echo '	<a class="button" id="sidebarhidesmall" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">[-] Sidebar</a>'.PHP_EOL;
 		echo '</div>';
-		if (THEMECOMMENTS) {echo '<!-- /#sidebarbutton -->';}
+		bioship_html_comment('/#sidebarbutton');
 		echo PHP_EOL;
 	}
 }
@@ -766,9 +769,9 @@ if (!function_exists('bioship_skeleton_sidebar_open'))  {
 		}
 		$vclassstring = implode(' ',$vclasses);
 
-		if (THEMECOMMENTS) {echo '<!-- #sidebar -->';}
+		bioship_html_comment('#sidebar');
 		echo '<div id="sidebar" class="'.$vclassstring.'" role="complementary">'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- #sidebarpadding.inner -->';}
+		bioship_html_comment('#sidebarpadding.inner');
 		echo '	<div id="sidebarpadding" class="inner">'.PHP_EOL.PHP_EOL;
 
 	}
@@ -784,9 +787,9 @@ if (!function_exists('skeleton_sidebar_close')) {
 	function bioship_skeleton_sidebar_close() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'	</div>';
-		if (THEMECOMMENTS) {echo '<!-- /#sidebarpadding.inner -->';}
+		bioship_html_comment('/#sidebarpadding.inner');
 		echo PHP_EOL.'</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#sidebar -->'.PHP_EOL;}
+		bioship_html_comment('/#sidebar');
 		echo PHP_EOL;
 	}
 }
@@ -837,7 +840,7 @@ if (!function_exists('bioship_skeleton_subsidebar_button')) {
 
 		global $vthemesidebars; if (!$vthemesidebars['subsidebar']) {return;}
 
-		if (THEMECOMMENTS) {echo '<!-- #subsidebarbutton -->';}
+		bioship_html_comment('#subsidebarbutton');
 		echo '<div id="subsidebarbutton" class="mobilebutton">'.PHP_EOL;
 		echo '	<a class="button" id="subsidebarshow" href="javascript:void(0);" onclick="showsubsidebar();">Show SubBar</a>'.PHP_EOL;
 		echo '	<a class="button" id="subsidebarhide" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">Hide SubBar</a>'.PHP_EOL;
@@ -846,7 +849,7 @@ if (!function_exists('bioship_skeleton_subsidebar_button')) {
 		echo '	<a class="button" id="subsidebarshowsmall" href="javascript:void(0);" onclick="showsubsidebar();">[+] SubBar</a>'.PHP_EOL;
 		echo '	<a class="button" id="subsidebarhidesmall" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">[-] SubBar</a>'.PHP_EOL;
 		echo '</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#subsidebarbutton -->'.PHP_EOL;}
+		bioship_html_comment('/#subsidebarbutton');
 		echo PHP_EOL;
 	}
 }
@@ -897,9 +900,9 @@ if (!function_exists('bioship_skeleton_subsidebar_open')) {
 		}
 		$vclassstring = implode(' ',$vclasses);
 
-		if (THEMECOMMENTS) {echo '<!-- #subsidebar -->';}
+		bioship_html_comment('#subsidebar');
 		echo '<div id="subsidebar" class="'.$vclassstring.'" role="complementary">'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- #subsidebarpadding.inner -->';}
+		bioship_html_comment('#subsidebarpadding.inner');
 		echo '	<div id="subsidebarpadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
 }
@@ -915,9 +918,9 @@ if (!function_exists('bioship_skeleton_subsidebar_close')) {
 	function bioship_skeleton_subsidebar_close() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'	</div>';
-		if (THEMECOMMENTS) {echo '<!-- #subsidebarpadding.inner -->';}
+		bioship_html_comment('#subsidebarpadding.inner');
 		echo PHP_EOL.'</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#subsidebar -->'.PHP_EOL;}
+		bioship_html_comment('/#subsidebar');
 		echo PHP_EOL;
 	}
 }
@@ -935,7 +938,7 @@ if (!function_exists('bioship_skeleton_woocommerce_wrapper_open')) {
  add_action('woocommerce_before_main_content', 'bioship_skeleton_woocommerce_wrapper_open');
  function bioship_skeleton_woocommerce_wrapper_open() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-	if (THEMECOMMENTS) {echo '<!-- #woocommercecontent -->';}
+	bioship_html_comment('#woocommercecontent');
 	echo '<div id="woocommercecontent">'.PHP_EOL.PHP_EOL;
  }
 }
@@ -949,7 +952,7 @@ if (!function_exists('bioship_skeleton_woocommerce_wrapper_close')) {
  function bioship_skeleton_woocommerce_wrapper_close() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 	echo '</div>'.PHP_EOL;
-	if (THEMECOMMENTS) {echo '<!-- /#woocommercecontent -->'.PHP_EOL;}
+	bioship_html_comment('/#woocommercecontent');
 	echo PHP_EOL;
  }
 }
@@ -979,16 +982,20 @@ if (!function_exists('bioship_skeleton_content_open')) {
 
 		// 1.8.0: add alpha/omega class depending on sidebar presence
 		// 1.8.5: fix to double sidebar logic
+		// 2.0.7: added missing content classes filter
 		$vclasses = array(); $vclasses[0] = $vcolumns; $vclasses[1] = 'columns';
 		if ( (!$vleftsidebar) && (!$vrightsidebar) ) {$vclasses[] = 'alpha'; $vclasses[] = 'omega';}
 		elseif ( ($vleftsidebar) && (!$vrightsidebar) ) {$vclasses[] = 'omega';}
 		elseif ( ($vrightsidebar) && (!$vleftsidebar) ) {$vclasses[] = 'alpha';}
+		$vclasses = bioship_apply_filters('skeleton_content_classes', $vclasses);
 		if (count($vclasses) > 0) {$vclasslist = implode(" ",$vclasses);}
 
-		echo '<a id="top" name="top"></a>'; // #top id for scroll links
-		if (THEMECOMMENTS) {echo '<!-- #content -->';}
+		// #top id for scroll links
+		echo '<a id="top" name="top"></a>';
+
+		bioship_html_comment('#content');
 		echo '<div id="content" class="'.$vclasslist.'">'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- #contentpadding.inner -->';}
+		bioship_html_comment('#contentpadding.inner');
 		echo '	<div id="contentpadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
 }
@@ -1003,9 +1010,9 @@ if (!function_exists('bioship_skeleton_content_close')) {
     function bioship_skeleton_content_close() {
     	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
     	echo PHP_EOL.'	</div>'.PHP_EOL;
-    	if (THEMECOMMENTS) {echo '<!-- /#contentpadding.inner -->';}
+    	bioship_html_comment('/#contentpadding.inner');
     	echo '</div>'.PHP_EOL;
-    	if (THEMECOMMENTS) {echo '<!-- /#content -->'.PHP_EOL;}
+    	bioship_html_comment('/#content');
     	echo PHP_EOL;
     	echo '<a id="bottom" name="bottom"></a>'; // #bottom id for scroll links
     }
@@ -1030,9 +1037,9 @@ if (!function_exists('bioship_skeleton_home_page_content')) {
 			// TODO: add filter example to filters.php
 			$vtitle = bioship_apply_filters('skeleton_home_page_title', $vtitle);
 			if ($vtitle) {
-				if (THEMECOMMENTS) {echo '<!-- #blogpagetitle -->';}
+				bioship_html_comment('#blogpagetitle');
 				echo '<h2 id="blogpagetitle">'.$vtitle.'</h2>'.PHP_EOL;
-				if (THEMECOMMENTS) {echo '<!-- /#blogpagetitle -->'.PHP_EOL;}
+				bioship_html_comment('/#blogpagetitle');
 				echo PHP_EOL;
 			}
 
@@ -1042,9 +1049,9 @@ if (!function_exists('bioship_skeleton_home_page_content')) {
 			// TODO: add filter example to filters.php
 			$vcontent = apply_filters('skeleton_home_page_content', $vcontent);
 			if ($vcontent) {
-				if (THEMECOMMENTS) {echo '<!-- #blogpagecontent -->';}
+				bioship_html_comment('#blogpagecontent');
 				echo '<div id="blogpagecontent">'.$vcontent.'</div>'.PHP_EOL;
-				if (THEMECOMMENTS) {echo '<!-- /#blogpagecontent -->'.PHP_EOL;}
+				bioship_html_comment('/#blogpagecontent');
 			}
 		}
 	}
@@ -1093,7 +1100,7 @@ if (!function_exists('bioship_skeleton_echo_the_content')) {
 			// print_r(array_keys($wp_filter));
 			// ob_start(); print_r($wp_filter['wp_head']); $debug = ob_get_contents(); ob_end_clean();
 			// $file = dirname(__FILE__).'/debug/filters.txt';
-			// $fh = fopen($file,'w'); fwrite($fh,$debug); fclose($fh);
+			// bioship_write_to_file($file, $debug);
 			print_r($wp_filter['the_content']);
 		}
 
@@ -1130,7 +1137,7 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 
 			// Display Attachment
 			// ------------------
-			if (THEMECOMMENTS) {echo '<!-- #attachment -->';}
+			bioship_html_comment('#attachment');
 			echo '<div id="attachment">'.PHP_EOL;
 			if ( ($vtype == 'audio') || ($vtype == 'video') || ($vtype == 'application') ) {
 				if ( (!THEMEHYBRID) && (!function_exists('hybrid_attachment')) ) {bioship_load_hybrid_media();}
@@ -1151,16 +1158,16 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 			if ($vtype == 'text') {
 				$vfilepath = trailingslashit($vuploaddir['basedir']).$vattachment['file'];
 				echo '<div id="attachment-text"><textarea style="width:100%; height:500px;">';
-				echo file_get_contents($vfilepath);
+				echo bioship_file_get_contents($vfilepath);
 				echo '</textarea></div><br>';
 			}
 			echo PHP_EOL.'</div>'.PHP_EOL;
-			if (THEMECOMMENTS) {echo '<!-- /#attachment -->'.PHP_EOL;}
+			bioship_html_comment('/#attachment');
 			echo PHP_EOL;
 
 			// Attachment Meta
 			// ---------------
-			if (THEMECOMMENTS) {echo '<!-- .attachment-meta -->';}
+			bioship_html_comment('.attachment-meta');
 			echo '<div class="attachment-meta">'.PHP_EOL;
 			echo '	<div class="media-info '.$vtype.'-info">'.PHP_EOL;
 			echo '		<h4 class="attachment-meta-title">';
@@ -1173,7 +1180,7 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 			hybrid_media_meta();
 			echo PHP_EOL.'	</div>'.PHP_EOL;
 			echo '</div>'.PHP_EOL;
-			if (THEMECOMMENTS) {echo '<!-- /.attachment-meta -->'.PHP_EOL;}
+			bioship_html_comment('/.attachment-meta');
 			echo PHP_EOL;
 
 			// Remove default WordPress attachment display (prepended to content)
@@ -1263,7 +1270,7 @@ if (!function_exists('bioship_skeleton_entry_header_open')) {
 
 	function bioship_skeleton_entry_header_open() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-		if (THEMECOMMENTS) {echo '<!-- .entry-header -->';}
+		bioship_html_comment('.entry-header');
 		$vattributes = hybrid_get_attr('entry-header');
 		echo '<header '.$vattributes.'>'.PHP_EOL;
 	}
@@ -1279,7 +1286,7 @@ if (!function_exists('bioship_skeleton_entry_header_close')) {
 	function bioship_skeleton_entry_header_close() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'</header>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /.entry-header -->'.PHP_EOL;}
+		bioship_html_comment('/.entry-header');
 		echo PHP_EOL;
 	}
 }
@@ -1297,14 +1304,14 @@ if (!function_exists('bioship_skeleton_entry_header_title')) {
 		// 1.5.0: use h3 instead of h2 for archive/excerpt listings
 		if (is_archive() || is_search() || (!is_singular($vposttype)) ) {$vhsize = 'h3';} else {$vhsize = 'h2';}
 
-		if (THEMECOMMENTS) {echo '<!-- .entry-title -->';}
+		bioship_html_comment('.entry-title');
 		$vattributes = hybrid_get_attr('entry-title');
 		echo '<'.$vhsize.' '.$vattributes.'>'.PHP_EOL;
 		echo '	<a href="'; the_permalink(); echo '" rel="bookmark" itemprop="url" title="';
 		printf(esc_attr__('Permalink to %s','bioship'), the_title_attribute('echo=0'));
 		echo '">'.get_the_title($vpostid).'</a>'.PHP_EOL;
 		echo '</'.$vhsize.'>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /.entry-title -->'.PHP_EOL;}
+		bioship_html_comment('/.entry-title');
 		echo PHP_EOL;
 	}
 }
@@ -1334,10 +1341,10 @@ if (!function_exists('bioship_skeleton_entry_header_subtitle')) {
 			// 1.5.0: use h4 instead of h3 for archive/excerpt listings
 			if (is_archive() || is_search() || (!is_singular($vposttype)) ) {$vhsize = 'h4';} else {$vhsize = 'h3';}
 			// note: there is no actual hybrid attributes for entry-subtitle
-			if (THEMECOMMENTS) {echo '<!-- .entry-subtitle -->';}
+			bioship_html_comment('.entry-subtitle');
 			$vattributes = hybrid_get_attr('entry-subtitle');
 			echo '<'.$vhsize.' '.$vattributes.'>'.$vsubtitle.'</'.$vhsize.'>'.PHP_EOL;
-			if (THEMECOMMENTS) {echo '<!-- /.entry-subtitle -->'.PHP_EOL;}
+			bioship_html_comment('/.entry-subtitle');
 			echo PHP_EOL;
 		}
 	}
@@ -1357,10 +1364,10 @@ if (!function_exists('bioship_skeleton_entry_header_meta')) {
 
 		$vmeta = bioship_get_entry_meta($vpostid, $vposttype, 'top');
 		if ($vmeta != '') {
-			if (THEMECOMMENTS) {echo '<!-- .entry-meta -->';}
+			bioship_html_comment('.entry-meta');
 			echo '<div class="entry-meta entry-byline">'.PHP_EOL;
 			echo $vmeta.PHP_EOL.'</div>'.PHP_EOL;
-			if (THEMECOMMENTS) {echo '<!-- /.entry-meta -->'.PHP_EOL;}
+			bioship_html_comment('/.entry-meta');
 			echo PHP_EOL;
 		}
 	}
@@ -1385,7 +1392,7 @@ if (!function_exists('bioship_skeleton_entry_footer_open')) {
 
 	function bioship_skeleton_entry_footer_open() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-		if (THEMECOMMENTS) {echo '<!-- .entry-footer -->';}
+		bioship_html_comment('.entry-footer');
 		$vattributes = hybrid_get_attr('entry-footer');
 		echo '<footer '.$vattributes.'>'.PHP_EOL;
 	}
@@ -1401,7 +1408,7 @@ if (!function_exists('bioship_skeleton_entry_footer_close')) {
 	function bioship_skeleton_entry_footer_close() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		echo PHP_EOL.'</footer>';
-		if (THEMECOMMENTS) {echo '<!-- /.entry-footer -->';}
+		bioship_html_comment('/.entry-footer');
 		echo PHP_EOL;
 	}
 }
@@ -1420,10 +1427,10 @@ if (!function_exists('bioship_skeleton_entry_footer_meta')) {
 
 		$vmeta = bioship_get_entry_meta($vpostid, $vposttype, 'bottom');
 		if ($vmeta != '') {
-			if (THEMECOMMENTS) {echo '<!-- .entry-utility -->';}
+			bioship_html_comment('.entry-utility');
 			echo '<div '.hybrid_get_attr('entry-utility').'>'.PHP_EOL;
 			echo $vmeta.PHP_EOL.'</div>';
-			if (THEMECOMMENTS) {echo '<!-- /.entry-utility -->';}
+			bioship_html_comment('/.entry-utility');
 			echo PHP_EOL;
 		}
 	}
@@ -1512,7 +1519,17 @@ if (!function_exists('bioship_skeleton_get_thumbnail')) {
 			// allow for perpost meta override
 			// 1.8.5: fix to perpost image display override check
 			// 1.9.5: move override to after default and filters applied
-			$vpostthumbsize = get_post_meta($vpostid, '_postthumbsize', true);
+			// 2.0.8: use prefixed post meta key
+			$vpostthumbsize = get_post_meta($vpostid, '_'.THEMEPREFIX.'_post_thumbsize', true);
+			if (!$vpostthumbsize) {
+				// 2.0.8: maybe convert old post meta key
+				$voldpostmeta = get_post_meta($vpostid, '_postthumbsize', true);
+				if ($voldpostmeta) {
+					$vpostthumbsize = $voldpostmeta; delete_post_meta($vpostid, '_postthumbsize');
+					update_post_meta($vpostid, '_'.THEMEPREFIX.'_post_thumbsize');
+				}
+			}
+
 			// 2.0.5: auto-update post meta to new size names
 			$vnewthumbsize = false;
 			if ($vpostthumbsize == 'squared150') {$vnewthumbsize = 'bioship-150s';}
@@ -1694,7 +1711,7 @@ if (!function_exists('bioship_skeleton_author_bio_box')) {
 			if ( ($vposition == 'top') && (!strstr($vbiopos,'top')) ) {return false;}
 			if ( ($vposition == 'bottom') && (!strstr($vbiopos,'bottom')) ) {return false;}
 
-			// 1.9.9: remove old meta check
+			// 1.9.9: removed old meta check
 			return true;
 		}
 	}
@@ -1708,21 +1725,32 @@ if (!function_exists('bioship_skeleton_about_author_title')) {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 		// 1.8.0: use separately to get author display name
 		// 2.0.5: fix to typo (vauthordosplay) :-/
-		global $post; $vauthordisplay = bioship_get_author_display_by_post($post->ID);
-	 	$vboxtitle = esc_attr(sprintf( __('About %s', 'bioship'), $vauthordisplay));
+		// 2.0.8: fix for non-singular display usage
+		if (is_singular()) {
+			global $post; $vauthordisplay = bioship_get_author_display_by_post($post->ID);
+			$vboxtitle = esc_attr(sprintf( __('About %s', 'bioship'), $vauthordisplay));
+		} else {$vboxtitle = __('About the Author','bioship');}
 	 	// 2.0.5: fix to fatal function typo (apply_filter)
 		$vboxtitle = bioship_apply_filters('skeleton_about_author_text', $vboxtitle);
-		return $vauthortitle; // .meta-prep-author ?
+		return $vboxtitle; // .meta-prep-author ?
 	}
 }
 
 // About Author Description
 // ------------------------
 // 2.0.5: separated to add filter
-if (!function_exists('bioship_about_author_description')) {
-	function bioship_about_author_description() {
+// 2.0.8: fix to incorrect function prefix (missing _skeleton)
+if (!function_exists('bioship_skeleton_about_author_description')) {
+	function bioship_skeleton_about_author_description() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-		$vauthordesc = get_the_author_meta('description');
+		// 2.0.8: fix to get description outside the content loop
+		// 2.0.8: fix to singular post check for post object
+		$vpostid = false;
+		if (is_singular()) {global $post; $vpostid = $post->ID;}
+		$vauthor = bioship_get_author_by_post($vpostid);
+		if (!$vauthor) {return;}
+		$vauthordesc = get_the_author_meta('description', $vauthor->ID);
+
 		// TODO: add this filter to filters.php example list
 		$vauthordesc = bioship_apply_filters('skeleton_about_author_description', $vauthordesc);
 		return $vauthordesc;
@@ -1734,33 +1762,50 @@ if (!function_exists('bioship_about_author_description')) {
 // 1.5.0: moved from author-bio.php
 // 1.8.0: fix for missing author URL
 if (!function_exists('bioship_skeleton_author_posts_link')) {
-	function bioship_skeleton_author_posts_link($vauthorurl) {
+	function bioship_skeleton_author_posts_link($vauthorurl=false) {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-		global $post; $vposttype = $post->post_type; $vpostid = $post->ID;
+
+		$vpostid = false; $vposttype = false;
+		if (is_singular()) {global $post; $vposttype = $post->post_type; $vpostid = $post->ID;}
+
+		// 2.0.8: fix for possible missing author URL (author-bio.php template)
+		$vauthor = bioship_get_author_by_post($vpostid);
+		if (!$vauthor) {return;}
+		if (!$vauthorurl) {$vauthorurl = get_author_posts_url($vauthor->ID);}
 
 		// 1.5.0: use post type display name
+		// 2.0.8: fix for possible
+		$vposttypedisplay = false;
 		if ($vposttype == 'page') {$vposttypedisplay = __('Pages','bioship');}
 		elseif ($vposttype == 'post') {$vposttypedisplay = __('Posts','bioship');}
-		else {
+		elseif ($vposttype) {
 			// 1.8.0: use the plural name not the singular one
 			// $vposttypedisplay = $vposttypeobject->labels->singular_name;
 			$vposttypeobject = get_post_type_object($vposttype);
 			$vposttypedisplay = $vposttypeobject->labels->name;
-		}
+		} else {$vposttypedisplay = __('Writings','bioship');}
 		$vposttypedisplay = bioship_apply_filters('skeleton_post_type_display', $vposttypedisplay);
+		// 2.0.8: bug out if unable to get valid post type display label
+		if (!$vposttypedisplay) {return false;}
 
 		// 1.8.0: use separately to get author display name
-		$vauthordisplay = bioship_get_author_display_by_post($vpostid);
+		// 2.0.8: bug out if unable to get valid author display name
+		$vauthordisplay = bioship_get_author_display($vauthor);
+		if (!$vauthordisplay) {return false;}
 
 		// 1.5.5: fix to translations here for theme check
 		$vanchor = sprintf( __('View all','bioship').' '.$vposttypedisplay.' '.__('by','bioship').' %s <span class="meta-nav">&rarr;</span>', $vauthordisplay );
 		$vanchor = bioship_apply_filters('skeleton_author_posts_anchor', $vanchor);
+		if (!$vanchor) {return false;}
 
 		// 1.8.5: class attribute override fix
-		$vattributes = hybrid_get_attr('entry-author','',array('class' => 'author vcard entry-author'));
+		$vattributes = hybrid_get_attr('entry-author', '', array('class' => 'author vcard entry-author'));
 		$vauthorlink = '<span '.$vattributes.'>'.PHP_EOL;
 		$vauthorlink .= '	<a class="url fn n" href="'.$vauthorurl.'">'.$vanchor.'</a>'.PHP_EOL;
 		$vauthorlink .= '</span>'.PHP_EOL;
+
+		// 2.0.8: added override filter for author link HTML
+		$vauthorlink = bioship_apply_filters('skeleton_author_link_html', $vauthorlink);
 		return $vauthorlink;
 	}
 }
@@ -1784,9 +1829,9 @@ if (!function_exists('bioship_skeleton_echo_comments')) {
 			comments_template('/comments.php', true);
 		} else {
 			$vcommentsclosedtext = bioship_apply_filters('skeleton_comments_closed_text', '');
-			if (THEMECOMMENTS) {echo "<!-- .commentclosed -->";}
+			bioship_html_comment('.commentclosed');
 			echo '<p class="commentsclosed">'.$vcommentsclosedtext.'</p>';
-			if (THEMECOMMENTS) {echo "<!-- /.commentsclosed -->".PHP_EOL;}
+			bioship_html_comment('/.commentsclosed');
 		}
 	}
 }
@@ -1806,7 +1851,7 @@ if (!function_exists('bioship_skeleton_comments')) {
 		$GLOBALS['comment'] = $comment;
 		$vavatarsize = bioship_apply_filters('skeleton_comments_avatar_size', 48);
 
-		if (THEMECOMMENTS) {echo '<!-- li -->';}
+		bioship_html_comment('li');
 		// TODO: maybe use Hybrid comment attributes?
 		// echo '<li '.hybrid_get_attr('comment').'>'.PHP_EOL;
 
@@ -1832,7 +1877,7 @@ if (!function_exists('bioship_skeleton_comments')) {
 				comment_text();
 			echo '</div>';
 		echo PHP_EOL.'</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /li -->'.PHP_EOL;}
+		bioship_html_comment('/li');
 		echo PHP_EOL;
 	}
 }
@@ -1930,10 +1975,10 @@ if (!function_exists('bioship_skeleton_breadcrumbs')) {
 		// allow for breadcrumb filter override
 		$vbreadcrumbs = bioship_apply_filters('skeleton_breadcrumb_override', $vbreadcrumbs);
 		if ($vbreadcrumbs != '') {
-			if (THEMECOMMENTS) {echo "<!-- #breadcrumb -->";}
+			bioship_html_comment('#breadcrumb');
 			echo "<div id='breadcrumb' class='".$vposttype."-breadcrumb'>".PHP_EOL;
 			echo $vbreadcrumbs.PHP_EOL."</div>".PHP_EOL;
-			if (THEMECOMMENTS) {echo "<!-- /#breadcrumb -->".PHP_EOL;}
+			bioship_html_comment('/#breadcrumb');
 			echo PHP_EOL;
 		}
 	}
@@ -2061,11 +2106,11 @@ if (!function_exists('bioship_skeleton_page_navigation')) {
 
 			$vpagenav = bioship_apply_filters('skeleton_pagenavi_override', $vpagenav);
 			if ($vpagenav != '') {
-				if (THEMECOMMENTS) {echo '<!-- #nav-below -->';}
+				bioship_html_comment('#nav-below');
 				echo '<div id="nav-below" class="navigation">'.PHP_EOL;
 					echo $vpagenav;
 				echo PHP_EOL.'</div>'.PHP_EOL;
-				if (THEMECOMMENTS) {echo '<!-- /#nav-below -->'.PHP_EOL;}
+				bioship_html_comment('/#nav-below');
 				echo PHP_EOL;
 			}
 		}
@@ -2135,7 +2180,7 @@ if (!function_exists('bioship_skeleton_footer_open')) {
 		$vclasses = bioship_apply_filters('skeleton_footer_classes', $vclasses);
 		$vfooterclasses = implode(' ',$vclasses);
 
-		if (THEMECOMMENTS) {echo '<!-- #footer -->';}
+		bioship_html_comment('#footer');
 		$vattributes = hybrid_get_attr('footer');
 		echo '<div id="footer" class="'.$vfooterclasses.'">'.PHP_EOL;
 		echo '	<div id="footerpadding" class="inner">'.PHP_EOL;
@@ -2155,7 +2200,7 @@ if (!function_exists('bioship_skeleton_footer_close')) {
 		echo '		</footer>'.PHP_EOL;
 		echo '	</div>'.PHP_EOL;
 		echo '</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /#footer -->'.PHP_EOL;}
+		bioship_html_comment('/#footer');
 		echo PHP_EOL;
 	}
 }
@@ -2179,13 +2224,13 @@ if (!function_exists('bioship_skeleton_footer_extras')) {
 
 		if ($vfooterextras) {
 			// 1.8.0: changed #footer_extras to #footer-extras for consistency
-			if (THEMECOMMENTS) {echo '<!-- #footer-extras -->';}
+			bioship_html_comment('#footer-extras');
 			echo '<div id="footer-extras" class="footer-extras">'.PHP_EOL;
 			echo '	<div class="inner">'.PHP_EOL;
 			echo $vfooterextras.PHP_EOL;
 			echo '	</div>'.PHP_EOL;
 			echo '</div>'.PHP_EOL;
-			if (THEMECOMMENTS) {echo '<!-- /#footer-extras -->'.PHP_EOL;}
+			bioship_html_comment('/#footer-extras');
 			echo PHP_EOL;
 		}
 	}
@@ -2216,7 +2261,7 @@ if (!function_exists('bioship_skeleton_footer_nav')) {
 
 	function bioship_skeleton_footer_nav() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-		if (THEMECOMMENTS) {echo '<!-- .footer-menu -->';}
+		bioship_html_comment('.footer-menu');
 		$vattributes = hybrid_get_attr('menu','footer');
 		echo '<div class="footer-menu" '.$vattributes.'>'.PHP_EOL;
 			$vmenuargs = array(
@@ -2235,7 +2280,7 @@ if (!function_exists('bioship_skeleton_footer_nav')) {
 			$vmenuargs = bioship_apply_filters('skeleton_footer_menu_settings', $vmenuargs);
 			wp_nav_menu($vmenuargs);
 		echo PHP_EOL.'</div>'.PHP_EOL;
-		if (THEMECOMMENTS) {echo '<!-- /.footer-menu -->'.PHP_EOL;}
+		bioship_html_comment('/.footer-menu');
 		echo PHP_EOL;
 	}
 }
@@ -2254,9 +2299,9 @@ if (!function_exists('bioship_skeleton_footer_credits')) {
 		$vcredits = bioship_skeleton_credit_link();
 		$vcredits = bioship_apply_filters('skeleton_author_credits', $vcredits);
 		if ($vcredits) {
-			if (THEMECOMMENTS) {echo '<!-- #footercredits -->';}
+			bioship_html_comment('#footercredits');
 			echo '<div id="footercredits">'.$vcredits.'</div>';
-			if (THEMECOMMENTS) {echo '<!-- /#footercredits -->';}
+			bioship_html_comment('/#footercredits');
 			echo PHP_EOL.PHP_EOL;
 		}
 	}

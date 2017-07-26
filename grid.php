@@ -548,7 +548,8 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 		if ($i > 1) {$widthruleb .= 's';}
 		$innerwidthruleb = $widthruleb.' .inner';
 		// 1.8.5: allow for a 'one.columns' plural typo
-		if ($i == 1) {$widthruleb .= ', one.columns'; $innerwidthruleb .= ', .one.columns .inner';}
+		// 2.0.8: fix for 'one.columns' typo
+		if ($i == 1) {$widthruleb .= ', .one.columns'; $innerwidthruleb .= ', .one.columns .inner';}
 		$widthrules[$i] = $widthrulea.$widthruleb;
 		$innerwidthrules[$i] = $innerwidthrulea.$innerwidthruleb;
 	}
@@ -566,9 +567,11 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 		$contentwidthruleb .= '.column';
 		if ($i > 1) {$contentwidthruleb .= 's';}
 		$innercontentwidthruleb = $contentwidthruleb.' .inner';
+
 		// 1.8.5: allow for a 'one.columns' plural typo
 		// 1.9.8: fix to innercontentwidthruleb variable
-		if ($i == 1) {$contentwidthruleb .= ', one.columns'; $innercontentwidthruleb .= ', .one.columns .inner';}
+		// 2.0.8: prefix for one.columns rule specificity
+		if ($i == 1) {$contentwidthruleb .= ', #content .one.columns'; $innercontentwidthruleb .= ', .one.columns .inner';}
 		$contentwidthrules[$i] = $contentwidthrulea.$contentwidthruleb;
 		$innercontentwidthrules[$i] = $innercontentwidthrulea.$innercontentwidthruleb;
 
@@ -628,17 +631,26 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 	// Skeleton Boilerplate: .spanX, .xxxxxx.columns
 	// 960 Grid System: grid_X
 	// Blueprint: span-X
-	for ($i = 1; $i < ($contentcolumns+1); $i++) {
-		if (!$mobile) {
-			// 1.9.5: removed em specific mobile query content grid widths in favour of percentages
-			// $contentrules .= ' '.$contentwidthrules[$i].' {width: '.$contentcolumn[$i].'em;}'.PHP_EOL;
-		} else {
-			// 1.8.0: added full width mobile columns with max-widths
-			// 1.9.5: replaced with min-widths for dual column mobile content layout
-			if ($offset == 'zero') {$minwidth = '100';} else {$minwidth = '50';}
-			// $contentrules .= '	'.$contentwidthrules[$i].' {width: '.$contentcolumn[$i].'em; max-width:100%; min-width:'.$minwidth.'%;}'.PHP_EOL;
-			// $contentrules .= '	'.$contentwidthrules[$i].' {max-width:100%; min-width:'.$minwidth.'%;}'.PHP_EOL;
+	if (!$mobile) {
+		// 1.9.5: removed em specific mobile query content grid widths in favour of percentages
+		// for ($i = 1; $i < ($contentcolumns+1); $i++) {
+		// 	$contentrules .= ' '.$contentwidthrules[$i].' {width: '.$contentcolumn[$i].'em;}'.PHP_EOL;
+		// }
+	} else {
+		// 1.8.0: added full width mobile columns with max-widths
+		// 1.9.5: replaced with min-widths for dual column mobile content layout
+		if ($offset == 'zero') {$minwidth = '100';}
+		elseif ($offset == 'half') {$minwidth = '50';}
+		else {$minwidth = '50';}
+		// 2.0.8: fix for full width mobile columns on smaller screens
+		// $contentrules .= '	'.$contentwidthrules[$i].' {width: '.$contentcolumn[$i].'em; max-width:100%; min-width:'.$minwidth.'%;}'.PHP_EOL;
+		for ($i = 1; $i < ($contentcolumns+1); $i++) {
+			$contentwidthrule = str_replace('	#content', '#wrap #content', $contentwidthrules[$i]);
+			$contentrules .= $contentwidthrule;
+			if ($i < $contentcolumns) {$contentrules .= ', ';}
 		}
+		// $contentrules .= '	'.$contentwidthrule.' {width: '.$thiscontentwidthem.'em; max-width:100%; min-width:'.$minwidth.'%;}'.PHP_EOL;
+		$contentrules .= ' {max-width:100%; min-width:'.$minwidth.'%;}'.PHP_EOL;
 	}
 	$contentrules .= PHP_EOL;
 
@@ -870,6 +882,12 @@ if ($numbreakpoints > 0) {
 			elseif ($breakpoint < 481) { 		// generally standard mobile (default 480)
 				$mediaqueries .= '@media only screen and (min-width: '.$lastbreakpoint.'em) and (max-width: '.$usebreakpoint.'em) {'.PHP_EOL;
 				$mediaqueries .= bioship_grid_css_rules($previousbreakpoint, true, 'half');
+				$mediaqueries .= '}'.PHP_EOL;
+			}
+			elseif ($breakpoint < 641) { 		// generally larger mobile (default 640)
+				// 2.0.8: add extra mobile handling for content widths
+				$mediaqueries .= '@media only screen and (min-width: '.$lastbreakpoint.'em) and (max-width: '.$usebreakpoint.'em) {'.PHP_EOL;
+				$mediaqueries .= bioship_grid_css_rules($previousbreakpoint, true, 'full');
 				$mediaqueries .= '}'.PHP_EOL;
 			}
 			else {								// everything in between

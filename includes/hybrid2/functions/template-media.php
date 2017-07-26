@@ -1,6 +1,6 @@
 <?php
 /**
- * Media template functions. These functions are meant to handle various features needed in theme templates 
+ * Media template functions. These functions are meant to handle various features needed in theme templates
  * for media and attachments.
  *
  * @package    HybridCore
@@ -64,8 +64,8 @@ function hybrid_get_attachment_id_from_url( $url ) {
 
 	$prefix = $wpdb->prefix;
 
-	$posts = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM " . $prefix . "posts" . " WHERE guid='%s';", $url ) ); 
- 
+	$posts = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM " . $prefix . "posts" . " WHERE guid='%s';", $url ) );
+
 	return array_shift( $posts );
 }
 
@@ -110,7 +110,7 @@ function hybrid_get_image_size_links() {
 }
 
 /**
- * Gets the "transcript" for an audio attachment.  This is typically saved as "unsynchronised_lyric", which is 
+ * Gets the "transcript" for an audio attachment.  This is typically saved as "unsynchronised_lyric", which is
  * the ID3 tag sanitized by WordPress.
  *
  * @since  2.0.0
@@ -140,11 +140,11 @@ function hybrid_get_audio_transcript( $post_id = 0 ) {
 }
 
 /**
- * Loads the correct function for handling attachments.  Checks the attachment mime type to call 
- * correct function. Image attachments are not loaded with this function.  The functionality for them 
+ * Loads the correct function for handling attachments.  Checks the attachment mime type to call
+ * correct function. Image attachments are not loaded with this function.  The functionality for them
  * should be handled by the theme's attachment or image attachment file.
  *
- * Ideally, all attachments would be appropriately handled within their templates. However, this could 
+ * Ideally, all attachments would be appropriately handled within their templates. However, this could
  * lead to messy template files.
  *
  * @since  0.5.0
@@ -171,7 +171,7 @@ function hybrid_attachment() {
 }
 
 /**
- * Handles application attachments on their attachment pages.  Uses the <object> tag to embed media 
+ * Handles application attachments on their attachment pages.  Uses the <object> tag to embed media
  * on those pages.
  *
  * @since  0.3.0
@@ -190,7 +190,7 @@ function hybrid_application_attachment( $mime = '', $file = '' ) {
 }
 
 /**
- * Handles text attachments on their attachment pages.  Uses the <object> element to embed media 
+ * Handles text attachments on their attachment pages.  Uses the <object> element to embed media
  * in the pages.
  *
  * @since  0.3.0

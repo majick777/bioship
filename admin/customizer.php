@@ -306,7 +306,7 @@ if (!function_exists('bioship_customizer_register_controls')) {
 		if (!isset($vcustomlogoimage)) {$vcustomlogoimage = bioship_file_hierarchy('url','theme-logo.png',array('','images','img'));}
 
 		$vpreviewnotice = '<span class="preview-notice" style="float:right;max-width:40%;">';
-		$vpreviewnotice .= sprintf( __( 'You are customizing %s' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
+		$vpreviewnotice .= sprintf( __( 'You are customizing %s', 'bioship' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
 		$vpreviewnotice .= '</span>';
 
 	    $vconfig['description']  = apply_filters('options_customizer_description', $vpreviewnotice);
@@ -496,27 +496,27 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 		);
 	}
 
-	// Remove and Customize Sections
-	// -----------------------------
+	// Customize Sections
+	// ------------------
 	$wp_customize->get_section('themes')->priority = 999; 	// shift to bottom
-	$wp_customize->remove_section('colors'); 				// removed
-	$wp_customize->remove_section('header_image');			// we have better
-	$wp_customize->remove_section('background_image');		// we have better
-	// 2.0.5: remove new custom CSS section
-	$wp_customize->remove_section('custom_css');			// "tell your master we've already got one"
-
 	$wp_customize->get_section('title_tagline')->title = __('Site Options', 'bioship'); // generalize
 	$wp_customize->get_section('title_tagline')->priority = 10; // ok whatever now
 	// set live preview transport to postMessage for title and tagline
 	$wp_customize->get_setting('blogname')->transport = 'postMessage';
 	$wp_customize->get_setting('blogdescription')->transport  = 'postMessage';
 
-	// 1.9.9: clear basic sections for advanced options page
+	// 1.9.9: clear basic sections (from advanced options page only)
 	if ($voptionspage == 'advanced') {
 		// $wp_customize->remove_panel('widgets');
 		$wp_customize->remove_section('title_tagline');
 		$wp_customize->remove_panel('nav_menus');
 		$wp_customize->remove_section('themes');
+		// 2.0.8: only remove unused sections from advanced page (for wordpress.org compliance)
+		$wp_customize->remove_section('colors');
+		$wp_customize->remove_section('header_image');
+		$wp_customize->remove_section('background_image');
+		// 2.0.5: remove new custom CSS section
+		$wp_customize->remove_section('custom_css');
 	}
 
 	// Customize Default Sections
@@ -527,11 +527,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	$wp_customize->get_control('page_for_posts')->section = 'title_tagline';
 	$wp_customize->remove_section('static_front_page');		// remove section
 
-	// TODO: check implementation of site icon and possible theme conflicts?
-	// yes it is conflicting :-( argh this should really not be in core (imho)
-	// $wp_customize->remove_control('site_icon');
-
-	// ? maybe ? move 'Site Icon' from the title_tagline section to Icons section ?
+	// [deprecated] maybe move 'Site Icon' from the title_tagline section to Icons section ?
 	// $wp_customize->add_control( new WP_Customize_Site_Icon_Control( $wp_customize, 'site_icon', array(
 	//	'label'       => __( 'Site Icon' ),
 	//	'description' => __( 'The Site Icon is used as a browser and app icon for your site. Icons must be square, and at least 512px wide and tall.' ),
@@ -542,9 +538,9 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	// ) ) );
 
 	// Separator Section
-	// ...this method not working...
+	// [deprecated] ...this method is not working...
 	// $wp_customize->add_section('section-separator',array('title'=>__('','bioship'), 'priority'=>170));
-	// $wp_customize->add_setting('separator', array('type' => 'option', 'capability' => 'edit_theme_options'));
+	// $w-p_c-u-s-t-o-m-i-z-e->add_setting('separator', array('type' => 'option', 'capability' => 'edit_theme_options'));
 	// $vargs = array('type' => 'info', 'section'  => 'section-separator', 'settings' => 'separator');
 	// $wp_customize->add_control(new Info_Custom_Control($wp_customize, 'separator-control', $vargs));
 
@@ -638,9 +634,14 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 					$vcontrolargs['description'] = 'typography_controller';
 					$vtypocontrols++;
 
-					// add the Control to echo the javascript
+					// add the Info Control to echo the expand/collapse javascript
 					$vtypoid = $vsettingid.'[helper]'; // dummy option
-					$wp_customize->add_setting($vtypoid, $vsettingargs);
+					// 2.0.7: fix dummy sanitization callback for requirement check
+					$wp_customize->add_setting($vtypoid, array(
+						'type' => $vsettingargs['type'],
+						'capability' => $vsettingargs['capability'],
+						'sanitize_callback' => 'bioship_fallback_sanitize_unfiltered'
+					) );
 					$wp_customize->add_control(new Info_Custom_Control($wp_customize, $vtypoid, $vcontrolargs));
 					$vpriority++;
 
@@ -702,12 +703,19 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 							'label' => $vlabel, 'description' => '', 'setting' => $vsettingid);
 
 						// 1.8.5: set default typography sanitization callbacks
-						$vsettingsargs['sanitize_callback'] = $vtyposanitize[$vtypooption];
+						$vsettingargs['sanitize_callback'] = $vtyposanitize[$vtypooption];
 
 						// add this Typography Customizer Setting and Control
 						// --------------------------------------------------
 						// add Customizer Setting
-						$wp_customize->add_setting($vsettingid, $vsettingargs);
+						// 2.0.7: fix to for sanitization callback requirement check
+						$wp_customize->add_setting($vsettingid, array(
+							'type' => $vsettingargs['type'],
+							'capability' => $vsettingargs['capability'],
+							'default' => $vsettingargs['default'],
+							'transport' => $vsettingargs['transport'],
+							'sanitize_callback' => $vsettingargs['sanitize_callback']
+						) );
 						// $vvalue = $wp_customize->get_setting($vsettingid)->value(); // debug point
 
 						// typography control styling
@@ -732,8 +740,8 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 
 				// setup Customizer Setting for each Option
 				// ----------------------------------------
-				if ( ($vtype == 'info') || ($vtype == 'note') ) {$vsettingid = $vsettingsprefix.'[info]';} // dummy value
-				else {$vsettingid = $vsettingsprefix.'['.$vthisoption['id'].']';}
+				if ( ($vtype == 'info') || ($vtype == 'note') ) {$vsettingid = $vsettingsprefix."[info]";} // dummy value
+				else {$vsettingid = $vsettingsprefix."[".$vthisoption['id']."]";}
 
 				if (isset($vthisoption['default'])) {$vdefault = $vthisoption['default'];}
 				elseif (isset($vthisoption['std'])) {$vdefault = $vthisoption['std'];}
@@ -801,7 +809,8 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 					// fallbacks to default Customizer Controls
 					// ----------------------------------------
 					// 1.8.5: only for when Kirki is not loaded
-					if (!isset($vsettingsargs['sanitization_callback'])) {
+					// 2.0.7: fix to key setting typo (sanitization_callback)
+					if (!isset($vsettingargs['sanitize_callback'])) {
 						$vcallback = '';
 						if ( ($vtype == 'info') || ($vtype == 'note')
 						  || ($vtype == 'hidden') || ($vtype == 'code') ) {$vcallback = 'bioship_fallback_sanitize_unfiltered';}
@@ -822,11 +831,17 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 						if ( ($vcallback == '') && (THEMEDEBUG) ) {
 							echo "<!-- WARNING: Missing Sanitization Callback for ".$vtype." Settings -->";
 						}
-						$vsettingsargs['sanitization_callback'] = $vcallback;
+						$vsettingargs['sanitize_callback'] = $vcallback;
 					}
 
 					// add the Setting
-					$wp_customize->add_setting($vsettingid, $vsettingargs);
+					// 2.0.7: fix to for sanitization callback requirement check
+					$wp_customize->add_setting($vsettingid, array(
+						'type' => $vsettingargs['type'],
+						'capability' => $vsettingargs['capability'],
+						'default' => $vsettingargs['default'],
+						'sanitize_callback' => $vsettingargs['sanitize_callback']
+					) );
 
 					// add the Control
 					if (!in_array($vtype,$vdefaulttypes)) {
@@ -896,7 +911,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	// well there is no premium version anyway
 	// $vsettingid = 'customizer_link';
 	// $vargs = array('type' => 'option', 'capability' => 'edit_theme_options', 'default' => '');
-	// $wp_customize->add_setting($vsettingid, $vargs);
+	// $w-p_-c-u-s-t-o-m-i-z-e->add_setting($vsettingid, $vargs);
 	// $vlabel = ''; $vdescription = 'Upgrade Theme.';
 	// $vargs = array('type' => 'info', 'priority' => '210', 'label' => $vlabel, 'description' => $vdescription, 'setting' => $vsettingid);
 	// $wp_customize->add_control(new Info_Custom_Control($wp_customize, $vsettingid, $vargs));
@@ -962,8 +977,9 @@ if (!function_exists('bioship_customizer_text_script')) {
 	$vcustomizermessage = str_replace("'", "", $vcustomizermessage);
 
 	// preview notice title section text
+	// 2.0.7: added missing text domain
 	$vextratext = '<span class="preview-notice" style="float:right; max-width:40%;">';
-	$vextratext .= sprintf( __( 'You are customizing %s' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
+	$vextratext .= sprintf( __( 'You are customizing %s', 'bioship' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
 	$vextratext .= '</span>';
 
 	// 1.9.9: filter whether splitting options

@@ -5,7 +5,7 @@
 
 <div class="clear"></div>
 
-<?php if (THEMECOMMENTS) : ?><!-- article.entry --><?php endif; ?>
+<?php bioship_html_comment('article.entry'); ?>
 <article <?php hybrid_attr('post');?>>
 
 	<?php bioship_do_action('bioship_before_entry'); ?>
@@ -27,12 +27,12 @@
 
 		<?php bioship_do_action('bioship_before_excerpt'); ?>
 
-		<?php if (THEMECOMMENTS) : ?><!-- .entry-summary --><?php endif; ?>
+		<?php bioship_html_comment('.entry-summary'); ?>
 		<div <?php hybrid_attr('entry-summary'); ?>>
 
 			<?php bioship_do_action('bioship_the_excerpt'); ?>
 
-		</div><?php if (THEMECOMMENTS) : ?><!-- /.entry-summary --><?php endif; ?>
+		</div><?php bioship_html_comment('/.entry-summary'); ?>
 
 		<?php bioship_do_action('bioship_after_excerpt'); ?>
 
@@ -54,14 +54,14 @@
 
 		<?php /* Entry Content (Full) */ ?>
 
-		<?php if (THEMECOMMENTS) : ?><!-- .entry-content --><?php endif; ?>
+		<?php bioship_html_comment('.entry-content'); ?>
 		<div <?php hybrid_attr('entry-content'); ?>>
 
 			<?php bioship_do_action('bioship_the_content'); ?>
 
 			<div class="clear"></div>
 
-		</div><?php if (THEMECOMMENTS) : ?><!-- /.entry-content --><?php endif; ?>
+		</div><?php bioship_html_comment('/.entry-content'); ?>
 
 
 		<?php /* Author Bio (bottom) */ ?>
@@ -85,4 +85,4 @@
 
 	<?php bioship_do_action('bioship_after_entry'); ?>
 
-</article><?php if (THEMECOMMENTS) : ?><!-- /article.entry --><?php endif; ?>
+</article><?php bioship_html_comment('/article.entry'); ?>

@@ -13,7 +13,7 @@ if (is_string($vposttypes)) {$vposttype = $vposttypes;} else {$vposttype = '';}
 
 echo '<div class="clear"></div>';
 
-if (THEMECOMMENTS) {echo "<!-- article.entry -->";}
+bioship_html_comment('article.entry');
 $vattributes = hybrid_get_attr('post');
 echo '<article '.$vattributes.'>';
 
@@ -41,14 +41,14 @@ echo '<article '.$vattributes.'>';
 		bioship_do_action('bioship_before_excerpt');
 
 			/* Entry Content Summary */
-			if (THEMECOMMENTS) {echo '<!-- .entry-summary -->';}
+			bioship_html_comment('.entry-summary');
 			echo '<div '.hybrid_get_attr('entry-summary').'>';
 
 				/* the_excerpt() */
 				bioship_do_action('bioship_the_excerpt');
 
 			echo '</div>';
-			if (THEMECOMMENTS) {echo '<!-- /.entry-summary -->';}
+			bioship_html_comment('/.entry-summary');
 
 		/* After Excerpt Hook */
 		bioship_do_action('bioship_after_excerpt');
@@ -70,7 +70,7 @@ echo '<article '.$vattributes.'>';
 				bioship_do_action('bioship_before_the_content');
 
 					/* Entry Content (Full) */
-					if (THEMECOMMENTS) {echo '<!-- .entry-content -->';}
+					bioship_html_comment('.entry-content');
 					echo '<div '.hybrid_get_attr('entry-content').'>';
 
 							/* the_content */
@@ -79,7 +79,7 @@ echo '<article '.$vattributes.'>';
 						echo '<div class="clear"></div>';
 
 					echo '</div>';
-					if (THEMECOMMENTS) {echo '<!-- /.entry-content -->';}
+					bioship_html_comment('/.entry-content');
 
 				/* After Main Content */
 				bioship_do_action('bioship_after_the_content');
@@ -102,6 +102,6 @@ echo '<article '.$vattributes.'>';
 	bioship_do_action('bioship_after_entry');
 
 echo '</article>';
-if (THEMECOMMENTS) {echo '<!-- /article.entry -->';}
+bioship_html_comment('/article.entry');
 
 ?>
