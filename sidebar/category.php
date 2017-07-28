@@ -11,7 +11,7 @@ if (is_active_sidebar('category')) {
 
 	bioship_do_action('bioship_before_sidebar'); ?>
 
-		<?php bioship_html_comment('#sidebar-primary';} ?>
+		<?php bioship_html_comment('#sidebar-primary');} ?>
 		<aside <?php hybrid_attr('sidebar', 'primary', $vargs); ?>>
 
 			<?php dynamic_sidebar('category'); ?>
