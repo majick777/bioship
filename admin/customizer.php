@@ -6,11 +6,7 @@ if (!function_exists('add_action')) {exit;}
 // Options for Customizer API
 // ==========================
 
-// --------
-// TODO: customizer welcome message for new activations (welcome=true)
-// CHECKME: Kirki: Typo found in field xxxxx ("setting" instead of "settings") ???
-// 2.0.5: added tracer calls within Customizer functions
-// --------
+// TODO: popup thickbox customizer welcome message for new activations (where welcome=true)
 
 // Development Note: Due to the difficulty in implementing the complex WordPress Customizer API,
 // feature requests and fixes for Customizer *Live Preview* will receive a *very low* priority.
@@ -18,7 +14,6 @@ if (!function_exists('add_action')) {exit;}
 
 // That said, after much ado and crazy hackiness that has to be seen to be believed,  most of the
 // live preview options are working well at the time of writing this (v1.8.5) - fingers crossed.
-
 
 // ref: Customizer Requirement Discussion:
 // http://wptavern.com/wordpress-org-now-requires-theme-authors-to-use-the-customizer-to-build-theme-options
@@ -31,7 +26,7 @@ if (!function_exists('add_action')) {exit;}
 // http://www.titanframework.net/livepreview-parameter/
 // http://wptheming.com/2012/07/options-framework-theme-customizer/
 
-// TODO: Maybe implement separate action hooks for live and preview modes?
+// TODO: maybe implement separate action hooks for live and preview modes?
 // https://wp-dreams.com/articles/2014/02/wodpress-theme-customizer-useful-custom-hooks/
 
 // Note: Theme Customizer Boilerplate
@@ -51,7 +46,7 @@ if (!function_exists('add_action')) {exit;}
 // checkbox, textarea, radio, select, page-dropdown, text, hidden
 // also? number, range, url, tel, email, search, time, date, datetime, week
 
-// Kirki Controls (/customizer/kirki/)
+// Kirki Controls (/customizer/kirkiX/)
 // --------------
 // http://kirki.org and https://github.com/aristath/kirki
 // https://github.com/aristath/kirki/wiki/Field-Structure
@@ -87,7 +82,7 @@ if (!function_exists('add_action')) {exit;}
 // - typography
 // + upload
 
-// Hybrid Controls (/hybrid/customize/)
+// Hybrid Controls (/hybrid3/customize/)
 // ---------------
 // Checkbox multiple: 	Hybrid_Customize_Control_Checkbox_Multiple
 // Dropdown terms: 		Hybrid_Customize_Control_Dropdown_Terms
@@ -105,7 +100,7 @@ if (!function_exists('add_action')) {exit;}
 // ------------------------
 // customizer controls are inside actual input classes. :-(
 
-// Paulund Custom Controls (/customizer/customizer-controls/)
+// Paulund Custom Controls (/includes/customizer-controls/)
 // -----------------------
 // http://www.paulund.co.uk/custom-wordpress-controls
 // Date picker:			Date_Picker_Custom_Control
@@ -140,19 +135,28 @@ if (!function_exists('bioship_customizer_register_controls')) {
 	// --------------------------
 	bioship_customizer_register_info_control();
 
+	// Add a MultiCheck Custom Control
+	// -------------------------------
+	// 2.0.9: added multicheck control
+	bioship_customizer_register_multicheck_control();
+
 	// maybe Load Hybrid Controls
 	// --------------------------
-	// TODO: register Hybrid control types via Kirki filter?
-	// ?MAYBE? use spl_autoload_register for Hybrid control classes?
-
-	// note: loading it this way may not work just yet?
-	// ...this snippet is just for if Hybrid is turned off in options...
+	// [just for if Hybrid loading is turned off]
+	// TEST: loading it this way may not be working just yet?
+	// TODO: maybe use spl_autoload_register for Hybrid control classes?
 	if (!defined('HYBRID_CUSTOMIZE')) {
-		$vhybridcustomize = $vthemetemplatedir.'includes'.DIRSEP.'hybrid3'.DIRSEP.'customize'.DIRSEP;
-		define('HYBRID_CUSTOMIZE',$vhybridcustomize);
-		if (!class_exists('Hybrid_Customize_Control_Checkbox_Multiple')) {
-			$vcheckboxmultiple = HYBRID_CUSTOMIZE.'control-checkbox-multiple.php';
-			include($vcheckboxmultiple);
+		// 2.0.9: use file hierarchy here to allow child theme overrides
+		$vhybridpath = bioship_file_hierarchy('file', 'hybrid.php', array('includes/hybrid3'));
+		if ($vhybridpath) {
+			$vhybridpath = dirname($vhybridpath);
+			$vhybridcustomize = $vhybridpath.DIRSEP.'customize'.DIRSEP;
+			define('HYBRID_CUSTOMIZE', $vhybridcustomize);
+			if (!class_exists('Hybrid_Customize_Control_Checkbox_Multiple')) {
+				$vcheckboxmultiple = HYBRID_CUSTOMIZE.'control-checkbox-multiple.php';
+				bioship_debug("Hybrid Multicheck Controller", $vcheckboxmultiple);
+				if (file_exists($vcheckboxmultiple)) {include($vcheckboxmultiple);}
+			}
 		}
 	}
 
@@ -173,106 +177,129 @@ if (!function_exists('bioship_customizer_register_controls')) {
 		'text/textarea' 				=> 'Textarea_Custom_Control',
 		'text/text-editor' 				=> 'Text_Editor_Custom_Control'
 	);
+
+	// 2.0.9: use apply_filters for user load of controls (default: load none)
 	// TODO: maybe use spl_autoload_register here instead?
-	// ...or register these control types via Kirki filter?
-	// foreach ($vcustomcontrols as $vcontrolkey => $vcontrolclass) {
-	//	$vcontrolfile = $vthemetemplatedir.'includes/customizer-controls/'.$vcontrolkey.'-custom-control.php';
-	//	if (file_exists($vcontrolfile)) {include($vcontrolfile);}
-	// }
+	$vloadcontrols = apply_filters('options_customizer_extra_controls', array());
+
+	foreach ($vcustomcontrols as $vcontrolkey => $vcontrolclass) {
+		// 2.0.9: use file hierarchy here to allow child theme overrides
+		if (in_array($vcontrolkey, $vloadcontrols)) {
+			$vcontrolfile = bioship_file_hierarchy('file', $vcontrolkey.'-custom-control.php', array('includes/customizer-controls'));
+			if ($vcontrolfile) {include($vcontrolfile);}
+		}
+	}
 
 	// Kirki Config URL Filter
 	// -----------------------
 	add_filter('kirki/config', 'bioship_customizer_kirki_url');
 	if (!function_exists('bioship_customizer_kirki_url')) {
 	 function bioship_customizer_kirki_url($vconfig) {
-	 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 		$config['url_path'] = THEMEKIRKIURL; return $vconfig;
 	 }
 	}
 
-	// Include Kirki Library
-	// ---------------------
-	// https://kirki.org/docs/advanced/integration.html
+ }
+}
+
+
+// Kirki Library Loader
+// --------------------
+// ref: https://kirki.org/docs/advanced/integration.html
+// 2.0.9: separated loader for Kirki
+if (!function_exists('bioship_kirki_loader')) {
+ function bioship_kirki_loader() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE);}
+
+	// 2.0.9: added a Kirki version global (and loading filter)
+	global $vkirkiversion; $vkirkiversion = '3';
+	// 2.0.9: add PHP version test as apparently Kirki requires PHP 5.2+
+	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {$vkirkiversion = '0';}
+	$vkirkiversion = bioship_apply_filters('options_customizer_kirki_version', $vkirkiversion);
+
+	if ($vkirkiversion) {
+		$vkirkidirs = array('includes/kirki'.$vkirkiversion, 'kirki'.$vkirkiversion, 'kirki');
+		$vkirki = bioship_file_hierarchy('both', 'kirki.php', $vkirkidirs);
+		bioship_debug("Kirki Filepath", $vkirki);
+	}
+
+	// 1.8.5: fix to Kirki check for new file hierarchy syntax
+	if ( (isset($vkirki)) && (is_array($vkirki)) ) {
+		// find and initialize Kirki
+		$vkirkipath = str_replace('kirki.php', '', $vkirki['url']);
+		define('THEMEKIRKIURL', $vkirkipath); define('THEMEKIRKI', true);
+		include($vkirki['file']);
+		bioship_debug("Kirki URL", THEMEKIRKIURL);
+
+		if ($vkirkiversion == '2') {
+			// need to fire this right now, as we missed after_theme_setup hook..!
+			if (function_exists('kirki_filtered_url')) {kirki_filtered_url();}
+			// 1.8.5: not enough, must manually override to fix script paths also
+			Kirki::$url = THEMEKIRKIURL;
+			bioship_debug("Kirki Set URL", Kirki::$url);
+
+			// as we really aren't using the Code control, remove codemirror script to avoid bloat
+			// 1.9.5: use script loader tag filter to remove the codemirror scripts
+			// TEMP: disabled while debugging Kirki load
+			// if (!function_exists('bioship_customizer_remove_codemirror_scripts')) {
+			//  add_filter('script_loader_tag', 'bioship_customizer_remove_codemirror_scripts', 11, 2);
+			// function bioship_customizer_remove_codemirror_scripts($vtag, $vhandle) {
+			//	if (strstr($vtag, 'vendor/codemirror')) {return '';}
+			//	return $vtag;
+			//  }
+			// }
+		}
+
+	} else {
+		// 2.0.9: added a standalone multicheck control for no Kirki
+		define('THEMEKIRKI', false);
+	}
+
+	// manually do the Kirki_Init (for Kirki 2)
+	// ----------------------------------------
 	// note: as we are conditionally loading Kirki inside customize_register,
 	// - so that Kirki is not loaded unnecessarily outside the Customizer -
 	// so we need to fire some init actions that have already missed out on...
-
-	// ? TODO ? maybe conditionally load the Kirki library via an option/filter ?
-	// ? version test ? apparently it requires PHP 5.2? (at least 5.12 due to spl_autoload_register)
-	$vkirki = bioship_file_hierarchy('both', 'kirki.php', array('includes/kirki','kirki'));
-	if (THEMEDEBUG) {echo "<!-- Kirki: ".$vkirki." -->";}
-
-	// 1.8.5: fix to Kirki check for new file hierarchy syntax
-	if (is_array($vkirki)) {
-		$vkirkipath = str_replace('kirki.php', '', $vkirki['url']);
-		define('THEMEKIRKIURL', $vkirkipath);
-		include($vkirki['file']); // initialize Kirki
-		// need to fire this right now, as we missed after_theme_setup hook..!
-		if (function_exists('kirki_filtered_url')) {kirki_filtered_url();}
-
-		// 1.8.5: but that was not enough, must manually override to fix script paths!
-		Kirki::$url = THEMEKIRKIURL; define('THEMEKIRKI',true);
-		if (THEMEDEBUG) {echo "<!-- Kirki Path: "; echo THEMEKIRKIURL; echo " -- ".Kirki::$url." -->";}
-
-		// as we really aren't using the Code control, remove codemirror script to avoid bloat
-		// note: suggest removal from default load, as is loaded in the Code control anyway?
-		// ...this code not working...
-		// add_action('wp_enqueue_scripts', 'bioship_customizer_dequeue_codemirror', 999);
-		// function bioship_customizer_dequeue_codemirror() {wp_dequeue_script('codemirror');}
-
-		// 1.9.5: use script loader tag filter to remove codemirror scripts
-		if (!function_exists('bioship_customizer_remove_codemirror_scripts')) {
-		 add_filter('script_loader_tag', 'bioship_customizer_remove_codemirror_scripts', 11, 2);
-		 function bioship_customizer_remove_codemirror_scripts($vtag, $vhandle) {
-			if (strstr($vtag, 'vendor/codemirror')) {return '';}
-			return $vtag;
-		 }
-		}
-	} else {
-		// TODO: a more graceful way to fallback here for no Kirki?! :-/
-		// (should be "okay" - if the Hybrid multicheck control works?)
-		define('THEMEKIRKI',false);
-	}
-
-	// manually do the Kirki_Init
-	// --------------------------
 	// again fire these now, as we have missed wp_loaded also..!
-	if (class_exists('Kirki_Init')) {
+	// 2.0.9: only do this for Kirki 2 loading
+	if ( ($vkirkiversion == '2') && (class_exists('Kirki_Init')) ) {
 		// (modified copy of Kirki_Init::add_to_customizer)
-		Kirki_Init::register_control_types(); // register them right now, not later
-		Kirki_Init::fields_from_filters(); // yeah and whatever this does too
+		Kirki_Init::fields_from_filters();
+		add_action('customizer_register', array('Kirki_Init', 'register_control_types'));
 		// note: we are not using Kirki to add panels or sections
-		add_action('customize_register', array('Kirki_Init','add_panels'), 97);
-		add_action('customize_register', array('Kirki_Init','add_sections'), 98);
+		add_action('customize_register', array('Kirki_Init', 'add_panels'), 97);
+		add_action('customize_register', array('Kirki_Init', 'add_sections'), 98);
 		// ...but we are definitely using the Kirki fields
-		add_action('customize_register', array('Kirki_Init','add_fields'), 99);
+		add_action('customize_register', array('Kirki_Init', 'add_fields'), 99);
 		// 1.9.5: change of class name for Kirki 2.3.5
 		if (class_exists('Kirki_Scripts_Loading')) {new Kirki_Scripts_Loading();}
 		elseif (class_exists('Kirki_Customizer_Scripts_Loading')) {new Kirki_Customizer_Scripts_Loading();}
 	}
 
-	// Filter the Kirki Font Stacks
-	// ----------------------------
+	// Format Filter for the Kirki Font Stacks
+	// ---------------------------------------
 	// note: as we are not using Kirki Typography Control, do not need this yet
 	if (!function_exists('bioship_customizer_kirki_font_stacks')) {
 	 add_filter('kirki/fonts/standard_fonts', 'bioship_customizer_kirki_font_stacks');
 	 function bioship_customizer_kirki_font_stacks() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-		$fonts = bioship_options_web_font_stacks(array());
-		$fontstacks = array();
-		foreach ($fonts as $fontstack => $display) {
-			// format: array['fontkey'] = array('label'=>'font', 'stack'=>'stack'));
-			// ? looks like fontkey should be the first 'font' in the stack for Kirki ?
+		$vfonts = bioship_options_web_font_stacks(array());
+		$vfontstacks = array();
+		foreach ($vfonts as $vfontstack => $vdisplay) {
+			// format: array['fontkey'] = array('label' => 'font', 'stack' => 'stack'));
+			// note: it looks like fontkey should be the first 'font' in the stack for Kirki ?
 			// 1.9.8: fix to fontstack and label variable typos
-			$fontstacks[$fontstack] = array('label'=>$display, 'stack'=>$fontstack);
+			// 2.0.9: refix to fontstacks array variable typo
+			$vfontstacks[$vfontstack] = array('label' => $vdisplay, 'stack' => $vfontstack);
 		}
-	 	return $fontstacks;
+	 	return $vfontstacks;
 	 }
 	}
 
-	// Filter the Kirki Google Fonts
-	// -----------------------------
-	// [unfinished] we are not using Kirki Typography Control, do not need this...
+	// Format Filter for the Kirki Google Fonts
+	// ----------------------------------------
+	// [not implemented] as not using Kirki Typography Control, do not need this...
 	if (!function_exists('bioship_customizer_kirki_google_fonts')) {
 	 add_filter('kirki/fonts/google_fonts', 'bioship_customizer_kirki_google_fonts');
 	 function bioship_customizer_kirki_google_fonts($vkirkifonts) {
@@ -281,7 +308,7 @@ if (!function_exists('bioship_customizer_register_controls')) {
 		$vfonts = bioship_options_title_fonts();
 		$vgooglefonts = array();
 		foreach ($vfonts as $vfont => $vdisplay) {
-			// TODO: variants / subsets / categories?
+			// TODO: Google font variants / subsets / categories for Kirki
 			$vgooglefonts[$vfont] = array(
 				'label'    => $vdisplay,
 				'variants' => array(),
@@ -303,29 +330,46 @@ if (!function_exists('bioship_customizer_register_controls')) {
 
 		// 1.9.9: cache logo value to prevent multiple hierarchy calls
 		global $vcustomlogoimage;
-		if (!isset($vcustomlogoimage)) {$vcustomlogoimage = bioship_file_hierarchy('url','theme-logo.png',array('','images','img'));}
+		if (!isset($vcustomlogoimage)) {
+			// 2.0.9: extend possible logo image paths to icons and assets/img
+			$vimagepaths = array('', 'images', 'img', 'icons', 'assets/img');
+			$vcustomlogoimage = bioship_file_hierarchy('url', 'theme-logo.png', $vimagepaths);
+		}
 
 		$vpreviewnotice = '<span class="preview-notice" style="float:right;max-width:40%;">';
-		$vpreviewnotice .= sprintf( __( 'You are customizing %s', 'bioship' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
+		$vpreviewnotice .= sprintf( __('You are customizing %s', 'bioship'), '<strong class="panel-title site-title">'.get_bloginfo('name').'</strong>');
 		$vpreviewnotice .= '</span>';
 
-	    $vconfig['description']  = apply_filters('options_customizer_description', $vpreviewnotice);
-	    $vconfig['logo_image']   = apply_filters('options_customizer_logo_image', $vcustomlogoimage);
-	    $vconfig['color_accent'] = apply_filters('options_customizer_color_accent', '#99BBDD');
-	    $vconfig['color_back']   = apply_filters('options_customizer_color_back', '#E0E0EE');
-	    $vconfig['width']        = apply_filters('options_customizer_panel_width', '20%');
+	    $vconfig['description']  = bioship_apply_filters('options_customizer_description', $vpreviewnotice);
+	    $vconfig['logo_image']   = bioship_apply_filters('options_customizer_logo_image', $vcustomlogoimage);
+	    $vconfig['color_accent'] = bioship_apply_filters('options_customizer_color_accent', '#99BBDD');
+	    $vconfig['color_back']   = bioship_apply_filters('options_customizer_color_back', '#E0E0EE');
+	    $vconfig['width']        = bioship_apply_filters('options_customizer_panel_width', '20%');
 	    return $vconfig;
 	 }
 	}
 
-	// load Kirki I10n Filter
-	// ----------------------
+	// load Kirki Internationalization Filter
+	// --------------------------------------
 	// 1.8.5: added this filter
 	// 1.9.9: load as filter as intended
 	add_filter('kirki/bioship/l10n', 'bioship_customizer_i10n');
+
+	// maybe use Fallback Customizer Styling Class
+	// -------------------------------------------
+	// 2.0.9: add this for if Kirki is not loaded
+	if (!THEMEKIRKI) {
+		global $vthemedirs;
+		// loads Kirki_Modules_Customizer_Styling and ariColor classes
+		$vstyling = bioship_file_hierarchy('file', 'styling.php', $vthemedirs['admin']);
+		if ($vstyling) {
+			include($vstyling);
+			new Kirki_Modules_Customizer_Styling();
+		}
+	}
+
  }
 }
-
 
 // Add an Info Custom Control
 // --------------------------
@@ -333,11 +377,8 @@ if (!function_exists('bioship_customizer_register_info_control')) {
  function bioship_customizer_register_info_control() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-	// outputs label and description for info/note option type
-	// also used to echo expand/collapse links for Typography Controls
-	// TODO: maybe use contextual show/hide controls for Typography?
-	// ref: https://www.gavick.com/blog/contextual-controls-theme-customizer
-
+	// control class outputs label and description for info/note option type
+	// ...also used to echo expand/collapse links for Typography Controls
 	class Info_Custom_Control extends WP_Customize_Control {
 		public function render_content() {
 			echo '<label>';
@@ -355,18 +396,89 @@ if (!function_exists('bioship_customizer_register_info_control')) {
 		}
 	}
 
+	// load info control script in the footer
+	// 2.0.9: moved here from functions.php loading
+	add_action('customize_controls_print_footer_scripts', 'bioship_customizer_font_script');
+
 	// register this control type via Kirki filter (before initializing Kirki)
 	if (!function_exists('bioship_add_control_types')) {
-     add_filter('kirki/control_types', 'bioship_add_control_types');
-     function bioship_add_control_types($vcontrols) {
+     add_filter('kirki/control_types', 'bioship_kirki_add_info_control');
+     function bioship_kirki_add_info_control($vcontrols) {
      	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-    	$vcontrols['info'] = 'Info_Custom_Control';
-    	$vcontrols['note'] = 'Info_Custom_Control';
+    	$vcontrols['info'] = $vcontrols['note'] = 'Info_Custom_Control';
     	return $vcontrols;
      }
     }
  }
 }
+
+// Add a Multicheck Custom Control
+// -------------------------------
+// 2.0.9: standalone multicheck controller (via Titan Framework)
+if (!function_exists('bioship_customizer_register_multicheck_control')) {
+ function bioship_customizer_register_multicheck_control() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	class Multicheck_Custom_Control extends WP_Customize_Control {
+
+		public $description; public $options;
+
+		public function render_content() {
+
+			// the saved value is an array, convert it to csv
+			$savedValueCSV = '';
+			if (is_array($this->value())) {
+				$savedvalues = array();
+				foreach ($this->value() as $key => $value) {
+					if ($value == '1') {$savedvalues[] = $key;}
+				}
+				if (count($savedvalues) > 1) {$savedValueCSV = (string)implode(',', $savedvalues);}
+				elseif (count($savedvalues) == 1) {$savedValueCSV = (string)$savedvalues[0];}
+				$values = $savedvalues;
+			} else {
+				$savedValueCSV = (string)$this->value();
+				$values = explode(',', $this->value());
+			}
+
+			$description = '';
+			if (!empty($this->description)) {
+				$description = '<p class="description">'.$this->description.'</p>';
+			}
+
+			echo '<label class="customize-multicheck-container">';
+			echo '	<span class="customize-control-title customize-multicheck-title">';
+			echo esc_html($this->label).'</span>'.$description;
+			echo '<!-- Multicheck Values: '; print_r($values); echo ' -->';
+			foreach ($this->options as $value => $label) {
+				if	(in_array($value, $values)) {$checked = ' checked';} else {$checked = '';}
+				$id = $this->id.'['.$value.']';
+				echo '<label for="'.$id.'">';
+				echo '<input class="customize-multicheck" id="'.$id.'" type="checkbox" value="'.esc_attr($value).'"'.$checked.' /> '.$label.'</label><br>';
+			}
+			echo '<!--'.$savedValueCSV.'-->'.PHP_EOL;
+			echo '<input type="text" value="'.$savedValueCSV.'" style="display:none;">'.PHP_EOL;
+			echo '<input type="hidden" value="'.$savedValueCSV.'" ';
+				$this->link();
+			echo ' />'.PHP_EOL.'</label>';
+
+		}
+	}
+
+	// 2.0.9: load control script in footer
+	add_action('customize_controls_print_footer_scripts', 'bioship_customizer_multicheck_script');
+
+	// register this control type via Kirki filter (before initializing Kirki)
+	if (!function_exists('bioship_add_control_types')) {
+     add_filter('kirki/control_types', 'bioship_kirki_add_multicheck_control');
+     function bioship_kirki_add_multicheck_control($vcontrols) {
+     	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+    	$vcontrols['multicheck'] = 'Multicheck_Custom_Control';
+    	return $vcontrols;
+     }
+    }
+ }
+}
+
 
 // ----------------------------
 // Register Customizer Controls
@@ -377,55 +489,86 @@ if (!function_exists('bioship_customizer_load_control_options')) {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemesettings, $vthemename, $vthemeoptions;
-	global $vtypocontrolids, $vcontrollerids;
+	global $vkirkiversion, $vtypocontrolids, $vcontrollerids;
 
 	// 1.9.9: show only basic options only in customizer by default
 	$voptionspage = 'basic';
 	if ( (isset($_REQUEST['options'])) && ($_REQUEST['options'] == 'advanced') ) {$voptionspage = 'advanced';}
 	if ( (isset($_REQUEST['options'])) && ($_REQUEST['options'] == 'all') ) {$voptionspage = 'all';}
-	if (THEMEDEBUG) {echo "<!-- Options Page: ".$voptionspage." -->";}
+	bioship_debug("Customizer Options Page Value", $voptionspage);
 
 	// Convert all options to Layer Options
 	// ------------------------------------
 	$vi = 0; $vj = 0; $vk = 0; $vl = 0; $vm = 0;
 	foreach ($vthemeoptions as $voptionkey => $voptionvalues) {
 
-		// 1.8.5: fix heading type (missing class) if using Options Framework
-		$vlayers = array('skin','muscle','skeleton');
-		if (isset($voptionvalues['id'])) {
-			if (in_array($voptionvalues['id'],$vlayers)) {
-				$voptionvalues['class'] = $voptionvalues['id'];
-				$voptionvalues['id'] = $voptionvalues['name'];
+		// 2.0.9: avoid duplicate settings for custom theme supports
+		$vskip = false;
+		if (THEMEWPORG) {
+			global $wp_version;
+
+			$vskipkeys = array(
+				// Custom Background (custom_background)
+				'background_image' => '',
+					'background_position' => '',
+					'background_size' => '',
+					'background_repeat' => '',
+					'background_attachment' => '',
+				// Custom Logo (custom_logo)
+				'header_logo' => '4.5-alpha',
+				// Custom Header (custom_header)
+				// note: support feature mismatch - not implemented
+				// 'header_background_image' => '',
+					// 'header_background_position' => '',
+					// 'header_background_size' => '',
+					// 'header_background_repeat' => '',
+			);
+
+			foreach ($vskipkeys as $vskipkey => $vwpversion) {
+				if ($voptionkey == $vskipkey) {
+					if ($vwpversion != '') {
+						if (version_compare($wp_version, $vwpversion, '<')) {$vskip = true;} // '>
+					} else {$vskip = true;}
+				}
 			}
-			if (THEMEDEBUG) {echo "<!-- ID: ".$voptionvalues['id']." - For Page: ".$vforpage." -->";}
 		}
 
-		// 1.9.9: check new customizer page display value
-		if (!isset($voptionvalues['page'])) {
-			$vforpage = 'both'; if (THEMEDEBUG) {echo '<!-- Missing page key for '.$voptionvalues['id'].' -->';}
-		} else {$vforpage = $voptionvalues['page'];}
+		if (!$vskip) {
+			// 1.8.5: fix heading type (missing class) if using Options Framework
+			$vlayers = array('skin','muscle','skeleton');
+			if (isset($voptionvalues['id'])) {
+				if (in_array($voptionvalues['id'],$vlayers)) {
+					$voptionvalues['class'] = $voptionvalues['id'];
+					$voptionvalues['id'] = $voptionvalues['name'];
+				}
+				if (THEMEDEBUG) {echo "<!-- ID: ".$voptionvalues['id']." - For Page: ".$vforpage." -->";}
+			}
 
-		// 1.9.9: filter whether to split options
-		// TODO: add this to filters.php examples
-		$vsplitoptions = apply_filters('options_customizer_split_options',true);
+			// 1.9.9: check new customizer page display value
+			if (!isset($voptionvalues['page'])) {
+				$vforpage = 'both'; if (THEMEDEBUG) {echo '<!-- Missing page key for '.$voptionvalues['id'].' -->';}
+			} else {$vforpage = $voptionvalues['page'];}
 
-		// 1.9.9: match conditions for this customizer page
-		if ( (!$vsplitoptions) || ($voptionspage == 'all') || ($vforpage == 'both')
-		  || ( ($vforpage == 'basic') && ($voptionspage == 'basic') )
-		  || ( ($vforpage == 'advanced') && ($voptionspage == 'advanced') ) ) {
-			if (strstr($voptionvalues['class'],'skin')) {$vskinoptions[$vi] = $voptionvalues; $vi++;}
-			elseif (strstr($voptionvalues['class'],'muscle')) {$vmuscleoptions[$vj] = $voptionvalues; $vj++;}
-			elseif (strstr($voptionvalues['class'],'skeleton')) {$vskeletonoptions[$vk] = $voptionvalues; $vk++;}
-			else {$vhiddenoptions[$vl] = $voptionvalues; $vl++;}
+			// 1.9.9: filter whether to split options
+			$vsplitoptions = bioship_apply_filters('options_customizer_split_options', true);
+
+			// 1.9.9: match conditions for this customizer page
+			if ( (!$vsplitoptions) || ($voptionspage == 'all') || ($vforpage == 'both')
+			  || ( ($vforpage == 'basic') && ($voptionspage == 'basic') )
+			  || ( ($vforpage == 'advanced') && ($voptionspage == 'advanced') ) ) {
+				if (strstr($voptionvalues['class'], 'skin')) {$vskinoptions[$vi] = $voptionvalues; $vi++;}
+				elseif (strstr($voptionvalues['class'], 'muscle')) {$vmuscleoptions[$vj] = $voptionvalues; $vj++;}
+				elseif (strstr($voptionvalues['class'], 'skeleton')) {$vskeletonoptions[$vk] = $voptionvalues; $vk++;}
+				else {$vhiddenoptions[$vl] = $voptionvalues; $vl++;}
+			}
 		}
 	}
 
-	if (THEMEDEBUG) {
-		echo '<!-- Skin Options: '; print_r($vskinoptions); echo ' -->';
-		echo '<!-- Muscle Options: '; print_r($vmuscleoptions); echo ' -->';
-		echo '<!-- Skeleton Options: '; print_r($vskeletonoptions); echo ' -->';
-		echo '<!-- Hidden Options: '; print_r($vhiddenoptions); echo ' -->';
-	}
+	// 2.0.9: use simpler debug function
+	bioship_debug("Skin Options", $vskinoptions);
+	bioship_debug("Muscle Options", $vmuscleoptions);
+	bioship_debug("Skeleton Options", $vskeletonoptions);
+	bioship_debug("Hidden Options", $vhiddenoptions);
 
 	// Settings Default Types
 	// ----------------------
@@ -435,12 +578,12 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	// Set Settings Prefix
 	// -------------------
 	if (THEMEOPT) {$vsettingsprefix = THEMEKEY.'_customize';}
-	else {$vsettingsprefix = str_replace('_options','_customize',THEMEKEY);}
+	else {$vsettingsprefix = str_replace('_options', '_customize', THEMEKEY);}
 
 	// Create Copy of Theme Options
 	// ----------------------------
-	// ...set a dummy unserialized array for use by the Customizer only...
-	delete_option($vsettingsprefix); add_option($vsettingsprefix,$vthemesettings);
+	// ...(re)set a dummy unserialized array - for use by the Customizer only...
+	delete_option($vsettingsprefix); add_option($vsettingsprefix, $vthemesettings);
 
 	// extra Typography options for Titan
 	// ----------------------------------
@@ -457,16 +600,18 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 		// 1.8.5: doubled choice arrays to value-label pairs
 		for ($i = 1; $i <= 150; $i++) {$vfontsizeoptions[$i.'px'] = $i.'px';}
 		$vtitantypography['font-size'] = $vfontsizeoptions;
-		$vtitantypography['font-weight'] = array('normal'=>'normal', 'bold'=>'bold', 'bolder'=>'bolder', 'lighter'=>'lighter', '100'=>'100', '200'=>'200', '300'=>'300', '400'=>'400', '500'=>'500', '600'=>'600', '700'=>'700', '800'=>'800', '900'=>'900');
-		$vtitantypography['font-style'] = array('normal'=>'normal', 'italic'=>'italic');
+		$vtitantypography['font-weight'] = array('normal' => 'normal', 'bold' => 'bold', 'bolder' => 'bolder',
+			'lighter' => 'lighter', '100' => '100', '200' => '200', '300' => '300', '400' => '400', '500' => '500',
+			'600' => '600', '700' => '700', '800' => '800', '900' => '900');
+		$vtitantypography['font-style'] = array('normal' => 'normal', 'italic' => 'italic');
 		for ($i = .5; $i <= 3; $i += 0.1) {$vlineheightoptions[$i.'em'] = $i.'em';}
 		$vtitantypography['line-height'] = $vlineheightoptions;
 		for ($i = -20; $i <= 20; $i++) {$vletterspacingoptions[$i.'px'] = $i.'px';}
 
 		// having these is probably overkill as rarely used...
 		$vtitantypography['letter-spacing'] = $vletterspacingoptions;
-		$vtitantypography['text-transform'] = array('none'=>'none', 'capitalize'=>'capitalize', 'uppercase'=>'uppercase', 'lowercase'=>'lowercase');
-		$vtitantypography['font-variant'] = array('normal'=>'normal', 'small-caps'=>'small-caps');
+		$vtitantypography['text-transform'] = array('none' => 'none', 'capitalize' => 'capitalize', 'uppercase' => 'uppercase', 'lowercase' => 'lowercase');
+		$vtitantypography['font-variant'] = array('normal' => 'normal', 'small-caps' => 'small-caps');
 		// ...the text shadow options certainly seem to be...
 	}
 
@@ -478,7 +623,6 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	$vtyposanitize['font-size'] = 'bioship_fallback_sanitize_css_size';
 	$vtyposanitize['font-family'] = 'bioship_fallback_sanitize_select';
 	$vtyposanitize['font-style'] = 'bioship_fallback_sanitize_select';
-
 	$vtyposanitize['font-weight'] = 'bioship_fallback_sanitize_css_size';
 	$vtyposanitize['line-height'] = 'bioship_fallback_sanitize_css_size';
 	$vtyposanitize['letter-spacing'] = 'bioship_fallback_sanitize_css_size';
@@ -498,24 +642,30 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 
 	// Customize Sections
 	// ------------------
-	$wp_customize->get_section('themes')->priority = 999; 	// shift to bottom
+	$wp_customize->get_section('themes')->priority = 999; // shift to bottom
 	$wp_customize->get_section('title_tagline')->title = __('Site Options', 'bioship'); // generalize
-	$wp_customize->get_section('title_tagline')->priority = 10; // ok whatever now
+	$wp_customize->get_section('title_tagline')->priority = 10;
 	// set live preview transport to postMessage for title and tagline
 	$wp_customize->get_setting('blogname')->transport = 'postMessage';
 	$wp_customize->get_setting('blogdescription')->transport  = 'postMessage';
+	// 2.0.9: always remove header_image theme support (background header image mismatch)
+	$wp_customize->remove_section('header_image');
 
 	// 1.9.9: clear basic sections (from advanced options page only)
 	if ($voptionspage == 'advanced') {
-		// $wp_customize->remove_panel('widgets');
+		// 2.0.9: remove widgets section from advanced page
+		$wp_customize->remove_panel('widgets');
 		$wp_customize->remove_section('title_tagline');
 		$wp_customize->remove_panel('nav_menus');
 		$wp_customize->remove_section('themes');
-		// 2.0.8: only remove unused sections from advanced page (for wordpress.org compliance)
+		// 2.0.8: only remove unused sections from advanced page (for WordPress.org compliance)
 		$wp_customize->remove_section('colors');
-		$wp_customize->remove_section('header_image');
 		$wp_customize->remove_section('background_image');
-		// 2.0.5: remove new custom CSS section
+	}
+
+	if ( ($voptionspage == 'advanced') || (!THEMEWPORG) ) {
+		// 2.0.5: remove new custom CSS section (not implemented)
+		// TODO: maybe synchronize custom CSS control with existing theme option
 		$wp_customize->remove_section('custom_css');
 	}
 
@@ -525,24 +675,27 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	$wp_customize->get_control('show_on_front')->section = 'title_tagline';
 	$wp_customize->get_control('page_on_front')->section = 'title_tagline';
 	$wp_customize->get_control('page_for_posts')->section = 'title_tagline';
-	$wp_customize->remove_section('static_front_page');		// remove section
+	$wp_customize->remove_section('static_front_page');	// remove section
 
-	// [deprecated] maybe move 'Site Icon' from the title_tagline section to Icons section ?
-	// $wp_customize->add_control( new WP_Customize_Site_Icon_Control( $wp_customize, 'site_icon', array(
-	//	'label'       => __( 'Site Icon' ),
-	//	'description' => __( 'The Site Icon is used as a browser and app icon for your site. Icons must be square, and at least 512px wide and tall.' ),
-	//	'section'     => 'title_tagline', // ?? somewhere else! ??
-	//	'priority'    => 60,
-	//	'height'      => 512,
-	//	'width'       => 512,
-	// ) ) );
-
-	// Separator Section
-	// [deprecated] ...this method is not working...
-	// $wp_customize->add_section('section-separator',array('title'=>__('','bioship'), 'priority'=>170));
-	// $w-p_c-u-s-t-o-m-i-z-e->add_setting('separator', array('type' => 'option', 'capability' => 'edit_theme_options'));
-	// $vargs = array('type' => 'info', 'section'  => 'section-separator', 'settings' => 'separator');
-	// $wp_customize->add_control(new Info_Custom_Control($wp_customize, 'separator-control', $vargs));
+	// Handle Kirki Control names
+	// --------------------------
+	$vprefixedcontrols = array(); $vignorecontrols = array(); $vkirkicontrols = array();
+	if ($vkirkiversion == '2') {$vkirkicontrols = bioship_kirki_control_types();}
+	elseif ($vkirkiversion == '3') {
+		$vkirkicontrols = apply_filters('kirki/control_types', array());
+		// 2.0.9: set to ignore Kirki 3 controls that are not working properly
+		$vignorecontrols = array('select', 'multicheck');
+	}
+	// 2.0.9: check kirki- prefixed controls
+	if (count($vkirkicontrols) > 0) {
+		foreach ($vkirkicontrols as $vkey => $vcontrolclass) {
+			if (substr($vkey, 0, strlen('kirki-')) == 'kirki-') {
+				$vprefixedcontrols[] = str_replace('kirki-', '', $vkey);
+			}
+		}
+	}
+	bioship_debug("Kirki Controls", $vkirkicontrols);
+	bioship_debug("Prefixed Controls", $vprefixedcontrols);
 
 	// Loop through the Layer Options
 	// ------------------------------
@@ -553,44 +706,46 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 		$vtheseoptions = array();
 		if ($vi == 0) {
 			$vtheseoptions = $vskinoptions; $vpanelslug = 'skinoptions';
-			$vargs = array('title'=>__('Skin Options','bioship'), 'priority'=>180);
+			$vargs = array('title' => __('Skin Options','bioship'), 'priority' => 180);
 			$vargs['description'] = __('All the Skin Layer Options','bioship');
 		}
 		elseif ($vi == 1) {
 			$vtheseoptions = $vmuscleoptions; $vpanelslug = 'muscleoptions';
-			$vargs = array('title'=>__('Muscle Options','bioship'), 'priority'=>190);
+			$vargs = array('title' => __('Muscle Options','bioship'), 'priority' => 190);
 			$vargs['description'] = __('All the Muscle Layer Options','bioship');
 		}
 		elseif ($vi == 2) {
 			$vtheseoptions = $vskeletonoptions; $vpanelslug = 'skeletonoptions';
-			$vargs = array('title'=>__('Skeleton Options','bioship'), 'priority'=>200);
+			$vargs = array('title' => __('Skeleton Options','bioship'), 'priority' => 200);
 			$vargs['description'] = __('All the Skeleton Layer Options','bioship');
 		}
-		// do we need to handle the hidden options here?
-		// looks like not as only changed values are saved
+		// note: no nede ti handle the hidden options as only changed values are saved
+		bioship_debug("Panel", $vpanelslug);
+		bioship_debug("Panel Options", $vtheseoptions);
 
 		// Add the Layer Panel
 		// -------------------
-		// Kirki::add_panel($vpanelslug, $vargs); // not used
 		$wp_customize->add_panel($vpanelslug, $vargs);
+		// Kirki::add_panel($vpanelslug, $vargs); // not working
 
 		// Loop through Layer Options
 		// --------------------------
-		$vtypocontrols = 0; $vsectionpriority = 10;
+		$vtypocontrols = 0; $vsectionpriority = 10; $vtypes = array();
 		foreach ($vtheseoptions as $vthisoption) {
 
-			if (THEMEDEBUG) {echo "<!-- OPTION TYPE: ".$vthisoption['type']."-->";}
+			bioship_debug("Option Type", $vthisoption['type']);
 			$vcontroltypes = array();
+			if (!in_array($vthisoption['type'], $vtypes)) {$vtypes[] = $vthisoption['type'];}
 
 			// Add a Customizer Section for each Heading
 			// -----------------------------------------
 			if ($vthisoption['type'] == 'heading') {
-				if (THEMEDEBUG) {echo "<!-- SECTION: "; print_r($vthisoption); echo "-->";}
+				bioship_debug("Customizer Section", $vthisoption);
 				$vsectionslug = $vthemename.'_'.strtolower($vthisoption['name']);
-				$vargs = array('panel'=>$vpanelslug, 'title'=>$vthisoption['name'], 'priority'=>$vsectionpriority);
+				$vargs = array('panel' => $vpanelslug, 'title' => $vthisoption['name'], 'priority' => $vsectionpriority);
 				if (isset($vthisoption['desc'])) {$vargs['description'] = $vthisoption['desc'];}
 				$wp_customize->add_section($vsectionslug, $vargs);
-				// Kirki::add_section($vsectionslug, $vargs); // not used
+				// Kirki::add_section($vsectionslug, $vargs); // not working
 				$vsectionpriority++; $vpriority = 10;
 			}
 			elseif ( ($vthisoption['type'] == 'typography') || ($vthisoption['type'] == 'font') ) {
@@ -610,8 +765,8 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 				  'label' => $vthisoption['name'], 'description' => $vthisoption['desc'], 'setting' => $vsettingid
 				);
 
-				// TODO: maybe adapt a Kirki Typography control to Titan Typography?
-				// not used as currently the settings do not quite match up correctly
+				// TONOTDO: maybe adapt a Kirki Typography control to Titan Typography?
+				// - not used as currently the settings do not quite match up correctly
 				// if (class_exists('Kirki')) {
 				//	$vcontrolargs['type'] = 'typography';
 				//	$vargs = array_merge($vsettingargs,$vcontrolargs);
@@ -657,13 +812,12 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 							elseif ($vtypooption == 'font-style') {$vdefault = $vthisoption['std']['style'];}
 
 							$vchoices = array();
-							// TODO: recheck the font size value consistency here?
+							// TODO: recheck font control size value consistency (without Titan)
 							$vchoices['font-size'] = $vthisoption['options']['sizes'];
 							$vchoices['font-family'] = $vthisoption['options']['faces'];
 							$vchoices['font-style'] = $vthisoption['options']['styles'];
 							// note: color option always assumed to be true here
-						}
-						else {
+						} else {
 							if (isset($vthisoption['default'][$vtypooption])) {$vdefault = $vthisoption['default'][$vtypooption];}
 							// set choices to the Titan typography options...
 							$vchoices = $vtitantypography;
@@ -719,7 +873,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 						// $vvalue = $wp_customize->get_setting($vsettingid)->value(); // debug point
 
 						// typography control styling
-						// FIXME? this was the right styling - but it is just being completely ignored? :-/
+						// TODO: fix this? the right styling - but it is just being completely ignored? :-/
 						// $vcontrolargs['input_attrs'] = array('style' => 'float:right; margin-top:-30px;');
 
 						// add Customizer Control
@@ -748,12 +902,13 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 				else {$vdefault = '';} // clear for loop if default is empty
 
 				$vsettingargs = array('type' => 'option', 'capability' => 'edit_theme_options', 'default' => $vdefault, 'transport' => 'postMessage');
+				bioship_debug("Control Settings", $vsettingargs);
 
 				// note: set to postMessage by default to prevent unnecessary page refreshes
 				// (only layout options and script loads should really force a refresh -
 				// these are defined in the options array by setting transport to refresh)
 
-				if (isset($vthisoption['transport'])) {if ($vthisoption['transport'] == 'refresh') {$vsettingargs['transport'] = 'refresh';} }
+				if ( (isset($vthisoption['transport'])) && ($vthisoption['transport'] == 'refresh') ) {$vsettingargs['transport'] = 'refresh';}
 				// this one not used here, but included for completeness anyway
 				if (isset($vthisoption['theme_supports'])) {$vsettingargs['theme_supports'] = $vthisoption['theme_supports'];}
 
@@ -766,12 +921,16 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 				  'label' => $vthisoption['name'], 'description' => $vthisoption['desc'], 'setting' => $vsettingid);
 
 				// set options to choices for multiple choice input types
-				if (isset($vthisoption['options'])) {$vcontrolargs['choices'] = $vthisoption['options'];}
+				if (isset($vthisoption['options'])) {
+					// 2.0.9: set options key as well for cross-control compatability
+					$vcontrolargs['choices'] = $vcontrolargs['options'] = $vthisoption['options'];
+				}
 
-				// TODO: maybe set input attributes for some default input types?
-				// ! seems like 'style' attribute here does absolutely nothing anyway ! others untested yet...
+				// [not working] set input attributes for some default input types...
+				// it seems like the 'style' attribute here does absolutely nothing!
+				// note: class and placeholder fields have not been tested here yet...
 			  	// eg... 'input_attrs' => array('class' => '', 'style' => '', 'placeholder' => '');
-				if ($vtype == 'textarea') {$vthisoption['input_attrs'] = array('style' => 'height:300px;');}
+				if ($vtype == 'textarea') {$vthisoption['input_attrs']['style'] = 'height:300px;';}
 				// ...allow for predefined option-specific override too...
 				if (isset($vthisoption['input_attrs'])) {$vcontrolargs['input_attrs'] = $vthisoption['input_attrs'];}
 
@@ -784,25 +943,36 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 				// 1.8.5: allow for explicit sanitization callback override
 				if (isset($vthisoption['sanitize_callback'])) {$vsetttingsargs['sanitize_callback'] = $vthisoption['sanitize_callback'];}
 
-				if ( (class_exists('Kirki')) && ($vtype != 'info') && ($vtype != 'note') )  {
+				// 2.0.9: make sure the matching control type explicitly still exists in Kirki
+				if ( (class_exists('Kirki')) && (!in_array($vtype, $vignorecontrols))
+				  && ( (in_array($vtype, $vkirkicontrols)) || (in_array($vtype, $vprefixedcontrols)) ) ) {
 
 					// use Kirki Controls for the option fields
 					// ----------------------------------------
+					// 2.0.9: fix for Kirki 3: maybe add the kirki- prefix to control type
+					if ( ($vkirkiversion == '3') && (in_array($vtype, $vprefixedcontrols)) ) {
+						$vcontrolargs[$vtype] = 'kirki-'.$vtype;
+					}
+					bioship_debug("Kirki Control", $vkirkicontrols[$vcontrolargs[$vtype]]);
+
 					// allow an option to use a help icon instead of outputting full description
-					if (isset($vthisoption['help'])) {if ($vthisoption['help']) {
-						$vcontrolargs['help'] = $vcontrolargs['description']; unset($vcontrolargs['description']);
-					} }
+					if ( (isset($vthisoption['help'])) && ($vthisoption['help']) ) {
+						$vcontrolargs['help'] = $vcontrolargs['description'];
+						unset($vcontrolargs['description']);
+					}
 					// note Kirki extra options: output, js_vars, required?
 					// but Kirki documentation is still a bit sketchy on their usage
 					// 1.8.5: fix for 'type' conflict - as already set by Kirki config
-					// 1.9.8: only unset if array index is already set
+					// 1.9.8: but only attempt unset if array index is already set
 					if (isset($vsettingargs['type'])) {unset($vsettingargs['type']);}
 					if (isset($vsettingargs['capability'])) {unset($vsettingargs['capability']);}
-					$vargs = array_merge($vsettingargs,$vcontrolargs);
+					$vcontrolargs = array_merge($vsettingargs, $vcontrolargs);
 					// 1.9.5: do not use settingsprefix for Kirki 2.3.5 update
-					if (class_exists('Kirki_Scripts_Loading')) {$vargs['setting'] = $vthisoption['id'];}
-					// if (THEMEDEBUG) {echo "<!-- Kirki FIeld: "; print_r($vargs); echo " -->";}
-					Kirki::add_field('bioship', $vargs);
+					$vcontrolargs['setting'] = $vthisoption['id'];
+					// 2.0.9: set settings key (plural) for option ID
+					$vcontrolargs['settings'] = $vthisoption['id'];
+					bioship_debug("Kirki Field", $vcontrolargs);
+					Kirki::add_field(THEMEPREFIX, $vcontrolargs);
 
 				} else {
 
@@ -834,7 +1004,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 						$vsettingargs['sanitize_callback'] = $vcallback;
 					}
 
-					// add the Setting
+					// add the Customizer Setting
 					// 2.0.7: fix to for sanitization callback requirement check
 					$wp_customize->add_setting($vsettingid, array(
 						'type' => $vsettingargs['type'],
@@ -843,8 +1013,8 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 						'sanitize_callback' => $vsettingargs['sanitize_callback']
 					) );
 
-					// add the Control
-					if (!in_array($vtype,$vdefaulttypes)) {
+					// add the Customizer Control
+					if (!in_array($vtype, $vdefaulttypes)) {
 						if ( ($vtype == 'info') || ($vtype == 'note') ) {
 							// use our simple Info control class to output the label and description text
 							$wp_customize->add_control(new Info_Custom_Control($wp_customize, $vsettingid, $vcontrolargs));
@@ -853,8 +1023,8 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 							$wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $vsettingid, $vcontrolargs));
 						}
 						elseif ( ($vtype == 'upload') || ($vtype == 'image') ) {
-							// TESTME: could test the various image control options here...
-							// add/modify one that also allows for simply pasting an URL?!
+							// TEST: could test the various image control options here...
+							// add/modify one that also allows for simply pasting an URL as well?!
 							// note: one cool idea is to add a *context* to the uploaded images also:
 							// ref: https://gist.github.com/eduardozulian/4739075
 							if (class_exists('WP_Customize_Media_Control')) {
@@ -865,20 +1035,19 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 							} elseif ($vtype == 'image') {
 								$wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, $vsettingid, $vcontrolargs));
 							}
-						}
-						elseif ($vtype == 'audio') {
+						} elseif ($vtype == 'audio') {
 							// not used here anyways, but added just for good old reference
 							// $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, $vsettingid, $vcontrolargs));
 							$vargs['mime_type'] = 'audio'; // note: WP 4.1+ ... use version_compare?
 							$wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, $vsettingid, $vcontrolargs));
-						}
-						elseif ($vtype == 'multicheck') {
+						} elseif ($vtype == 'multicheck') {
 							// this is the Multicheck Control from Hybrid Core...
 							// since a multicheck control is not a default WordPress one - madness!
-							// but not sure if this one is working properly as yet either..? :-(
-							$wp_customize->add_control(new Hybrid_Customize_Control_Checkbox_Multiple($wp_customize, $vsettingid, $vcontrolargs));
-						}
-						elseif ($vtype == 'textarea') {
+							// ...but Hybrid Customize multicheck control not working either? :-/
+							// $wp_customize->add_control(new Hybrid_Customize_Control_Checkbox_Multiple($wp_customize, $vsettingid, $vcontrolargs));
+							// 2.0.9: add standalone multicheck control class here instead
+							$wp_customize->add_control(new Multicheck_Custom_Control($wp_customize, $vsettingid, $vcontrolargs));
+						} elseif ($vtype == 'textarea') {
 							// replacement textarea control, but should be fine either way
 							if (class_exists('Textarea_Custom_Control')) {
 								$wp_customize->add_control(new Textarea_Custom_Control($wp_customize, $vsettingid, $vcontrolargs));
@@ -886,12 +1055,11 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 						}
 						// elseif ( ($vtype == 'images') || ($vtype == 'radio-image') ) {
 							// note plural images, singular image type is for an image upload
-							// TESTME: use the Hybrid radio-images Control here?
+							// TEST: use the Hybrid radio-images Control here?
 							// $wp_customize->add_control(new Hybrid_Customize_Control_Radio_Image($wp_customize, $vsettingid, $vcontrolargs));
 						// }
-					}
-					else {
-						// fallback to a standard control type...
+					} else {
+						// fallback to adding a standard control type...
 						$wp_customize->add_control($vsettingid, $vcontrolargs);
 					}
 				}
@@ -901,22 +1069,25 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 		}
 	}
 
-	if (THEMEDEBUG) {
-		echo '<!-- WP CUSTOMIZE: '; print_r($wp_customize); echo ' -->';
-		echo '<!-- Control Types: '; print_r($vcontroltypes); echo ' -->';
-		echo '<!-- Missing Sanitize: '; print_r($vmissingsanitize); echo ' -->';
-	}
+	bioship_debug("Customizer Control Types", $vcontroltypes);
+	bioship_debug("Control Types Used", $vtypes);
+	bioship_debug("WP CUSTOMIZE OBJECT", $wp_customize);
+	bioship_debug("Missing Sanitization", $vmissingsanitize);
 
-	// example: maybe Add Theme Upgrade Link?
-	// well there is no premium version anyway
+	// IDEA: maybe add Theme Pro Upgrade Link
+	// (if/when there is a Premium Theme version)
 	// $vsettingid = 'customizer_link';
-	// $vargs = array('type' => 'option', 'capability' => 'edit_theme_options', 'default' => '');
-	// $w-p_-c-u-s-t-o-m-i-z-e->add_setting($vsettingid, $vargs);
-	// $vlabel = ''; $vdescription = 'Upgrade Theme.';
+	// $wp_customize->add_setting($vsettingid, array(
+	// 	'type' => 'option',
+	//  'capability' => 'edit_theme_options',
+	//	'default' => ''
+	//	'sanitize_callback' => 'bioship_fallback_sanitize_unfiltered'
+	// ) );
+	// $vlabel = ''; $vdescription = __('Upgrade Theme','bioship');
 	// $vargs = array('type' => 'info', 'priority' => '210', 'label' => $vlabel, 'description' => $vdescription, 'setting' => $vsettingid);
 	// $wp_customize->add_control(new Info_Custom_Control($wp_customize, $vsettingid, $vargs));
 
-	// well, that is just about enough of that nonsense!
+	// well, that is just about enough of that!
  }
 }
 
@@ -926,6 +1097,15 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 if (!function_exists('bioship_customizer_text_script')) {
  function bioship_customizer_text_script() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	// 2.0.9: consistency display fix for no Kirki loading (via Kirki branding.js)
+	if (!THEMEKIRKI) {
+		$vconfig = bioship_customizer_kirki_styling(array());
+		echo "<script>jQuery(document).ready(function() {'use strict';
+			jQuery('div#customize-info .preview-notice').replaceWith('<img src=\"".$vconfig['logo_image']."\">');
+			jQuery('div#customize-info > .customize-panel-description').replaceWith('<div class=\"customize-panel-description\">".$vconfig['description']."</div>');
+		});</script>";
+	}
 
 	// just some rogue panel separators and styling
 	$vstyles = "#accordion-panel-skinoptions, #accordion-section-title_tagline {border-top: 20px solid #F0F0F0 !important;}
@@ -944,7 +1124,7 @@ if (!function_exists('bioship_customizer_text_script')) {
 	}
 
 	// 1.8.5: added a style rule filter here
-	$vstyles = apply_filters('options_customizer_extra_styles',$vstyles);
+	$vstyles = bioship_apply_filters('options_customizer_extra_styles',$vstyles);
 	echo "<style>".$vstyles."</style>".PHP_EOL;
 
 	// this is the default Customizer title message
@@ -953,6 +1133,7 @@ if (!function_exists('bioship_customizer_text_script')) {
 	$vmessage = __('The Customizer lets you preview live style changes before applying them. You can also navigate to preview other pages on your site.','bioship').'<br>';
 
 	// now add a link to the theme options page - or for Titan Framework install
+	// TODO: check if Titan framework plugin is installed but not active
 	$vtitan = bioship_file_hierarchy('file', 'titan-framework.php', array('include/titan','titan'));
 	if ( (class_exists('TitanFramework')) || ($vtitan) ) {
 		// 1.9.9: fixed URL, shortened Titan Framework link message
@@ -965,25 +1146,25 @@ if (!function_exists('bioship_customizer_text_script')) {
 		// $vtitaninstall = admin_url('themes.php').'?page=tgmpa-install-plugins';
 		// $vtitaninstall = wp_nonce_url( add_query_arg(array('plugin' => urlencode('titan-framework'),'tgmpa-install-plugin'), $vtitaninstall), 'tgmpa-install', 'tgmpa-nonce' );
 		// 1.8.5: use direct install method via standalone admin function
-		// 1.9.9: shortened Titan Framework install message
+		// 1.9.9: shortened the Titan Framework install message
 		$vtitaninstalllink = admin_url('themes.php').'?admin_install_titan_framework=yes';
 		$vcustommessage = __('Feel restricted?','bioship').' <a href="'.$vtitaninstalllink.'">';
 		$vcustommessage .= __('Install Titan Framework','bioship').'</a>.<br>';
 		$vcustommessage .= __('To access All Options via Titan','bioship').'.';
 	}
 	$vcustomizermessage = $vmessage.$vcustommessage;
-	$vcustomizermessage = apply_filters('options_customizer_description', $vcustomizermessage);
+	$vcustomizermessage = bioship_apply_filters('options_customizer_description', $vcustomizermessage);
 	// 2.0.5: maybe remove single quotes that would break javascript insert
 	$vcustomizermessage = str_replace("'", "", $vcustomizermessage);
 
 	// preview notice title section text
-	// 2.0.7: added missing text domain
+	// 2.0.7: added missing translation text domain
 	$vextratext = '<span class="preview-notice" style="float:right; max-width:40%;">';
-	$vextratext .= sprintf( __( 'You are customizing %s', 'bioship' ), '<strong class="panel-title site-title">' . get_bloginfo( 'name' ) . '</strong>' );
+	$vextratext .= sprintf( __('You are customizing %s', 'bioship'), '<strong class="panel-title site-title">'.get_bloginfo('name').'</strong>');
 	$vextratext .= '</span>';
 
 	// 1.9.9: filter whether splitting options
-	$vsplitoptions = apply_filters('options_customizer_split_options', true);
+	$vsplitoptions = bioship_apply_filters('options_customizer_split_options', true);
 
 	if ($vsplitoptions) {
 		// 1.9.9: use this section to display option page links
@@ -1004,7 +1185,7 @@ if (!function_exists('bioship_customizer_text_script')) {
 		$vextratext .= $vcustommessage.'</span>';
 	}
 
-	$vextratext = apply_filters('options_customizer_titletext', $vextratext);
+	$vextratext = bioship_apply_filters('options_customizer_titletext', $vextratext);
 	// 2.0.5: maybe remove single quotes that would break javascript insert
 	$vextratext = str_replace("'", "", $vextratext);
 
@@ -1042,7 +1223,7 @@ if (!function_exists('bioship_customizer_text_script')) {
 			if (sidebarwidth.indexOf('em') > -1) {widthsuffix = 'em'; newwidth = parseInt(sidebarwidth.replace('em','')); newamount = 4;}
 			if (plusminus == 'plus') {newwidth = newwidth + newamount;}
 			if (plusminus == 'minus') {oldwidth = newwidth; newwidth = newwidth - newamount;}
-			/* console.log(newwidth+'-'+newamount+'-'+widthsuffix); */
+			/* if (customizerdebug) {console.log(newwidth+'-'+newamount+'-'+widthsuffix);} */
 			jQuery('.wp-full-overlay-sidebar').css('width',newwidth+widthsuffix);
 			setTimeout(function() {
 				pixelwidth = jQuery('.wp-full-overlay-sidebar').width(); pixelwidth = parseInt(pixelwidth); console.log(pixelwidth);
@@ -1064,7 +1245,7 @@ if (!function_exists('bioship_customizer_text_script')) {
 			if (plusminus == 'minus') {oldheight = newheight; newheight = newheight - newamount;}
 			console.log(newheight+'-'+newamount+'-'+heightsuffix);
 
-			/* TODO: top/bottom sidebar jQuery CSS rules */
+			/* TODO: extra top/bottom sidebar jQuery CSS rules */
 		}
 	}
 
@@ -1087,7 +1268,7 @@ if (!function_exists('bioship_customizer_text_script')) {
 	}</script>";
 
  	// TODO: complete top and bottom sidebar position jQuery CSS rules
- 	// ...as something different would need to be done with the sections / panels
+ 	// ...as something very different would need to be done with the sections / panels
  	// sidebarheight = document.getElementById('customizersidebarheight').value;
 	// if (sidebarheight == '') {sidebarheight = sidebarwidth / 2;}
 	// if (position == 'top') {
@@ -1138,17 +1319,17 @@ if (!function_exists('bioship_customizer_text_script')) {
 }
 
 
-// Scripts for the Info Customizer Control
+// Scripts for the Font Customizer Control
 // ---------------------------------------
-if (!function_exists('bioship_customizer_info_script')) {
- function bioship_customizer_info_script() {
+if (!function_exists('bioship_customizer_font_script')) {
+ function bioship_customizer_font_script() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
  	global $vtypocontrolids, $vcontrollerids;
  	if ( (!is_array($vtypocontrolids)) || (!is_array($vcontrollerids)) ) {return;}
 
 	// for the Typography expand/collapse javascript
-	// TODO: maybe animate these expand/collapse functions?
+	// TODO: maybe animate expand/collapse display functions?
 	echo "<script>function expandoptions(divid) {
 		document.getElementById(divid+'-expand').style.display = 'none';
 		document.getElementById(divid+'-collapse').style.display = '';
@@ -1193,22 +1374,74 @@ if (!function_exists('bioship_customizer_info_script')) {
  }
 }
 
+// Script for the Multicheck Customizer Control
+// --------------------------------------------
+if (!function_exists('bioship_customizer_multicheck_script')) {
+ function bioship_customizer_multicheck_script() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	?><script>
+	jQuery(document).ready(function($) {
+		"use strict";
+
+		$('input.customize-multicheck').parents('li:eq(0)').find('input[type=text]')
+		.each(function() {
+			var startvalue = $(this).val();
+			$(this).parent().find('input[type=hidden]').val(startvalue);
+		});
+
+		$('input.customize-multicheck').change(function(event) {
+			event.preventDefault();
+			var csvalue = '';
+
+			$(this).parents('li:eq(0)').find('input[type=checkbox]').each(function() {
+				if ($(this).is(':checked')) {csvalue += $(this).attr('value') + ',';}
+			});
+
+			csvalue = csvalue.replace(/,+$/, "");
+
+			// we need to trigger the field afterwards to enable the save button
+			$(this).parents('li:eq(0)').find('input[type=hidden]').val(csvalue).trigger('change');
+
+			return true;
+		});
+	});</script><?php
+ }
+}
+
+// Main Options Panel Display Fix
+// ------------------------------
+// 2.0.9: fix for something (Customizer?!) setting option panels to display:none
+if (!function_exists('bioship_customizer_panel_display_fix')) {
+ // add_action('customize_controls_print_footer_scripts', 'bioship_customizer_panel_display_fix', 99);
+ function bioship_customizer_panel_display_fix() {
+	echo "<script>jQuery(document).ready(function($) {
+		console.log('LOADED');
+		setTimeout(function() {
+			\$('#accordion-panel-skinoptions').css('display','list-item');
+			\$('#accordion-panel-muscleoptions').css('display','list-item');
+			\$('#accordion-panel-skeletonoptions').css('display','list-item');
+			console.log('FIXED');
+		}, 5000);
+	});</script>";
+ }
+}
+
 // Update Serialized Option
 // ------------------------
 // we need to save back to the correct option for Titan (serialized)...
 // as we created a temporary unserialized option for the Customizer
-
 if (!function_exists('bioship_customizer_save_serialized')) {
- // if (!THEMEOPT) {
+
  add_action('customize_save_after', 'bioship_customizer_save_serialized');
- // }
+
  function bioship_customizer_save_serialized() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
 	global $vthemesettings;
 
 	if (THEMEOPT) {$vpreviewkey = THEMEKEY.'_customize';}
-	else {$vpreviewkey = str_replace('_options','_customize',THEMEKEY);}
+	else {$vpreviewkey = str_replace('_options', '_customize', THEMEKEY);}
 
  	$vupdatedoptions = maybe_unserialize(get_option($vpreviewkey));
  	// 2.0.5: update theme options savedtime value
@@ -1220,19 +1453,48 @@ if (!function_exists('bioship_customizer_save_serialized')) {
 			// pass new options through theme options standardization fix
 			$vconvertedoptions = bioship_titan_theme_options($vupdatedoptions);
 
- 			// ...debug: write new options to a file...
+			// 2.0.9: maybe convert and save custom background, header and logo settings
+			if (THEMEWPORG) {
+
+				// Custom Background
+				$vcolor = get_theme_mod('background_color', get_theme_support('custom-background', 'default-color'));
+				$vimage = get_theme_mod('background_image', get_theme_support('custom-background', 'default-image'));
+				$vpositionx = get_theme_mod('background_position_x', get_theme_support('custom-background', 'default-position-x'));
+				$vpositiony = get_theme_mod('background_position_y', get_theme_support('custom-background', 'default-position-y'));
+				$vrepeat = get_theme_mod('background_repeat', get_theme_support('custom-background', 'default-repeat'));
+				$vsize = get_theme_mod('background_size', get_theme_support('custom-background', 'default-size'));
+				$vattachment = get_theme_mod('background_attachment', get_theme_support('custom-background', 'default-attachment'));
+				$vconvertedoptions['body_bg_color'] = $vcolor;
+				$vconvertedoptions['background_image'] = $vimage;
+				$vconvertedoptions['background_position'] = $vpositionx.' '.$vpositiony;
+				$vconvertedoptions['background_repeat'] = $vrepeat;
+				$vconvertedoptions['background_size'] = $vsize;
+				$vconvertedoptions['background_attachment'] = $vattachment;
+
+				// Custom Logo
+				$vcustomlogo = get_theme_mod('custom_logo');
+				$vconvertedoptions['header_logo'] = $vcustomlogo;
+
+				// Custom Header
+				// note: feature mismatch with header background so not needed
+				// $vheaderimage = get_theme_mod('header_image', get_theme_support('custom-header', 'default-image'));
+				// $vconvertedoptions['header_background_image'] = $vheaderimage;
+			}
+
+ 			// debugging: write new options to a file...
  			// if (THEMEDEBUG) {
  				ob_start();
  				echo "Updated Options: "; print_r($vupdatedoptions); echo PHP_EOL.PHP_EOL;
  				echo "Converted Options: "; print_r($vconvertedoptions); echo PHP_EOL.PHP_EOL;
  				$vdata = ob_get_contents(); ob_end_clean();
  				$vdebugfile = 'customizer-options.txt';
- 				bioship_write_debug_file($vdebugfile,$vdata);
+ 				bioship_write_debug_file($vdebugfile, $vdata);
  			// }
 
  			// serialize and write back to the actual option..!
- 			// CHECKME: serial updateoptions or convertedoptions?!
+ 			// CHECKME: use updateoptions or convertedoptions here?!
  			$vserializedoptions = serialize($vupdatedoptions);
+ 			// $vserializedoptions = serialize($vconvertedoptions);
  			update_option(THEMEKEY, $vserializedoptions);
  			delete_option($vpreviewkey);
  		}
@@ -1252,11 +1514,12 @@ if (!function_exists('bioship_customizer_preview')) {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
 	global $vthemesettings, $vthemename, $vthemeoptions, $vcsscachebust, $vthemedirs;
-	// echo "<!-- THEME: ".$vthemename." - KEY: ".THEMEKEY." -->";
 	$vthemesettings = maybe_unserialize(get_option(THEMEKEY));
-	// echo "<!-- OPTIONS: "; print_r($vthemesettings); echo " -->";
 
-	$vcssmode = $vthemesettings['themecssmode']; // echo "<!-- CSS Mode: ".$vthemesettings['themecssmode']." -->";
+	// echo "<!-- THEME: ".$vthemename." - KEY: ".THEMEKEY." -->";
+	// echo "<!-- SETTINGS: "; print_r($vthemesettings); echo " -->";
+
+	$vcssmode = $vthemesettings['themecssmode'];
 	if ($vcssmode == 'adminajax') {$vskinurl = admin_url('admin-ajax.php').'?action=skin_dynamic_css';}
 	else {$vskinurl = bioship_file_hierarchy('url', 'skin.php', $vthemedirs['core']);}
 	// 2.0.5: add querystring arguments to skin URL early
@@ -1273,11 +1536,13 @@ if (!function_exists('bioship_customizer_preview')) {
 
 	// start jQuery customizer live preview functions
 	// 1.8.5: added footer credits live preview
-	echo "<script type='text/javascript'>( function(\$) {
+	// 2.0.9: set javascript console debug variable
+	if (THEMEDEBUG) {$vdebug = 'true';} else {$vdebug = 'false';}
+	echo "<script>( function(\$) {
+		var customizerdebug = ".$vdebug."; var buttontop = ''; var buttonbottom = '';
 		wp.customize('blogname', function(value) {	value.bind(function(to) {\$('#site-title-text a').html(to);}); });
 		wp.customize('blogdescription', function(value) { value.bind(function(to) {\$('#site-description .site-desc').html(to);}); });
 		wp.customize('".$vthemename."[sitecredits]', function(value) { value.bind(function(to) {if (to === '0') {to = '';} \$('#footercredits').html(to);}); });
-		var buttontop = ''; var buttonbottom = '';
     ";
 
 	// note: helpful function reference for adding hover events...
@@ -1316,12 +1581,12 @@ if (!function_exists('bioship_customizer_preview')) {
 			});".PHP_EOL;
 		}
 
-		// TESTME: grid option change postMessage options...
-		// TODO: add new grid URL arguments to querystring?
+		// TODO: add new grid URL arguments to querystring of @import?
 		if (isset($voption['id'])) {
 			$vid = $voption['id'];
-			// refresh only : layout, gridcolumns, content_width
-			// postMessage : breakpoints, gridcompatibility, contentpadding
+			// TODO: recheck grid reloading options and transports
+			// refresh only: layout, gridcolumns, content_width
+			// postMessage: breakpoints, gridcompatibility, contentpadding
 			if ( ($vid == 'breakpoints') || ($vid == 'gridcompatibility') || ($vid == 'content_width') ) {
 				$vsettingid = $vthemename.'['.$voption['id'].']';
 				echo "wp.customize('".$vsettingid."',function(value) {
@@ -1329,7 +1594,8 @@ if (!function_exists('bioship_customizer_preview')) {
 						if (document.getElementById('grid-url')) {
 							gridhref = \$('#grid-url').href; \$('#grid-css').remove();
 							if (gridhref.indexOf('livepreview=yes') == -1) {gridhref += '&livepreview=yes';}
-							newstylesheet = document.createElement('style'); newstylesheet.setAttribute('id','grid-css');
+							newstylesheet = document.createElement('style');
+							newstylesheet.setAttribute('id','grid-css');
 							newstylesheet.textContent = '@import('+gridhref+');';
 							document.getElementsByTagName('head')[0].appendChild(newstylesheet);
 						}
@@ -1349,7 +1615,9 @@ if (!function_exists('bioship_customizer_preview')) {
 					$vtypojs .= "wp.customize('".$vtyposetting."',function(value) {
 						value.bind(function(to) {
 							\$('".$voption['csselement']."').css('".$vtypooption."',to);
-							/* console.log('".$voption['csselement']." -- ".$vtypooption." -- '+to); */
+							if (customizerdebug) {
+								console.log('Typography Change: ".$voption['csselement']." -- ".$vtypooption." -- '+to);
+							}
 						});
 					});".PHP_EOL;
 				}
@@ -1371,9 +1639,8 @@ if (!function_exists('bioship_customizer_preview')) {
 				echo "wp.customize('".$vsettingid."',function(value) {
 					value.bind(function(to) {
 						\$('#site-logo .logo-image').attr('src',to);
-						if (to == '') {\$('#site-logo .site-logo-image').hide(); /* \$('#site-logo .site-logo-text').show(); */}
-						else {/* \$('#site-logo .site-logo-text').hide();*/ \$('#site-logo .site-logo-image').show();}
-						/* console.log('".$voption['csselement']." img -- ".$voption['cssproperty']." -- '+to); */
+						if (to == '') {\$('#site-logo .site-logo-image').hide();}
+						else {\$('#site-logo .site-logo-image').show();}
 					});
 				});".PHP_EOL;
 			}
@@ -1396,7 +1663,9 @@ if (!function_exists('bioship_customizer_preview')) {
 							buttons.css('background','-moz-linear-gradient(top, '+btntop+' 0%, '+btnbot+' 100%)');
 							buttons.css('background','linear-gradient(top bottom, '+btntop+' 0%, '+btnbot+' 100%)');
 							buttons.css('-pie-background','linear-gradient(top, '+btntop+', '+btnbot+')');
-							/* console.log('".$voption['csselement']." -- '+btntop+' -- '+btnbot); */
+							if (customizerdebug) {
+								console.log('Button Style: ".$voption['csselement']." -- '+btntop+' -- '+btnbot);
+							}
 						});
 					});".PHP_EOL;
 				}
@@ -1441,7 +1710,9 @@ if (!function_exists('bioship_customizer_preview')) {
 						\$('".$voption['csselement']."').hover(
 							function() {\$(this).css('".$voption['cssproperty']."',to);},
 							function() {\$(this).css('".$voption['cssproperty']."',from)} );
-						/* console.log('(hover) ".$voption['csselement']." -- ".$voption['cssproperty']." -- '+to); */
+						if (customizerdebug) {
+							console.log('Hover Style: ".$voption['csselement']." -- ".$voption['cssproperty']." -- '+to);
+						}
 					});
 				});".PHP_EOL;
 			} else {
@@ -1451,7 +1722,9 @@ if (!function_exists('bioship_customizer_preview')) {
 					value.bind(function(to) {";
 					if ($voption['cssproperty'] == 'background-image') {echo "to = 'url('+to+')';";}
 						echo "\$('".$voption['csselement']."').css('".$voption['cssproperty']."',to);
-						/* console.log('".$voption['csselement']." -- ".$voption['cssproperty']." -- '+to); */
+						if (customizerdebug) {
+							console.log('Style Element: ".$voption['csselement']." -- ".$voption['cssproperty']." -- '+to);
+						}
 					});
 				});".PHP_EOL;
 			}
@@ -1674,4 +1947,49 @@ if (!function_exists('bioship_customizer_i10n')) {
  }
 }
 
-?>
+// Set Control Types for Kirki 2
+// -----------------------------
+if (!function_exists('bioship_kirki_control_types')) {
+ function bioship_kirki_control_types() {
+	$vcontroltypes = array(
+		'kirki-checkbox'        => 'Kirki_Controls_Checkbox_Control',
+		'kirki-code'            => 'Kirki_Controls_Code_Control',
+		'kirki-color'           => 'Kirki_Controls_Color_Control',
+		'kirki-color-palette'   => 'Kirki_Controls_Color_Palette_Control',
+		'kirki-custom'          => 'Kirki_Controls_Custom_Control',
+		'kirki-date'            => 'Kirki_Controls_Date_Control',
+		'kirki-dashicons'       => 'Kirki_Controls_Dashicons_Control',
+		'kirki-dimension'       => 'Kirki_Controls_Dimension_Control',
+		'kirki-editor'          => 'Kirki_Controls_Editor_Control',
+		'kirki-multicolor'      => 'Kirki_Controls_Multicolor_Control',
+		'kirki-multicheck'      => 'Kirki_Controls_MultiCheck_Control',
+		'kirki-number'          => 'Kirki_Controls_Number_Control',
+		'kirki-palette'         => 'Kirki_Controls_Palette_Control',
+		'kirki-preset'          => 'Kirki_Controls_Preset_Control',
+		'kirki-radio'           => 'Kirki_Controls_Radio_Control',
+		'kirki-radio-buttonset' => 'Kirki_Controls_Radio_ButtonSet_Control',
+		'kirki-radio-image'     => 'Kirki_Controls_Radio_Image_Control',
+		'repeater'              => 'Kirki_Controls_Repeater_Control',
+		'kirki-select'          => 'Kirki_Controls_Select_Control',
+		'kirki-slider'          => 'Kirki_Controls_Slider_Control',
+		'kirki-sortable'        => 'Kirki_Controls_Sortable_Control',
+		'kirki-spacing'         => 'Kirki_Controls_Spacing_Control',
+		'kirki-switch'          => 'Kirki_Controls_Switch_Control',
+		'kirki-generic'         => 'Kirki_Controls_Generic_Control',
+		'kirki-toggle'          => 'Kirki_Controls_Toggle_Control',
+		'kirki-typography'      => 'Kirki_Controls_Typography_Control',
+		'kirki-dropdown-pages'  => 'Kirki_Controls_Dropdown_Pages_Control',
+		'image'                 => 'WP_Customize_Image_Control',
+		'cropped_image'         => 'WP_Customize_Cropped_Image_Control',
+		'upload'                => 'WP_Customize_Upload_Control',
+	);
+
+	$vcontroltypes = apply_filters('kirki/control_types', $vcontroltypes);
+
+	foreach ($vcontroltypes as $vkey => $vclassname) {
+		if (!class_exists($vclassname)) {unset($vcontroltypes[$vkey]);}
+	}
+
+	return $vcontroltypes;
+ }
+}

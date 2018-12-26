@@ -35,9 +35,8 @@ if (!defined('THEMEDEBUG')) {
 // ================
 // Helper Functions
 // ================
-
 // 2.0.5: removed WordPress (SHORTINIT) loading
-// 2.0.5: removed theme test drive check
+// 2.0.5: removed Theme Test Drive check
 // 2.0.5: removed theme settings loading
 
 // 2.0.5: standalone copy of bioship_number_to_word helper
@@ -56,8 +55,7 @@ if (!function_exists('bioship_grid_number_to_word')) {
 // ===============
 // set Grid Values
 // ===============
-
-// 1.8.5: fix to global scope for admin ajax load method
+// 1.8.5: fix to global scope for admin-ajax load method
 // 1.9.5: added separate content columns value
 // 2.0.5: optimized global declarations
 global $gridcolumns, $contentcolumns, $contentpercent, $maxwidth, $contentwidth;
@@ -69,9 +67,7 @@ global $gridspacing, $contentspacing, $gridcompat, $empixels, $fontpercent;
 $gridcolumns = 16; // 16 default
 if (isset($_REQUEST['gridcolumns'])) {
 	$columns = $_REQUEST['gridcolumns'];
-	if ( ($columns == 12) || ($columns == 20) || ($columns == 24) ) {
-		$gridcolumns = $columns;
-	}
+	if ( ($columns == 12) || ($columns == 20) || ($columns == 24) ) {$gridcolumns = $columns;}
 }
 if (THEMEDEBUG) {echo "/* Grid Columns: ".$gridcolumns." */".PHP_EOL;}
 
@@ -80,9 +76,7 @@ if (THEMEDEBUG) {echo "/* Grid Columns: ".$gridcolumns." */".PHP_EOL;}
 $contentcolumns = 24;
 if (isset($_REQUEST['contentgridcolumns'])) {
 	$columns = $_REQUEST['contentgridcolumns'];
-	if ( ($columns == 12) || ($columns == 16) || ($columns == 20) ) {
-		$contentcolumns = $columns;
-	}
+	if ( ($columns == 12) || ($columns == 16) || ($columns == 20) ) {$contentcolumns = $columns;}
 }
 if (THEMEDEBUG) {echo "/* Content Grid Columns: ".$contentcolumns." */".PHP_EOL;}
 
@@ -104,7 +98,7 @@ if ( (isset($_REQUEST['contentwidth'])) && (abs(intval($_REQUEST['contentwidth']
 if (THEMEDEBUG) {echo  "/* Content Width: ".$contentwidth." */".PHP_EOL;}
 
 // set Content Padding Percentage
-// -------------------------
+// ------------------------------
 // 2.0.5: use calculated rather than raw padding value
 $contentpadding = 0;
 if ( (isset($_REQUEST['contentpadding'])) && (abs(intval($_REQUEST['contentpadding'])) > 0) ) {
@@ -803,19 +797,6 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 
 }
 
-// Tested Forcing backgrounds to span full width, even if there is horizontal scrolling.
-// note: experimental, using this seems to force a horizontal scrollbar also though,
-// by forcing the content width bigger than screen width - not what I was looking for!
-// therefore: NOT IMPLEMENTED
-// function bioship_grid_body_min_width($width, $empixels) {
-//	// $widthem = round(($width / $empixels), 3, PHP_ROUND_HALF_DOWN);
-//	// $minwidth = 'html body {min-width: '.$widthem.'em;}'.PHP_EOL;
-//
-//	// so for now stick with this instead..?
-//	$minwidth = 'html body {min-width: '.$width.'px;}'.PHP_EOL;
-// 	return $minwidth;
-// }
-
 
 // -------------------------- //
 /* Media Screen Width Queries */
@@ -1025,4 +1006,3 @@ exit;
 /* XXLarge screens min-width 1921px */
 // @media only screen and (min-width: 120.063em) { }
 
-?>

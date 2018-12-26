@@ -1,10 +1,10 @@
 <?php
 
-/* Blank Sidebar */
+/* Primary Sidebar: Blank */
 
 if (THEMETRACE) {bioship_trace('T','Blank Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 bioship_do_action('bioship_before_sidebar'); ?>
@@ -19,4 +19,3 @@ bioship_do_action('bioship_before_sidebar'); ?>
 
 <?php bioship_do_action('bioship_after_sidebar');
 
-?>

@@ -69,20 +69,20 @@ if ( ! class_exists( 'TitanFrameworkChecker' ) ) {
 			// If the plugin does not exist, throw admin notice to install.
 			if ( ! $this->plugin_exists() ) {
 				echo "<div class='error'><p><strong>"
-					. esc_html( apply_filters( 'titan_checker_installation_notice', __( 'Titan Framework needs to be installed.', 'bioship' ) ) )
+					. esc_html( apply_filters( 'titan_checker_installation_notice', __( 'Titan Framework needs to be installed.', 'default' ) ) )
 					. sprintf( " <a href='%s'>%s</a>",
 						esc_url( admin_url( 'plugin-install.php?tab=search&type=term&s=titan+framework' ) ),
-						esc_html( apply_filters( 'titan_checker_search_plugin_notice', __( 'Click here to search for the plugin.', 'bioship' ) ) )
+						esc_html( apply_filters( 'titan_checker_search_plugin_notice', __( 'Click here to search for the plugin.', 'default' ) ) )
 					)
 					. '</strong></p></div>';
 
 				// If the class doesn't exist, the plugin is inactive. Throw admin notice to activate plugin.
 			} else if ( ! class_exists( apply_filters( 'tf_framework_checker_titan_class', self::TITAN_CLASS ) ) ) {
 				echo "<div class='error'><p><strong>"
-					. esc_html( apply_filters( 'titan_checker_activation_notice', __( 'Titan Framework needs to be activated.', 'bioship' ) ) )
+					. esc_html( apply_filters( 'titan_checker_activation_notice', __( 'Titan Framework needs to be activated.', 'default' ) ) )
 					. sprintf( " <a href='%s'>%s</a>",
 						esc_url( admin_url( 'plugins.php' ) ),
-						esc_html( apply_filters( 'titan_checker_activate_plugin_notice', __( 'Click here to go to the plugins page and activate it.', 'bioship' ) ) )
+						esc_html( apply_filters( 'titan_checker_activate_plugin_notice', __( 'Click here to go to the plugins page and activate it.', 'default' ) ) )
 					)
 					. '</strong></p></div>';
 			}
@@ -106,8 +106,8 @@ if ( ! class_exists( 'TitanFrameworkChecker' ) ) {
 
 			// Check plugin existence by checking if the name is registered as an array key. get_plugins collects all plugin path into arrays.
 			foreach ( $plugins as $slug => $plugin ) {
-				$searchRegex = apply_filters( 'tf_framework_checker_regex', self::SEARCH_REGEX );
-				if ( preg_match( $searchRegex, $slug, $matches ) ) {
+				$search_regex = apply_filters( 'tf_framework_checker_regex', self::SEARCH_REGEX );
+				if ( preg_match( $search_regex, $slug, $matches ) ) {
 					return true;
 				}
 			}
@@ -133,7 +133,8 @@ if ( ! class_exists( 'TitanFrameworkChecker' ) ) {
 			        array(
 			            'name' => 'Titan Framework',
 			            'slug' => self::PLUGIN_SLUG,
-			            'required' => true,
+			            // set required to false for Wordpress.org repository compliance
+			            'required' => false,
 			        ),
 			    ) );
 			}

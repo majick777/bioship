@@ -1,10 +1,12 @@
 <?php
 
-/* Primary Page Sidebar (Dual Option) */
+/* Primary Sidebar: Single Page */
+
+/* note: Dual Option */
 
 if (THEMETRACE) {bioship_trace('T','Page Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('pages')) {
@@ -22,4 +24,3 @@ if (is_active_sidebar('pages')) {
 
 }
 
-?>

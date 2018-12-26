@@ -1,10 +1,10 @@
 <?php
 
-/* Search Page Subsidiary Sidebar */
+/* Subsidiary Sidebar: Search Results */
 
 if (THEMETRACE) {bioship_trace('T','Search Subsidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('subsearch')) {
@@ -22,4 +22,3 @@ if (is_active_sidebar('subsearch')) {
 
 }
 
-?>

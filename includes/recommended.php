@@ -8,9 +8,9 @@ if (!function_exists('bioship_admin_get_recommended')) {
  function bioship_admin_get_recommended() {
 
 	$vrec = false; $vshowrec = true;
+
 	// 2.0.1: add a filter switch for show recommendations
-	// TODO: add to filters.php examples
-	$vshowrec = bioship_apply_filters('bioship_admin_show_recommendations', $vshowrec);
+	$vshowrec = bioship_apply_filters('admin_show_recommendations', $vshowrec);
 	if (!$vshowrec) {return false;}
 
 	// check if CSS Hero is already installed...
@@ -40,11 +40,8 @@ if (!function_exists('bioship_admin_get_recommended')) {
 	}
 
 	// 2.0.1: add filter override for recommendation
-	// TODO: add to filters.php examples
-	$vrec = bioship_apply_filters('bioship_admin_page_recommendation', $vrec);
+	$vrec = bioship_apply_filters('admin_page_recommendations', $vrec);
 	return $vrec;
 
  }
 }
-
-?>

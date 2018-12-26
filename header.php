@@ -33,4 +33,3 @@
 	bioship_do_action('bioship_navbar');
 	bioship_do_action('bioship_after_navbar');
 
-?>

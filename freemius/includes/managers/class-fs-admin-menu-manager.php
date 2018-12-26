@@ -2,7 +2,7 @@
 	/**
 	 * @package     Freemius
 	 * @copyright   Copyright (c) 2015, Freemius, Inc.
-	 * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+	 * @license     https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License Version 3
 	 * @since       1.1.3
 	 */
 
@@ -109,7 +109,7 @@
 		 * @param string $module_type
 		 * @param string $module_unique_affix
 		 *
-		 * @return FS_Admin_Notice_Manager
+		 * @return FS_Admin_Menu_Manager
 		 */
 		static function instance( $module_id, $module_type, $module_unique_affix ) {
 			$key = 'm_' . $module_id;
@@ -263,23 +263,14 @@
 		 * @author Vova Feldman (@svovaf)
 		 * @since  1.1.3
 		 *
-		 * @return string
-		 */
-//		function slug(){
-//			return $this->_menu_slug;
-//		}
-
-		/**
-		 * @author Vova Feldman (@svovaf)
-		 * @since  1.1.3
-		 *
 		 * @param string $id
 		 * @param bool   $default
+		 * @param bool   $ignore_menu_existence Since 1.2.2.7 If true, check if the submenu item visible even if there's no parent menu.
 		 *
 		 * @return bool
 		 */
-		function is_submenu_item_visible( $id, $default = true ) {
-			if ( ! $this->has_menu() ) {
+		function is_submenu_item_visible( $id, $default = true, $ignore_menu_existence = false ) {
+			if ( ! $ignore_menu_existence && ! $this->has_menu() ) {
 				return false;
 			}
 
@@ -403,7 +394,7 @@
 		 *
 		 * @return bool
 		 */
-		function is_activation_page() {
+		function is_main_settings_page() {
 			if ( $this->_menu_exists &&
 			     ( fs_is_plugin_page( $this->_menu_slug ) || fs_is_plugin_page( $this->_module_unique_affix ) )
 			) {
@@ -423,7 +414,7 @@
 				 *
 				 * @since 1.2.2
 				 */
-				return fs_request_is_action( $this->_module_unique_affix . '_show_optin' );
+				return fs_request_get_bool( $this->_module_unique_affix . '_show_optin' );
 			}
 
 			return false;
@@ -587,7 +578,7 @@
 		 * @author Vova Feldman (@svovaf)
 		 * @since  1.0.9
 		 *
-		 * @return array[string]mixed
+		 * @return false|array[string]mixed
 		 */
 		function remove_menu_item() {
 			$this->_logger->entrance();
@@ -609,12 +600,34 @@
 		}
 
 		/**
+		 * Get module's main admin setting page URL.
+		 *
+		 * @todo This method was only tested for wp.org compliant themes with a submenu item. Need to test for plugins with top level, submenu, and CPT top level, menu items.
+		 *
+		 * @author Vova Feldman (@svovaf)
+		 * @since  1.2.2.7
+		 *
+		 * @return string
+		 */
+		function main_menu_url() {
+			$this->_logger->entrance();
+
+			if ( $this->_is_top_level ) {
+				$menu = $this->find_top_level_menu();
+			} else {
+				$menu = $this->find_main_submenu();
+			}
+
+			return admin_url( $menu['parent_slug'] . '?page=' . $menu['menu'][2] );
+		}
+
+		/**
 		 * @author Vova Feldman (@svovaf)
 		 * @since  1.1.4
 		 *
 		 * @param callable $function
 		 *
-		 * @return array[string]mixed
+		 * @return false|array[string]mixed
 		 */
 		function override_menu_item( $function ) {
 			$found_menu = $this->remove_menu_item();

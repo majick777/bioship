@@ -2,7 +2,7 @@
 	/**
 	 * @package     Freemius
 	 * @copyright   Copyright (c) 2015, Freemius, Inc.
-	 * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+	 * @license     https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License Version 3
 	 * @since       1.0.6
 	 */
 
@@ -21,12 +21,14 @@
 
 	$features_plan_map = array();
 	foreach ( $plans as $plan ) {
-		foreach ( $plan->features as $feature ) {
-			if ( ! isset( $features_plan_map[ $feature->id ] ) ) {
-				$features_plan_map[ $feature->id ] = array( 'feature' => $feature, 'plans' => array() );
-			}
+		if (!empty($plan->features) && is_array($plan->features)) {
+			foreach ( $plan->features as $feature ) {
+				if ( ! isset( $features_plan_map[ $feature->id ] ) ) {
+					$features_plan_map[ $feature->id ] = array( 'feature' => $feature, 'plans' => array() );
+				}
 
-			$features_plan_map[ $feature->id ]['plans'][ $plan->id ] = $feature;
+				$features_plan_map[ $feature->id ]['plans'][ $plan->id ] = $feature;
+			}
 		}
 
 		// Add support as a feature.
@@ -38,7 +40,7 @@
 			if ( ! isset( $features_plan_map['support'] ) ) {
 				$support_feature        = new stdClass();
 				$support_feature->id    = 'support';
-				$support_feature->title = __fs( 'Support', $plugin->slug );
+				$support_feature->title = fs_text( 'Support', $plugin->slug );
 				$features_plan_map[ $support_feature->id ] = array( 'feature' => $support_feature, 'plans' => array() );
 			} else {
 				$support_feature = $features_plan_map['support'];
@@ -51,7 +53,7 @@
 	// Add updates as a feature for all plans.
 	$updates_feature        = new stdClass();
 	$updates_feature->id    = 'updates';
-	$updates_feature->title = __fs( 'unlimited-updates', $plugin->slug );
+	$updates_feature->title = fs_text( 'unlimited-updates', $plugin->slug );
 	$features_plan_map[ $updates_feature->id ] = array( 'feature' => $updates_feature, 'plans' => array() );
 	foreach ( $plans as $plan ) {
 		$features_plan_map[ $updates_feature->id ]['plans'][ $plan->id ] = $updates_feature;
@@ -65,13 +67,26 @@
 			<?php foreach ( $plans as $plan ) : ?>
 				<th>
 					<?php echo $plan->title ?>
-					<span class="fs-price">
-						<?php foreach ( $plan->pricing as $pricing ) : ?>
-							<?php if ( 1 == $pricing->licenses ) : ?>
-								$<?php echo $pricing->annual_price ?> / year
-							<?php endif ?>
-						<?php endforeach ?>
-						</span>
+					<span class="fs-price"><?php
+							if ( empty( $plan->pricing ) ) {
+								fs_echo( 'free', $plugin->slug );
+							} else {
+								foreach ( $plan->pricing as $pricing ) {
+									/**
+									 * @var FS_Pricing $pricing
+									 */
+									if ( 1 == $pricing->licenses ) {
+										if ( $pricing->has_annual() ) {
+											echo "\${$pricing->annual_price} / " . fs_text( 'year', $plugin->slug );
+										} else if ( $pricing->has_monthly() ) {
+											echo "\${$pricing->monthly_price} / " . fs_text( 'mo', $plugin->slug );
+										} else {
+											echo "\${$pricing->lifetime_price}";
+										}
+									}
+								}
+							}
+						?></span>
 				</th>
 			<?php endforeach ?>
 		</tr>
