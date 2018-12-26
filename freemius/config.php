@@ -2,7 +2,7 @@
 	/**
 	 * @package     Freemius
 	 * @copyright   Copyright (c) 2015, Freemius, Inc.
-	 * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+	 * @license     https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License Version 3
 	 * @since       1.0.4
 	 */
 
@@ -126,6 +126,7 @@
 	/**
 	 * Domain / URL / Address
 	 */
+	define( 'WP_FS__ROOT_DOMAIN_PRODUCTION', 'freemius.com' );
 	define( 'WP_FS__DOMAIN_PRODUCTION', 'wp.freemius.com' );
 	define( 'WP_FS__ADDRESS_PRODUCTION', 'https://' . WP_FS__DOMAIN_PRODUCTION );
 
@@ -140,7 +141,7 @@
 		define( 'WP_FS__TESTING_DOMAIN', 'fswp' );
 	}
 
-	#--------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------
 	#region HTTP
 	#--------------------------------------------------------------------------------
 
@@ -217,6 +218,24 @@
 		if ( ! defined( 'FS_API__SANDBOX_ADDRESS' ) ) {
 			define( 'FS_API__SANDBOX_ADDRESS', WP_FS__API_SANDBOX_ADDRESS_LOCALHOST );
 		}
+	}
+
+	#endregion
+
+	#--------------------------------------------------------------------------------
+	#region Checkout
+	#--------------------------------------------------------------------------------
+
+	if ( ! defined( 'FS_CHECKOUT__ADDRESS_PRODUCTION' ) ) {
+		define( 'FS_CHECKOUT__ADDRESS_PRODUCTION', 'https://checkout.freemius.com' );
+	}
+
+	if ( ! defined( 'FS_CHECKOUT__ADDRESS_LOCALHOST' ) ) {
+		define( 'FS_CHECKOUT__ADDRESS_LOCALHOST', 'http://checkout.freemius:8080' );
+	}
+
+	if ( ! defined( 'FS_CHECKOUT__ADDRESS' ) ) {
+		define( 'FS_CHECKOUT__ADDRESS', ( WP_FS__IS_PRODUCTION_MODE ? FS_CHECKOUT__ADDRESS_PRODUCTION : FS_CHECKOUT__ADDRESS_LOCALHOST ) );
 	}
 
 	#endregion

@@ -1,10 +1,10 @@
 <?php
 
-/* Blank Subsidebar */
+/* Subsidiary Sidebar: Blank */
 
 if (THEMETRACE) {bioship_trace('T','Blank Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 bioship_do_action('bioship_before_subsidebar'); ?>
@@ -18,4 +18,3 @@ bioship_do_action('bioship_before_subsidebar'); ?>
 
 <?php bioship_do_action('bioship_after_subsidebar');
 
-?>

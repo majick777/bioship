@@ -1,10 +1,10 @@
 <?php
 
-/* Category Archive Primary Sidebar */
+/* Primary Sidebar: Category Archive */
 
 if (THEMETRACE) {bioship_trace('T','Category Archive Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('category')) {
@@ -22,4 +22,3 @@ if (is_active_sidebar('category')) {
 
 }
 
-?>

@@ -1,10 +1,57 @@
+= 2.1.0 = 
+- Updated: Titan Framework to v1.12
+- Added: Cookie field to comment form for GDPR Compliance
+- Fixed: use existing multicheck settings if empty (super-bug!)
+- Fixed: index array check for stored global menus
+- Fixed: incorrect default variable for disable emojis option
+- Fixed: ignore font loading where font face is set to inherit
+- Fixed: nonce key for Titan admin nonce cyclic auto-refresh
+- Added: alert on session timeout on Titan theme options screen
+
+= 2.0.9 =
+- Updated: TGMPA Plugin Activation v2.6.0
+- Updated: Freemius for Themes v7
+- Updated: Titan Color Picker Alpha Script v2.1.3
+- Updated: Kirki Library to v3.0.16
+- Deprecated: Hybrid 2 for WordPress.org version
+- Deprecated: Foundation 5/6 for WordPress.org version
+- Removed: Dashboard Feed Widget for WordPress.org version
+- Removed: Discreet Text Widget for WordPress.org version
+- Option: navigation submenu hover color and background color
+- Added: protype auto resize of site title text on window resize
+- Added: Custom Background theme support for WordPress.org version 
+- Added: Custom Logo theme support for WordPress.org version
+- Added: get sidebar template header information function
+- Added: missing subsidiary sidebar date archive template
+- Added: Beaver Themer plugin integration (Hook definitions)
+- Added: DNS preconnect resource hint for Google Fonts
+- Added: autoload of matching child-theme-slug.php file
+- Improved: child theme creation process for WordPress.org
+- Improved: standardized all sidebar template headers
+- Improved: theme hook information array and labeling
+- Improved: delayed priority for bioship_remove_actions
+- Improved: allow for theme debug display and/or logging
+- Improved: use variables instead of inputs for script loading
+- Improved: added value filter to theme file hierarchy result
+- Fixed: Titan options panel font color and text-shadow inputs
+- Fixed: missing some class attributes in sidebar templates
+- Fixed: incorrect index for BWP script auto-ignore integration
+- Fixed: set all font sizes in em for screen scaling
+- Fixed: missing number range on jpeg quality option
+- Fixed: missing email input type for CSS input styling
+- Fixed: missing style targeting for registration form wrapper
+- Fixed: typo in read more jump link removal filter
+- Fixed: classes and typo for active menu item style rules
+- Fixed: debug file writing append using WP Filesystem
+- Fixed: documentation submenu link and redirection
+
 = 2.0.8 =
-- Changed: misc WordPress.Org compliance changes
+- Changed: various WordPress.Org compliance changes
 - Improved: Author Bio box to work outside of the loop
 - Fixed: global Site Icon and Favicons conflict
 - Fixed: full width content grid columns for mobile queries
 - Fixed: Discreet Text Widget dependency on Text Widget
-- Added: Classic Text Widget class for WP 4.8
+- Added: Classic Text Widget class for WP 4.8+
 - Added: HTML Comments Output Function
 
 = 2.0.7 = 
@@ -444,7 +491,6 @@
 - Test Grid Option Changes in Live Preview
 - Sidebar Controls (allow top/bottom position)
 - ? PerPost Theme Options context panel
-- ? Titan Font Text Shadow Options
 - ? Custom Control for Media Upload *OR* URL
 
 = 0.0.2 =
@@ -460,7 +506,7 @@
 
 = 0.0.1 =
 - ** Planned Feature List **
-- Theme Settings Revisions Custom Post Type
+- Theme Settings Revisions via Changesets
 - Floating/Fixed 'Back to Top' scroll button
 - Allow for Paged Templates in Hierarchy
 - Selective Foundation 6 Loading Support

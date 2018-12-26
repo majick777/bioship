@@ -12,6 +12,29 @@ if (!defined('THEMEHOMEURL')) {define('THEMEHOMEURL', 'http://bioship.space');}
 if (!defined('THEMESUPPORT')) {define('THEMESUPPORT', 'http://wordquest.org');}
 
 
+// --------------
+// DOCS TODO LIST
+// --------------
+// Frameworks
+// - add more extensive information on Hybrid Core
+// - add more extensive information on Foundation here
+// Metabox
+// - double-check display override reference completeness
+// Sidebar Guide
+// - more sidebar filter examples
+// Grid
+// - notes and example on using small spacer columns
+// Layout Hooks
+// - add Page Elements for styling reference
+// - finish banner position notes
+// Theme Values
+// - vthemedisplay and vthemeoverride globals
+// Debugging
+// - better debug to file options and explanation
+// - better theme tracer explanation
+// --------------
+
+
 // Serve Documentation Section (if not included)
 // ---------------------------------------------
 if (!isset($vincludeddocs)) {
@@ -169,24 +192,22 @@ function bioship_docs_quickstart($vwrap) {
 	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip QuickStart</h2><br>';}
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
-	$vhtml .= '<p>Even though BioShip has a lot to it, getting started with BioShip is actually easy. ';
-	$vhtml .= 'The main thing to remember is you do not need to setup and use every single feature! ';
-	$vhtml .= 'For the majority of projects the default settings for many of the options are great. ';
-	$vhtml .= 'So the fastest way to get started is to leave them alone and focus on your design.</p>';
+	$vhtml .= '<p>Even though BioShip has a lot to it, getting started with BioShip is actually easy.
+	The main thing to remember is you do not need to setup and use every single feature!
+	For the majority of projects the default settings for many of the options are great.
+	So the fastest way to get started is to leave them alone and focus on your design.</p>';
 
-	$vhtml .= '<p>Practically speaking, this means customizing the Skin layer settings mostly, and ';
-	$vhtml .= 'adjusting some Skeleton layer sidebar settings if you need to modify your sidebars. ';
-	$vhtml .= 'Most of the Skeleton and all of the Muscle layer settings can be left for later.';
-	$vhtml .= '</p>';
+	$vhtml .= '<p>Practically speaking, this means customizing the Skin layer settings mostly, and
+	adjusting some Skeleton layer sidebar settings if you need to modify your sidebars.
+	Most of the Skeleton and all of the Muscle layer settings can be left for later.</p>';
 
-	$vhtml .= '<p>BioShip has a lot of complex code under the hood to make everything <i>super-flexible</i>. ';
-	$vhtml .= 'This means you can leave the more advanced stuff for if and when you actually need it, ';
-	$vhtml .= 'confident and relaxed knowing that you really can change anything at all in the future. ';
-	$vhtml .= 'And in the meantime, enjoy the simplicity of having everything setup and working sooner!</p>';
+	$vhtml .= '<p>BioShip has a lot of complex code under the hood to make everything <i>super-flexible</i>.
+	This means you can leave the more advanced stuff for if and when you actually need it,
+	confident and relaxed knowing that you really can change anything at all in the future.
+	And in the meantime, enjoy the simplicity of having everything setup and working sooner!</p>';
 
-	$vhtml .= '<p>And if and when you are ready to delve deeper, complete documentation is available below. ';
-	$vhtml .= 'I hope you enjoy using BioShip and welcome any feedback or improvements.';
-	$vhtml .= '</p>';
+	$vhtml .= '<p>And if and when you are ready to delve deeper, complete documentation is available below.
+	I hope you enjoy using BioShip and welcome any feedback or improvements.</p>';
 
 	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
 
@@ -239,9 +260,9 @@ function bioship_docs_install_guide($vwrap) {
 	or <b>b</b>. Use a querystring for a temporary preview of the theme on any page, by adding ?theme=bioship to the page address URL in
 	your browser window. You probably want to change the Theme Options first, so you can access the <i>Theme Options</i> page manually in
 	this temporary preview mode by going to:<br><br>
-	WordPress Customizer: <i>/wp-admin/customize.php?theme=bioship</i><br>
-	Titan Framework: <i>/wp-admin/themes.php?page=bioship-options&theme=bioship</i><br>
-	Options Framework: <i>/wp-admin/themes.php?page=options-framework&theme=bioship</i><br><br>
+	<b>WordPress Customizer</b>: <i>/wp-admin/customize.php?theme=bioship</i><br>
+	<b>Titan Framework</b>: <i>/wp-admin/themes.php?page=bioship-options&theme=bioship</i><br>
+	<b>Options Framework</b>: <i>/wp-admin/themes.php?page=options-framework&theme=bioship</i><br><br>
 	(Generally speaking, if you are the sole site admin of the site then option 5a is fine, otherwise you might
 	want to go with step 5b so that other site admins do not see the new theme preview while you are developing it!)<br>';
 
@@ -287,41 +308,41 @@ function bioship_docs_child_themes($vwrap) {
 	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip Child Theming</h2><br>';}
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
-	$vhtml .= "Setting up a Child Theme using the BioShip Theme Framework as your Parent Theme is very easy and highly recommended
-	for best practice development. The main reason being as with any Child Theme you can keep the Parent Theme Framework updated
-	(allowing for improvements and fixes to the Framework to easily be installed) without losing your own file customizations and
-	functions. As most websites require *some* kind of customization of this kind, being able to add and modify your Child Theme
-	<i>functions.php</i> is the most basic of features that a Parent Theme should support.<br><br>";
+	$vhtml .= "<p>Setting up a Child Theme using the BioShip Theme Framework as your Parent Theme is very easy and highly recommended
+		for best practice development. The main reason being as with any Child Theme you can keep the Parent Theme Framework updated
+		(allowing for improvements and fixes to the Framework to easily be installed) without losing your own file customizations and
+		functions. As most websites require *some* kind of customization of this kind, being able to add and modify your Child Theme
+		<i>functions.php</i> is the most basic of features that a Parent Theme should support.</p>";
 
 	$vhtml .= "In BioShip, to extend this support, <i>all</i> the core theme functions have been made 'pluggable' (overrideable.)
-	In other words each function declaration is wrapped in conditional <i>function_exists</i> checks to make this possible.
-	So to override any function, simply place a modified copy of a function in your Child Theme's <i>functions.php</i> file,
-	As WordPress intentionally loads this file <i>before</i> the Parent Theme's <i>functions.php</i>, the modified function
-	will be loaded <i>instead</i> of the default Parent Theme (Framework) function. (see <a href='http://codex.wordpress.org/Child_Themes' target=_blank>Child Themes on the Wordpress Codex</a>.)
-	(Note: Layout Hook changes are a possible exception as the hooks must already exist, see <a href='".$vdoclinks['hooks']."'>Layout Hooks</a> section for further details.)<br><br>";
+		In other words each function declaration is wrapped in conditional <i>function_exists</i> checks to make this possible.
+		So to override any function, simply place a modified copy of a function in your Child Theme's <i>functions.php</i> file,
+		As WordPress intentionally loads this file <i>before</i> the Parent Theme's <i>functions.php</i>, the modified function
+		will be loaded <i>instead</i> of the default Parent Theme (Framework) function. (see <a href='http://codex.wordpress.org/Child_Themes' target=_blank>Child Themes on the Wordpress Codex</a>.)
+		(Note: Layout Hook changes are a possible exception as the hooks must already exist, see <a href='".$vdoclinks['hooks']."'>Layout Hooks</a> section for further details.)</p>";
 
 	$vhtml .= "There are of course many other potential benefits to having a Child Theme, such as being able to override Templates,
-	Javascript and CSS files (or any other files for that matter) - for this see the <a href='".$vdoclinks['files']."'>File Hierarchy</a> section.
-	As well as modifying layout hooks for easy reordering, replacing or adding of page elements (again see <a href='".$vdoclinks['hooks']."'>Layout Hooks</a> section.)
-	Plus custom value filters can be used in your functions.php for even further possibilities (see <a href='".$vdoclinks['filters']."'>Value Filters</a> section.)
-	While for simple designs this is kind of advanced customization will be unnecessary - as the existing functions are written to handle a wide variety
-	of cases very well - having the easy option to override anything can remove many unnecessary headaches to your custom theme development.<br>";
+		Javascript and CSS files (or any other files for that matter) - for this see the <a href='".$vdoclinks['files']."'>File Hierarchy</a> section.
+		As well as modifying layout hooks for easy reordering, replacing or adding of page elements (again see <a href='".$vdoclinks['hooks']."'>Layout Hooks</a> section.)
+		Plus custom value filters can be used in your functions.php for even further possibilities (see <a href='".$vdoclinks['filters']."'>Value Filters</a> section.)
+		While for simple designs this is kind of advanced customization will be unnecessary - as the existing functions are written to handle a wide variety
+		of cases very well - having the easy option to override anything can remove many unnecessary headaches to your custom theme development.</p>";
 
 	$vhtml .= "<h3>One-Click Child Theme Install</h3>";
-	$vhtml .= "To make it even easier, BioShip has One-click Creation for Child Themes, so you can get customizing as soon as possible.
-	Plus, BioShip auto-transfers your Parent Theme options to Child Theme ones when you first activate your BioShip Child Theme, so there
-	should be no need to set the same options again if you are moving from using BioShip as a Parent Theme to using a Child Theme.<br><br>";
+	$vhtml .= "<p>To make it even easier, BioShip has One-click Creation for Child Themes, so you can get customizing as soon as possible.
+		Plus, BioShip auto-transfers your Parent Theme options to Child Theme ones when you first activate your BioShip Child Theme, so there
+		should be no need to set the same options again if you are moving from using BioShip as a Parent Theme to using a Child Theme.</p>";
 
-	$vhtml .= "Visit your <i>Theme Options</i> page under the Wordpress admin <i>Appearance</i> menu. Enter a new Child Theme display name
-	in the box under the layer tabs and click <i>Create Child Theme</i>. Activate on the next page and you are now running your new Child Theme!<br>";
+	$vhtml .= "<p>Visit your <i>Theme Options</i> page under the Wordpress admin <i>Appearance</i> menu. Enter a new Child Theme display name
+		in the box under the layer tabs and click <i>Create Child Theme</i>. Activate on the next page and you are now running your new Child Theme!</p>";
 
 	$vhtml .= "<h4>Manual Child Theme Install</h4>";
 	$vhtml .= "Unzip your download of BioShip locally and upload the contents of the subdirectory /bioship/child/ via FTP to a subdirectory of your choice in
-	the /wp-content/themes/ directory. (eg. /wp-content/themes/sweet-child-of-mine/)<br><br>";
+		the /wp-content/themes/ directory. (eg. /wp-content/themes/sweet-child-of-mine/)<br><br>";
 
-	$vhtml .= "<i>Before Activating</i>: Optionally edit the <b>Name</b> Field of the Child Theme at the top of the style.css file in the directory you created.
-	(Important Note: if you change this name later you will need to copy the saved Theme Options to the new one in the options table.) 	This will change the name
-	of the active theme in your admin area. Once as desired, simply activate the new Child Theme from your <i>Themes</i> page and you're good to go!<br>";
+	$vhtml .= "<i>Before Activating</i>: Optionally edit the <b>Name</b> Field of the Child Theme at the top of the <i>style.css</i> file in the directory you created.
+		(Important Note: if you change this name later you will need to copy the saved Theme Options to the new one in the options table.) This will change the name
+		of the active theme in your admin area. Once as desired, simply activate the new Child Theme from your <i>Themes</i> page and you're good to go!<br>";
 
 	$vhtml .= "<h4>Preview Child Theme Install</h4>";
 	$vhtml .= "<b>1</b>. Follow either option above but do not activate yet. Instead, make sure you have Theme Theme Drive plugin installed and activated, and either:<br>";
@@ -334,14 +355,14 @@ function bioship_docs_child_themes($vwrap) {
 	Titan Framework: <i>/wp-admin/themes.php?page=bioship-options&theme=child-theme-slug</i><br>
 	Options Framework: <i>/wp-admin/themes.php?page=options-framework&theme=child-theme-slug</i><br><br>";
 
-	$vhtml .= "In this way you can create a new Child Theme skin for your site and activate it once you are satisfied with the new design
-	result. Again, generally speaking, if you are the sole site admin of the site then option 2a is fine, otherwise you might want to go
-	with 2b so that other site admins aren't confused by seeing the new in theme preview while you're developing with it.<br>";
+	$vhtml .= "<p>In this way you can create a new Child Theme skin for your site and activate it once you are satisfied with the new design
+		result. Again, generally speaking, if you are the sole site admin of the site then option 2a is fine, otherwise you might want to go
+		with 2b so that other site admins aren't confused by seeing the new in theme preview while you're developing with it.</p>";
 
 	$vhtml .= "<h5>Cloning Child Themes</h5>";
-	$vhtml .= "You can also clone any existing Child Theme with one click at the top of the Theme Options page for that Child Theme.<br>";
-	$vhtml .= "This allows you to easily 'fork' an existing Child Theme for further development without affecting the live site.<br>";
-	$vhtml .= "All files and theme settings will be automatically copied to the new clone Child Theme directory on form submission.<br><br>";
+	$vhtml .= "<p>You can also clone any existing Child Theme with one click at the top of the Theme Options page for that Child Theme.
+		This allows you to easily 'fork' an existing Child Theme for further development without affecting the live site.
+		All files and theme settings will be automatically copied to the new clone Child Theme directory on form submission.</p>";
 
 	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
 
@@ -359,89 +380,89 @@ function bioship_docs_framework_guide($vwrap) {
 	$vhtml .= "Available BioShip Theme Options are separated into Skin, Muscle and Skeleton sections for all Frameworks! :-)<br>";
 	$bhtml .= "This helps organize the design, functionality and templating options respectively (see <a href='".THEMEHOMEURL."/'>BioShip Home</a>)<br><br>";
 
-	$vhtml .= "<h3>Options Frameworks</h3>";
+	$vhtml .= "<h3>Theme Options Frameworks</h3>";
 
 	$vhtml .= "<h4>WordPress Customizer</h4>";
 	$vhtml .= "<i>/admin/customizer.php</i><br>";
-	$vhtml .= "BioShip supports the in-built WordPress Customizer for all Theme Options with Live Preview updates via the Customizer API.<br>";
-	$vhtml .= "The Customizer gives you a sidebar panel with Theme Settings and a live preview window that is updated by javascript or refresh.<br>";
-	$vhtml .= "Bioship implements some custom controls by using the <a href='http://kirki.org' target=_blank>Kirki Library</a> in combination with it's own theme options array.<br>";
-	$vhtml .= "(you will also see some extra panel controls for sidebar width and position have been added to the Customizer panel.)<br>";
-	$vhtml .= "If you find this interface restrictive is it recommended you use the Titan Framework admin page instead.<br>";
+	$vhtml .= "<p>BioShip supports the in-built WordPress Customizer for all Theme Options with Live Preview updates via the Customizer API.
+		The Customizer gives you a sidebar panel with Theme Settings and a live preview window that is updated by javascript or refresh.
+		Bioship implements some custom controls by using the <a href='http://kirki.org' target=_blank>Kirki Library</a> in combination with it's own theme options array.
+		(you will also see some extra panel controls for sidebar width and position have been added to the Customizer panel.)
+		If you find this interface restrictive is it recommended you use the Titan Framework admin page instead.</p>";
 
 	$vhtml .= "<h5>WordPress.Org Compliance</h5>";
-	$vhtml .= "The Customizer is required to be supported for making BioShip freely available on WordPress.Org theme repository in future.<br>";
-	$vhtml .= "If you are curious, this step was taken by the Theme Review Team to provide a more consistent experience for the end user.<br>";
-	$vhtml .= "Personally I prefer using Options or Titan Framework to the Customizer, but all options are available so it is up to you! :-)<br>";
-	$vhtml .= "If you are using the WP.Org version of BioShip, you will need to install Titan Framework <i>as a plugin</i> to access Titan page.<br>";
-	$vhtml .= "If you would prefer to use bundled Titan or Options Framework, reinstall the theme from <a href='".THEMEHOMEURL."/' target=_blank>BioShip.Space</a>.<br>";
-	$vhtml .= "(Note the file <i>update-checker.php</i> is removed from the WP.Org version so that updates are via the WordPress.Org repository.)<br>";
+	$vhtml .= "The Customizer is required to be supported for making BioShip freely available on WordPress.Org theme repository in future.
+		If you are curious, this step was taken by the Theme Review Team to provide a more consistent experience for the end user.
+		Personally I prefer using Options or Titan Framework to the Customizer, but all options are available so it is up to you! :-)
+		If you are using the WP.Org version of BioShip, you will need to install Titan Framework <i>as a plugin</i> to access Titan page.
+		If you would prefer to use bundled Titan or Options Framework, reinstall the theme from <a href='".THEMEHOMEURL."/' target=_blank>BioShip.Space</a>.
+		(Note the file <i>update-checker.php</i> is removed from the WP.Org version so that updates are via the WordPress.Org repository.)</p>";
 
 	$vhtml .= "<h4>Titan Framework</h4>";
 	$vhtml .= "<i>/includes/titan/</i><br>";
-	$vhtml .= "Titan provides a great modern user interface for modifying all available Theme Settings for BioShip in the one place.<br>";
-	$vhtml .= "There is a wide variety of controls available via Titan, however only a small number are used to reduce complexity.<br>";
-	$vhtml .= "Note: admin page output is changed for BioShip so all tabs are available on one pageload like Options Framework. :-)<br>";
-	$vhtml .= "Reference: <a href='http://titanframework.net/' target=_blank>Titan Framework Documentation</a>.<br>";
-	$vhtml .= "[Theme Settings option_name key: <i>child-theme-slug</i>_options]<br>";
+	$vhtml .= "<p>Titan provides a great modern user interface for modifying all available Theme Settings for BioShip in the one place.
+		There is a wide variety of controls available via Titan, however only a small number are used to reduce complexity.
+		Note: admin page output is changed for BioShip so all tabs are available on one pageload like Options Framework. :-)
+		Reference: <a href='http://titanframework.net/' target=_blank>Titan Framework Documentation</a>.<br>
+		[Theme Settings option_name key: <i>child-theme-slug</i>_options]</p>";
 
 	$vhtml .= "<h4>Options Framework</h4>";
 	$vhtml .= "<i>/includes/options/</i><br>";
-	$vhtml .= "BioShip Theme Options were originally handled by the Options Framework, which is still supported but no longer default.<br>";
-	$vhtml .= "While there are some minor differences between the Titan and Options Framework, they are very similar in operation.<br>";
-	$vhtml .= "Reference: <a href='http://wptheming.com/options-framework-plugin/' target=_blank>Options Framework Documentation</a>.<br>";
-	$vhtml .= "[Theme Settings option_name key: <i>child_theme_slug</i>]<br>";
+	$vhtml .= "<p>BioShip Theme Options were originally handled by the Options Framework, which is still supported but no longer default.
+		While there are some minor differences between the Titan and Options Framework, they are very similar in operation.
+		Reference: <a href='http://wptheming.com/options-framework-plugin/' target=_blank>Options Framework Documentation</a>.<br>
+		[Theme Settings option_name key: <i>child_theme_slug</i>]</p>";
 
 	$vhtml .= "<h5>v1.5.0+ Upgrade Notice</h5>";
-	$vhtml .= "Since Titan if now used by default after v1.5.0, if you are upgrading from that, use one of the two options given below,<br>";
-	$vhtml .= "either to switch back to Options Framework or to transfer your existing theme settings to the Titan Framework format.<br>";
+	$vhtml .= "<p>Since Titan if now used by default after v1.5.0, if you are upgrading from that, use one of the two options given below,
+		either to switch back to Options Framework or to transfer your existing theme settings to the Titan Framework format.<br>";
 
 	$vhtml .= "<h5>Framework Switching</h5>";
-	$vhtml .= "To use Options instead of Titan, create an option name '<i>theme-slug</i>_framework' and the value of 'options'<br>";
-	$vhtml .= "Alternatively, you can create a file in your desired theme directory called <i>titanswitch.off</i><br>";
-	$vhtml .= "and if you wish to switch back to using Titan again, create a file called <i>titanswitch.on</i><br>";
-	$vhtml .= "If either of these files is created it will modify the above options value and then delete the file.<br>";
-	$vhtml .= "Note this will NOT affect the theme settings saved for either framework, just the option_name used (see above.)<br>";
+	$vhtml .= "<p>To use Options instead of Titan, create an option name '<i>theme-slug</i>_framework' and the value of 'options'
+		Alternatively, you can create a file in your desired theme directory called <i>titanswitch.off</i>
+		and if you wish to switch back to using Titan again, create a file called <i>titanswitch.on</i>
+		If either of these files is created it will change the above options value and then delete the file.
+		After switching between these Frameworks you will want to review your theme settings and resave.</p>";
 
 	$vhtml .= "<h5>Transferring Settings</h5>";
 	$vhtml .= "<i>?transfersettings=totitan&fromtheme=theme-slug&totheme=theme-slug</i><br>";
-	$vhtml .= "To transfer settings from one framework to another you can use the above querystring on an admin URL (when logged in.)<br>";
-	$vhtml .= "This is helpful when converting theme settings from Options Framework usage to using Titan Framework instead.<br>";
-	$vhtml .= "After doing the transfer and switching to the Titan Framework, be sure to check your settings (especially fonts)<br>";
-	$vhtml .= "on the Theme Options page and save them again to remove again discrepencies.<br><br>";
+	$vhtml .= "<p>To transfer settings from one framework to another you can use the above querystring on an admin URL (when logged in.)
+		This is helpful when converting theme settings from Options Framework usage to using Titan Framework instead.
+		After doing the transfer and switching to the Titan Framework, be sure to check your settings (especially fonts)
+		on the Theme Options page and save them again to remove again discrepencies.</p>";
 
-	$vhtml .= "The <i>totheme</i> parameter is optional, if left out it will transfer settings to your current active theme.<br>";
-	$vhtml .= "Note: Currently only supports transferring existing theme settings <i>TO</i> Titan from Options Framework.<br>";
-	$vhtml .= "(as code is needed for image URLs from Options Framework to be inserted in the media library for Titan, and<br>";
-	$vhtml .= "development will be moving forward with Titan moreso than Options Framework anyway.)<br>";
+	$vhtml .= "<p>The <i>totheme</i> parameter is optional, if left out it will transfer settings to your current active theme.
+		Note: Currently only supports transferring existing theme settings <i>TO</i> Titan from Options Framework.
+		as code is needed for image URLs from Options Framework to be inserted in the media library for Titan, and
+		development will be moving forward with Titan moreso than Options Framework anyway.)</p>";
 
 	$vhtml .= "<h5>Copying Theme Settings</h5>";
 	$vhtml .= "<i>?copysettings=yes&fromtheme=theme-slug&totheme=theme-slug</i><br>";
-	$vhtml .= "To copy theme settings between any two existing themes using the above query string on an admin URL (when logged in.)<br>";
-	$vhtml .= "This may be helpful if you created a Child Theme and the theme settings failed to transfer from the Parent Theme.<br>";
-	$vhtml .= "Or if you simply wish to copy theme settings between themes for some other reason.<br>";
+	$vhtml .= "<p>To copy theme settings between any two existing themes using the above query string on an admin URL (when logged in.)
+		This may be helpful if you created a Child Theme and the theme settings failed to transfer from the Parent Theme.
+		Or if you simply wish to copy theme settings between themes for some other reason.</p>";
 
 	$vhtml .= "<h3>Other Frameworks</h3>";
 
 	$vhtml .= "<h4>Hybrid Core</h4>";
 	$vhtml .= "<i>/includes/hybrid2/</i> or <i>/includes/hybrid3/</i><br>";
 	$vhtml .- "<a href='http://themehybrid.com/hybrid-core' target=_blank>Hybrid Core Framework</a> is included with BioShip for a number of useful in-built function and extensions.<br>";
-	// TODO: add more extensive information on Hybrid Core here ...
-	$vhtml .= "Hybrid Core is activated via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Hybrid</i> tab.<br>";
-	$vhtml .= "Note: for consistency, Hybrid Content Template Hierarchy and Schema.Org attributes are implemented regardless of this.<br>";
+	// TODO: add more extensive information on Hybrid Core here...
+	$vhtml .= "<p>Hybrid Core is activated via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Hybrid</i> tab.<br>";
+	$vhtml .= "Note: for consistency, Hybrid Content Template Hierarchy and Schema.Org attributes are implemented regardless of this.</p>";
 
 	$vhtml .= "<h5>Hybrid Hook</h5>";
 	$vhtml .= "<i>/includes/hybrid-hook/</i><br>";
-	$vhtml .= "All hooks are automatically made available to the Hybrid Hook plugin (modified for BioShip.)<br>";
-	$vhtml .= "When activated (via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Hybrid</i>) you can access <i>Appearance</i> -> <i>Hybrid Hook</i>.<br>";
-	$vhtml .= "This allows you to easily add content (Text, HTML, or Shortcode) to any of the Layout Hook sections.<br>";
-	$vhtml .= "(You can also specify a priority if you need to insert between existing hooked functions.)<br>";
-	$vhtml .= "see the <a href='".$vdoclinks['hooks']."'>Layout Hook Guide</a> for more information.<br>";
+	$vhtml .= "<p>All hooks are automatically made available to the Hybrid Hook plugin (modified for BioShip.)
+		When activated (via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Hybrid</i>) you can access <i>Appearance</i> -> <i>Hybrid Hook</i>.
+		This allows you to easily add content (Text, HTML, or Shortcode) to any of the Layout Hook sections.
+		(You can also specify a priority if you need to insert between existing hooked functions.)
+		see the <a href='".$vdoclinks['hooks']."'>Layout Hook Guide</a> for more information.</p>";
 
 	$vhtml .= "<h4>Foundation</h4>";
 	$vhtml .= "<i>/includes/foundation5/</i> or <i>/includes/foundation6/</i><br>";
-	$vhtml .= "Foundation by Zurb loading is activated via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Foundation</i> tab.<br>";
-	// TODO: add more extensive information on Foundation here ...
+	$vhtml .= "<p>Foundation by Zurb loading is activated via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Foundation</i> tab.</p\>";
+	// TODO: add more extensive information on Foundation here...
 
 	$vhtml .= "<h3>BioShip Extensions</h3>";
 	$vhtml .= "For further extensions, see the online <a href='".THEMEHOMEURL."/documentation/extensions/'>BioShip Extensions</a> page.<br><br>";
@@ -590,16 +611,16 @@ function bioship_docs_metabox_guide($vwrap) {
 	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip Theme Metabox</h2><br>';}
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
-	$vhtml .= "You will find a Theme Settings Metabox on the post/page writing screen which allows you to override default display<br>";
-	$vhtml .= "and other settings on a per-post or per-page basis, giving you fine-grained control over many of the page elements.<br>";
-	$vhtml .= "(without having to resort to other more complex workarounds to achieve the same effect, such as one-column templates,<br>";
-	$vhtml .= "hiding elements with styles and endless page-targeted CSS rules that clutter your stylesheets etc.)<br>";
-	$vhtml .= "Note: Metabox overrides take priority over filtered theme settings. (ie. Settings -&gt; Filtered -&gt; Overrides)<br><br>";
+	$vhtml .= "<p>You will find a Theme Settings Metabox on the post/page writing screen which allows you to override default display
+		and other settings on a per-post or per-page basis, giving you fine-grained control over many of the page elements.
+		(without having to resort to other more complex workarounds to achieve the same effect, such as one-column templates,
+		hiding elements with styles and endless page-targeted CSS rules that clutter your stylesheets etc.)
+		Note: Metabox overrides take priority over filtered theme settings. (ie. Settings -&gt; Filtered -&gt; Overrides)</p>";
 
-	$vhtml .= "Currently most override options in the metabox are for display (hiding elements) rather than output (removing them.)<br>";
-	$vhtml .= "Inline CSS is added to a particular page to achieve this (more actual output overrides will be added at a later stage.)<br>";
-	$vhtml .= "[Display overrides are stored in post meta as an array with (hidden) meta key <i>_displayoverrides</i>.]<br>";
-	$vhtml .= "[Templating overrides are stored in post meta as an array with (hidden) meta key <i>_templatingoverrides</i>.]<br><br>";
+	$vhtml .= "<p>Currently most override options in the metabox are for display (hiding elements) rather than output (removing them.)
+		Inline CSS is added to a particular page to achieve this (more actual output overrides will be added at a later stage.)<br>
+		[Display overrides are stored in post meta as an array with (hidden) meta key <i>_displayoverrides</i>.]<br>
+		[Templating overrides are stored in post meta as an array with (hidden) meta key <i>_templatingoverrides</i>.]</p>";
 
 	$vhtml .= "<h3>Layout Display Overrides</h3>";
 	$vhtml .= "<h4>General Layout</h4>";
@@ -624,18 +645,19 @@ function bioship_docs_metabox_guide($vwrap) {
 	$vhtml .= "<h4>Content Display Overrides</h4>";
 	$vhtml .= "Hide Display of: <i>Title</i>, <i>Subtitle</i>, <i>Top Meta Line</i>, <i>Bottom Meta Line</i>, <i>Author Bio</i><br>";
 	// TODO: swap meta positions, author bio position?
+
 	$vhtml .= "<h4>Content Filters</h4>";
-	$vhtml .= "BioShip provides an easy way to turn off some in-built WordPress content filters on a post/page basis via the metabox.<br>";
-	$vhtml .= "This can be handy if they are mangling your content for a particular post for some reason and you want an easy fix.<br>";
-	$vhtml .= "Currently available filters you can disable are: <i>wpautop</i>, <i>wptexturize</i>, <i>convert_smilies</i>, <i>convert_chars</i><br>";
-	$vhtml .= "[Filter overrides are stored in the post meta with (hidden) meta key <i>_disablefilters</i>]<br>";
+	$vhtml .= "<p>BioShip provides an easy way to turn off some in-built WordPress content filters on a post/page basis via the metabox.
+		This can be handy if they are mangling your content for a particular post for some reason and you want an easy fix.
+		Currently available filters you can disable are: <i>wpautop</i>, <i>wptexturize</i>, <i>convert_smilies</i>, <i>convert_chars</i><br>
+		[Filter overrides are stored in the post meta with (hidden) meta key <i>_disablefilters</i>]</p>";
 
 	$vhtml .= "<h3>PerPost Styles</h3>";
-	$vhtml .= "You can add CSS style rules for a post/page through this metabox field. Handy if you need to tweak a specific post or page display.<br>";
-	$vhtml .= "without having all these post-specific rules clogging up your global stylesheet and thus loaded sitewide on every page.<br>";
-	$vhtml .= "These rules are checked for singular pages and output in the &lt;head&gt; section of the page on display automatically.<br>";
-	$vhtml .= "There is also an expand/collapse link for better access to viewing and editing this stylesheet rules textarea.<br>";
-	$vhtml .= "[PerPost Styles are stored in the post meta with (hidden) meta key <i>_perpoststyles</i>]<br>";
+	$vhtml .= "<p>You can add CSS style rules for a post/page through this metabox field. Handy if you need to tweak a specific post or page display.
+		without having all these post-specific rules clogging up your global stylesheet and thus loaded sitewide on every page.
+		These rules are checked for singular pages and output in the &lt;head&gt; section of the page on display automatically.
+		There is also an expand/collapse link for better access to viewing and editing this stylesheet rules textarea.<br>
+		[PerPost Styles are stored in the post meta with (hidden) meta key <i>_perpoststyles</i>]</p>";
 
 	if ($vwrap) {$vhtml .= bioship_docs_wrap_close();}
 
@@ -841,20 +863,19 @@ function bioship_docs_file_hierarchy($vwrap) {
 	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip Files and Hierarchy</h2><br>';}
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
-	$vhtml .= "BioShip uses an extended file hierarchy so you can easily override <i>any</i> of the Core Theme Files,<br>";
-	$vhtml .= "Javascript and CSS Stylesheets by copying the existing files to your Child Theme and modifying them.<br><br>";
+	$vhtml .= "<p>BioShip uses an extended file hierarchy so you can easily override <i>any</i> of the Core Theme Files,
+		Javascript and CSS Stylesheets by copying the existing files to your Child Theme and modifying them.</p>";
 
-	$vhtml .= "You can also override any Page Templates, Content Templates, Sidebar Templates etc. or create new ones<br>";
-	$vhtml .= "for Custom Post Types or Post Formats etc. (see the <a href='".$vdoclinks['templates']."'>Template Hierarchy Guide</a> for further details.)<br>";
+	$vhtml .= "You can also override any Page Templates, Content Templates, Sidebar Templates etc. or create new ones
+		for Custom Post Types or Post Formats etc. (see the <a href='".$vdoclinks['templates']."'>Template Hierarchy Guide</a> for further details.)</p>";
 
 	$vhtml .= "<h3>BioShip File Hierarchy</h3>";
-	$vhtml .= "The file hierarchy will search for the file in this order and use the first matching file it finds:<br>
+	$vhtml .= "<p>The file hierarchy will search for the file in this order and use the first matching file it finds:<br>
 	<ol><li>the Child Theme subdirectories (if relevant)</li>
 	<li>the main Child Theme directory (ie. 'Stylesheet' directory)</li>
 	<li>the Parent Theme subdirectories (if relevant)</li>
-	<li>then main Parent Theme directory (ie. 'Template' directory)</li>
-	</ol>";
-	$vhtml .= "For example, this allows you to override the Parent Theme (Framework) Stylesheets, Javascripts or Images with ease...<br>";
+	<li>then main Parent Theme directory (ie. 'Template' directory)</li></ol>";
+	$vhtml .= "For example, this allows you to override the Parent Theme (Framework) Stylesheets, Javascripts or Images with ease...</p>";
 
 	$vhtml .= "<h5>CSS Stylesheets</h5>";
 	$vhtml .= "<i>/wp-content/themes/bioship/styles/</i><br>";
@@ -877,19 +898,19 @@ function bioship_docs_file_hierarchy($vwrap) {
 
 	$vhtml .= "<h3>Core Theme File Hierarchy</h3>";
 
-	$vhtml .= "The File Hierarchy also allows you to override Core Theme Files, though in most cases this would be unnecessary,<br>";
-	$vhtml .= "as generally speaking you would leave these alone for Parent Theme updates and modify individual functions instead.<br><br>";
+	$vhtml .= "<p>The File Hierarchy also allows you to override Core Theme Files, though in most cases this would be unnecessary,
+		as generally speaking you would leave these alone for Parent Theme updates and modify individual functions instead.</p>";
 
-	$vhtml .= "<i>All</i> the core theme functions have been made pluggable (overrideable) - with minor exceptions (see below.)<br>";
-	$vhtml .= "(In other words each function declaration is wrapped in conditional <i>function_exists</i> checks to make this possible.)<br>";
-	$vhtml .= "So to override any function, simply place a modified copy of it in your Child Theme's <i>functions.php</i> file,<br>";
-	$vhtml .= "As WordPress intentionally loads this file <i>before</i> the Parent Theme's <i>functions.php</i>, the modified function<br>";
-	$vhtml .= "will be loaded <i>instead</i> of the default Parent Theme (Framework) function. (see <a href='http://codex.wordpress.org/Child_Themes' target=_blank>Child Themes on the WordPress Codex</a>.)<br><br>";
+	$vhtml .= "<i>All</i> the core theme functions have been made pluggable (overrideable) - with minor exceptions (see below.)
+		(In other words each function declaration is wrapped in conditional <i>function_exists</i> checks to make this possible.)
+		So to override any function, simply place a modified copy of it in your Child Theme's <i>functions.php</i> file,
+		As WordPress intentionally loads this file <i>before</i> the Parent Theme's <i>functions.php</i>, the modified function
+		will be loaded <i>instead</i> of the default Parent Theme (Framework) function. (see <a href='http://codex.wordpress.org/Child_Themes' target=_blank>Child Themes on the WordPress Codex</a>.)</p>";
 
-	$vhtml .= "(Note: although that is the preffered method, you may still use the File Hierarchy for development overrides however.<br>";
-	$vhtml .= "For example, if you have found and fixed a bug in the Parent Theme <i>skin.php</i>, <i>grid.php</i> or <i>hooks.php</i><br>";
-	$vhtml .= "As these files do <i>not</i> contain pluggable functions, you can put a modified copy of any of them in your Child Theme<br>";
-	$vhtml .= "instead and report the bug for the next BioShip update, then recheck those fixes when the update comes out.)<br><br>";
+	$vhtml .= "(Note: although that is the preffered method, you may still use the File Hierarchy for development overrides however.
+		For example, if you have found and fixed a bug in the Parent Theme <i>skin.php</i>, <i>grid.php</i> or <i>hooks.php</i>
+		As these files do <i>not</i> contain pluggable functions, you can put a modified copy of any of them in your Child Theme
+		instead and report the bug for the next BioShip update, then recheck those fixes when the update comes out.)</p>";
 
 	$vhtml .= "<h4>Core Theme Files</h4>";
 	$vhtml .= "<i>/wp-content/themes/bioship</i><br>";
@@ -918,8 +939,7 @@ function bioship_docs_file_hierarchy($vwrap) {
 	$vhtml .= "<h4>Default Template Files</h4>";
 	$vhtml .= "(see <a href='".$vdoclinks['templates']."'>Template Hierarchy Guide</a> for much more detailed information.)<br>";
 
-	$vhtml .= "<table>
-		<tr><td><b>Base Templates</b></td></tr>
+	$vhtml .= "<table><tr><td><b>Base Templates</b></td></tr>
 		<tr><td>header.php</td><td>Default Header Template</td></tr>
 		<tr><td>index.php</td><td>Default Index Template</td></tr>
 		<tr><td>index-loop.php</td><td>Default Loop Template</td></tr>
@@ -928,14 +948,13 @@ function bioship_docs_file_hierarchy($vwrap) {
 		<tr><td>/content/</td><td>Content Templates</td></tr>
 		<tr><td>/content/format/</td><td>Post Format Templates</td></tr>
 		<tr><td>/sidebar/</td><td>Sidebar Templates</td></tr>
-		<tr><td>/templates/</td><td><i>Third Party</i> Templates</td></tr>
-		</table>";
+		<tr><td>/templates/</td><td><i>Third Party</i> Templates</td></tr></table>";
 
 	$vhtml .= "<h4>Library Hierarchy</h4>";
 
-	$vhtml .= "While the File Hierarchy also works for included libraries, if you want to use it for modifying a library,<br>";
-	$vhtml .= "you will need to copy the <i>entire library directory and subdirectories</i> to your Child Theme to do so.<br>";
-	$vhtml .= "This is because it will find the library loader file path and the library will load files <i>relative to that</i>.<br><br>";
+	$vhtml .= "<p>While the File Hierarchy also works for included libraries, if you want to use it for modifying a library,
+		you will need to copy the <i>entire library directory and subdirectories</i> to your Child Theme to do so.
+		This is because it will find the library loader file path and the library will load files <i>relative to that</i>.</p>";
 
 	$vhtml .= "<table>
 		<tr><td><b>Library Directories</b></td><td></td></tr>
@@ -965,25 +984,25 @@ function bioship_docs_template_hierarchy($vwrap) {
 	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip Template Hierarchy</h2><br>';}
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
-	$vhtml .= 'BioShip of course supports the default <a href="https://developer.wordpress.org/themes/basics/template-hierarchy/">WordPress Template Hierarchy</a>.<br>';
-	$vhtml .= 'So you can still implement these top level page templates overrides as you would in a standard theme (eg. <i>page.php</i>, <i>home.php</i> etc.)<br><br>';
+	$vhtml .= '<p>BioShip of course supports the default <a href="https://developer.wordpress.org/themes/basics/template-hierarchy/">WordPress Template Hierarchy</a>.
+		So you can still implement these top level page templates overrides as you would in a standard theme (eg. <i>page.php</i>, <i>home.php</i> etc.)</p>';
 
-	$vhtml .= 'Remember, due to the File Hieararchy, <i>all</i> template files parts are searched for in your Child Theme directory first.<br>';
-	$vhtml .= '(This is ideally where you would be placing any customized templates anyway so they are all preserved in framework updates.)<br>';
-	$vhtml .= 'In all cases the Template Hierarchy will fall back to your Parent Theme (BioShip Framework) if there is no custom template.<br><br>';
+	$vhtml .= '<p>Remember, due to the File Hieararchy, <i>all</i> template files parts are searched for in your Child Theme directory first.
+		(This is ideally where you would be placing any customized templates anyway so they are all preserved in framework updates.)
+		In all cases the Template Hierarchy will fall back to your Parent Theme (BioShip Framework) if there is no custom template.</p>';
 
-	$vhtml .= 'However, BioShip extends upon this default system in many different ways to make templating way more flexible.<br>';
-	$vhtml .= 'This of course could make it complex and unfamiliar as well - hence this guide is here to make it comprehensible!<br><br>';
+	$vhtml .= '<p>However, BioShip extends upon this default system in many different ways to make templating way more flexible.
+		This of course could make it complex and unfamiliar as well - hence this guide is here to make it comprehensible!</p>';
 
-	$vhtml .= 'First, by default, it uses a single <i>index.php</i>, <i>loop-index.php</i> and <i>content/content.php</i> to handle <i>ALL</i> page conditions.<br>';
-	$vhtml .= 'This keeps things super clean and means you can copy these default templates as starting points for custom ones.<br>';
-	$vhtml .= 'It also means if you prefer, there is no need at all use the template hierarchy - but it is available if needed.<br>';
-	$vhtml .= 'You can instead use the in-built combination of <a href="'.$vdoclinks['filters'].'">Value Filters</a> and <a href="'.$vdoclinks['hooks'].'">Layout Hooks</a> for customizations.<br>';
-	$vhtml .= 'And since one of the most common thing a project needs is custom sidebars, for that see the <a href="'.$vdoclinks['sidebars'].'">Sidebar Guide</a>.<br><br>';
+	$vhtml .= '<p>First, by default, it uses a single <i>index.php</i>, <i>loop-index.php</i> and <i>content/content.php</i> to handle <i>ALL</i> page conditions.
+		This keeps things super clean and means you can copy these default templates as starting points for custom ones.
+		It also means if you prefer, there is no need at all use the template hierarchy - but it is available if needed.
+		You can instead use the in-built combination of <a href="'.$vdoclinks['filters'].'">Value Filters</a> and <a href="'.$vdoclinks['hooks'].'">Layout Hooks</a> for customizations.
+		And since one of the most common thing a project needs is custom sidebars, for that see the <a href="'.$vdoclinks['sidebars'].'">Sidebar Guide</a>.</p>';
 
-	$vhtml .= 'Read on for deeper customizations, as you can override sublevel templates and parts at just about any level also...<br>';
-	$vhtml .= 'This is done by simply creating a template file with the proper naming convention to match the desired page condition.<br>';
-	$vhtml .= 'Again, none of these need to be used by default, but are made available for the most flexible template system possible.<br><br>';
+	$vhtml .= '<p>Read on for deeper customizations, as you can override sublevel templates and parts at just about any level also...
+		This is done by simply creating a template file with the proper naming convention to match the desired page condition.
+		Again, none of these need to be used by default, but are made available for the most flexible template system possible.</p>';
 
 	$vhtml .= "<table>
 	<tr><td><h4>Base Template Files</h4></td><td><i>/wp-content/bioship/</i></td></tr>
@@ -1106,28 +1125,27 @@ function bioship_docs_sidebar_guide($vwrap) {
 	if ($vwrap) {$vdoclinks = bioship_docs_links(true); $vhtml = bioship_docs_wrap_open().'<h2>BioShip Sidebar Guide</h2><br>';}
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
-	$vhtml .= "BioShip uses a uniquely flexible Sidebar template system to avoid using restrictive page layout templates.<br>";
-	$vhtml .= "Sidebars output is pre-calculated in <i>skull.php</i> so &lt;body&gt; and other tag classes can be set for sidebar states.<br><br>";
+	$vhtml .= "<p>BioShip uses a uniquely flexible Sidebar template system to avoid using restrictive page layout templates.
+		Sidebars output is pre-calculated in <i>skull.php</i> so &lt;body&gt; and other tag classes can be set for sidebar states.</p>";
 
-	$vhtml .= "All sidebars are <i>registered regardless of their setting display state</i> so the you can add widgets to them while inactive.<br>";
-	$vhtml .= "(Inactive sidebars are however lowercase and styled differently on the widgets page - and listed separate for ease of use.)<br><br>";
+	$vhtml .= "<p>All sidebars are <i>registered regardless of their setting display state</i> so the you can add widgets to them while inactive.
+		(Inactive sidebars are however lowercase and styled differently on the widgets page - and listed separate for ease of use.)</p>";
 
 	$vhtml .= "<h4>Sidebar Template Override Usage</h4>";
 	$vhtml .= "The values for the sidebar template array are calculated based on the Theme Settings and page context then filtered.<br>";
 	$vhtml .= "It is numerical index array of four sidebar template values (filenames without the .php extension) for these positions:<br>";
-
 	$vhtml .= "<br><table cellpadding='10' cellspacing='10'>
-		<td width='20'></td><td>[<b>0</b>] : Outer Left Template</td>
-		<td width='20'></td><td>[<b>1</b>] : Inner Left Template</td>
-		<td width='20'></td><td><i>Content Column</i></td>
-		<td width='20'></td><td>[<b>2</b>]: Inner Right Template</td>
-		<td width='20'></td><td>[<b>3</b>] : Outer Right Template</td>
+		<td width='20'></td><td>[<b>0</b>] : Outer Left Sidebar Template</td>
+		<td width='20'></td><td>[<b>1</b>] : Inner Left Sidebar Template</td>
+		<td width='20'></td><td><i>Content Columns Area</i></td>
+		<td width='20'></td><td>[<b>2</b>]: Inner Right Sidebar Template</td>
+		<td width='20'></td><td>[<b>3</b>] : Outer Right Sidebar Template</td>
 	</tr></table><br>";
 
-	$vhtml .= "The main filter used to override this layout is <a href='".$vdoclinks['filters']."?filter=skeleton_sidebar_layout_override'>skeleton_sidebar_layout_override</a>.<br>";
-	$vhtml .= "This allows you to conditionally use any sidebar in any of the possible positions for complete layout flexibility.<br>";
-	$vhtml .= "Simply set one or two of the four template positions to a template name you wish to use (leaving the other two empty.)<br>";
-	$vhtml .= "Note: when setting <i>opposing sidebars</i>, you can use either position 0 or 1 for left, and either position 2 or 3 for right.<br>";
+	$vhtml .= "<p>The main filter used to override this layout is <a href='".$vdoclinks['filters']."?filter=skeleton_sidebar_layout_override'>skeleton_sidebar_layout_override</a>.
+		This allows you to conditionally use any sidebar in any of the possible positions for complete layout flexibility.
+		Simply set one or two of the four template positions to a template name you wish to use (leaving the other two empty.)
+		Note: when setting <i>opposing sidebars</i>, you can use either position 0 or 1 for left, and either position 2 or 3 for right.</p>";
 
 	$vhtml .= "<h6>Override Array Examples</h6>";
 	$vhtml .= "Post with left Sidebar and opposite SubSidebar: Array ( [0] => 'post', [1] => '', [2] => 'subpost', [3] => '' )<br>";
@@ -1153,17 +1171,17 @@ function bioship_docs_sidebar_guide($vwrap) {
 	// TODO: more filter examples..?
 
 	$vhtml .= "<h5>PerPost Metabox Overrides</h5>";
-	$vhtml .= "Sidebar templates can also be overridden on a post-by-post basis using the Theme Metabox on the post writing/editing screen.<br>";
-	$vhtml .= "Note that using these settings will override the filtered sidebar settings also, not just the default sidebar settings.<br>";
-	$vhtml .= "Overrides are available for the sidebar templates, sidebar positions, sidebar widths (and content width also.)<br>";
-	$vhtml .= "For more information see the <a href='".$vdoclinks['metabox']."'>BioShip Theme Metabox</a> section.<br>";
+	$vhtml .= "<p>Sidebar templates can also be overridden on a post-by-post basis using the Theme Metabox on the post writing/editing screen.
+		Note that using these settings will override the filtered sidebar settings also, not just the default sidebar settings.
+		Overrides are available for the sidebar templates, sidebar positions, sidebar widths (and content width also.)
+		For more information see the <a href='".$vdoclinks['metabox']."'>BioShip Theme Metabox</a> section.</p>";
 
 	$vhtml .= "<h5>Template Hierarchy</h5>";
-	$vhtml .= "Instead of overriding the template used, you can also override any particular sidebar template file.<br>";
-	$vhtml .= "The <a href='".$vdoclinks['files']."'>BioShip File Hierarchy</a> ensures that the Child Theme sidebar template is used instead if it exists.<br>";
-	$vhtml .= "All default sidebar templates have been created in the Parent Theme ready to copy to the Child Theme.<br>";
-	$vhtml .= "(each is almost exactly the same - checks for active widgets in that sidebar and outputs if found.)<br>";
-	$vhtml .= "All subsidiary templates are prefixed with 'sub' to distinguish them from primary sidebar templates.<br>";
+	$vhtml .= "Instead of overriding the template used, you can also override any particular sidebar template file.
+		The <a href='".$vdoclinks['files']."'>BioShip File Hierarchy</a> ensures that the Child Theme sidebar template is used instead if it exists.
+		All default sidebar templates have been created in the Parent Theme ready to copy to the Child Theme.
+		(each is almost exactly the same - checks for active widgets in that sidebar and outputs if found.)
+		All subsidiary templates are prefixed with 'sub' to distinguish them from primary sidebar templates.</p>";
 
 	$vhtml .= "<h3>Sidebar Template List</h3>";
 	$vhtml .= "<i>/wp-content/bioship/sidebar/</i><br>";
@@ -1269,29 +1287,28 @@ function bioship_docs_grid_system($vwrap) {
 
 	if ($vwrap) {$vhtml .= '</head><body bgcolor="#F0EFFF"><div id="content">';}
 
-	// $vhtml .= "Well, you're here early aren't you? Please check back soon...";
-	$vhtml .= "The BioShip Grid System is built primarily upon the Skeleton Boilerplate grid system.<br>";
-	$vhtml .= "It also incorporates some aspects of other grid systems such as 960GS and Blueprint.<br>";
+	$vhtml .= "<p>The BioShip Grid System is built primarily upon the Skeleton Boilerplate grid system.
+		It also incorporates some aspects of other grid systems such as 960GS and Blueprint.</p>";
 
 	$vhtml .= "<h4>Main Layout Grid</h4>";
-	$vhtml .= "The main BioShip theme display template is based upon columns with <b>em</b> based unit widths.<br>";
-	$vhtml .= "This means the grid scales flexibly and well according to browser zoom and base font size.<br>";
-	$vhtml .= "The main #wrap container contains the header, footer, sidebars and content area.<br>";
-	$vhtml .= "All of the main grid display is worked out automatically based on your theme settings.<br>";
-	$vhtml .= "It is worth remembering that sidebar, subsidebar and content column widths of any page<br>";
-	$vhtml .= "should add to the total grid columns set in your theme settings (the default is sixteen.)<br>";
+	$vhtml .= "<p>The main BioShip theme display template is based upon columns with <b>em</b> based unit widths.
+		This means the grid scales flexibly and well according to browser zoom and base font size.
+		The main #wrap container contains the header, footer, sidebars and content area.
+		All of the main grid display is worked out automatically based on your theme settings.
+		It is worth remembering that sidebar, subsidebar and content column widths of any page
+		should add to the total grid columns set in your theme settings (the default is sixteen.)</p>";
 
 	$vhtml .= "<h4>Content Grid</h4>";
-	$vhtml .= "Within the page #content area, there is an optional content grid available that uses <b>%</b> based widths.<br>";
-	$vhtml .= "The number of grid columns can be set in theme settings for the <i>container</i> class (default twentyfour.)<br>";
-	$vhtml .= "Alternatively you can set an explicit number of grid columns using a specific container class of:<br>";
-	$vhtml .= "<i>container_12</i>, <i>container_16</i>, <i>container_20</i>, or <i>container_24</i><br>";
+	$vhtml .= "<p>Within the page #content area, there is an optional content grid available that uses <b>%</b> based widths.
+		The number of grid columns can be set in theme settings for the <i>container</i> class (default twentyfour.)
+		Alternatively you can set an explicit number of grid columns using a specific container class of:<br>
+		<i>container_12</i>, <i>container_16</i>, <i>container_20</i>, or <i>container_24</i><br>";
 
 	$vhtml .= "<h5>Device Width Breakpoints</h5>";
-	$vhtml .= "Both the Main Layout Grid and Content Grid reponsively resize according to device screen width.<br>";
-	$vhtml .= "The default device breakpoints are 320px, 480px, 640px, 768px, 960px, 1140px and 1200px.<br>";
-	$vhtml .= "You can change the number and value of these breakpoints via the theme options screen.<br>";
-	$vhtml .= "(Note that any breakpoint larger than the <i>maximum</i> layout width set will be ignored.)<br>";
+	$vhtml .= "<p>Both the Main Layout Grid and Content Grid reponsively resize according to device screen width.
+		The default device breakpoints are 320px, 480px, 640px, 768px, 960px, 1140px and 1200px.
+		You can change the number and value of these breakpoints via the theme options screen.
+		(Note that any breakpoint larger than the <i>maximum</i> layout width set will be ignored.)</p>";
 
 	$vhtml .= "<h4>Content Grid Syntax</h4>";
 	$vhtml .= "Rather than using shortcodes, content columns can be generated using simple &lt;div&gt; element classes.<br>";
@@ -1300,22 +1317,22 @@ function bioship_docs_grid_system($vwrap) {
 	$vhtml .= '&lt;div class="container"&gt;&lt;div class="eight columns"&gt;COLUMN A&lt;/div&gt;<br>';
 	$vhtml .= '&lt;div class="eight columns"&gt;COLUMN B&lt;/div&gt;&lt;/div&gt;</pre></p>';
 
-	$vhtml .= '<div class="container"><div class="eight columns" style="text-align:center;">COLUMN A</div><div class="eight columns" style="text-align:center;">COLUMN B</div></div>';
+	$vhtml .= '<div class="container"><div class="eight columns" style="text-align:center;">COLUMN A</div><div class="eight columns" style="text-align:center;">COLUMN B</div></div><br>';
 
-	$vhtml .= "<br>Using outside margins for columns is problematic because it is unknown how many columns may be in a row.<br>";
-	$vhtml .= "To resolve this problem, inner divs are used in each column to give inner padding instead of outside margins.<br>";
-	$vhtml .= "Simply add a second div inside the column div with a class of <i>inner</i> to achieve the spacing effect.<br>";
-	$vhtml .= "The grid stylesheet automatically applies the padding to the inner div to give the column spacing. eg.<br>";
+	$vhtml .= "<p>Using outside margins for columns is problematic because it is unknown how many columns may be in a row.
+		To resolve this problem, inner divs are used in each column to give inner padding instead of outside margins.
+		Simply add a second div inside the column div with a class of <i>inner</i> to achieve the spacing effect.
+		The grid stylesheet automatically applies the padding to the inner div to give the column spacing. eg.<br>";
 
 	$vhtml .= '<pre style="font-family:Consolas, "Lucida Console", Monaco, FreeMono, monospace; background-color:#EEEEEE">';
 	$vhtml .= '&lt;div class="container"&gt;&lt;div class="eight columns"&gt;&lt;div class="inner"&gt;COLUMN A&lt;/div&gt;&lt;/div&gt;<br>';
 	$vhtml .= '&lt;div class="eight columns"&gt;&lt;div class="inner"&gt;COLUMN B&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</pre></p>';
 
 	$vhtml .= '<div class="container"><div class="eight columns"><div class="inner" style="text-align:center;">COLUMN A</div></div>';
-	$vhtml .= '<div class="eight columns"><div class="inner" style="text-align:center;">COLUMN B</div></div></div>';
+	$vhtml .= '<div class="eight columns"><div class="inner" style="text-align:center;">COLUMN B</div></div></div><br>';
 
-	$vhtml .= "<br>You can see the combination of resizable responsive grid with inner padding in the following example grid.<br>";
-	$vhtml .= "(some colours and borders styles are added here for clearer emphasis only.)<br>";
+	$vhtml .= "<p>You can see the combination of resizable responsive grid with inner padding in the following example grid.";
+	$vhtml .= "(some colours and borders styles are added here for clearer emphasis only.)</p>";
 
 	$vexample = '<br><div id="gridexample">
 	<div class="container_12"><div class="one column left"><div class="inner"><div>1</div></div></div>
@@ -1345,9 +1362,9 @@ function bioship_docs_grid_system($vwrap) {
 	$vhtml .= $vexample;
 
 	$vhtml .= "<h4>Content Grid Class Reference</h4>";
-	$vhtml .= "Extra classes are available for column shifts and offsets, to help you position the grid columns.<br>";
-	$vhtml .= "Outer margins of different column sizes are applied to achieve these column shifts and offsets.<br>";
-	$vhtml .= "The below reference table shows you which of the numbered class names have what effect.<br>";
+	$vhtml .= "<p>Extra classes are available for column shifts and offsets, to help you position the grid columns.
+		Outer margins of different column sizes are applied to achieve these column shifts and offsets.
+		The below reference table shows you which of the numbered class names have what effect.</p>";
 
 	$vhtml .= '<table id="gridreference">
 	<tr><td></td><td align="center"><b>BioShip<br>Framework</b></td><td align="center">Skeleton<br>Boilerplate</td><td align="center"><i>960 Grid System</i></td><td align="center"><i>Blueprint</i></td><td align="center">Foundation</td></td></tr>
@@ -1362,14 +1379,14 @@ function bioship_docs_grid_system($vwrap) {
 	</table>';
 	// extra ref: https://scotch.io/tutorials/cheat-sheet-for-comparing-bootstrap-and-foundation-css-classes
 
-	// TODO: using smaller spacer columns
+	// TODO: notes and example on using small spacer columns
 	// $vhtml .= "<h5>Spacer Columns</h5>";
 
 	$vhtml .= "<h5>Content Grid Compatibility Classes</h5>";
-	$vhtml .= "If you prefer, you can use the grid class syntax for 960GS or Blueprint classes by enabling<br>";
-	$vhtml .= "either of those options in theme settings so the rules are added to the grid stylesheet also.<br>";
-	$vhtml .= "For Foundation grid, simply enable the Foundation resources separately in theme settings tab<br>";
-	$vhtml .= "for Foundation (Skeleton layer), and use that grid syntax as you normally would.<br>";
+	$vhtml .= "<p>If you prefer, you can use the grid class syntax for 960GS or Blueprint classes by enabling
+		either of those options in theme settings so the rules are added to the grid stylesheet also.
+		For Foundation grid, simply enable the Foundation resources separately in theme settings tab
+		for Foundation (Skeleton layer), and use that grid syntax as you normally would.</p>";
 
 	if ($vwrap) {$vhtml .= "</div>"; $vhtml .= bioship_docs_wrap_close();}
 
@@ -1431,10 +1448,10 @@ function bioship_docs_layout_hooks($vwrap) {
 
 
 	$vhtml .= "<h3>Hybrid Hook</h3>";
-	$vhtml .= "All hooks are automatically made available to the Hybrid Hook plugin (modified for BioShip.)<br>";
-	$vhtml .= "When activated (via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Hybrid</i>) you can access <i>Appearance</i> -> <i>Hybrid Hook</i>.<br>";
-	$vhtml .= "This allows you to easily add content (Text, HTML, or Shortcode) to any of the Layout Hook sections.<br>";
-	$vhtml .= "(You can also specify a priority if you need to insert between existing hooked functions.)<br><br>";
+	$vhtml .= "<p>All hooks are automatically made available to the Hybrid Hook plugin (modified for BioShip.)
+		When activated (via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Hybrid</i>) you can access <i>Appearance</i> -> <i>Hybrid Hook</i>.
+		This allows you to easily add content (Text, HTML, or Shortcode) to any of the Layout Hook sections.
+		(You can also specify a priority if you need to insert between existing hooked functions.)</p>";
 
 	$vhtml .= "<h3>Manually Adding Functions</h3>";
 	$vhtml .= "You can of course simply add your own functions to any of the available hooks with a few lines of code, in the form:<br>";
@@ -1520,31 +1537,32 @@ function bioship_docs_theme_values($vwrap) {
 	$vhtml .= "<h3>Theme Constants</h3>";
 	$vhtml .= "<table>
 		<tr><td><b>Theme Values</b></td><td colspan='2'><b>Description</b></td><td><b>Value</b></tr>
-		<tr><td>THEMESLUG</td><td colspan='2'>sanitized lowercase and hyphenated) theme name</td><td>string</td></tr>
-		<tr><td>THEMEKEY</td><td colspan='2'>options table key value for theme options</td><td>string</td></tr>
-		<tr><td>THEMEDISPLAYNAME</td><td colspan='2'>the Display Name of currently active Theme</td><td>string</td></tr>
-		<tr><td>THEMEHOMEURL</td><td colspan='2'>static URL of the BioShip website</td><td><a href='".THEMEHOMEURL."' target=_blank>".THEMEHOMEURL."</a></td></tr>
-		<tr><td>THEMESUPPORT</td><td colspan='2'>static URL of Support website (WordQuest)</td><td><a href='".THEMESUPPORT."' target=_blank>".THEMESUPPORT."</a></td></tr>
+		<tr><td><pre>THEMEPREFIX</pre></td><td colspan='2'>theme prefix</td><td>'bioship'</td></tr>
+		<tr><td><pre>THEMESLUG</pre></td><td colspan='2'>sanitized lowercase and hyphenated) theme name</td><td>string</td></tr>
+		<tr><td><pre>THEMEKEY</pre></td><td colspan='2'>options table key value for theme options</td><td>string</td></tr>
+		<tr><td><pre>THEMEDISPLAYNAME</pre></td><td colspan='2'>the Display Name of currently active Theme</td><td>string</td></tr>
+		<tr><td><pre>THEMEHOMEURL</pre></td><td colspan='2'>static URL of the BioShip website</td><td><a href='".THEMEHOMEURL."' target=_blank>".THEMEHOMEURL."</a></td></tr>
+		<tr><td><pre>THEMESUPPORT</pre></td><td colspan='2'>static URL of Support website (WordQuest)</td><td><a href='".THEMESUPPORT."' target=_blank>".THEMESUPPORT."</a></td></tr>
 		<tr height='10'><td> </td></tr>
 		<tr><td><b>Load States</b></td></tr>
-		<tr><td>THEMESSL</td><td colspan='2'>whether to load SSL resources (is_ssl)</td><td>true/false</td></tr>
-		<tr><td>THEMECHILD</td><td colspan='2'>if using a Child Theme or not</td><td>true/false</td></tr>
-		<tr><td>THEMEPARENT</td><td colspan='2'>parent Theme template slug (if any)</td><td>string</td></tr>
-		<tr><td>THEMEVERSION</td><td colspan='2'>current version of BioShip Theme Framework</td><td>x.x.x</td></tr>
-		<tr><td>THEMECHILDVERSION</td><td colspan='2'>Child Theme version (or parent if no child)</td><td>x.x.x</td></tr>
+		<tr><td><pre>THEMESSL</pre></td><td colspan='2'>whether to load SSL resources (is_ssl)</td><td>true/false</td></tr>
+		<tr><td><pre>THEMECHILD</pre></td><td colspan='2'>if using a Child Theme or not</td><td>true/false</td></tr>
+		<tr><td><pre>THEMEPARENT</pre></td><td colspan='2'>parent Theme template slug (if any)</td><td>string</td></tr>
+		<tr><td><pre>THEMEVERSION</pre></td><td colspan='2'>current version of BioShip Theme Framework</td><td>x.x.x</td></tr>
+		<tr><td><pre>THEMECHILDVERSION</pre></td><td colspan='2'>Child Theme version (or parent if no child)</td><td>x.x.x</td></tr>
 		<tr height='10'><td> </td></tr>
 		<tr><td><b>Library States</b></td></tr>
-		<tr><td>THEMETITAN</td><td colspan='2'>if Titan Framework is loaded</td><td>true/false</td></tr>
-		<tr><td>THEMEOPT</td><td colspan='2'>if Options Framework is loaded</td><td>true/false</td></tr>
-		<tr><td>THEMEHYBRID</td><td colspan='2'>if full Hybrid Core is loaded</td><td>true/false</td></tr>
-		<tr><td>THEMEDRIVE</td><td colspan='2'>if a Theme Test Drive is active</td><td>true/false</td></tr>
-		<tr><td>THEMEKIRKI</td><td colspan='2'>if Kirki is loaded (Customizer only)</td><td>true/false</td></tr>
+		<tr><td><pre>THEMETITAN</pre></td><td colspan='2'>if Titan Framework is loaded</td><td>true/false</td></tr>
+		<tr><td><pre>THEMEOPT</pre></td><td colspan='2'>if Options Framework is loaded</td><td>true/false</td></tr>
+		<tr><td><pre>THEMEHYBRID</pre></td><td colspan='2'>if full Hybrid Core is loaded</td><td>true/false</td></tr>
+		<tr><td><pre>THEMEDRIVE</pre></td><td colspan='2'>if a Theme Test Drive is active</td><td>true/false</td></tr>
+		<tr><td><pre>THEMEKIRKI</pre></td><td colspan='2'>if Kirki is loaded (Customizer only)</td><td>true/false</td></tr>
 		<tr height='10'><td> </td></tr>
 		<tr><td><b>Theme Debugging</b></td></tr>
-		<tr><td>THEMEDEBUG</td><td colspan='2'>output debugging information comments</td><td>true/false</td></tr>
-		<tr><td>THEMECOMMENTS</td><td colspan='2'>output template element comments</td><td>true/false</td></tr>
-		<tr><td>THEMETRACE</td><td colspan='2'>if performing a theme argument trace</td><td>true/false</td></tr>
-		<tr><td>THEMEWINDOWS</td><td colspan='2'>local environment for directory paths</td><td>true/false</td></tr>
+		<tr><td><pre>THEMEDEBUG</pre></td><td colspan='2'>output debugging information comments</td><td>true/false</td></tr>
+		<tr><td><pre>THEMECOMMENTS</pre></td><td colspan='2'>output template element comments</td><td>true/false</td></tr>
+		<tr><td><pre>THEMETRACE</pre></td><td colspan='2'>if performing a theme argument trace</td><td>true/false</td></tr>
+		<tr><td><pre>THEMEWINDOWS</pre></td><td colspan='2'>local environment for directory paths</td><td>true/false</td></tr>
 		<tr height='30'><td> </td></tr>
 
 
@@ -1564,11 +1582,11 @@ function bioship_docs_theme_values($vwrap) {
 
 	<tr><td><b>Theme Resource Directories</b></td></tr>
 		<tr><td>\$vthemedirs</td><td>File Hierarchy Search</td><td>Default Values</td><td>Filter</td></tr>
-		<tr><td> ['core']</td><td>Core Theme Directories Array</td><td>empty array (theme root)</td><td>skeleton_core_dirs</td></tr>
-		<tr><td> ['admin']</td><td>Theme Admin Directories Array</td><td>'admin'</td><td>skeleton_admin_dirs</td></tr>
-		<tr><td> ['css']</td><td>Style Directories Array</td><td>'styles', 'css', 'assets/css'</td><td>skeleton_css_dirs</td></tr>
-		<tr><td> ['js']</td><td>Script Directories Array</td><td>'javascripts', 'js', 'assets/js'</td><td>skeleton_js_dirs</td></tr>
-		<tr><td> ['img']</td><td>Image Directories Array</td><td>'images', 'img', 'icons', 'assets/img'</td><td>skeleton_img_dirs</td></tr>
+		<tr><td> ['core']</td><td>Core Theme Directories Array</td><td>empty array (theme root)</td><td>theme_core_dirs</td></tr>
+		<tr><td> ['admin']</td><td>Theme Admin Directories Array</td><td>'admin'</td><td>theme_admin_dirs</td></tr>
+		<tr><td> ['style']</td><td>Style Directories Array</td><td>'styles', 'css', 'assets/css'</td><td>theme_style_dirs</td></tr>
+		<tr><td> ['script']</td><td>Script Directories Array</td><td>'javascripts', 'js', 'assets/js'</td><td>theme_script_dirs</td></tr>
+		<tr><td> ['image']</td><td>Image Directories Array</td><td>'images', 'img', 'icons', 'assets/img'</td><td>theme_image_dirs</td></tr>
 		<tr height='20'><td> </td></tr>
 
 	<tr><td><b>Layout Sections and Hooks</b></td></tr>
@@ -1584,6 +1602,7 @@ function bioship_docs_theme_values($vwrap) {
 		<tr><td>\$vthemelayout</td><td colspan='2'>Calculated (and Filtered) Theme Layout</td><td>Filter</td></tr>
 		<tr><td> ['pagecontext']</td><td colspan='2'>Page Context</td></td></tr>
 		<tr><td> ['subpagecontext']</td><td colspan='2'>Archive SubContext</td><td></td></tr>
+		<tr><td> ['menus']</td><td colspan='2'>Filtered Menu States</td><td></td></tr>
 		<tr><td> ['maxwidth']</td><td colspan='2'>Maximum Layout Width (px)</td><td>skeleton_layout_width</td></tr>
 		<tr><td> ['gridcolumns']</td><td colspan='2'>Word-Number of Grid Columns</td><td>skeleton_grid_columns</td></tr>
 		<tr><td> ['contentcolumns']</td><td colspan='2'>Word-Number of Content Columns</td><td>skeleton_content_columns_override</td></tr>
@@ -1626,7 +1645,7 @@ function bioship_docs_debug_guide($vwrap) {
 	else {$vhtml = ''; $vdoclinks = bioship_docs_links(false);}
 
 	$vhtml .= "<h4>HTML Page Element Comments</h4>";
-	$vhtml .= "The THEMECOMMENTS constant is set by the theme according the option in <i>Theme Options</i> -> <i>Skin</i> -> <i>Styles</i><br>";
+	$vhtml .= "<p>The THEMECOMMENTS constant is set by the theme according the option in <i>Theme Options</i> -> <i>Skin</i> -> <i>Styles</i><br>";
 	$vhtml .= "This will wrap all the main Page Elements in HTML comments indicating start and finish of the element. eg.<br>";
 	$vhtml .= "<pre>&lt;!-- #sidebar --&gt;{Sidebar Output}&lt;!-- /#sidebar --&gt;</pre>";
 	$vhtml .= "This helps make things easier to find when viewing the page source or in a browser debug console. :-)<br>";
@@ -1634,14 +1653,13 @@ function bioship_docs_debug_guide($vwrap) {
 	$vhtml .= "[Value Filter] <a href='".$vdoclinks['filters']."?filter=skeleton_html_comments'><i>skeleton_html_comments</i></a> - return true/false]<br>";
 
 	$vhtml .= "<h3>Theme Debug Modes</h3>";
+	$vhtml .= "<p>Theme debug mode sets the THEMEDEBUG constant via the <i>themedebug</i> querystring switch (from any site URL.)
+		You can change switch the debug mode on or off, or set it to temporarily output (for that particular page load.)</p>";
 
-	$vhtml .= "Theme debug mode sets the THEMEDEBUG constant via the <i>themedebug</i> querystring switch (from any site URL.)<br>";
-	$vhtml .= "You can change switch the debug mode on or off, or set it to temporarily output (for that particular page load.)<br><br>";
-
-	$vhtml .= "<i>In practice</i>, you would usually just use ?themedebug=2 or ?themedebug=yes for a specific pageload.<br>";
-	$vhtml .= "However, to be able to test <i>logged out user content</i> you would need to switch debug mode ON and logout -<br>";
-	$vhtml .= "or simply view the logged out content from another browser with debug ON and then switch it OFF when done.<br><br>";
-	$vhtml .= "<b>Note</b>: You need <i>edit_theme_options</i> capability to toggle or enable/disable debug mode.<br>";
+	$vhtml .= "<p><i>In practice</i>, you would usually just use ?themedebug=2 or ?themedebug=yes for a specific pageload.
+		However, to be able to test <i>logged out user content</i> you would need to switch debug mode ON and logout -
+		or simply view the logged out content from another browser with debug ON and then switch it OFF when done.
+		<b>Note</b>: You need <i>edit_theme_options</i> capability to toggle or enable/disable debug mode.</p>";
 
 	$vhtml .= "<br><table cellpadding='10' cellspacing='10'>";
 	$vhtml .= "<tr><td><b>Querystring</b></td><td width='20'</td><td><b>Alternative</b></td><td width='20'</td><td><b>Debug Action</b></td></tr>";
@@ -1657,22 +1675,21 @@ function bioship_docs_debug_guide($vwrap) {
 	$vhtml .= "<pre>&lt;!-- Debug Info Description: {INFO} --&gt;</pre>";
 	$vhtml .= "This is so you can search the theme source for a particular 'Info Description' to see what is happening.<br><br>";
 
-	$vhtml .= "<b>Warning</b>: this kind of debug output can prevent Theme Settings or other admin/form/AJAX methods from saving!<br>";
-	$vhtml .= "This is because echoing this information inline means headers are already sent and thus can prevent redirects -<br>";
-	$vhtml .= "causing the Settings API and other things to fail. :-/ <i>So always remember to turn theme debug mode off!</i><br>";
+	$vhtml .= "<p><b>Warning</b>: this kind of debug output can prevent Theme Settings or other admin/form/AJAX methods from saving!
+		This is because echoing this information inline means headers are already sent and thus can prevent redirects -
+		causing the Settings API and other things to fail. :-/ <i>So always remember to turn theme debug mode off!</i></p>";
 
 
 	// $vhtml .= "<h4>Theme Debug to File</h4>";
 	// TODO: better debug to file options and explanation
 
 	$vhtml .= "<h4>Included Page Templates</h4>";
+	$vhtml .= "You can easily see what page templates are being included on a page (useful for WooCommerce/Forum templates etc.)
+		Simply search for 'Included Template Files' (Debug Info Description) in the page source when debug mode is active.
+		You will find a list of all files included between the <i>wp_loaded</i> and <i>wp_footer</i> action hooks in the page footer.</p>";
 
-	$vhtml .= "You can easily see what page templates are being included on a page (useful for WooCommerce/Forum templates etc.)<br>";
-	$vhtml .= "Simply search for 'Included Template Files' (Debug Info Description) in the page source when debug mode is active.<br>";
-	$vhtml .= "You will find a list of all files included between the <i>wp_loaded</i> and <i>wp_footer</i> action hooks in the page footer.<br>";
-
+	// TODO: better theme tracer explanation
 	// $vhtml .= "<h3>Theme Debug Tracer</h3>";
-
 	// $vhtml .= "A Theme Function Tracer has been developed for theme template, function, and function argument tracing.<br>";
 	// $vhtml .= "This allows you to see the flow of all template and function calls parsed by the theme as it runs.<br>";
 	// $vhtml .= "By default trace information is output to your themes /debug/ directory (relative to parent or child.)<br>";
@@ -1697,4 +1714,3 @@ function bioship_docs_debug_guide($vwrap) {
 	return $vhtml;
 }
 
-?>

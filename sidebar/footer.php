@@ -1,8 +1,12 @@
 <?php
 
-/* Footer Widget Areas */
+/* Footer Sidebar: Footer Widget Areas */
 
 if (THEMETRACE) {bioship_trace('T','Footer Widget Area Template',__FILE__);}
+
+// 2.0.9: add template name to footer class attribute
+$vtemplate = str_replace('.php', '', basename(__FILE__));
+$vargs = array('class' => 'sidebar sidebar-footer sidebar-'.$vtemplate);
 
 // Count the active widgets to determine column sizes
 $vfooterwidgets = bioship_count_footer_widgets();
@@ -18,7 +22,7 @@ elseif ($vfooterwidgets == "4") {$vfootergrid = "one-quarter one_quarter";} // i
 <?php if ($vfooterwidgets) : ?>
 
 	<?php bioship_html_comment('#sidebar-footer'); ?>
-	<div <?php hybrid_attr('sidebar', 'footer'); ?>>
+	<div <?php hybrid_attr('sidebar', 'footer', $vargs); ?>>
 
 		<?php bioship_do_action('bioship_before_footer_widgets'); ?>
 
@@ -28,7 +32,7 @@ elseif ($vfooterwidgets == "4") {$vfootergrid = "one-quarter one_quarter";} // i
 			<div id="footerwidgetarea1" class="<?php echo $vfootergrid.$vfirst.$vlast; ?>">
 				<?php dynamic_sidebar('footer-widget-area-1'); ?>
 			</div>
-			<?php endif;?>
+			<?php endif; ?>
 
 			<?php if (is_active_sidebar('footer-widget-area-2')) :
 			if (!$vfirst) {$vfirst = ' first';}
@@ -36,7 +40,7 @@ elseif ($vfooterwidgets == "4") {$vfootergrid = "one-quarter one_quarter";} // i
 			<div id="footerwidgetarea2" class="<?php echo $vfootergrid.$vfirst.$vlast;?>">
 				<?php dynamic_sidebar('footer-widget-area-2'); ?>
 			</div>
-			<?php endif;?>
+			<?php endif; ?>
 
 			<?php if (is_active_sidebar('footer-widget-area-3')) :
 			if (!$vfirst) {$vfirst = ' first';}
@@ -44,7 +48,7 @@ elseif ($vfooterwidgets == "4") {$vfootergrid = "one-quarter one_quarter";} // i
 			<div id="footerwidgetarea3" class="<?php echo $vfootergrid.$vlast;?>">
 				<?php dynamic_sidebar('footer-widget-area-3'); ?>
 			</div>
-			<?php endif;?>
+			<?php endif; ?>
 
 			<?php if (is_active_sidebar('footer-widget-area-4')) :
 			if (!$vfirst) {$vfirst = ' first';}
@@ -52,7 +56,7 @@ elseif ($vfooterwidgets == "4") {$vfootergrid = "one-quarter one_quarter";} // i
 			<div id="footerwidgetarea4" class="<?php echo $vfootergrid.$vlast;?>">
 				<?php dynamic_sidebar('footer-widget-area-4'); ?>
 			</div>
-			<?php endif;?>
+			<?php endif; ?>
 
 		<?php bioship_do_action('bioship_after_footer_widgets'); ?>
 

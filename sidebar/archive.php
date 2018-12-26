@@ -1,10 +1,10 @@
 <?php
 
-/* Archive Primary Sidebar */
+/* Primary Sidebar: Archive General */
 
 if (THEMETRACE) {bioship_trace('T','Archive Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('archive')) {
@@ -22,5 +22,3 @@ if (is_active_sidebar('archive')) {
 	<?php bioship_do_action('bioship_after_sidebar');
 
 }
-
-?>

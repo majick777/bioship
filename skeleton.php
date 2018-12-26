@@ -205,7 +205,10 @@ if (!function_exists('bioship_skeleton_header_nav')) {
 	function bioship_skeleton_header_nav() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-		global $vthememenus; if (!$vthememenus['header']) {return;}
+		// 2.0.9: use subkey of vthemelayout global
+		// 2.1.0: added check for array key
+		global $vthemelayout;
+		if ( (!isset($vthemelayout['menus']['header'])) || (!$vthemelayout['menus']['header']) ) {return;}
 
 		// note: can use Hybrid attribute filter to add column classes
 		bioship_html_comment('.header-menu');
@@ -246,14 +249,18 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		$vlogourl = $vthemesettings['header_logo'];
 		// 1.5.0: moved logo url filter
 		$vlogourl = bioship_apply_filters('skeleton_header_logo_url', $vlogourl);
+		// 2.0.9: use esc_url on logo output
+		$vlogourl = esc_url($vlogourl);
 
 		// 1.8.5: use home_url not site_url
 		$vhomeurl = esc_url(home_url('/'));
 		// 2.0.6: added site logo and home title link filters
 		$vhomeurl = bioship_apply_filters('skeleton_title_link_url', $vhomeurl);
 		$vlogolinkurl = bioship_apply_filters('skeleton_logo_link_url', $vhomeurl);
+		// 2.0.9: use esc_url on logo link output
+		$vlogolinkurl = esc_url($vlogolinkurl);
 
-		$vblogname = get_bloginfo('name','display');
+		$vblogname = get_bloginfo('name', 'display');
 		$vblogname = bioship_apply_filters('skeleton_blog_display_name', $vblogname);
 		$vblogdescription = get_bloginfo('description');
 		$vblogdescription = bioship_apply_filters('skeleton_blog_description', $vblogdescription);
@@ -275,7 +282,7 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		if ( (isset($vthemesettings['header_texts']['sitedescription']))
 		  && ($vthemesettings['header_texts']['sitedescription'] == '1') ) {$vsitedesc = true;}
 
-		// TODO: add/check perpost meta display overrides?
+		// TODO: add check for perpost meta display overrides for site title/desc
 		// if ($vthemedisplay['sitetitle'] == '') {}
 		// if ($vthemedisplay['sitedesc'] == '') {}
 
@@ -286,17 +293,22 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		if (!$vsitetitle) {$vsitetitledisplay = ' style="display:none;"';}
 		if (!$vsitedesc) {$vsitedescdisplay = ' style="display:none;"';}
 
+		// 2.0.9: make title attribute separator filterable (default to title tag separator)
+		$vsep = bioship_title_separator('|');
+		$vsep = bioship_apply_filters('skeleton_header_logo_title_separator', $vsep);
+
 		// 1.8.5: fix to hybrid attributes names (_ to -)
 		// 1.9.0: added filter to site-description attribute to prevent duplicate ID
 		// 1.9.6: added logo-image ID not just class
 		// 2.0.6: display inline-block for site-logo-text (for combined display)
 		// 2.0.7: move inline block to style.css for easier overriding
 		$vlogo = '';
+
 		if (THEMECOMMENTS) {$vlogo .= '<!-- #site-logo -->';}
 		$vlogo .= '<div id="site-logo" class="'.$vlogoclasses.'">'.PHP_EOL;
 		$vlogo .= '	<div class="inner">'.PHP_EOL;
 		$vlogo .= ' 	<div class="site-logo-image"'.$vlogoimagedisplay.'>'.PHP_EOL;
-		$vlogo .= '			<a class="logotype-img" href="'.$vlogolinkurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.PHP_EOL;
+		$vlogo .= '			<a class="logotype-img" href="'.$vlogolinkurl.'" title="'.$vblogname.' '.$vsep.' '.$vblogdescription.'" rel="home">'.PHP_EOL;
 		$vlogo .= '				<h1 id="site-title">'.PHP_EOL;
 		$vlogo .= '					<img id="logo-image" class="logo-image" src="'.$vlogourl.'" alt="'.$vblogname.'" border="0">'.PHP_EOL;
 		$vlogo .= '					<div class="alt-logo" style="display:none;"></div>'.PHP_EOL;
@@ -305,7 +317,7 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		$vlogo .= ' 	 </div>'.PHP_EOL;
 		$vlogo .= ' 	 <div class="site-logo-text">'.PHP_EOL;
 		$vlogo .= '			<h1 id="site-title-text" '.hybrid_get_attr('site-title').$vsitetitledisplay.'>'.PHP_EOL;
-		$vlogo .= '				<a class="text" href="'.$vhomeurl.'" title="'.$vblogname.' | '.$vblogdescription.'" rel="home">'.$vblogname.'</a>'.PHP_EOL;
+		$vlogo .= '				<a class="text" href="'.$vhomeurl.'" title="'.$vblogname.' '.$vsep.' '.$vblogdescription.'" rel="home">'.$vblogname.'</a>'.PHP_EOL;
 		$vlogo .= '			</h1>'.PHP_EOL;
 		$vlogo .= '			<div id="site-description"'.$vsitedescdisplay.'>'.PHP_EOL;
 		$vlogo .= '				<span class="site-desc" '.hybrid_get_attr('site-description').'>'.$vblogdescription.'</span>'.PHP_EOL;
@@ -380,7 +392,10 @@ if (!function_exists('bioship_skeleton_main_menu_open')) {
 	function bioship_skeleton_main_menu_open() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-		global $vthememenus; if (!$vthememenus['primary']) {return;}
+		// 2.0.9: use subkey of vthemelayout global
+		// 2.1.0: added check for array key
+		global $vthemelayout;
+		if ( (!isset($vthemelayout['menus']['primary'])) || (!$vthemelayout['menus']['primary']) ) {return;}
 
 		// note: can filter classes using Hybrid attribute filter
 		bioship_html_comment('#navigation');
@@ -399,7 +414,10 @@ if (!function_exists('bioship_skeleton_main_menu')) {
 	function bioship_skeleton_main_menu() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-		global $vthememenus; if (!$vthememenus['primary']) {return;}
+		// 2.0.9: use subkey of vthemelayout global
+		// 2.1.0: added check for array key
+		global $vthemelayout;
+		if ( (!isset($vthemelayout['menus']['primary'])) || (!$vthemelayout['menus']['primary']) ) {return;}
 
 		// 1.9.9: check hide navigation override filter
 		$vhidenav = bioship_apply_filters('skeleton_navigation_hide', 0);
@@ -426,7 +444,10 @@ if (!function_exists('bioship_skeleton_main_menu_close')) {
 
 	function bioship_skeleton_main_menu_close() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-		global $vthememenus; if (!$vthememenus['primary']) {return;}
+		// 2.0.9: use subkey of vthemelayout global
+		// 2.1.0: added check for array key
+		global $vthemelayout;
+		if ( (!isset($vthemelayout['menus']['primary'])) || (!$vthemelayout['menus']['primary']) ) {return;}
 		echo '</div>'.PHP_EOL;
 		bioship_html_comment('/#navigation');
 		echo PHP_EOL;
@@ -444,7 +465,9 @@ if (!function_exists('bioship_skeleton_main_menu_button')) {
 	function bioship_skeleton_main_menu_button() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-		global $vthememenus; if (!$vthememenus['primary']) {return;}
+		// 2.0.9: use subkey of vthemelayout global
+		global $vthemelayout;
+		if ( (!isset($vthemelayout['menus']['primary'])) || (!$vthemelayout['menus']['primary']) ) {return;}
 
 		// 1.5.5: check for perpost navigation disable
 		// 1.9.8: fix to use display override global
@@ -476,7 +499,10 @@ if (!function_exists('bioship_skeleton_secondary_menu')) {
 	function bioship_skeleton_secondary_menu() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-		global $vthememenus; if (!$vthememenus['secondary']) {return;}
+		// 2.0.9: use subkey of vthemelayout global
+		// 2.1.0: added check for array key
+		global $vthemelayout;
+		if ( (!isset($vthemelayout['menus']['secondary'])) || (!$vthemelayout['menus']['secondary']) ) {return;}
 
 		// 2.0.5: moved has_nav_menu check to register_nav_menus
 		$vattributes = hybrid_get_attr('menu', 'secondary');
@@ -733,20 +759,18 @@ if (!function_exists('bioship_skeleton_sidebar_open'))  {
 
 		global $vthemesettings, $vthemesidebars;
 
-		// 1.9.0: use new theme layout global [!?! WTFF not working !?!]
+		// 1.9.0: use new theme layout global
+		// [!?! WTFF this is just not working !?!]
 		// $vsidebarcolumns = $vthemesidebars['sidebarcolumns'];
-		if (THEMEDEBUG) {
-			echo "<!-- *Sidebar Layout Check* ";
-			$vsidebars = $vthemesidebars; unset($vsidebars['output']);
-			print_r($vsidebars); echo " -->";
-		}
+		// $vsidebars = $vthemesidebars; unset($vsidebars['output']);
+		// bioship_debug("Sidebar Layout Check", $vsidebars);
 		$vsidebarcolumns = bioship_set_sidebar_columns();
 
 		$vclasses = array(); $vclasses[] = $vsidebarcolumns; $vclasses[] = 'columns';
 
 		// 1.8.0: sidebars calculated in skeleton_set_sidebar_layout
-		// 2.0.5: use simple array key index
-		// TESTME: this may not even be necessary any more?
+		// 2.0.5: use simple numerical array key index
+		// TODO: check if still necessary to add alpha/omega sidebar classes
 		$vsidebars = $vthemesidebars['sidebars'];
 		foreach ($vsidebars as $vi => $vasidebar) {
 			if ($vasidebar != '') {
@@ -866,20 +890,18 @@ if (!function_exists('bioship_skeleton_subsidebar_open')) {
 
 		global $vthemesettings, $vthemesidebars;
 
-		// 1.9.0: use new theme layout global [!?! WTFF not working !?!]
+		// 1.9.0: use new theme layout global
+		// [!?! WTFF this is just not working !?!]
 		// $vsubsidebarcolumns = $vthemesidebars['subsidebarcolumns'];
-		if (THEMEDEBUG) {
-			echo "<!-- *SubSidebar Layout Check* ";
-			$vsidebars = $vthemesidebars; unset($vsidebars['output']);
-			print_r($vsidebars); echo " -->";
-		}
+		// $vsidebars = $vthemesidebars; unset($vsidebars['output']);
+		// bioship_debug("Sidebar Layout Check", $vsidebars);
 		$vsubsidebarcolumns = bioship_set_subsidebar_columns();
 
 		$vclasses = array(); $vclasses[] = $vsubsidebarcolumns; $vclasses[] = 'columns';
 
 		// 1.8.0: sidebars calculated in skeleton_set_sidebar_layout
 		// 2.0.5: use simple array key index
-		// TESTME: this may not even be necessary any more?
+		// TODO: check if still necessary to add alpha/omega subsidebar classes
 		$vsidebars = $vthemesidebars['sidebars'];
 		foreach ($vsidebars as $vi => $vasidebar) {
 			if (substr($vasidebar,0,3) == 'sub') {
@@ -1021,11 +1043,10 @@ if (!function_exists('bioship_skeleton_content_close')) {
 // Home (Blog) Page Top Content
 // ----------------------------
 // 1.8.5: moved this here from loop-hybrid.php
-// TODO: add filter examples to filters.php
 if (!function_exists('bioship_skeleton_home_page_content')) {
 
 	// 1.9.8: use new position filtered add_action method
-	bioship_add_action('bioship_home_page_top','skeleton_home_page_content',5);
+	bioship_add_action('bioship_home_page_top', 'skeleton_home_page_content', 5);
 
 	function bioship_skeleton_home_page_content() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
@@ -1034,7 +1055,6 @@ if (!function_exists('bioship_skeleton_home_page_content')) {
 		if ($vpageid) {
 			$vtitle = get_the_title($vpageid);
 			// 1.9.8: added new home page title filter
-			// TODO: add filter example to filters.php
 			$vtitle = bioship_apply_filters('skeleton_home_page_title', $vtitle);
 			if ($vtitle) {
 				bioship_html_comment('#blogpagetitle');
@@ -1046,8 +1066,7 @@ if (!function_exists('bioship_skeleton_home_page_content')) {
 			setup_postdata(get_page($vpageid));
 			ob_start(); the_content(); $vcontent = ob_get_contents(); ob_end_clean();
 			// 1.9.8: added new home page content filter
-			// TODO: add filter example to filters.php
-			$vcontent = apply_filters('skeleton_home_page_content', $vcontent);
+			$vcontent = bioship_apply_filters('skeleton_home_page_content', $vcontent);
 			if ($vcontent) {
 				bioship_html_comment('#blogpagecontent');
 				echo '<div id="blogpagecontent">'.$vcontent.'</div>'.PHP_EOL;
@@ -1073,14 +1092,14 @@ if (!function_exists('skeleton_echo_the_excerpt')) {
 
 // Ensure Body Content Not Output in Head
 // --------------------------------------
-// 2.0.5: avoid very weird bug (probably due to a plugin)
+// 2.0.5: fix to avoid very weird bug (unknown plugin conflict?)
 $vthemehead = false;
 add_action('wp_head', 'bioship_head_finished', 999);
 if (!function_exists('bioship_head_finished')) {
  function bioship_head_finished() {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
  	global $vthemehead; $vthemehead = true;
- 	if (THEMEDEBUG) {echo "<!-- Head Output Finished -->";}
+ 	bioship_debug("Theme Head Output Finished");
  }
 }
 
@@ -1098,12 +1117,13 @@ if (!function_exists('bioship_skeleton_echo_the_content')) {
 		if (THEMEDEBUG) {
 			global $wp_filter;
 			// print_r(array_keys($wp_filter));
-			// ob_start(); print_r($wp_filter['wp_head']); $debug = ob_get_contents(); ob_end_clean();
+			// $debug = print_r($wp_filter['wp_head'], true);
 			// $file = dirname(__FILE__).'/debug/filters.txt';
 			// bioship_write_to_file($file, $debug);
-			print_r($wp_filter['the_content']);
+			bioship_debug("Content Filters", $wp_filter['the_content']);
 		}
 
+		// 2.0.5: ensure content is not output in head
 		global $vthemehead;
 		if ($vthemehead) {the_content();}
 	}
@@ -1183,9 +1203,9 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 			bioship_html_comment('/.attachment-meta');
 			echo PHP_EOL;
 
-			// Remove default WordPress attachment display (prepended to content)
-			// TODO: check prepend_attachment filter for improving above
-			remove_filter( 'the_content', 'prepend_attachment' );
+			// remove default WordPress attachment display (prepended to content)
+			// TODO: recheck prepend_attachment filter for improving media handler
+			remove_filter('the_content', 'prepend_attachment');
 			return;
 		}
 
@@ -1219,18 +1239,11 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 			if ($vimage) {
 				echo '<div id="post-format-media" class="post-format-image">'.$vimage.'</div>';
 
-				// TODO: maybe display image sizes/gallery..?
+				// TODO: maybe display image sizes
 				// echo '<div class="entry-byline"><span class="image-sizes">';
 				// printf(__( 'Sizes: %s', 'bioship'), hybrid_get_image_size_links() );
 				// echo '</span></div>';
 
-				// $gallery = gallery_shortcode( array( 'columns' => 4, 'numberposts' => 8, 'orderby' => 'rand', 'id' => get_queried_object()->post_parent, 'exclude' => get_the_ID() ) );
-				// if ( !empty( $gallery ) ) {
-				// 	echo '<div class="image-gallery">';
-				// 	echo '<h3 class="attachment-meta-title">'.__('Gallery', 'bioship').'</h3>';
-				// 	echo $gallery;
-				// 	echo '</div>';
-				// }
 			}
 		}
 
@@ -1239,7 +1252,18 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 		// 	echo '<header class="entry-header">'.get_avatar(get_the_author_meta('email'));.'</header>';
 		// ]
 
-		// TODO: Gallery?
+		// Gallery
+		// -------
+		// TODO: gallery post format display output handler
+		if ( ($vthemesettings['postformats']['gallery'] == '1') && (has_post_format('gallery')) ) {
+			// $gallery = gallery_shortcode( array( 'columns' => 4, 'numberposts' => 8, 'orderby' => 'rand', 'id' => get_queried_object()->post_parent, 'exclude' => get_the_ID() ) );
+			// if ( !empty( $gallery ) ) {
+			// 	echo '<div class="image-gallery">';
+			// 	echo '<h3 class="attachment-meta-title">'.__('Gallery', 'bioship').'</h3>';
+			// 	echo $gallery;
+			// 	echo '</div>';
+			// }
+		}
 
 	}
 }
@@ -1586,7 +1610,7 @@ if (!function_exists('bioship_skeleton_get_thumbnail')) {
 			$vthumbnail .= PHP_EOL;
 		}
 
-		if (THEMEDEBUG) {echo "<!-- Thumbnail Size: "; print_r($vthumbsize); echo " -->";}
+		bioship_debug("Thumbnail Size", $vthumbsize);
 		$vthumbnail = bioship_apply_filters('skeleton_thumbnail_override', $vthumbnail);
 		return $vthumbnail;
 	}
@@ -1750,8 +1774,6 @@ if (!function_exists('bioship_skeleton_about_author_description')) {
 		$vauthor = bioship_get_author_by_post($vpostid);
 		if (!$vauthor) {return;}
 		$vauthordesc = get_the_author_meta('description', $vauthor->ID);
-
-		// TODO: add this filter to filters.php example list
 		$vauthordesc = bioship_apply_filters('skeleton_about_author_description', $vauthordesc);
 		return $vauthordesc;
 	}
@@ -1913,7 +1935,6 @@ if (!function_exists('bioship_skeleton_comments_popup_script')) {
 // === Breadcrumbs ===
 // -------------------
 // 1.8.5: added Hybrid Breadcrumbs
-// TODO: fallback breadcrumb function?
 if (!function_exists('bioship_skeleton_breadcrumbs')) {
 	function bioship_skeleton_breadcrumbs() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
@@ -1921,12 +1942,13 @@ if (!function_exists('bioship_skeleton_breadcrumbs')) {
 		global $vthemesettings; $vcpts = array(); $vi = 0;
 
 		$vdisplay = false; $vbreadcrumbs = '';
+		// TODO: maybe check page context here instead?
 		if (is_singular()) {
 			$vposttype = get_post_type();
 			if (isset($vthemesettings['breadcrumbposttypes'])) {$vcpts = $vthemesettings['breadcrumbposttypes'];}
 			$vcpts = bioship_apply_filters('skeleton_breadcrumb_post_types', $vcpts);
 			if ( (!is_array($vcpts)) || (count($vcpts) == 0) ) {return;}
-			if (THEMEDEBUG) {echo "<!-- Breadcrumbs for Single Post Types: "; print_r($vcpts); echo " -->";}
+			bioship_debug("Breadcrumbs for Single Post Types", $vcpts);
 			foreach ($vcpts as $vcpt => $vvalue) {
 				if ( ($vcpt == $vposttype) && ($vvalue == '1') ) {$vdisplay = true;}
 			}
@@ -1939,7 +1961,7 @@ if (!function_exists('bioship_skeleton_breadcrumbs')) {
 			foreach ($vcpts as $vcpt => $vvalue) {
 				if ( ($vvalue == '1') && (in_array($vcpt,$vposttypes)) ) {$vdisplay = true;}
 			}
-			if (THEMEDEBUG) {echo "<!-- Breadcrumbs for Archive Post Types: "; print_r($vcpts); echo " -->";}
+			bioship_debug("Breadcrumbs for Archive Post Types", $vcpts);
 		}
 
 		// TODO: add further options/filters for these breadcrumbs types..?
@@ -2044,7 +2066,7 @@ if (!function_exists('bioship_skeleton_page_navigation')) {
 			}
 		} else {return;}
 
-		// TODO: maybe add display options for other contexts?
+		// TODO: maybe add display options for other page contexts?
 
 		if ($vdisplay) {
 
@@ -2178,7 +2200,7 @@ if (!function_exists('bioship_skeleton_footer_open')) {
 		// 1.8.0: removed grid class compatibility (now for content grid only)
 		$vclasses = array(); $vclasses[] = 'noborder';
 		$vclasses = bioship_apply_filters('skeleton_footer_classes', $vclasses);
-		$vfooterclasses = implode(' ',$vclasses);
+		$vfooterclasses = implode(' ', $vclasses);
 
 		bioship_html_comment('#footer');
 		$vattributes = hybrid_get_attr('footer');
@@ -2261,6 +2283,12 @@ if (!function_exists('bioship_skeleton_footer_nav')) {
 
 	function bioship_skeleton_footer_nav() {
 		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+		// 2.0.9: added missing menu declaration check
+		// 2.1.0: added check for array key
+		global $vthemelayout;
+		if ( (!isset($vthemelayout['menus']['footer'])) || (!$vthemelayout['menus']['footer']) ) {return;}
+
 		bioship_html_comment('.footer-menu');
 		$vattributes = hybrid_get_attr('menu','footer');
 		echo '<div class="footer-menu" '.$vattributes.'>'.PHP_EOL;

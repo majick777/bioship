@@ -17,19 +17,24 @@
 // TODO: when using Titan+Options Framework use rgba colour picker
 // ref: https://css-tricks.com/rgba-browser-support/
 
-// Output CSS Header
-// -----------------
+// set Loading Context
+// -------------------
 // 1.8.5: undefined variable fix
 if (!isset($vincludedskin)) {$vincludedskin = false;}
 if (!isset($vadminstyles)) {$vadminstyles = false;}
+if ( (isset($_GET['adminstyles'])) && ($_GET['adminstyles'] == 'yes') ) {$vadminstyles = true;}
 // 2.0.8: yet another undefined variable fix
 if (!isset($vloginstyles)) {$vloginstyles = false;}
+
+// Output CSS Header
+// -----------------
 // 1.8.5: no header for inline style output fix
 // 2.0.7: disambiguate vincluded to vincludedskin
-if ( (!$vincludedskin) && (!$vadminstyles) ) {
-	header("Content-type: text/css; charset: UTF-8");
-}
+// 2.0.9: fix to header output for non-included only
+if ( (!$vincludedskin) && (!$vloginstyles) ) {header("Content-type: text/css; charset: UTF-8");} // "
 
+// Stylesheet Title Output
+// -----------------------
 if ($vadminstyles) {echo "/* Dynamic Admin Skin */".PHP_EOL.PHP_EOL;}
 else {echo "/* Dynamic Stylesheet Skin */".PHP_EOL.PHP_EOL;}
 
@@ -37,6 +42,7 @@ else {echo "/* Dynamic Stylesheet Skin */".PHP_EOL.PHP_EOL;}
 // --------------------
 // 1.8.0: fix for performance timer variable
 if (defined('DOING_AJAX') && DOING_AJAX) {global $vthemetimestart;}
+
 
 // ------------------------------
 // Direct Load Memory Saving Mode
@@ -82,12 +88,11 @@ if (strstr($_SERVER['REQUEST_URI'], 'skin.php')) {
 	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'class-wp-theme.php');
 	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'theme.php');
 
-	// current_user_can (capabilities.php, pluggable.php, user.php, post.php)
+	// current_user_can etc.
 	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'capabilities.php');
 	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'pluggable.php');
 	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'user.php');
 	include(ABSPATH.WPINC.DIRECTORY_SEPARATOR.'post.php');
-
 
 	// WP 4.4: more functions are needed now
 	$postclass = ABSPATH.WPINC.DIRECTORY_SEPARATOR.'class-wp-post.php';
@@ -118,21 +123,40 @@ if (strstr($_SERVER['REQUEST_URI'], 'skin.php')) {
 		if (file_exists($vfilters)) {include_once($vfilters);}
 	}
 
-	// 1.8.0: fix constants for replacement values
+	// 1.8.0: load constants for replacement values
 	if (!defined('WP_CONTENT_DIR')) {
 		include_once(ABSPATH.WPINC.'/default-constants.php');
 		wp_initial_constants();
 		wp_plugin_directory_constants();
 		// wp_cookie_constants();
 	}
-
-	// CHECKME: does this load MU Plugins?
 }
 
 // maybe define WP_CONTENT_URL
 // ---------------------------
 // 1.8.0: move here for dual framework compatibility
 if (!defined('WP_CONTENT_URL')) {define('WP_CONTENT_URL', get_option('siteurl').'/wp-content');}
+
+// set Directory Paths and URLs
+// ----------------------------
+// 2.0.9: set these globals as file hierarchy is not available
+$vthemestyledir = get_stylesheet_directory(); $vthemestyleurl = get_stylesheet_directory_uri();
+$vthemetemplatedir = get_template_directory(); $vthemetemplateurl = get_template_directory_uri();
+
+// 1.8.0: added trailing slash fix
+// 2.0.9: update to trailingslash fix
+if (function_exists('trailingslashit')) {
+	$vthemestyleurl = trailingslashit($vthemestyleurl);
+	$vthemetemplateurl = trailingslashit($vthemetemplateurl);
+} else {
+	if (substr($vthemestyleurl, -1, 1) != '/') {$vthemestyleurl .= '/';}
+	if (substr($vthemetemplateurl, -1, 1) != '/') {$vthemetemplateurl .= '/';}
+}
+// 1.8.0: force SSL fix
+if (is_ssl()) {
+	$vthemestyleurl = str_replace('http://', 'https://', $vthemestyleurl);
+	$vthemetemplateurl = str_replace('http://', 'https://', $vthemetemplateurl);
+}
 
 
 // ---------------------
@@ -168,10 +192,10 @@ if (!function_exists('bioship_skin_get_image_size')) {
 	if (THEMEDEBUG) {echo "/* Image URL: ".$vimageurl." */".PHP_EOL;}
 	$vcachekey = $vthemename.'_'.$vcachekey;
 
-	// really want to set an explicit width and a height for the header background
-	// as it does display better, but needs a bit of hackiness to get it going okay
-	// so we check for a cached image size - or we use imagesize and then cache it
-	// this prevents imagesize from downloading the image url every pageload
+	// we really want to set an explicit width and a height for the header background
+	// as it does display better, but needs a bit of hackiness to get it going well.
+	// so we check for a cached image size - or we use imagesize and then cache it...
+	// this prevents imagesize from downloading the image url every pageload)
 	// update: but, need to check for allow_url_fopen to do this for URLs
 
 	$vimagesize = false;
@@ -194,7 +218,7 @@ if (!function_exists('bioship_skin_get_image_size')) {
 			elseif (substr($vimageurl, 0, strlen($vhomeurl)) == $vhomeurl) {$vimagepath = str_replace($vhomeurl, $vabspath, $vimageurl);}
 			if (file_exists($vimagepath)) {$vimagesize = getimagesize($vimagepath);}
 			if (THEMEDEBUG) {
-				// TODO: check this works for subdirectory installs?
+				// TODO: check image path for subdirectory installs?
 				// if ( (site_url()) == (home_url()) ) {}
 				echo "/* Site URL: ".site_url()." */".PHP_EOL;
 				echo "/* Home URL: ".home_url()." */".PHP_EOL;
@@ -232,27 +256,21 @@ if (!function_exists('bioship_skin_get_image_size')) {
 if (!function_exists('bioship_skin_css_replace_values')) {
  function bioship_skin_css_replace_values($vcss) {
 
-	// 1.8.0: added trailing slash fix
-	$vthemestyleurl = get_stylesheet_directory_uri().'/';
-	$vthemetemplateurl = get_template_directory_uri().'/';
+	// 2.0.9: use global directory and URL values
+	global $vthemestyledir, $vthemestyleurl, $vthemetemplatedir, $vthemetemplateurl, $vpieurl, $vborderradiusurl;
 
-	// 1.8.0: force SSL fix
-	if (is_ssl()) {
-		$vthemestyleurl = str_replace('http://', 'https://', $vthemestyleurl);
-		$vthemetemplateurl = str_replace('http://', 'https://', $vthemetemplateurl);
-	}
-
-	// Dynamic replacement values
+	// Directory URLs
 	if (strstr($vcss, '%STYLEURL%')) {$vcss = str_replace('%STYLEURL%', $vthemestyleurl, $vcss);}
 	if (strstr($vcss, '%STYLESHEETURL%')) {$vcss = str_replace('%STYLESHEETURL%', $vthemestyleurl, $vcss);}
-	if (strstr($vcss, '%STYLEIMAGEURL%')) {$vcss = str_replace('%STYLEIMAGEURL%', $vthemestyleurl.'images/', $vcss);}
 	if (strstr($vcss, '%TEMPLATEURL%')) {$vcss = str_replace('%TEMPLATEURL%', $vthemetemplateurl, $vcss);}
+
+	// Image Directory URLs
+	if (strstr($vcss, '%STYLEIMAGEURL%')) {$vcss = str_replace('%STYLEIMAGEURL%', $vthemestyleurl.'images/', $vcss);}
 	if (strstr($vcss, '%TEMPLATEIMAGEURL%')) {$vcss = str_replace('%TEMPLATEIMAGEURL%', $vthemetemplateurl.'images/', $vcss);}
 
 	// HTC File Links
-	// --------------
-	if (strstr($vcss, '%BORDERRADIUS%')) {$vcss = str_replace('%BORDERRADIUS%', $vthemetemplateurl.'css/border-radius.htc', $vcss);}
-	if (strstr($vcss, '%PIE%')) {$vcss = str_replace('%PIE%', $vthemetemplateurl.'css/pie.php', $vcss);}
+	if (strstr($vcss, '%BORDERRADIUS%')) {$vcss = str_replace('%BORDERRADIUS%', $vborderradiusurl, $vcss);}
+	if (strstr($vcss, '%PIE%')) {$vcss = str_replace('%PIE%', $vpieurl, $vcss);}
 	return $vcss;
  }
 }
@@ -415,11 +433,14 @@ if ($vthemeframework == 'options') {
 	}
 }
 
+// 2.0.9: use shortened theme settings variable name
+$vts = $vthemesettings;
+
 // 1.8.5: fix to empty checkboxes values
 $vcheckboxes = get_option($vthemename.'_checkboxes');
 if ( (is_array($vcheckboxes)) && (count($vcheckboxes) > 0) ) {
 	foreach ($vcheckboxes as $vcheckbox) {
-		if (!isset($vthemesettings[$vcheckbox])) {$vthemesettings[$vcheckbox] = '0';}
+		if (!isset($vts[$vcheckbox])) {$vts[$vcheckbox] = '0';}
 	}
 }
 
@@ -429,31 +450,46 @@ if ( (is_array($vmulticheck)) && (count($vmulticheck) > 0) ) {
 	foreach ($vmulticheck as $vkey => $vsubkeys) {
 		$vthisarray = array();
 		foreach ($vsubkeys as $vsubkey) {
-			if (is_serialized($vthemesettings[$vkey])) {$vthemesettings[$vkey] = unserialize($vthemesettings[$vkey]);}
-			if (is_array($vthemesettings[$vkey])) {
-				if (in_array($vsubkey, $vthemesettings[$vkey])) {$vthisarray[$vsubkey] = '1';}
-				elseif ( (isset($vthemesettings[$vkey][$vsubkey])) && ($vthemesettings[$vkey][$vsubkey] == '1') ) {$vthisarray[$vsubkey] = '1';}
+			if (is_serialized($vts[$vkey])) {$vts[$vkey] = unserialize($vts[$vkey]);}
+			if (is_array($vts[$vkey])) {
+				if (in_array($vsubkey, $vts[$vkey])) {$vthisarray[$vsubkey] = '1';}
+				elseif ( (isset($vts[$vkey][$vsubkey])) && ($vts[$vkey][$vsubkey] == '1') ) {$vthisarray[$vsubkey] = '1';}
 				else {$vthisarray[$vsubkey] = '0';}
 			} else {$vthisarray[$vsubkey] = '0';}
 		}
-		$vthemesettings[$vkey] = $vthisarray;
+		$vts[$vkey] = $vthisarray;
 	}
 }
 
-if (isset($_REQUEST['themedebug'])) {
-	if ($_REQUEST['themedebug'] == 2) {
-		echo "/*".PHP_EOL; echo "Checkbox Options: "; print_r($vcheckboxes); echo "*/".PHP_EOL.PHP_EOL;
-		echo "/*".PHP_EOL; echo "Multicheck Options: "; print_r($vmulticheck); echo "*/".PHP_EOL.PHP_EOL;
-		echo "/*".PHP_EOL; echo "Theme Options (".$vthemename."): "; print_r($vthemesettings); echo "*/".PHP_EOL.PHP_EOL;
-	}
+if ( (isset($_REQUEST['themedebug'])) && ($_REQUEST['themedebug'] == '2') ) {
+	echo "/*".PHP_EOL; echo "Checkbox Options: "; print_r($vcheckboxes); echo "*/".PHP_EOL.PHP_EOL;
+	echo "/*".PHP_EOL; echo "Multicheck Options: "; print_r($vmulticheck); echo "*/".PHP_EOL.PHP_EOL;
+	echo "/*".PHP_EOL; echo "Theme Options (".$vthemename."): "; print_r($vts); echo "*/".PHP_EOL.PHP_EOL;
 }
+
+// set Internet Explorer Helper URLs
+// ---------------------------------
+// (note: file hierarchy only available when including)
+// 2.0.9: update to possible style subdirectory paths
+// TODO: copy and use file hierarchy function instead?
+global $vthemedirs, $vpieurl, $vborderradiusurl;
 
 // PIE URL
-// -------
-// (skeleton file hierarchy not available)
-if (file_exists(get_stylesheet_directory().'/css/pie.php')) {$vpieurl = get_stylesheet_directory_uri().'/css/pie.php';}
-else {$vpieurl = get_template_directory_uri().'/css/pie.php';}
+if (function_exists('bioship_file_hierarchy')) {$vpieurl = bioship_file_hierarchy('url', 'pie.php', $vthemedirs['style']);}
+elseif (file_exists($vthemestyledir.'/styles/pie.php')) {$vpieurl = $vthemestyleurl.'/styles/pie.php';}
+elseif (file_exists($vthemestyledir.'/css/pie.php')) {$vpieurl = $vthemestyleurl.'/css/pie.php';}
+elseif (file_exists($vthemetemplatedir.'/css/pie.php')) {$vpieurl = $vthemetemplateurl.'/css/pie.php';}
+else {$vpieurl = $vthemetemplateurl.'/styles/pie.php';}
 if (is_ssl()) {$vpieurl = str_replace('http://', 'https://', $vpieurl);} // force SSL fix
+
+// Border Radius URL
+if (function_exists('bioship_file_hierarchy')) {$vborderradiusurl = bioship_file_hierarchy('url', 'border-radius.htc', $vthemedirs['style']);}
+elseif (file_exists($vthemestyledir.'/styles/border-radius.htc')) {$vborderradiusurl = $vthemestyleurl.'/styles/border-radius.htc';}
+elseif (file_exists($vthemestyledir.'/css/pie.php')) {$vborderradiusurl = $vthemestyleurl.'/css/border-radius.htc';}
+elseif (file_exists($vthemetemplatedir.'/css/pie.php')) {$vborderradiusurl = $vthemetemplateurl.'/css/border-radius.htc';}
+else {$vborderradiusurl = $vthemetemplateurl.'/styles/border-radius.htc';}
+if (is_ssl()) {$vborderradiusurl = str_replace('http://', 'https://', $vborderradiusurl);} // force SSL fix
+
 
 // ----------
 // Typography
@@ -461,25 +497,26 @@ if (is_ssl()) {$vpieurl = str_replace('http://', 'https://', $vpieurl);} // forc
 // 1.8.0: added missing #content typography (no longer quite the same as body due to grid)
 // 1.8.5: moved here to change handling of button font rules
 // 1.8.5: added navmenu and navsubmenu typographies
-$vtypographies = array('body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
-	'navmenu', 'navsubmenu', 'sidebar', 'subsidebar', 'content', 'footer', 'button');
 // 1.8.5: add headline typography CSS in any case to support customizer live preview logo/text switching
-$vtypographies[] = 'headline'; $vtypographies[] = 'tagline'; $vtypographyrules = '';
+$vtypographies = array('body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'headline', 'tagline',
+	'navmenu', 'navsubmenu', 'sidebar', 'subsidebar', 'content', 'footer', 'button');
+$vtypographyrules = '';
 
 foreach ($vtypographies as $vtype) {
 
 	$vtyperef = $vtype.'_typography';
-	if (isset($vthemesettings[$vtyperef])) {
-		$vtypography = maybe_unserialize($vthemesettings[$vtyperef]);
+	if (isset($vts[$vtyperef])) {
+		$vtypography = maybe_unserialize($vts[$vtyperef]);
 		// echo "/* "; print_r($vtypography); echo " */"; // debug point
 
 		// 1.8.0: fix for font-sizes, target inside divs, fix content column inners
+		// 2.0.9: fix to navigation targeting for em font-size scaling
 		if ($vtype == 'body') {$vcssrule = "#content #maincontent";}
 		elseif ($vtype == 'headline') {$vcssrule = "#header h1#site-title-text a";}
 		elseif ($vtype == 'tagline') {$vcssrule = "#header #site-description .site-desc";}
 		elseif ($vtype == 'header') {$vcssrule = "#header .inner";}
-		elseif ($vtype == 'navmenu') {$vcssrule = "#navigation #mainmenu ul li, #navigation #mainmenu ul li a";}
-		elseif ($vtype == 'navsubmenu') {$vcssrule = "#navigation #mainmenu ul ul li, #navigation #mainmenu ul ul li a";}
+		elseif ($vtype == 'navmenu') {$vcssrule = "#navigation #mainmenu ul li a";}
+		elseif ($vtype == 'navsubmenu') {$vcssrule = "#navigation #mainmenu ul ul li a";}
 		elseif ($vtype == 'sidebar') {$vcssrule = "#sidebar .sidebar";}
 		elseif ($vtype == 'subsidebar') {$vcssrule = "#subsidebar .sidebar";}
 		elseif ($vtype == 'content') {$vcssrule = "#content .entry-content, #content .column .inner, #content .columns .inner";}
@@ -496,7 +533,22 @@ foreach ($vtypographies as $vtype) {
 			if ($vtype != 'button') {$vtyporules = $vcssrule." {";} else {$vtyporules = '';}
 
 			if ($vtypography['color'] != '') {$vtyporules .= "color:".$vtypography['color']."; ";}
-			if ($vtypography['size'] != '') {$vtyporules .= "font-size:".$vtypography['size']."; ";}
+
+			if ($vtypography['size'] != '') {
+				$vfontsize = $vtypography['size'];
+				// 2.0.9: convert font sizes to em for better screen scaling
+				if ( ($vtype == 'headline') || ($vtype == 'tagline') ) {
+					// not for title/description so they can be autoscaled correctly
+					$vtyporules .= "font-size:".$vfontsize."; ";
+				} elseif ($vfontsize == 'inherit') {
+					// also do not convert inherit font property value
+					$vtyporules .= "font-size:".$vfontsize."; ";
+				} else {
+					$vfontsize = (int)str_replace('px', '', $vfontsize);
+					$vfontsize = round( ($vfontsize / 16), 3, PHP_ROUND_HALF_DOWN);
+					$vtyporules .= "font-size:".$vfontsize."em; ";
+				}
+			}
 			if ($vtypography['face'] != '') {
 				if (strstr($vtypography['face'], '+')) {$vtypography['face'] = '"'.str_replace('+', ' ', $vtypography['face']).'"';}
 				// 1.8.0: detect font stacks vs. singular fonts to add quotes
@@ -518,7 +570,8 @@ foreach ($vtypographies as $vtype) {
 			if (isset($vtypography['text-transform'])) {$vtyporules .= "text-transform:".$vtypography['text-transform']."; ";}
 			if (isset($vtypography['font-variant'])) {$vtyporules .= "font-variant:".$vtypography['font-variant']."; ";}
 
-			// Titan text-shadow attributes (off as seem superfluous)
+			// note: these are Titan text-shadow attributes
+			// (off as seem superfluous to set for all fonts, leave for setting manually)
 			// [text-shadow-location] => none
 			// [text-shadow-distance] => 0px
 			// [text-shadow-blur] => 0px
@@ -527,7 +580,10 @@ foreach ($vtypographies as $vtype) {
 
 			// 1.8.5: store button font rules to use for button selectors
 			if ($vtype == 'button') {$vbuttonfontrules = $vtyporules;}
-			else {$vtyporules .= "}".PHP_EOL; $vtypographyrules .= $vtyporules;}
+			else {
+				$vtyporules .= "}".PHP_EOL;
+				$vtypographyrules .= $vtyporules;
+			}
 
 		}
 	}
@@ -545,14 +601,17 @@ $woocommercebuttons = array('.woocommerce a.alt.button', '.woocommerce button.al
 
 // 1.5.0: added body prefix to better override skeleton defaults
 $vbuttons = "body button, body input[type='reset'], body input[type='submit'], body input[type='button'], body a.button, body .button";
-if ( ($vthemesettings['button_bgcolor_bottom'] == '') || ($vthemesettings['button_bgcolor_bottom'] == $vthemesettings['button_bgcolor_top']) ) {
-	$vbuttonrules = "	background: ".$vthemesettings['button_bgcolor_top']."; ";
-	$vbuttonrules .= "background-color: ".$vthemesettings['button_bgcolor_top'].";".PHP_EOL;
-	// $vbuttonrules .= "	behavior: url('".$vpieurl."');".PHP_EOL;
-}
-else {
-	$vtop = $vthemesettings['button_bgcolor_top'];
-	$vbottom = $vthemesettings['button_bgcolor_bottom'];
+if ( ($vts['button_bgcolor_bottom'] == '') || ($vts['button_bgcolor_bottom'] == $vts['button_bgcolor_top']) ) {
+	// 2.1.0: set rule empty if top button background color is also not specified yet
+	if ($vts['button_bgcolor_top'] == '') {$vbuttonrules = '';}
+	else {
+		$vbuttonrules = "	background: ".$vts['button_bgcolor_top']."; ";
+		$vbuttonrules .= "	background-color: ".$vts['button_bgcolor_top'].";".PHP_EOL;
+		// $vbuttonrules .= "	behavior: url('".$vpieurl."');".PHP_EOL;
+	}
+} else {
+	$vtop = $vts['button_bgcolor_top'];
+	$vbottom = $vts['button_bgcolor_bottom'];
 	$vbuttonrules = "	background: ".$vtop."; background-color: ".$vtop.";".PHP_EOL;
 	$vbuttonrules .= "	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, ".$vtop."), color-stop(100%, ".$vbottom."));".PHP_EOL;
 	$vbuttonrules .= "	background: -webkit-linear-gradient(top, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
@@ -567,7 +626,7 @@ else {
 $vbuttonrules .= '	'.$vbuttonfontrules.PHP_EOL;
 
 // 1.8.5: added woocommerce button selector option
-if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemesettings['woocommercebuttons'] == '1') ) {
+if ( (isset($vts['woocommercebuttons'])) && ($vts['woocommercebuttons'] == '1') ) {
 	$woocommerceselectors = implode(', ', $woocommercebuttons);
 	$vbuttons .= ', '.PHP_EOL.$woocommerceselectors.' ';
 }
@@ -576,21 +635,21 @@ if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemesettings['woocomm
 $vbuttons .= ' {'.PHP_EOL.$vbuttonrules.'}'.PHP_EOL;
 
 // 1.5.0: add extra button selectors to override later 3rd party rules with !important
-$vextrabuttons = trim($vthemesettings['extrabuttonselectors']);
+$vextrabuttons = trim($vts['extrabuttonselectors']);
 if ($vextrabuttons != '') {
 	$vextrabuttonrules = $vextrabuttons.' {'.str_replace(';', ' !important;', $vbuttonrules).'}'.PHP_EOL;
 	$vbuttons .= $vextrabuttonrules;
 }
 
 $vbuttons .= "body button:hover, body input[type='submit']:hover, body input[type='reset']:hover, body input[type='button']:hover, body a.button:hover, body .button a:hover, body .button:hover";
-if ( ($vthemesettings['button_hoverbg_bottom'] == '') || ($vthemesettings['button_hoverbg_bottom'] == $vthemesettings['button_hoverbg_top']) ) {
-	$vbuttonrules = "	background: ".$vthemesettings['button_hoverbg_top']."; ";
-	$vbuttonrules .= "background-color: ".$vthemesettings['button_hoverbg_top'].";".PHP_EOL;
+if ( ($vts['button_hoverbg_bottom'] == '') || ($vts['button_hoverbg_bottom'] == $vts['button_hoverbg_top']) ) {
+	$vbuttonrules = "	background: ".$vts['button_hoverbg_top']."; ";
+	$vbuttonrules .= "background-color: ".$vts['button_hoverbg_top'].";".PHP_EOL;
 	// $vbuttonrules .= "	behavior: url('".$vpieurl."');".PHP_EOL;
 }
 else {
-	$vtop = $vthemesettings['button_hoverbg_top'];
-	$vbottom = $vthemesettings['button_hoverbg_bottom'];
+	$vtop = $vts['button_hoverbg_top'];
+	$vbottom = $vts['button_hoverbg_bottom'];
 	$vbuttonrules = "	background: ".$vtop."; background-color: ".$vtop.";".PHP_EOL;
 	$vbuttonrules .= "	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, ".$vtop."), color-stop(100%, ".$vbottom."));".PHP_EOL;
 	$vbuttonrules .= "	background: -webkit-linear-gradient(top, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
@@ -599,12 +658,12 @@ else {
 	$vbuttonrules .= "	background: -moz-linear-gradient(top, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
 	$vbuttonrules .= "	background: linear-gradient(top bottom, ".$vtop." 0%, ".$vbottom." 100%);".PHP_EOL;
 	$vbuttonrules .= "	-pie-background: linear-gradient(top, ".$vtop.", ".$vbottom.");".PHP_EOL;
-	if ($vthemesettings['button_font_hover'] !='') {$vbuttonrules .= "	color:".$vthemesettings['button_font_hover'].";".PHP_EOL;}
+	if ($vts['button_font_hover'] !='') {$vbuttonrules .= "	color:".$vts['button_font_hover'].";".PHP_EOL;}
 	$vbuttonrules .= "	behavior: url('".$vpieurl."');".PHP_EOL;
 }
 
 // 1.8.5: added woocommerce hover button selector option
-if ( (isset($vthemesettings['woocommercebuttons'])) && ($vthemesettings['woocommercebuttons'] == '1') ) {
+if ( (isset($vts['woocommercebuttons'])) && ($vts['woocommercebuttons'] == '1') ) {
 	$woohoverbuttons = array();
 	foreach ($woocommercebuttons as $woocommercebutton) {$woohoverbuttons[] = $woocommercebutton.':hover';}
 	$woohoverselectors = implode(', ',$woohoverbuttons);
@@ -637,26 +696,27 @@ if ($vextrabuttons != '') {
 // 1.8.5: added input styling options (available here for login form)
 // 1.9.6: added missing number input type, select option and optgroup
 // 2.0.8: added missing body prefix to number input selector
-if ( (isset($vthemesettings['inputcolor'])) || (isset($themeoptions['inputbgcolor'])) ) {
-	$vinputs = "body input[type='text'], body input[type='checkbox'], body input[type='password'], body input[type='number'], body select, body select option, body select optgroup, body textarea {";
-	if ($vthemesettings['inputcolor'] != '') {$vinputs .= "color: ".$vthemesettings['inputcolor']."; ";}
-	if ($vthemesettings['inputbgcolor'] != '') {$vinputs .= "background-color: ".$vthemesettings['inputbgcolor'].";";}
+// 2.0.9: added missing input type email for consistent styling
+if ( (isset($vts['inputcolor'])) || (isset($themeoptions['inputbgcolor'])) ) {
+	$vinputs = "body input[type='text'], body input[type='checkbox'], body input[type='password'], body input[type='number'], body input[type='email'], body select, body select option, body select optgroup, body textarea {";
+	if ($vts['inputcolor'] != '') {$vinputs .= "color: ".$vts['inputcolor']."; ";}
+	if ($vts['inputbgcolor'] != '') {$vinputs .= "background-color: ".$vts['inputbgcolor'].";";}
 	$vinputs .= "}".PHP_EOL.PHP_EOL;
 }
 
 // --------------------------
 // Link Colors and Underlines
 // --------------------------
-if ( ($vthemesettings['alinkunderline'] != 'inherit') || ($vthemesettings['link_color'] != '') ) {
+if ( ($vts['alinkunderline'] != 'inherit') || ($vts['link_color'] != '') ) {
 	$vlinks = "body a, body a:visited {";
-	if ($vthemesettings['link_color'] != '') {$vlinks .= "color:".$vthemesettings['link_color'].";";}
-	if ($vthemesettings['alinkunderline'] != 'inherit') {$vlinks .= " text-decoration:".$vthemesettings['alinkunderline'].";";}
+	if ($vts['link_color'] != '') {$vlinks .= "color:".$vts['link_color'].";";}
+	if ($vts['alinkunderline'] != 'inherit') {$vlinks .= " text-decoration:".$vts['alinkunderline'].";";}
 	$vlinks .= "}".PHP_EOL;
 }
-if ( ($vthemesettings['alinkhoverunderline'] != 'inherit') || ($vthemesettings['link_color'] != '') ) {
+if ( ($vts['alinkhoverunderline'] != 'inherit') || ($vts['link_color'] != '') ) {
 	$vlinks .= "body a:hover, body a:focus, body a:active {";
-	if ($vthemesettings['link_hover_color'] != '') {$vlinks .= "color:".$vthemesettings['link_hover_color'].";";}
-	if ($vthemesettings['alinkhoverunderline'] != 'inherit') {$vlinks .= " text-decoration:".$vthemesettings['alinkhoverunderline'].";";}
+	if ($vts['link_hover_color'] != '') {$vlinks .= "color:".$vts['link_hover_color'].";";}
+	if ($vts['alinkhoverunderline'] != 'inherit') {$vlinks .= " text-decoration:".$vts['alinkhoverunderline'].";";}
 	$vlinks .= "}".PHP_EOL;
 }
 $vlinks .= PHP_EOL;
@@ -666,28 +726,28 @@ $vlinks .= PHP_EOL;
 // ---------------
 // 1.8.5: moved login background image url rule
 $vbody = '';
-if ($vthemesettings['body_bg_color'] != '') {$vbody .= "background-color: ".$vthemesettings['body_bg_color'].";";}
+if ($vts['body_bg_color'] != '') {$vbody .= "background-color: ".$vts['body_bg_color'].";";}
 // ???: maybe use Customizer background image as override?
 // $vbackgroundimage = get_theme_mod('background_image');
 // if (!$vbackgroundimage) {
-	$vbackgroundimage = $vthemesettings['background_image'];
+	$vbackgroundimage = $vts['background_image'];
 // }
-if ($vthemesettings['background_image'] != '') {$vbody .= " background-image: url('".$vbackgroundimage."');";}
-if ($vthemesettings['background_size'] != '') {$vbody .= " background-size: ".$vthemesettings['background_size'].";";}
-if ($vthemesettings['background_position'] != '') {$vbody .= " background-position: ".$vthemesettings['background_position'].";";}
-if ($vthemesettings['background_repeat'] != '') {$vbody .= " background-repeat: ".$vthemesettings['background_repeat'].";";}
-if ($vthemesettings['background_attachment'] != '') {$vbody .= " background-attachment: ".$vthemesettings['background_attachment'].";";}
+if ($vts['background_image'] != '') {$vbody .= " background-image: url('".$vbackgroundimage."');";}
+if ($vts['background_size'] != '') {$vbody .= " background-size: ".$vts['background_size'].";";}
+if ($vts['background_position'] != '') {$vbody .= " background-position: ".$vts['background_position'].";";}
+if ($vts['background_repeat'] != '') {$vbody .= " background-repeat: ".$vts['background_repeat'].";";}
+if ($vts['background_attachment'] != '') {$vbody .= " background-attachment: ".$vts['background_attachment'].";";}
 
 // ============
 // Admin Styles
 // ============
-// 1.8.5: fix to adminstyles variable default clearing
-if (!isset($vadminstyles)) {$vadminstyles = false;}
-if ( (isset($_GET['adminstyles'])) && ($_GET['adminstyles'] == 'yes') ) {$vadminstyles = true;}
 if ($vadminstyles) {
 
+	// matching button styles
 	echo $vbuttons.PHP_EOL;
-	$vadmincss = bioship_skin_css_replace_values($vthemesettings['dynamicadmincss']);
+
+	// theme settings admin styles
+	$vadmincss = bioship_skin_css_replace_values($vts['dynamicadmincss']);
 	if (function_exists('apply_filters')) {$vadmincss = apply_filters('skin_dynamic_admin_css', $vadmincss);}
 	echo $vadmincss.PHP_EOL;
 
@@ -699,7 +759,7 @@ if ($vadminstyles) {
 	echo '#wp-admin-bar-theme-options .ab-icon:before {content: "'.$vicon.'"; top:2px;}'.PHP_EOL;
 
 	// 1.8.5: added simple hybrid hook style fixes
-	if ( (isset($vthemesettings['hybridhook'])) && ($vthemesettings['hybridhook'] == '1') ) {
+	if ( (isset($vts['hybridhook'])) && ($vts['hybridhook'] == '1') ) {
 		echo "
 		/* Hybrid Hook display fixes */
 		.hook-editor textarea {width: 100%;}
@@ -725,8 +785,8 @@ if ($vadminstyles) {
 
 		// Login Background
 		// ----------------
-		if ($vthemesettings['loginbackgroundurl'] != '') {
-			$vlogin .= "body.login {background-image: url('".$vthemesettings['loginbackgroundurl']."');}".PHP_EOL;
+		if ($vts['loginbackgroundurl'] != '') {
+			$vlogin .= "body.login {background-image: url('".$vts['loginbackgroundurl']."');}".PHP_EOL;
 		} else {
 			// 1.9.6: fix to missing fallback to main background settings
 			if ($vbody) {$vlogin .= "body.login {".$vbody."}".PHP_EOL;}
@@ -736,8 +796,10 @@ if ($vadminstyles) {
 		// ----------------------------
 		// (thanks to our login body class hack)
 		// 1.9.5: added body.login prefix (to not conflict with theme my login)
+		// 2.0.9: full border radius for reset password form (not just top corners)
 		$vlogin .= "body.login #loginwrapper {padding-top:8%;}".PHP_EOL;
-		$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #resetpassform, body.login #registerform {border-radius:20px 20px 0 0;}".PHP_EOL;
+		$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #registerform {border-radius:20px 20px 0 0;}".PHP_EOL;
+		$vlogin .= "body.login #resetpassform {border-radius: 20px;}".PHP_EOL;
 		$vlogin .= "body.login #login {padding:0 20px 10px 20px;} body.login #nav {text-align:right;}".PHP_EOL;
 		$vlogin .= "body.login #nav, body.login #backtoblog {margin:0 !important; padding:0 !important;}".PHP_EOL;
 		$vlogin .= "body.login #nav a, body.login #backtoblog a {line-height: 3em; padding: 20px}".PHP_EOL;
@@ -746,25 +808,27 @@ if ($vadminstyles) {
 
 		// Login Wrap Background Colour
 		// ----------------------------
-		if ( (isset($vthemesettings['loginwrapbgcolor'])) && ($vthemesettings['loginwrapbgcolor'] != '') ) {
-			$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #nav, body.login #backtoblog {background-color: ".$vthemesettings['loginwrapbgcolor'].";}".PHP_EOL;
+		if ( (isset($vts['loginwrapbgcolor'])) && ($vts['loginwrapbgcolor'] != '') ) {
+			// 2.0.9: add missing CSS targeting for #registerform and #resetpassform
+			$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #registerform, body.login #resetpassform, body.login #nav, body.login #backtoblog {background-color: ".$vts['loginwrapbgcolor'].";}".PHP_EOL;
 		} else {
 			// 2.0.8: if background empty explicitly set transparency for consistency
-			$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #nav, body.login #backtoblog {background-color: transparent; box-shadow: none;}".PHP_EOL;
+			// 2.0.9: add missing CSS targeting for #registerform and #resetpassform
+			$vlogin .= "body.login #loginform, body.login #lostpasswordform, body.login #registerform, body.login #resetpassform, body.login #nav, body.login #backtoblog {background-color: transparent; box-shadow: none;}".PHP_EOL;
 		}
 
 		// 1.8.5: added missing 'none' setting handler
-		if ($vthemesettings['loginlogo'] == 'none') {$vlogin .= 'body.login h1 {display:none;}'.PHP_EOL;}
-		elseif ($vthemesettings['loginlogo'] != 'default') {
+		if ($vts['loginlogo'] == 'none') {$vlogin .= 'body.login h1 {display:none;}'.PHP_EOL;}
+		elseif ($vts['loginlogo'] != 'default') {
 
 			// Get the Logo Image Size
 			// -----------------------
 			$imageurl = false;
-			if ( ($vthemesettings['loginlogo'] == 'custom') && ($vthemesettings['header_logo'] != '') ) {
-				$imageurl = $vthemesettings['header_logo'];
+			if ( ($vts['loginlogo'] == 'custom') && ($vts['header_logo'] != '') ) {
+				$imageurl = $vts['header_logo'];
 			}
-			elseif ( ($vthemesettings['loginlogo'] == 'upload') && ($vthemesettings['loginlogourl'] != '') ) {
-				$imageurl = $vthemesettings['loginlogourl'];
+			elseif ( ($vts['loginlogo'] == 'upload') && ($vts['loginlogourl'] != '') ) {
+				$imageurl = $vts['loginlogourl'];
 			}
 
 			if ($imageurl) {
@@ -784,8 +848,8 @@ if ($vadminstyles) {
 					$vlogin .= 'body.login h1 a {'.PHP_EOL;
 					$vlogin .= ' background-image: url("';
 					// 1.8.5: fix to old header_image usage
-					if ($vthemesettings['loginlogo'] == 'custom') {$vlogin .= $vthemesettings['header_logo'];}
-					elseif ($vthemesettings['loginlogo'] == 'upload') {$vlogin .= $vthemesettings['loginlogourl'];}
+					if ($vts['loginlogo'] == 'custom') {$vlogin .= $vts['header_logo'];}
+					elseif ($vts['loginlogo'] == 'upload') {$vlogin .= $vts['loginlogourl'];}
 					$vlogin .= ' ") !important;'.PHP_EOL;
 					$vlogin .= ' background-repeat: no-repeat !important;'.PHP_EOL;
 					// if (!$imagesize) {$vlogin .= ' width:100%; height:auto; background-size:100% auto;';}
@@ -820,8 +884,8 @@ echo PHP_EOL;
 // Wrap Container
 // --------------
 // 1.8.5: added maximum layout width wrapper rule
-if (THEMEDEBUG) {echo "/* Raw Max Width: ".$vthemesettings['layout']."px */".PHP_EOL;}
-$vmaximumwidth = round( (abs(intval($vthemesettings['layout'])) / 16), 3, PHP_ROUND_HALF_DOWN);
+if (THEMEDEBUG) {echo "/* Raw Max Width: ".$vts['layout']."px */".PHP_EOL;}
+$vmaximumwidth = round( (abs(intval($vts['layout'])) / 16), 3, PHP_ROUND_HALF_DOWN);
 if (THEMEDEBUG) {echo "/* Sanitized Max Width: ".$vmaximumwidth."em */".PHP_EOL;}
 if ($vmaximumwidth > 320) {echo "#wrap {max-width: ".$vmaximumwidth."em;}".PHP_EOL;}
 
@@ -829,11 +893,11 @@ if ($vmaximumwidth > 320) {echo "#wrap {max-width: ".$vmaximumwidth."em;}".PHP_E
 // Header Background
 // -----------------
 $vheader = '';
-if ($vthemesettings['headerbgcolor'] != '') {$vheader .= "background-color: ".$vthemesettings['headerbgcolor'].";";}
-// ???: maybe use header_image as override
+if ($vts['headerbgcolor'] != '') {$vheader .= "background-color: ".$vts['headerbgcolor'].";";}
+// ???: maybe use custom header_image as override
 // $vheaderimage = get_theme_mod('header_image');
 // if (!$vheaderimage) {
-	$vheaderimage = $vthemesettings['header_background_image'];
+	$vheaderimage = $vts['header_background_image'];
 // }
 
 if ($vheaderimage != '') {
@@ -852,14 +916,14 @@ if ($vheaderimage != '') {
 
 	if ($vimagesize) {
 		// 1.8.5: account for maximum layout width and maybe scale to it
-		if ($vimagesize[0] > $vthemesettings['layout']) {
+		if ($vimagesize[0] > $vts['layout']) {
 			$vratio = $vimagesize[1] / $vimagesize[0];
-			$vimagesize[1] = $vthemesettings['layout'] * $vratio;
-			$vimagesize[0] = $vthemesettings['layout'];
+			$vimagesize[1] = $vts['layout'] * $vratio;
+			$vimagesize[0] = $vts['layout'];
 		}
 		// 1.8.5: set header width and height in em
 		// 1.9.5: only set the height in em if not using repeat or repeat-y
-		if ( ($vthemesettings['header_background_repeat'] != 'repeat') && ($vthemesettings['header_background_repeat'] != 'repeat-y') ) {
+		if ( ($vts['header_background_repeat'] != 'repeat') && ($vts['header_background_repeat'] != 'repeat-y') ) {
 			$vfontpercent = 100;
 			$vheight = round( ($vimagesize[1] / 16 * $vfontpercent / 100), 3, PHP_ROUND_HALF_DOWN);
 			$vheader .= " height: ".$vheight."em;";
@@ -868,14 +932,14 @@ if ($vheaderimage != '') {
 		// hmmmm... no allow_url_fopen and no filepath found
 		// (and all our lovely automated code has failed)
 		// you will just have to set it manually friend
-		// 2.0.8: removed unused and unusable filter
+		// 2.0.8: removed unused (unusable) filter
 	}
 }
 
-if ($vthemesettings['header_background_size'] != '') {$vheader .= " background-size: ".$vthemesettings['header_background_size'].";";}
-if ($vthemesettings['header_background_position'] != '') {$vheader .= " background-position: ".$vthemesettings['header_background_position'].";";}
-if ($vthemesettings['header_background_repeat'] != '') {$vheader .= " background-repeat: ".$vthemesettings['header_background_repeat'].";";}
-// if ($vthemesettings['header_background_attachment'] != '') {$vheader .= " background-attachment: ".$vthemesettings['header_background_attachment'].";";}
+if ($vts['header_background_size'] != '') {$vheader .= " background-size: ".$vts['header_background_size'].";";}
+if ($vts['header_background_position'] != '') {$vheader .= " background-position: ".$vts['header_background_position'].";";}
+if ($vts['header_background_repeat'] != '') {$vheader .= " background-repeat: ".$vts['header_background_repeat'].";";}
+// if ($vts['header_background_attachment'] != '') {$vheader .= " background-attachment: ".$vts['header_background_attachment'].";";}
 // 1.8.5: fix to check typo here
 if ($vheader != '') {echo "#header {".$vheader."}".PHP_EOL;}
 echo PHP_EOL;
@@ -884,11 +948,11 @@ echo PHP_EOL;
 // Header Text Display
 // -------------------
 // 1.8.5: add header text display rules
-// echo '/*'; print_r($vthemesettings['header_texts']); echo '*/';
-if ( (isset($vthemesettings['header_texts']['sitetitle'])) && ($vthemesettings['header_texts']['sitetitle'] != '1') ) {
+// echo '/*'; print_r($vts['header_texts']); echo '*/';
+if ( (isset($vts['header_texts']['sitetitle'])) && ($vts['header_texts']['sitetitle'] != '1') ) {
 	echo '#header h1#site-title-text a {display:none;}'.PHP_EOL;
 }
-if ( (isset($vthemesettings['header_texts']['sitedescription'])) && ($vthemesettings['header_texts']['sitedescription'] != '1') ) {
+if ( (isset($vts['header_texts']['sitedescription'])) && ($vts['header_texts']['sitedescription'] != '1') ) {
 	echo '#header #site-description .site-desc {display: none;}'.PHP_EOL;
 }
 echo PHP_EOL;
@@ -896,12 +960,11 @@ echo PHP_EOL;
 // ------------------
 // Background Colours
 // ------------------
-
 $vbgcolors = array('wrap', 'content', 'sidebar', 'subsidebar', 'footer');
 foreach ($vbgcolors as $vbgcolor) {
 	$vbgcolorref = $vbgcolor.'bgcolor';
-	if ($vthemesettings[$vbgcolorref] != '') {
-		echo "#".$vbgcolor." {background-color: ".$vthemesettings[$vbgcolorref].";}".PHP_EOL;
+	if ($vts[$vbgcolorref] != '') {
+		echo "#".$vbgcolor." {background-color: ".$vts[$vbgcolorref].";}".PHP_EOL;
 	}
 }
 echo PHP_EOL;
@@ -909,11 +972,9 @@ echo PHP_EOL;
 // --------------------
 // Main Navigation Menu
 // --------------------
-
 $vnavmenurules = '';
-
 // 1.8.5: added autospacing of top level menu items option
-if ( (isset($vthemesettings['navmenuautospace'])) && ($vthemesettings['navmenuautospace'] == '1') ) {
+if ( (isset($vts['navmenuautospace'])) && ($vts['navmenuautospace'] == '1') ) {
 	// 1.9.5: fix to dashes in theme name for theme mods
 	$vthememods = get_option('theme_mods_'.str_replace('_', '-', $vthemename));
 	if ( (isset($vthememods['nav_menu_locations']['primary'])) && ($vthememods['nav_menu_locations']['primary'] != '') ) {
@@ -928,37 +989,58 @@ if ( (isset($vthemesettings['navmenuautospace'])) && ($vthemesettings['navmenuau
 }
 
 // 1.8.5: added navigation container, submenu container and item background color options
-if ( (isset($vthemesettings['navmenubgcolor'])) && ($vthemesettings['navmenubgcolor'] != '') ) {
-	$vnavmenurules .= "#navigation, #navigation #mainmenu, #navigation #mainmenu ul {background-color: ".$vthemesettings['navmenubgcolor'].";}".PHP_EOL;
+if ( (isset($vts['navmenubgcolor'])) && ($vts['navmenubgcolor'] != '') ) {
+	$vnavmenurules .= "#navigation, #navigation #mainmenu, #navigation #mainmenu ul {background-color: ".$vts['navmenubgcolor'].";}".PHP_EOL;
 }
-if ( (isset($vthemesettings['navmenusubbgcolor'])) && ($vthemesettings['navmenusubbgcolor'] != '') ) {
-	$vnavmenurules .= "#navigation #mainmenu ul ul, #navigation #mainmenu ul ul li {background-color: ".$vthemesettings['navmenusubbgcolor'].";}".PHP_EOL;
+if ( (isset($vts['navmenusubbgcolor'])) && ($vts['navmenusubbgcolor'] != '') ) {
+	$vnavmenurules .= "#navigation #mainmenu ul ul, #navigation #mainmenu ul ul li {background-color: ".$vts['navmenusubbgcolor'].";}".PHP_EOL;
 }
-if ( (isset($vthemesettings['navmenuitembgcolor'])) && ($vthemesettings['navmenuitembgcolor'] != '') ) {
-	$vnavmenurules .= "#navigation #mainmenu ul li, #navigation #mainmenu ul li.active li {background-color: ".$vthemesettings['navmenuitembgcolor'].";}".PHP_EOL;
+if ( (isset($vts['navmenuitembgcolor'])) && ($vts['navmenuitembgcolor'] != '') ) {
+	// 2.0.9: add current-menu-item class as active class alternative
+	$vnavmenurules .= "#navigation #mainmenu ul li, #navigation #mainmenu ul li.active li, #navigation #mainmenu ul li.current-menu-item li";
+	$vnavmenurules .= " {background-color: ".$vts['navmenuitembgcolor'].";}".PHP_EOL;
 }
 
 // 1.8.5: added active and hover item options
 // 1.9.5: changed isset tests to maybe not output
-$vnavmenuactiverules = '';
-if ( (isset($vthemesettings['navmenuactivecolor'])) && ($vthemesettings['navmenuactivecolor'] != '') ) {
-	$vnavmenuactiverules .= "color: ".$vthemesettings['navmenuactivecolor']."; ";
+$vnavmenuactive = '';
+if ( (isset($vts['navmenuactivecolor'])) && ($vts['navmenuactivecolor'] != '') ) {
+	$vnavmenuactive .= "color: ".$vts['navmenuactivecolor']."; ";
 }
-if ( (isset($vthemesettings['navmenuactivebgcolor'])) && ($vthemesettings['navmenuactivebgcolor'] != '') ) {
-	$vnavmenuactiverules .= "background-color: ".$vthemesettings['navmenuactivebgcolor'].";";
+if ( (isset($vts['navmenuactivebgcolor'])) && ($vts['navmenuactivebgcolor'] != '') ) {
+	$vnavmenuactive .= "background-color: ".$vts['navmenuactivebgcolor'].";";
 }
-if ($vnavmenuactiverules != '') {$vnavmenurules .= "#navigation #mainmenu ul li.active {".$vnavmenuactiverules."}".PHP_EOL;}
+if ($vnavmenuactive != '') {
+	// 2.0.9: fix to rule output variable typo
+	// 2.0.9: add li.active a rule to fix inheritance
+	$vnavmenurules .= "#navigation #mainmenu ul li.active, #navigation #mainmenu ul li.active a, ";
+	// 2.0.9: add current-menu-item class as active class alternative
+	$vnavmenurules .= "#navigation #mainmenu ul li.current-menu-item, #navigation #mainmenu ul li.current-menu-item a";
+	$vnavmenurules .= " {".$vnavmenuactive."}".PHP_EOL;
+}
 
-$vnavmenuhoverrules = '';
-if ( (isset($vthemesettings['navmenuhovercolor'])) && ($vthemesettings['navmenuhovercolor'] != '') ) {
-	$vnavmenuhoverrules .= "color: ".$vthemesettings['navmenuhovercolor']."; ";
+$vnavmenuhover = '';
+if ( (isset($vts['navmenuhovercolor'])) && ($vts['navmenuhovercolor'] != '') ) {
+	$vnavmenuhover .= "color: ".$vts['navmenuhovercolor']."; ";
 }
-if ( (isset($vthemesettings['navmenuhoverbgcolor'])) && ($vthemesettings['navmenuhoverbgcolor'] != '') ) {
-	$vnavmenuhoverrules .= "background-color: ".$vthemesettings['navmenuhoverbgcolor'].";";
+if ( (isset($vts['navmenuhoverbgcolor'])) && ($vts['navmenuhoverbgcolor'] != '') ) {
+	$vnavmenuhover .= "background-color: ".$vts['navmenuhoverbgcolor'].";";
 }
-if ($vnavmenuhoverrules != '') {
+if ($vnavmenuhover != '') {
 	// 2.0.7: fix to text hover color targeting
-	$vnavmenurules .= "#navigation #mainmenu ul li:hover, #navigation #mainmenu ul li:hover a {".$vnavmenuhoverrules."}".PHP_EOL;
+	$vnavmenurules .= "#navigation #mainmenu ul li:hover, #navigation #mainmenu ul li:hover a {".$vnavmenuhover."}".PHP_EOL;
+}
+
+// 2.0.9: added missing submenu hover color and background hover options
+$vsubmenuhover = '';
+if ( (isset($vts['submenuhovercolor'])) && ($vts['submenuhovercolor'] != '') ) {
+	$vsubmenuhover .= "color: ".$vts['submenuhovercolor']."; ";
+}
+if ( (isset($vts['submenuhoverbgcolor'])) && ($vts['submenuhoverbgcolor'] != '') ) {
+	$vsubmenuhover .= "background-color: ".$vts['submenuhoverbgcolor'].";";
+}
+if ($vsubmenuhoverrules != '') {
+	$vnavmenurules .= "#navigation #mainmenu ul ul li:hover, #navigation #mainmenu ul ul li:hover a {".$vsubmenuhover."}".PHP_EOL;
 }
 
 if ($vnavmenurules != '') {echo $vnavmenurules.PHP_EOL;}
@@ -975,8 +1057,8 @@ echo $vtypographyrules.PHP_EOL;
 // ---------------
 // Content Padding
 // ---------------
-if ($vthemesettings['contentpadding'] != '') {
-	echo "#contentpadding {padding: ".$vthemesettings['contentpadding'].";}".PHP_EOL;
+if ($vts['contentpadding'] != '') {
+	echo "#contentpadding {padding: ".$vts['contentpadding'].";}".PHP_EOL;
 }
 echo PHP_EOL;
 
@@ -984,7 +1066,7 @@ echo PHP_EOL;
 // Browser and Mobile Specific Styles
 // ----------------------------------
 // (alternative to deprecated <body> class function in muscle.php)
-// - as that method does not account for the page being cached
+// - as that method does not account for the page being cached!
 
 // special case: if using shortinit method, maybe load PHP browser detection plugin
 if ( (defined('SHORTINIT')) && (!function_exists('php_browser_info')) ) {
@@ -1039,9 +1121,11 @@ if (count($vclasses) > 0) {
 	$vbrowserstyles = '';
 	foreach ($vclasses as $vclass) {
 		$vthisbrowserstyles = '';
-		if (isset($vthemesettings['browser_'.$vclass])) {$vthisbrowserstyles = $vthemesettings['browser_'.$vclass];}
-		// TODO: rethink this as filters maybe not loaded?
-		$vbrowserstyles = apply_filters('muscle_browser_styles_custom'.$vclass, $vthisbrowserstyles);
+		if (isset($vts['browser_'.$vclass])) {$vthisbrowserstyles = $vts['browser_'.$vclass];}
+		// 2.0.9: conditionally call apply_filters to be safe
+		if (function_exists('apply_filters')) {
+			$vbrowserstyles .= apply_filters('muscle_browser_styles_custom'.$vclass, $vthisbrowserstyles);
+		} else {$vbrowserstyles .= $vthisbrowserstyles;}
 	}
 }
 
@@ -1054,11 +1138,11 @@ if ($vbrowserstyles != '') {
 // Custom Dynamic CSS
 // ------------------
 // 1.8.5: no output here for customizer live preview (transport refresh)
-// as we load the preview CSS styles dynamically and separately...
+// ...as we load the preview CSS styles dynamically and separately...
 $vlivepreview = false;
 if ( (isset($_REQUEST['livepreview'])) && ($_REQUEST['livepreview'] == 'yes') ) {$vlivepreview = true;}
 if (!$vlivepreview) {
-	$vcustomcss = $vthemesettings['dynamiccustomcss'];
+	$vcustomcss = $vts['dynamiccustomcss'];
 	$vcustomcss = bioship_skin_css_replace_values($vcustomcss);
 	if (function_exists('apply_filters')) {$vcustomcss = apply_filters('skin_dynamic_css', $vcustomcss);}
 
@@ -1077,5 +1161,3 @@ $vdifference = $vendtime - $vthemetimestart;
 echo PHP_EOL."/* Load Time: ".$vdifference." */".PHP_EOL;
 
 exit;
-
-?>

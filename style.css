@@ -3,7 +3,7 @@ Theme Name: BioShip
 Theme URI: http://bioship.space
 Details URI: http://bioship.space/news/
 Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
-Version: 2.0.8
+Version: 2.1.0
 Status: publish
 Author: majick
 Author URI: http://wordquest.org
@@ -22,7 +22,7 @@ GitHub Theme URI: majick777/bioship
 /* Structure */
 
 body #wrap #content.nosidebar {float: none;}
-#header, #footer, #navigation {width:100%;}
+#header, #footer, #navigation {width: 100%;}
 body.sidebar-left #wrap #sidebar {float: left;}
 body.sidebar-right #wrap #sidebar {float: right;}
 body.subsidebar-left #wrap #subsidebar {float: left;}
@@ -36,7 +36,9 @@ body.sidebar-right.subsidebar-left #wrap #content {float: right;}
 
 /* Random Style Fixes... */
 
+h1#site-title-text {font-size: initial;}
 #site-logo .site-logo-image, #site-logo .site-logo-text {display:inline-block;}
+#site-logo, #site-logo .inner, #site-logo .site-logo-text {font-size: initial;}
 .mobilebutton {display:none;} #mainmenubutton {text-align:center;}
 body .mobilebutton a.button {padding: 5px !important; font-size: 13px !important;}
 #sidebar-header {float: right;}

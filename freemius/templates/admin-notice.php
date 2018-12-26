@@ -2,7 +2,7 @@
 	/**
 	 * @package     Freemius
 	 * @copyright   Copyright (c) 2015, Freemius, Inc.
-	 * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+	 * @license     https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License Version 3
 	 * @since       1.0.3
 	 */
 
@@ -36,7 +36,7 @@
 	<?php endif ?>
 	<?php if ( ! empty( $VARS['sticky'] ) ) : ?>
 		<div class="fs-close"><i class="dashicons dashicons-no"
-		                         title="<?php _efs( 'dismiss' ) ?>"></i> <span><?php _efs( 'dismiss' ) ?></span>
+		                         title="<?php fs_echo( 'dismiss' ) ?>"></i> <span><?php fs_echo( 'dismiss' ) ?></span>
 		</div>
 	<?php endif ?>
 	<div class="fs-notice-body">

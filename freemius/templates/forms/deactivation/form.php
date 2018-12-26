@@ -2,7 +2,7 @@
 	/**
 	 * @package     Freemius
 	 * @copyright   Copyright (c) 2015, Freemius, Inc.
-	 * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+	 * @license     https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License Version 3
 	 * @since       1.1.2
 	 */
 
@@ -53,13 +53,13 @@ HTML;
 	if ( $is_anonymous ) {
 		$anonymous_feedback_checkbox_html =
 			'<label class="anonymous-feedback-label"><input type="checkbox" class="anonymous-feedback-checkbox"> '
-				. __fs( 'anonymous-feedback', $slug )
+				. fs_text( 'anonymous-feedback', $slug )
 			. '</label>';
 	} else {
 		$anonymous_feedback_checkbox_html = '';
 	}
 
-	fs_enqueue_local_style( 'dialog-boxes', '/admin/dialog-boxes.css' );
+	fs_enqueue_local_style( 'fs_dialog_boxes', '/admin/dialog-boxes.css' );
 ?>
 <script type="text/javascript">
 (function ($) {
@@ -68,16 +68,16 @@ HTML;
 		    '<div class="fs-modal fs-modal-deactivation-feedback<?php echo empty( $confirmation_message ) ? ' no-confirmation-message' : ''; ?>">'
 		    + '	<div class="fs-modal-dialog">'
 		    + '		<div class="fs-modal-header">'
-		    + '		    <h4><?php _efs('quick-feedback' , $slug) ?></h4>'
+		    + '		    <h4><?php fs_esc_attr_echo('quick-feedback' , $slug) ?></h4>'
 		    + '		</div>'
 		    + '		<div class="fs-modal-body">'
 		    + '			<div class="fs-modal-panel" data-panel-id="confirm"><p><?php echo $confirmation_message; ?></p></div>'
-		    + '			<div class="fs-modal-panel active" data-panel-id="reasons"><h3><strong><?php printf( __fs(  'deactivation-share-reason' , $slug ), __fs(($fs->is_plugin() ? 'deactivating' : 'switching') , $slug) ); ?>:</strong></h3><ul id="reasons-list">' + reasonsHtml + '</ul></div>'
+		    + '			<div class="fs-modal-panel active" data-panel-id="reasons"><h3><strong><?php printf( fs_esc_attr(  'deactivation-share-reason' , $slug ), fs_esc_attr(($fs->is_plugin() ? 'deactivating' : 'switching') , $slug) ); ?>:</strong></h3><ul id="reasons-list">' + reasonsHtml + '</ul></div>'
 		    + '		</div>'
 		    + '		<div class="fs-modal-footer">'
 			+ '         <?php echo $anonymous_feedback_checkbox_html ?>'
 		    + '			<a href="#" class="button button-secondary button-deactivate"></a>'
-		    + '			<a href="#" class="button button-primary button-close"><?php _efs(  'cancel' , $slug ) ?></a>'
+		    + '			<a href="#" class="button button-primary button-close"><?php fs_echo(  'cancel' , $slug ) ?></a>'
 		    + '		</div>'
 		    + '	</div>'
 		    + '</div>',
@@ -106,15 +106,18 @@ HTML;
 		});
 		<?php
 		/**
-		 * For "theme" module type, the modal is shown when the current user clicks on the "Activate" button of any
-		 * other theme. The "Activate" button is actually a link to the "Themes" page (/wp-admin/themes.php) containing query
-		 * params that tell WordPress to deactivate the current theme and activate a different theme.
+		 * For "theme" module type, the modal is shown when the current user clicks on
+		 * the "Activate" button of any other theme. The "Activate" button is actually
+		 * a link to the "Themes" page (/wp-admin/themes.php) containing query params
+		 * that tell WordPress to deactivate the current theme and activate a different theme.
 		 *
 		 * @author Leo Fajardo (@leorw)
 		 * @since 1.2.2
+		 *        
+		 * @since 1.2.2.7 Don't trigger the deactivation feedback form if activating the premium version of the theme.
 		 */
 		} else { ?>
-		$('body').on('click', '.theme-actions .button.activate', function (evt) {
+		$('body').on('click', '.theme-browser .theme:not([data-slug=<?php echo $slug ?>-premium]) .theme-actions .button.activate', function (evt) {
 			evt.preventDefault();
 
 			redirectLink = $(this).attr('href');
@@ -191,11 +194,12 @@ HTML;
 					url       : ajaxurl,
 					method    : 'POST',
 					data      : {
-						'action'      : '<?php echo $fs->get_action_tag( 'submit_uninstall_reason' ) ?>',
-						'module_id'   : '<?php echo $fs->get_id() ?>',
-						'reason_id'   : $radio.val(),
-						'reason_info' : userReason,
-						'is_anonymous': isAnonymousFeedback()
+						action      : '<?php echo $fs->get_ajax_action( 'submit_uninstall_reason' ) ?>',
+						security    : '<?php echo $fs->get_ajax_security( 'submit_uninstall_reason' ) ?>',
+						module_id   : '<?php echo $fs->get_id() ?>',
+						reason_id   : $radio.val(),
+						reason_info : userReason,
+						is_anonymous: isAnonymousFeedback()
 					},
 					beforeSend: function () {
 						_parent.find('.fs-modal-footer .button').addClass('disabled');
@@ -236,10 +240,10 @@ HTML;
 			$modal.find('.reason-input').remove();
 			$modal.find( '.internal-message' ).hide();
 			$modal.find('.button-deactivate').text('<?php printf(
-				__fs(  'deactivation-modal-button-submit' , $slug ),
+				fs_text(  'deactivation-modal-button-submit' , $slug ),
 				$fs->is_plugin() ?
-					__fs('deactivate', $slug) :
-					sprintf( __fs( 'activate-x', $slug), __fs( 'theme', $slug) )
+					fs_text('deactivate', $slug) :
+					sprintf( fs_text( 'activate-x', $slug), fs_text( 'theme', $slug) )
 			) ?>');
 
 			enableDeactivateButton();
@@ -257,7 +261,7 @@ HTML;
 				_parent.find('input, textarea').attr('placeholder', inputPlaceholder).focus();
 
 				if (isOtherReasonSelected()) {
-					showMessage('<?php printf( __fs(  'ask-for-reason-message' , $slug ) ); ?>');
+					showMessage('<?php printf( fs_text(  'ask-for-reason-message' , $slug ) ); ?>');
 					disableDeactivateButton();
 				}
 			}
@@ -378,17 +382,17 @@ HTML;
 		// Reset the deactivate button's text.
 		if ('confirm' === getCurrentPanel()) {
 			$deactivateButton.text('<?php printf(
-				__fs( 'deactivation-modal-button-confirm' , $slug ),
+				fs_text( 'deactivation-modal-button-confirm' , $slug ),
 				$fs->is_plugin() ?
-					__fs('deactivate', $slug ) :
-					sprintf( __fs( 'activate-x', $slug ), __fs( 'theme', $slug ) )
+					fs_text('deactivate', $slug ) :
+					sprintf( fs_text( 'activate-x', $slug ), fs_text( 'theme', $slug ) )
 			) ?>');
 		} else {
 			$deactivateButton.text('<?php printf(
-				__fs('skip-and-x', $slug ),
+				fs_text('skip-and-x', $slug ),
 				$fs->is_plugin() ?
-					__fs('deactivate', $slug ) :
-					sprintf( __fs( 'activate-x', $slug ), __fs( 'theme', $slug ) )
+					fs_text('deactivate', $slug ) :
+					sprintf( fs_text( 'activate-x', $slug ), fs_text( 'theme', $slug ) )
 			) ?>');
 		}
 	}

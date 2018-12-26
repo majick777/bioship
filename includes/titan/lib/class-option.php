@@ -16,6 +16,7 @@ class TitanFrameworkOption {
 	public $settings;
 	public $type; // One of the TYPE_* constants above
 	public $owner;
+	public $echo_wrapper = true;
 
 	private static $rowIndex = 0;
 
@@ -91,14 +92,14 @@ class TitanFrameworkOption {
 		 */
 		'transport' => '',
 
+		'example' => '', // An example value for this field, will be displayed in a <code>
+
 		/**
-		 * (Optional) The CSS Class to apply to the option field for style targeting
-		 * @since 1.9.x
+		 * (Optional) Sanitization callback function
+		 * @since 1.9.4
 		 * @var string
 		 */
-		'class' => '',
-
-		'example' => '', // An example value for this field, will be displayed in a <code>
+		'sanitize_callback' => '',
 	);
 
 	/**
@@ -276,6 +277,14 @@ class TitanFrameworkOption {
 	}
 
 	protected function echoOptionHeader( $showDesc = false ) {
+
+		if ( ! $this->echo_wrapper ) {
+			if ( $this->getHidden() ) {
+				echo '<div style="display: none;">';
+			}
+			return;
+		}
+
 		// Allow overriding for custom styling
 		$useCustom = false;
 		$useCustom = apply_filters( 'tf_use_custom_option_header', $useCustom );
@@ -289,13 +298,13 @@ class TitanFrameworkOption {
 		$id = $this->getID();
 		$name = $this->getName();
 		$evenOdd = self::$rowIndex++ % 2 == 0 ? 'odd' : 'even';
-		$class = $this->settings['class'];
+
 		$style = $this->getHidden() == true ? 'style="display: none"' : '';
 
 		?>
-		<tr valign="top" class="row-<?php echo self::$rowIndex ?> <?php echo $evenOdd ?> <?php echo $class ?>" <?php echo $style ?>>
+		<tr valign="top" class="row-<?php echo self::$rowIndex ?> <?php echo $evenOdd ?>" <?php echo $style ?>>
 		<th scope="row" class="first">
-			<label class="optionlabel" for="<?php echo ! empty( $id ) ? $id : '' ?>"><?php echo ! empty( $name ) ? $name : '' ?></label>
+			<label for="<?php echo ! empty( $id ) ? $id : '' ?>"><?php echo ! empty( $name ) ? $name : '' ?></label>
 		</th>
 		<td class="second tf-<?php echo $this->settings['type'] ?>">
 		<?php
@@ -309,6 +318,14 @@ class TitanFrameworkOption {
 	}
 
 	protected function echoOptionHeaderBare() {
+
+		if ( ! $this->echo_wrapper ) {
+			if ( $this->getHidden() ) {
+				echo '<div style="display: none;">';
+			}
+			return;
+		}
+
 		// Allow overriding for custom styling
 		$useCustom = false;
 		$useCustom = apply_filters( 'tf_use_custom_option_header', $useCustom );
@@ -322,16 +339,24 @@ class TitanFrameworkOption {
 		$id = $this->getID();
 		$name = $this->getName();
 		$evenOdd = self::$rowIndex++ % 2 == 0 ? 'odd' : 'even';
-		$class = $this->settings['class'];
+
 		$style = $this->getHidden() == true ? 'style="display: none"' : '';
 
 		?>
-		<tr valign="top" class="row-<?php echo self::$rowIndex ?> <?php echo $evenOdd ?> <?php echo $class ?>" <?php echo $style ?>>
+		<tr valign="top" class="row-<?php echo self::$rowIndex ?> <?php echo $evenOdd ?>" <?php echo $style ?>>
 			<td class="second tf-<?php echo $this->settings['type'] ?>">
 		<?php
 	}
 
 	protected function echoOptionFooter( $showDesc = true ) {
+
+		if ( ! $this->echo_wrapper ) {
+			if ( $this->getHidden() ) {
+				echo '</div>';
+			}
+			return;
+		}
+
 		// Allow overriding for custom styling
 		$useCustom = false;
 		$useCustom = apply_filters( 'tf_use_custom_option_footer', $useCustom );
@@ -363,6 +388,14 @@ class TitanFrameworkOption {
 	}
 
 	protected function echoOptionFooterBare( $showDesc = true ) {
+
+		if ( ! $this->echo_wrapper ) {
+			if ( $this->getHidden() ) {
+				echo '</div>';
+			}
+			return;
+		}
+
 		// Allow overriding for custom styling
 		$useCustom = false;
 		$useCustom = apply_filters( 'tf_use_custom_option_footer', $useCustom );

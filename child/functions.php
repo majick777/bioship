@@ -93,7 +93,7 @@
 // This fires on 'init' hook and thus after parent functions.php. Make sure to keep
 // your layout adjustments *inside* it or they make a mess or just not do anything.
 
-add_action('init','bioship_theme_layout_wrapper');
+add_action('init', 'bioship_theme_layout_wrapper');
 function bioship_theme_layout_wrapper() {
 
 	// Removing Layout Elements
@@ -106,7 +106,7 @@ function bioship_theme_layout_wrapper() {
 	# remove_action('bioship_navbar', 'bioship_main_menu', 5);
 
 	// Example 2: Since v2.0.5 you can use bioship_remove_action without the priority
-	// and the (filtered) priority will be calculated for you
+	// and the (filtered) priority will be calculated for you and the action removed
 	# remove_action('bioship_navbar', 'bioship_main_menu');
 
 
@@ -127,22 +127,32 @@ function bioship_theme_layout_wrapper() {
 // CHILD THEME FUNCTIONS
 // =====================
 
+// Autoload Theme-Named Functions File
+// -----------------------------------
+// so that instead of lots of open functions.php in your file editor,
+// you can see the exact theme names directly. eg. child-theme.php
+// 2.0.9: added autoload PHP file of same slug as Child Theme
+// 2.1.0: fix to directory separator constant
+$vstylesheet = get_stylesheet();
+$vchildthemefunctions = dirname(__FILE__).DIRECTORY_SEPARATOR.$vstylesheet.'.php';
+if (file_exists($vchildthemefunctions)) {include($vchildthemefunctions);}
+
 // -- For adjusting custom value filters you can see your Child Theme filters.php
 // As there are many existing examples available there, you just might find something
 // that already does what you want to do. You can copy them here as needed, but remember
-// to remove/comment them from filters.php, or rename that file or they will conflict.
+// to remove/comment them out from filters.php if using that too or they will conflict.
 
 // -- If you use the same function name as in the parent theme functions.php, the parent
-// function will be overridden because child functions.php is loaded first, and parent
-// functions.php only declares those functions if they *do not already exist*. This is
-// standard Wordpress Child Theme behaviour and done intentionally for this reason.
+// function will be overridden because child functions.php is loaded first, and the parent
+// functions.php only declares those functions if they *do not already exist*.
+// This mirrors standard Wordpress Child Theme behaviour and is done for this reason.
 // See http://codex.wordpress.org/Child_Themes for a more detailed explanation.
+
 // *IMPORTANT NOTE* For flexibility, corresponding add_action calls for a function within BioShip
-// are inside the function_exists check, so if you replace a function be sure to re-add the action!
+// are INSIDE the function_exists check, so if you replace a function be sure to re-add the action!
 
 // Declare any custom functions needed for your Child Theme below..!
 // =================================================================
 
 
 
-?>

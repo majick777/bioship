@@ -1,10 +1,10 @@
 <?php
 
-/* Date Archive Primary Sidebar */
+/* Primary Sidebar: Date Archive  */
 
 if (THEMETRACE) {bioship_trace('T','Date Archive Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('date')) {
@@ -22,4 +22,3 @@ if (is_active_sidebar('date')) {
 
 }
 
-?>

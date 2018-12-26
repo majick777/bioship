@@ -7,6 +7,10 @@
 /* http://bioship.space/documentation/templates/ */
 /* https://developer.wordpress.org/themes/basics/template-hierarchy/ */
 
+// You can copy this file (without needing to change it) to an existing file of the WordPress hierarchy
+// and it will auto-load the corresponding header, loop and footer templates for that context if found.
+// example: copy index.php to page.php to auto-load header-page.php, loop-page.php and footer-page.php
+
 if (THEMETRACE) {bioship_trace('T',__('Main Index Template','bioship'),__FILE__);}
 
 /* HEADER */

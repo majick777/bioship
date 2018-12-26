@@ -7,7 +7,7 @@
 	 *
 	 * @package     Freemius
 	 * @copyright   Copyright (c) 2015, Freemius, Inc.
-	 * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+	 * @license     https://www.gnu.org/licenses/gpl-3.0.html GNU General Public License Version 3
 	 * @since       1.1.5
 	 */
 
@@ -147,6 +147,104 @@
 
 	#endregion Core Redirect (copied from BuddyPress) -----------------------------------------
 
+	if ( ! function_exists( '__fs' ) ) {
+		global $fs_text_overrides;
+
+		if ( ! isset( $fs_text_overrides ) ) {
+			$fs_text_overrides = array();
+		}
+
+		/**
+		 * Retrieve a translated text by key.
+		 *
+		 * @deprecated Use `fs_text()` instead since methods starting with `__` trigger warnings in Php 7.
+		 *
+		 * @author     Vova Feldman (@svovaf)
+		 * @since      1.1.4
+		 *
+		 * @param string $key
+		 * @param string $slug
+		 *
+		 * @return string
+		 *
+		 * @global       $fs_text, $fs_text_overrides
+		 */
+		function __fs( $key, $slug = 'freemius' ) {
+			global $fs_text,
+			       $fs_module_info_text,
+			       $fs_text_overrides;
+
+			if ( isset( $fs_text_overrides[ $slug ] ) ) {
+				if ( isset( $fs_text_overrides[ $slug ][ $key ] ) ) {
+					return $fs_text_overrides[ $slug ][ $key ];
+				}
+
+				$lower_key = strtolower( $key );
+				if ( isset( $fs_text_overrides[ $slug ][ $lower_key ] ) ) {
+					return $fs_text_overrides[ $slug ][ $lower_key ];
+				}
+			}
+
+			if ( ! isset( $fs_text ) ) {
+				$dir = defined( 'WP_FS__DIR_INCLUDES' ) ?
+					WP_FS__DIR_INCLUDES :
+					dirname( __FILE__ );
+
+				require_once $dir . '/i18n.php';
+			}
+
+			if ( isset( $fs_text[ $key ] ) ) {
+				return $fs_text[ $key ];
+			}
+
+			if ( isset( $fs_module_info_text[ $key ] ) ) {
+				return $fs_module_info_text[ $key ];
+			}
+
+			return $key;
+		}
+
+		/**
+		 * Output a translated text by key.
+		 *
+		 * @deprecated Use `fs_echo()` instead for consistency with `fs_text()`.
+		 *
+		 * @author     Vova Feldman (@svovaf)
+		 * @since      1.1.4
+		 *
+		 * @param string $key
+		 * @param string $slug
+		 */
+		function _efs( $key, $slug = 'freemius' ) {
+			fs_echo( $key, $slug );
+		}
+	}
+
+	if ( ! function_exists( 'fs_override_i18n' ) ) {
+		/**
+		 * Override default i18n text phrases.
+		 *
+		 * @author Vova Feldman (@svovaf)
+		 * @since  1.1.6
+		 *
+		 * @param string[] $key_value
+		 * @param string   $slug
+		 *
+		 * @global         $fs_text_overrides
+		 */
+		function fs_override_i18n( array $key_value, $slug = 'freemius' ) {
+			global $fs_text_overrides;
+
+			if ( ! isset( $fs_text_overrides[ $slug ] ) ) {
+				$fs_text_overrides[ $slug ] = array();
+			}
+
+			foreach ( $key_value as $key => $value ) {
+				$fs_text_overrides[ $slug ][ $key ] = $value;
+			}
+		}
+	}
+
 	if ( ! function_exists( 'fs_get_ip' ) ) {
 		/**
 		 * Get client IP.
@@ -205,6 +303,10 @@
 
 		$plugin_file = null;
 		for ( $i = 1, $bt = debug_backtrace(), $len = count( $bt ); $i < $len; $i ++ ) {
+			if ( empty( $bt[ $i ]['file'] ) ) {
+				continue;
+			}
+
 			if ( in_array( fs_normalize_path( $bt[ $i ]['file'] ), $all_plugins_paths ) ) {
 				$plugin_file = $bt[ $i ]['file'];
 				break;
@@ -213,7 +315,11 @@
 
 		if ( is_null( $plugin_file ) ) {
 			// Throw an error to the developer in case of some edge case dev environment.
-			wp_die( 'Freemius SDK couldn\'t find the plugin\'s main file. Please contact sdk@freemius.com with the current error.', 'Error', array( 'back_link' => true ) );
+			wp_die(
+				'Freemius SDK couldn\'t find the plugin\'s main file. Please contact sdk@freemius.com with the current error.',
+				'Error',
+				array( 'back_link' => true )
+			);
 		}
 
 		return $plugin_file;
@@ -259,7 +365,7 @@
 			$in_activation = ( ! is_plugin_active( $plugin_file ) );
 		} else {
 			$theme         = wp_get_theme();
-			$in_activation = ( $newest_sdk->plugin_path != $theme->stylesheet );
+			$in_activation = ( $newest_sdk->plugin_path == $theme->stylesheet );
 		}
 
 		$fs_active_plugins->newest = (object) array(
@@ -330,9 +436,16 @@
 			if ( is_null( $newest_sdk_data ) || version_compare( $data->version, $newest_sdk_data->version, '>' )
 			) {
 				// If plugin inactive or SDK starter file doesn't exist, remove SDK reference.
-				if ( ! is_plugin_active( $data->plugin_path ) ||
-				     ! file_exists( fs_normalize_path( WP_PLUGIN_DIR . '/' . $sdk_relative_path . '/start.php' ) )
-				) {
+				if ( 'plugin' === $data->type ) {
+					$is_module_active = is_plugin_active( $data->plugin_path );
+				} else {
+					$active_theme     = wp_get_theme();
+					$is_module_active = ( $data->plugin_path === $active_theme->get_template() );
+				}
+
+				$is_sdk_exists = file_exists( fs_normalize_path( WP_PLUGIN_DIR . '/' . $sdk_relative_path . '/start.php' ) );
+
+				if ( ! $is_module_active || ! $is_sdk_exists ) {
 					unset( $fs_active_plugins->plugins[ $sdk_relative_path ] );
 
 					// No need to store the data since it will be stored in fs_update_sdk_newest_version()

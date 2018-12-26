@@ -1,10 +1,10 @@
 <?php
 
-/* Author Archive Primary Sidebar */
+/* Primary Sidebar: Author Archive */
 
 if (THEMETRACE) {bioship_trace('T','Author Archive Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('author')) {
@@ -23,4 +23,3 @@ if (is_active_sidebar('author')) {
 
 }
 
-?>
