@@ -1,8 +1,14 @@
 <?php
 
-/* Subsidiary Sidebar (Unified Option) */
+/* Subsidiary Sidebar: Single Post Type */
+
+/* Note: Unified Option */
 
 if (THEMETRACE) {bioship_trace('T','Unified Subsidebar Template',__FILE__);}
+
+// 2.0.9: add template name to class attribute
+$vtemplate = str_replace('.php', '', basename(__FILE__));
+$vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('subsidiary')) {
 
@@ -19,4 +25,3 @@ if (is_active_sidebar('subsidiary')) {
 
 }
 
-?>

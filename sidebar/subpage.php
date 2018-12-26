@@ -1,10 +1,12 @@
 <?php
 
-/* Subsidiary Page Sidebar (Dual Option) */
+/* Subsidiary Sidebar: Single Page */
+
+/* note: Dual Option */
 
 if (THEMETRACE) {bioship_trace('T','Page Subsidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('subpage')) {
@@ -22,4 +24,3 @@ if (is_active_sidebar('subpage')) {
 
 }
 
-?>

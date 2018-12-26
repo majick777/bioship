@@ -1,10 +1,10 @@
 <?php
 
-/* Frontpage Primary Sidebar */
+/* Primary Sidebar: Frontpage */
 
 if (THEMETRACE) {bioship_trace('T','Frontpage Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('frontpage')) {
@@ -22,4 +22,3 @@ if (is_active_sidebar('frontpage')) {
 
 }
 
-?>

@@ -1,8 +1,14 @@
 <?php
 
-/* Primary Sidebar (Unified Option) */
+/* Primary Sidebar: Single Post Type */
+
+/* note: Unified Option */
 
 if (THEMETRACE) {bioship_trace('T','Unified Sidebar Template',__FILE__);}
+
+// 2.0.9: add template name to class attribute
+$vtemplate = str_replace('.php', '', basename(__FILE__));
+$vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('primary')) {
 
@@ -19,4 +25,3 @@ if (is_active_sidebar('primary')) {
 
 }
 
-?>

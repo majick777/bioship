@@ -4,7 +4,7 @@
 // WORDQUEST HELPER PLUGIN
 // =======================
 
-$wordquestversion = '1.6.9';
+$wordquestversion = '1.7.0';
 
 // Requires PHP 5.3 (for anonymous function usage)
 // (otherwise helper library loads nothing)
@@ -27,6 +27,9 @@ $wordquestversion = '1.6.9';
 // ================
 // HELPER CHANGELOG
 // ================
+
+// -- 1.7.0 --
+// - fix to first plugin install version saving
 
 // -- 1.6.9 --
 // - replaced all translation wrappers
@@ -468,6 +471,9 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  		// 1.6.8: move here to fix undefined index warning
  		$vpre = $wqplugin['settings'];
 
+ 		// 1.7.0: moved up here to fix install version check
+ 		$vsidebaroptions = get_option($vpre.'_sidebar_options');
+
  		// 1.6.7: maybe set first install version for plugin
  		if (!isset($vsidebaroptions['installversion'])) {
 			$vsidebaroptions['installversion'] = $wqplugin['version'];
@@ -476,7 +482,6 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  		// 1.6.5: no reminders needed if pro version
  		if ($wqplugin['plan'] == 'premium') {return;}
 
- 		$vsidebaroptions = get_option($vpre.'_sidebar_options');
  		// 1.6.5: no reminders if donation box has been turned off
  		// 1.6.7: revert that as so many other ways to still contribute
  		// if ( (isset($vsidebaroptions['donationboxoff']))

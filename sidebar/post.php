@@ -1,11 +1,14 @@
 <?php
 
-/* Primary Posts Sidebar (Dual Option) */
+/* Primary Sidebar: Single Post */
+
+/* note: Dual Option */
 
 if (THEMETRACE) {bioship_trace('T','Post Sidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
-$vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
+// 2.0.9: fix to mismatching class attribute (subsidiary)
+$vtemplate = str_replace('.php', '', basename(__FILE__));
+$vargs = array('class' => 'sidebar sidebar-primary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('posts')) {
 
@@ -22,4 +25,3 @@ if (is_active_sidebar('posts')) {
 
 }
 
-?>

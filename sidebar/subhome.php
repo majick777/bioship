@@ -1,10 +1,10 @@
 <?php
 
-/* Frontpage Subsidiary Sidebar */
+/* Subsidiary Sidebar: Homepage (Blog) */
 
 if (THEMETRACE) {bioship_trace('T','Home Subsidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('subhomepage')) {
@@ -22,4 +22,3 @@ if (is_active_sidebar('subhomepage')) {
 
 }
 
-?>

@@ -1,10 +1,10 @@
 <?php
 
-/* 404 Not Found Subsidiary Sidebar */
+/* Subsidiary Sidebar: 404 Not Found */
 
 if (THEMETRACE) {bioship_trace('T','404 Subsidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('subnotfound')) {
@@ -22,4 +22,3 @@ if (is_active_sidebar('subnotfound')) {
 
 }
 
-?>

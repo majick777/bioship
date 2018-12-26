@@ -1,10 +1,10 @@
 <?php
 
-/* Category Archive Subsidiary Sidebar */
+/* Subsidiary Sidebar: Category Archive */
 
 if (THEMETRACE) {bioship_trace('T','Category Archive Subsidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('subcategory')) {
@@ -22,4 +22,3 @@ if (is_active_sidebar('subcategory')) {
 
 }
 
-?>

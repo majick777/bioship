@@ -1,10 +1,12 @@
 <?php
 
-/* Subsidiary Post Sidebar (Dual Option) */
+/* Subsidiary Sidebar: Single Post */
+
+/* note: Dual Option */
 
 if (THEMETRACE) {bioship_trace('T','Post Subsidebar Template',__FILE__);}
 
-$vtemplate = str_replace('.php','',basename(__FILE__));
+$vtemplate = str_replace('.php', '', basename(__FILE__));
 $vargs = array('class' => 'sidebar sidebar-subsidiary sidebar-'.$vtemplate);
 
 if (is_active_sidebar('subpost')) {
@@ -22,4 +24,3 @@ if (is_active_sidebar('subpost')) {
 
 }
 
-?>

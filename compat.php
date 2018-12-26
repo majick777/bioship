@@ -185,8 +185,7 @@ function bioship_compat_actions() {
 				if (THEMEDEBUG) {echo "<!-- Transferring Hook: ".$voldhook." for Theme Prefix Compatibility -->";}
 				$vnewhook = THEMEPREFIX.'_'.substr($voldhook, strlen($voldprefix), strlen($voldhook));
 				// 2.0.8: add extra check before property_exists check
-				if ( (!isset($wp_filter[$vnewhook]))
-				  || (!property_exists($wp_filter[$vnewhook], 'callbacks')) ) {
+				if ( (!isset($wp_filter[$vnewhook]))  || (!property_exists($wp_filter[$vnewhook], 'callbacks')) ) {
 					$wp_filter[$vnewhook] = $wp_filter[$voldhook];
 					unset($wp_filter[$voldhook]);
 				} else {
@@ -198,7 +197,8 @@ function bioship_compat_actions() {
 					if (property_exists($wp_filter[$voldhook], 'callbacks')) {
 						$voldcallbacks = $wp_filter[$voldhook]->callbacks;
 						foreach ($voldcallbacks as $vpriority => $vfunctions) {
-							$vcallbacks[$vpriority] = $vcallback;
+							// 2.0.9: comment out old line (undefined vcallback)
+							// $vcallbacks[$vpriority] = $vcallback;
 							foreach ($vfunctions as $vkey => $vfunc) {
 								// if (THEMEDEBUG) {echo "<!-- ".$vnewhook." - ".$vfunc['function']." - ".$vpriority." - ".$vfunc['accepted_args']." -->";}
 								add_action($vnewhook, $vfunc['function'], $vpriority, $vfunc['accepted_args']);
@@ -217,26 +217,6 @@ function bioship_compat_actions() {
 	}
 
 	return;
-
-	// TODO: maybe get all filter names from child/filters.php?
-	// (solved by using bioship_apply_filters internal prefixing instead)
-	// $vfilters = array(
-	//
-	// );
-
-	// foreach ($vfilters as $vfilter) {
-	//	if (isset($wp_filter[$vfilter])) {
-	//		$vprefixes = array('skeleton_','muscle_','admin_');
-	//		foreach ($vprefixes as $vprefix) {
-	//			if (strpos($vaction,$vprefix) === 0) {
-	//				if (THEMEDEBUG) {echo "<!-- Old Filter (".$vfilter."): "; print_r($wp_filter[$filter]); echo " -->";}
-	//				$vnewfilter = 'bioship_'.substr($vfilter,strlen($vprefix),strlen($vfilter));
-	//				$wp_filter[$vnewfilter] = $wp_filter[$vfilter]; unset($wp_filter[$vfilter]);
-	//				if (THEMEDEBUG) {echo "<!-- New Filter (".$vnewfilter."): "; print_r($wp_filter[$vfilter]); echo " -->";}
-	//			}
-	//		}
-	//	}
-	// }
 
 }
 
@@ -681,25 +661,56 @@ function bioship_compat_subsidebar_position($vclasses) {return bioship_apply_fil
 // Old Filters
 // -----------
 add_filter('options_theme_options','bioship_compat_theme_options');
-function bioship_compat_theme_options($voptions) {return bioship_apply_filters('options_themeoptions',$voptions);}
+function bioship_compat_theme_options($v) {return bioship_apply_filters('options_themeoptions',$v);}
 add_filter('admin_adminbar_menu_icon','bioship_compat_adminbar_menu_icon');
-function bioship_compat_adminbar_menu_icon($vicon) {return bioship_apply_filters('options_adminbar_menu_icon',$vicon);}
+function bioship_compat_adminbar_menu_icon($v) {return bioship_apply_filters('options_adminbar_menu_icon',$v);}
 add_filter('admin_adminbar_theme_options_title','bioship_compat_adminbar_theme_options_title');
-function bioship_compat_adminbar_theme_options_title($vtitle) {return bioship_apply_filters('muscle_adminbar_theme_options_title',$vtitle);}
+function bioship_compat_adminbar_theme_options_title($v) {return bioship_apply_filters('muscle_adminbar_theme_options_title',$v);}
 add_filter('admin_adminbar_theme_options_icon','bioship_compat_adminbar_theme_options_icon');
-function bioship_compat_adminbar_theme_options_icon($vurl) {return bioship_apply_filters('muscle_adminbar_theme_options_icon',$vurl);}
+function bioship_compat_adminbar_theme_options_icon($v) {return bioship_apply_filters('muscle_adminbar_theme_options_icon',$v);}
 add_filter('admin_adminbar_howdy_title','bioship_compat_adminbar_howdy_title');
-function bioship_compat_adminbar_howdy_title($vtitle) {return bioship_apply_filters('muscle_adminbar_howdy_title',$vtitle);}
+function bioship_compat_adminbar_howdy_title($v) {return bioship_apply_filters('muscle_adminbar_howdy_title',$v);}
 add_filter('admin_adminbar_remove_items','bioship_compat_adminbar_remove_items');
-function bioship_compat_adminbar_remove_items($vitems) {return bioship_apply_filters('muscle_adminbar_remove_items',$vitems);}
+function bioship_compat_adminbar_remove_items($v) {return bioship_apply_filters('muscle_adminbar_remove_items',$v);}
 add_filter('admin_admin_footer_text','bioship_compat_admin_footer_text');
-function bioship_compat_admin_footer_text($vtext) {return bioship_apply_filters('muscle_admin_footer_text',$vtext);}
+function bioship_compat_admin_footer_text($v) {return bioship_apply_filters('muscle_admin_footer_text',$v);}
 add_filter('skeleton_generator_meta','bioship_compat_generator_meta');
-function bioship_compat_generator_meta($vtext) {return bioship_apply_filters('muscle_generator_meta',$vtext);}
+function bioship_compat_generator_meta($v) {return bioship_apply_filters('muscle_generator_meta',$v);}
+// 2.0.9: fix to inconsistent filter name
+add_filter('optionsframework_menu','bioship_compat_options_framework_menu', 1);
+function bioship_compat_options_framework_menu($v) {return bioship_apply_filters('options_framework_menu',$v);}
 
-// [deprecated] old Skeleton functions with mismatched name formats
+// [deprecated] note: old Skeleton functions with mismatched name formats
 // if (!function_exists('smpl_recommended_plugins')) {function smpl_recommended_plugins() {return;} }
 // if (!function_exists('st_remove_wpautop')) {function st_remove_wpautop($vcontent) {return $vcontent;} }
 // if (!function_exists('remove_more_jump_link')) {function remove_more_jump_link($vlink) {return $vlink;} }
 
-?>
+// Re-Prefixed Filters
+// -------------------
+// 2.0.9: core theme filters skeleton_ prefix replaced with theme_
+// Resource Directories
+add_filter('skeleton_theme_tracer','bioship_compat_skeleton_core_dirs',1);
+function bioship_compat_skeleton_core_dirs($v) {return bioship_apply_filters('theme_core_dirs',$v);}
+add_filter('skeleton_admin_dirs','bioship_compat_skeleton_admin_dirs',1);
+function bioship_compat_skeleton_admin_dirs($v) {return bioship_apply_filters('theme_admin_dirs',$v);}
+add_filter('skeleton_css_dirs','bioship_compat_skeleton_css_dirs',1);
+function bioship_compat_skeleton_css_dirs($v) {return bioship_apply_filters('theme_style_dirs',$v);}
+add_filter('skeleton_js_dirs','bioship_compat_skeleton_js_dirs',1);
+function bioship_compat_skeleton_js_dirs($v) {return bioship_apply_filters('theme_script_dirs',$v);}
+add_filter('skeleton_img_dirs','bioship_compat_skeleton_img_dirs',1);
+function bioship_compat_skeleton_img_dirs($v) {return bioship_apply_filters('theme_image_dirs',$v);}
+// Debug Directories
+add_filter('skeleton_debug','bioship_compat_skeleton_debug',1);
+function bioship_compat_skeleton_debug($v) {return bioship_apply_filters('theme_debug',$v);}
+add_filter('skeleton_debug_dirpath','bioship_compat_skeleton_debug_dirpath',1);
+function bioship_compat_skeleton_debug_dirpath($v) {return bioship_apply_filters('theme_debug_dirpath',$v);}
+add_filter('skeleton_debug_dirpath','bioship_compat_skeleton_debug_filename',1);
+function bioship_compat_skeleton_debug_filename($v) {return bioship_apply_filters('theme_debug_filename',$v);}
+add_filter('skeleton_theme_tracer','bioship_compat_skeleton_theme_tracer',1);
+function bioship_compat_skeleton_theme_tracer($v) {return bioship_apply_filters('theme_tracer',$v);}
+
+// 2.0.9: changed this filter name to muscle_display_overrides
+add_filter('muscle_perpage_overrides','bioship_compat_muscle_display_overrides',1);
+function bioship_compat_muscle_display_overrides($v) {return bioship_apply_filters('muscle_display_overrides',$v);}
+
+
