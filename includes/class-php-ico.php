@@ -123,17 +123,20 @@ class PHP_ICO {
 		if ( false === ( $data = $this->_get_ico_data() ) )
 			return false;
 
-		if ( false === ( $fh = fopen( $file, 'w' ) ) )
-			return false;
+		// MOD: use WP Filesystem (via Theme)
+		return bioship_write_to_file($file, $data);
 
-		if ( false === ( fwrite( $fh, $data ) ) ) {
-			fclose( $fh );
-			return false;
-		}
-
-		fclose( $fh );
-
-		return true;
+		// if ( false === ( $fh = fopen( $file, 'w' ) ) )
+		// 	return false;
+		//
+		// if ( false === ( fwrite( $fh, $data ) ) ) {
+		// 	fclose( $fh );
+		// 	return false;
+		// }
+		//
+		// fclose( $fh );
+		//
+		// return true;
 	}
 
 	/**
@@ -250,7 +253,10 @@ class PHP_ICO {
 		if ( false === ( $size = getimagesize( $file ) ) )
 			return false;
 
-		if ( false === ( $file_data = file_get_contents( $file ) ) )
+		// MOD to use file function instead of file_get_contents
+		// if ( false === ( $file_data = file_get_contents( $file ) ) )
+		// return false;
+		if ( false === ( $file_data = implode(PHP_EOL, file( $file ) ) )
 			return false;
 
 		if ( false === ( $im = imagecreatefromstring( $file_data ) ) )

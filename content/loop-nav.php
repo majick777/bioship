@@ -1,17 +1,18 @@
 <?php
 
-/* Loop Navigation (via Hybrid Base) */
+// ========================================
+// === BioShip Loop Navigation Template ===
+// ========================================
+// (original template via Hybrid Base Theme)
 
-if (THEMETRACE) {bioship_trace('T',__('Loop Nav Template','bioship'),__FILE__);}
+if (THEMETRACE) {bioship_trace('T',__('Loop Nav Template','bioship'),__FILE__,'loop');}
 
-// TODO: deprecate and simply call page_navi action?
+// TODO: maybe deprecate and simply call page_navi action?
 
-?>
 
-<?php if ( is_singular() ) {
-	// If viewing a single page post type.
+if ( is_singular() ) {
 
-	/* Post/Page Navigation */
+	// --- If viewing a single page post type ---
 
 	do_action('bioship_page_navi');
 
@@ -21,7 +22,8 @@ if (THEMETRACE) {bioship_trace('T',__('Loop Nav Template','bioship'),__FILE__);}
 	//	</div><!-- /.loop-nav -->
 
 } elseif ( is_home() || is_archive() || is_search() ) {
-	// If viewing the blog, an archive, or search results.
+
+	// --- If viewing the blog, archive, or search results ---
 
 	// 1.8.0: fix to use same function now
 	do_action('bioship_page_navi');
@@ -33,4 +35,4 @@ if (THEMETRACE) {bioship_trace('T',__('Loop Nav Template','bioship'),__FILE__);}
 	//	)
 	// );
 
-} ?>
+}

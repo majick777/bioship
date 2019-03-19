@@ -3,7 +3,7 @@ Theme Name: BioShip
 Theme URI: http://bioship.space
 Details URI: http://bioship.space/news/
 Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
-Version: 2.1.0
+Version: 2.1.1
 Status: publish
 Author: majick
 Author URI: http://wordquest.org
@@ -19,22 +19,20 @@ GitHub Theme URI: majick777/bioship
 
 /* @group BioShip Styles */
 
-/* Structure */
+
+/* Page / Sidebar Structure */
 
 body #wrap #content.nosidebar {float: none;}
 #header, #footer, #navigation {width: 100%;}
-body.sidebar-left #wrap #sidebar {float: left;}
-body.sidebar-right #wrap #sidebar {float: right;}
-body.subsidebar-left #wrap #subsidebar {float: left;}
-body.subsidebar-right #wrap #subsidebar {float: right;}
+body.sidebar-left #wrap #sidebar, body.subsidebar-left #wrap #subsidebar,
+body.sidebar-right #wrap #content, body.sidebar-left.subsidebar-right #wrap #content {float: left;}
+body.sidebar-right #wrap #sidebar, body.subsidebar-right #wrap #subsidebar,
+body.sidebar-left #wrap #content, body.sidebar-right.subsidebar-left #wrap #content {float: right;}
 #sidebar .widget-container, #subsidebar .widget-container {margin-left: 10px; margin-right: 10px;}
-body.sidebar-right #wrap #content {float: left;}
-body.sidebar-left #wrap #content {float: right;}
-body.sidebar-left.subsidebar-right #wrap #content {float: left;}
-body.sidebar-right.subsidebar-left #wrap #content {float: right;}
 #sidebar-primary, #sidebar-subsidiary {margin-top: -10px;}
 
-/* Random Style Fixes... */
+
+/* Random Style Fixes */
 
 h1#site-title-text {font-size: initial;}
 #site-logo .site-logo-image, #site-logo .site-logo-text {display:inline-block;}
@@ -45,6 +43,7 @@ body .mobilebutton a.button {padding: 5px !important; font-size: 13px !important
 #wrap {margin-top:15px; margin-bottom:30px;}
 h2.entry-title {margin-top:0px;}
 h3.entry-subtitle {margin-top:-5px; margin-bottom:25px;}
+#content .entry-header {margin-bottom: 20px;}
 #content .entry-summary {margin-top: 15px; margin-bottom: 15px;}
 .thumbnail.aligncenter {text-align:center;}
 body .vcard {border:0px; padding:0px;}
@@ -55,6 +54,7 @@ form.search-form {overflow: hidden;}
 	display: inline-block; font-weight: bold;
 }
 p.comments-closed.pings-closed {display: none;}
+img.emoji {width: 16px;} 
 
 /* Infinite Scroll Support */
 span.infinite-loader {url('../images/infinite-loader.gif');}
