@@ -1,18 +1,23 @@
 <?php
 
-/* Comments Template (via Skeleton) */
+// =================================
+// === BioShip Comments Template ===
+// =================================
+// (original template via Skeleton Theme)
 
-if (THEMETRACE) {bioship_trace('T',__('Comments Template','bioship'),__FILE__);}
+if (THEMETRACE) {bioship_trace('T',__('Comments Template','bioship'),__FILE__,'comments');}
 
 if ( post_password_required() ) {return;}
 
 ?>
 
-<?php bioship_do_action('bioship_before_comments'); ?>
+<?php // --- Before Comments ---
+bioship_do_action('bioship_before_comments'); ?>
 
-<div id="comments">
+<?php bioship_html_comment('#comment'); ?><div id="comments">
 
-<?php if ( have_comments() ) : ?>
+<?php // --- if there are comments ---
+if ( have_comments() ) : ?>
 
 	<h3 class="comments-title">
 	<?php printf(
@@ -21,7 +26,8 @@ if ( post_password_required() ) {return;}
 	); ?></h3>
 
 	<ul class="commentlist">
-		<?php wp_list_comments("callback=bioship_skeleton_comments"); ?>
+		<?php // --- List comments via Callback function ---
+		wp_list_comments("callback=bioship_skeleton_comments"); ?>
 	</ul>
 
 	<div class="navigation nav-below">
@@ -29,7 +35,8 @@ if ( post_password_required() ) {return;}
 		<div class="alignright"><?php next_comments_link(); ?></div>
 	</div>
 
-<?php else : // this is displayed if there are no comments so far ?>
+<?php // --- if there are no comments ---
+	else :  ?>
 
 	<p class="nocomments">
 		<?php echo bioship_apply_filters('skeleton_no_comments_text', ''); ?>
@@ -37,13 +44,15 @@ if ( post_password_required() ) {return;}
 
 <?php endif; ?>
 
-<?php if ( comments_open() ) : ?>
+<?php // --- Comment Reply Form ---
+	if ( comments_open() ) : ?>
 
+	<?php // -- Cancel Comment Reply Link --- ?>
 	<div class="cancel-comment-reply">
 		<small><?php cancel_comment_reply_link(); ?></small>
 	</div>
 
-	<?php
+	<?php // --- set Comment Reply arguments ---
 	$aria_req = ( $req ? " aria-required='true'" : '' );
 	$comment_args = array(
 		'fields' => apply_filters( 'comment_form_default_fields', array(
@@ -66,14 +75,15 @@ if ( post_password_required() ) {return;}
 			'comment_notes_after' => ''
 		);
 
-	// If registration required and not logged in
+	// --- if registration required and not logged in ---
 	if ( get_option('comment_registration') && !is_user_logged_in() ) : ?>
 		<p><a href="<?php echo wp_login_url( get_permalink() ); ?>"><?php _e('You must be logged in to post a comment.', 'bioship'); ?></a></p>
 	<?php else : comment_form($comment_args); ?>
 	<?php endif; ?>
 
-<?php endif;?>
+<?php endif; ?>
 
-</div>
+</div><?php bioship_html_comment('/#comment');
 
-<?php bioship_do_action('bioship_after_comments'); ?>
+// --- After Comments ---
+bioship_do_action('bioship_after_comments');

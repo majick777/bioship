@@ -1,10 +1,10 @@
 <?php
 
-// =======================
-// WORDQUEST HELPER PLUGIN
-// =======================
+// ========================
+// === WORDQUEST HELPER ===
+// ========================
 
-$wordquestversion = '1.7.0';
+$wordquestversion = '1.7.2';
 
 // Requires PHP 5.3 (for anonymous function usage)
 // (otherwise helper library loads nothing)
@@ -22,11 +22,23 @@ $wordquestversion = '1.7.0';
 //	}
 // }
 
-// TODO: collapse/expand buttons for righthand sidebar?
+// Development TODOs:
+// ? add collapse/expand buttons to righthand sidebar ?
+//
 
-// ================
-// HELPER CHANGELOG
-// ================
+// ========================
+// --- Helper Changelog ---
+// ========================
+
+// -- 1.7.2 --
+// - use superglobal directly in named functions to reduce code
+// - replaced testimonial link in reminder with share link
+// - removed testimonial sender box from sidebar
+// - removed star rating link from sidebar
+
+// -- 1.7.1 --
+// - adjust admin menu heading sizes from h3 to h4
+// - adjust admin page column max-widths to 300px
 
 // -- 1.7.0 --
 // - fix to first plugin install version saving
@@ -87,47 +99,53 @@ $wordquestversion = '1.7.0';
 // -------------------------------------------------------------
 if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
 
-// Set this Wordquest Helper Plugin version
-// ----------------------------------------
+// ---------------------------------
+// Set this Wordquest Helper version
+// ---------------------------------
 // 1.6.0: wqv to wqhv for new variable functions
 // 1.6.6: move wordquestversion to top for easy changing
-$wqhv = str_replace('.','',$wordquestversion);
+$wqhv = str_replace('.', '', $wordquestversion);
 
-// set global site URLs
+// --------------------
+// Set Global Site URLs
 // --------------------
 // 1.6.5: for clearer/cleaner usage
 global $wqurls;
 $wqurls = array(
-	'wp' => 'http://wordpress.org',
-	'wq' => 'http://wordquest.org',
-	'prn' => 'http://pluginreview.net',
-	'bio' => 'http://bioship.space'
+	'wp'	=> 'https://wordpress.org',
+	'wq'	=> 'http://wordquest.org',
+	'wpm'	=> 'http://wpmedic.tech',
+	'prn'	=> 'http://pluginreview.net',
+	'bio'	=> 'http://bioship.space'
 );
 
-// set debug switch default
-// ----------------------
+// ------------------------
+// Set Debug Switch Default
+// ------------------------
 // 1.6.6: set debug switch to off to recheck later
 global $wqdebug; $wqdebug = false;
+
 
 // =================================
 // Version Handling Loader Functions
 // =================================
 // ...future proofing helper update library...
 
-// Add to global array of Wordquest versions
-// -----------------------------------------
+// ----------------------------------
+// Add Helper version to global array
+// ----------------------------------
 // 1.6.0: change globals to use new variable functions (as not backcompatible!)
 global $wordquesthelpers, $wqfunctions;
 if (!is_array($wordquesthelpers)) {$wordquesthelpers = array($wqhv);}
 elseif (!in_array($wqhv, $wordquesthelpers)) {$wordquesthelpers[] = $wqhv;}
 
+// ------------------------------------------
 // Set Latest Wordquest Version on Admin Load
 // ------------------------------------------
 // 1.5.0: use admin_init not plugins_loaded so as to be usable by themes
 if (!has_action('admin_init', 'wqhelper_admin_loader', 1)) {
 	add_action('admin_init', 'wqhelper_admin_loader', 1);
 }
-
 if (!function_exists('wqhelper_admin_loader')) {
  function wqhelper_admin_loader() {
  	global $wqdebug;
@@ -166,6 +184,7 @@ if (!function_exists('wqhelper_admin_loader')) {
  }
 }
 
+// ----------------------------------
 // Function to Define Function Caller
 // ----------------------------------
 // 1.6.0: some lovely double abstraction here!
@@ -184,9 +203,10 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	};
 }
 
-
+// -------------------------------------
 // Versioned Admin Page Caller Functions
 // -------------------------------------
+// 1.7.2: use direct superglobal to shorten functions
 // wqhelper_admin_page
 // wqhelper_admin_notice_boxer
 // wqhelper_get_plugin_info
@@ -195,161 +215,140 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 // wqhelper_install_plugin
 // wqhelper_reminder_notice
 // wqhelper_translate
-if (!function_exists('wqhelper_admin_page')) {
- function wqhelper_admin_page($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
-}
-// admin notice boxer
-if (!function_exists('wqhelper_admin_notice_boxer')) {
- function wqhelper_admin_notice_boxer($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
-}
-// get plugins info
-if (!function_exists('wqhelper_get_plugin_info')) {
- function wqhelper_get_plugin_info($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__, $vargs);
- }
-}
-// admin page plugins column
-if (!function_exists('wqhelper_admin_plugins_column')) {
- function wqhelper_admin_plugins_column($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
-}
-// admin page feeds column
-if (!function_exists('wqhelper_admin_feeds_column')) {
- function wqhelper_admin_feeds_column($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
-}
 
-// 1.6.5: WordQuest plugin install
+// --- admin page ---
+if (!function_exists('wqhelper_admin_page')) {
+ function wqhelper_admin_page($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
+}
+// --- admin notice boxer ---
+if (!function_exists('wqhelper_admin_notice_boxer')) {
+ function wqhelper_admin_notice_boxer($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
+}
+// --- get plugins info ---
+if (!function_exists('wqhelper_get_plugin_info')) {
+ function wqhelper_get_plugin_info($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
+}
+// --- admin page plugins column ---
+if (!function_exists('wqhelper_admin_plugins_column')) {
+ function wqhelper_admin_plugins_column($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
+}
+// --- admin page feeds column ---
+if (!function_exists('wqhelper_admin_feeds_column')) {
+ function wqhelper_admin_feeds_column($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
+}
+// 1.6.5: install WordQuest plugin
 if (!function_exists('wqhelper_install_plugin')) {
- function wqhelper_install_plugin($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_install_plugin($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
 // 1.6.5: reminder notice message
 if (!function_exists('wqhelper_reminder_notice')) {
- function wqhelper_reminder_notice($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_reminder_notice($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
 // 1.6.9: translation wrapper
 if (!function_exists('wqhelper_translate')) {
- function wqhelper_translate($vstring) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vstring);
- }
+ function wqhelper_translate($vstring) {return $GLOBALS['wqcaller'](__FUNCTION__, $vstring);}
 }
 
-
+// ---------------------------------
 // Sidebar Floatbox Caller Functions
 // ---------------------------------
+// 1.7.2: use direct superglobal to shorten functions
 // wqhelper_sidebar_floatbox
 // wqhelper_sidebar_paypal_donations
 // wqhelper_sidebar_testimonial_box
 // wqhelper_sidebar_floatmenuscript
 // wqhelper_sidebar_stickykitscript
 
+// --- sidebar floatbox ---
 if (!function_exists('wqhelper_sidebar_floatbox')) {
- function wqhelper_sidebar_floatbox($vargs = null) {
-	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_sidebar_floatbox($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- donations box ---
 if (!function_exists('wqhelper_sidebar_paypal_donations')) {
- function wqhelper_sidebar_paypal_donations($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_sidebar_paypal_donations($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- testimonials box ---
 if (!function_exists('wqhelper_sidebar_testimonial_box')) {
- function wqhelper_sidebar_testimonial_box($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_sidebar_testimonial_box($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- floating menu script ---
 if (!function_exists('wqhelper_sidebar_floatmenuscript')) {
- function wqhelper_sidebar_floatmenuscript($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_sidebar_floatmenuscript($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- sticky kit script ---
 if (!function_exists('wqhelper_sidebar_stickykitscript')) {
- function wqhelper_sidebar_stickykitscript($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_sidebar_stickykitscript($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
 
 
 // Dashboard Feed Caller Functions
 // -------------------------------
+// 1.7.2: use direct superglobal to shorten functions
 // wqhelper_add_dashboard_feed_widget
 // wqhelper_dashboard_feed_widget
 // wqhelper_process_rss_feed
 // wqhelper_load_category_feed
-
+// --- add dashboard feed widget ---
 if (!function_exists('wqhelper_add_dashboard_feed_widget')) {
- function wqhelper_add_dashboard_feed_widget($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_add_dashboard_feed_widget($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- dashboard feed javascript ---
 if (!function_exists('wqhelper_dashboard_feed_javascript')) {
- function wqhelper_dashboard_feed_javascript($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_dashboard_feed_javascript($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- dashboard feed widget ---
 if (!function_exists('wqhelper_dashboard_feed_widget')) {
- function wqhelper_dashboard_feed_widget($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_dashboard_feed_widget($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- plugin review feed widget ---
 if (!function_exists('wqhelper_pluginreview_feed_widget')) {
- function wqhelper_pluginreview_feed_widget($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_pluginreview_feed_widget($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
+// --- process RSS feed ---
 if (!function_exists('wqhelper_process_rss_feed')) {
- function wqhelper_process_rss_feed($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
+ function wqhelper_process_rss_feed($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
+}
+// --- load category feed ---
+if (!function_exists('wqhelper_load_category_feed')) {
+ function wqhelper_load_category_feed($vargs = null) {
+	if (!is_admin()) {return;} else {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
  }
 }
-// if (!function_exists('wqhelper_load_category_feed')) {
-//  function wqhelper_load_category_feed($vargs = null) {
-// 	if (!is_admin()) {return;} global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
-//  }
-// }
 
+// ==========================
+// --- Styles and Scripts ---
+// ==========================
 
-// ------------------
-// Styles and Scripts
-// ------------------
-
-// Add Wordquest Styles to Admin Footer
-// ------------------------------------
+// ---------------------------------
+// Add Helper Styles to Admin Footer
+// ---------------------------------
 if (!has_action('admin_footer', 'wqhelper_admin_styles')) {
 	add_action('admin_footer', 'wqhelper_admin_styles');
 }
 if (!function_exists('wqhelper_admin_styles')) {
  function wqhelper_admin_styles($vargs = null) {
 	remove_action('admin_footer', 'wordquest_admin_styles');
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
+ 	return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);
  }
 }
 
-// Add Wordquest Scripts to Admin Footer
-// -------------------------------------
+// ----------------------------------
+// Add Helper Scripts to Admin Footer
+// ----------------------------------
 if (!has_action('admin_footer', 'wqhelper_admin_scripts')) {
 	add_action('admin_footer', 'wqhelper_admin_scripts');
 }
 if (!function_exists('wqhelper_admin_scripts')) {
  function wqhelper_admin_scripts($vargs = null) {
 	remove_action('admin_footer', 'wordquest_admin_scripts');
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
+ 	return $GLOBALS['wqcaller'](__FUNCTION__,$vargs);
  }
 }
 
-// --------------
-// AJAX Functions
-// --------------
+
+// ======================
+// --- AJAX Functions ---
+// ======================
 
 // AJAX for reminder dismissal
 // ---------------------------
@@ -358,29 +357,26 @@ if (!has_action('wp_ajax_wqhelper_reminder_dismiss', 'wqhelper_reminder_dismiss'
 	add_action('wp_ajax_wqhelper_reminder_dismiss', 'wqhelper_reminder_dismiss');
 }
 if (!function_exists('wqhelper_reminder_dismiss')) {
- function wqhelper_reminder_dismiss($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_reminder_dismiss($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__, $vargs);}
 }
 
+// -----------------------
 // AJAX Load Category Feed
 // -----------------------
 if (!has_action('wp_ajax_wqhelper_load_feed_cat', 'wqhelper_load_feed_category')) {
 	add_action('wp_ajax_wqhelper_load_feed_cat', 'wqhelper_load_feed_category');
 }
 if (!function_exists('wqhelper_load_feed_category')) {
- function wqhelper_load_feed_category($vargs = null) {
- 	global $wqcaller; return $wqcaller(__FUNCTION__,$vargs);
- }
+ function wqhelper_load_feed_category($vargs = null) {return $GLOBALS['wqcaller'](__FUNCTION__,$vargs);}
 }
 
+// ----------------------
 // Update Sidebar Options
 // ----------------------
-// 1.6.0: ! caller exception ! use matching form version function here just in case...
+// 1.6.0: ! NOTE ! caller exception ! use matching form version function here just in case...
 if (!has_action('wp_ajax_wqhelper_update_sidebar_boxes', 'wqhelper_update_sidebar_boxes')) {
  	add_action('wp_ajax_wqhelper_update_sidebar_boxes', 'wqhelper_update_sidebar_boxes');
 }
-
 if (!function_exists('wqhelper_update_sidebar_boxes')) {
  function wqhelper_update_sidebar_boxes() {
  	if (!isset($_POST['wqhv'])) {return;} else {$wqhv = $_POST['wqhv'];}
@@ -396,12 +392,14 @@ if (!function_exists('wqhelper_update_sidebar_boxes')) {
  }
 }
 
-// ==========================
-// Version Specific Functions
-// ==========================
+
+// ==================================
+// --- Version Specific Functions ---
+// ==================================
 // (functions below this point must be suffixed with _{VERSION} to work
 // and update with each plugin helper version regardless of change state)
 
+// -------------------
 // Translation Wrapper
 // -------------------
 // 1.6.9: check translated labels global
@@ -417,6 +415,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	};
 }
 
+// ------------------
 // Admin Notice Boxer
 // ------------------
 // (for settings pages)
@@ -439,7 +438,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	if (document.getElementById(divid).style.display == '') {
 		document.getElementById(divid).style.display = 'none'; document.getElementById('adminnoticearrow').innerHTML = '&#9662;';}
 	else {document.getElementById(divid).style.display = ''; document.getElementById('adminnoticearrow').innerHTML= '&#9656;';} } ";
-	// straight from /wp-admin/js/common.js... to move the notices if common.js is not loaded...
+	// this is from /wp-admin/js/common.js... to move the notices if common.js is not loaded...
 	echo "jQuery(document).ready(function() {jQuery( 'div.updated, div.error, div.notice' ).not( '.inline, .below-h2' ).insertAfter( jQuery( '.wrap h1, .wrap h2' ).first() ); });";
 	echo "</script>";
 
@@ -459,6 +458,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// ---------------------------
 // Usage Reminder Notice Check
 // ---------------------------
 // 1.5.0: added reminder prototype that does nothing yet
@@ -480,7 +480,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 			update_option($vpre.'_sidebar_options', $vsidebaroptions);
  		}
  		// 1.6.5: no reminders needed if pro version
- 		if ($wqplugin['plan'] == 'premium') {return;}
+ 		if (isset($wqplugin['plan']) && ($wqplugin['plan'] == 'premium')) {return;}
 
  		// 1.6.5: no reminders if donation box has been turned off
  		// 1.6.7: revert that as so many other ways to still contribute
@@ -536,25 +536,36 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 			// 1.6.7: extended link anchor text for clarity
 			echo "<table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>";
 			echo "<ul style='list-style:none;padding:0;margin:0;'>";
+			// --- TODO: WordQuest or WPMedic Link ?
 			echo "<li style='display:inline-block;'><a href='".$wqurls['wq']."/contribute/?tab=supporterlevels' target=_blank>&rarr; ".wqhelper_translate('Become a Supporter')."</a></li>";
+			// --- Donate Link ---
 			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?plugin=".$vpluginslug."' target=_blank>&rarr; ".wqhelper_translate('Make a Donation')."</a></li>";
+			// --- Rating Link (for WordPress.org) ---
 			if (isset($wqreminder['wporgslug'])) {
 				echo "<li style='display:inline-block;margin-left:15px;'>";
 				// 1.6.7: different rating action for theme
+				// 1.7.2: removed ?rate=5 from rating URLs (no longer used)
 				if ($vpluginslug == 'bioship') {
-					echo "<a href='".$wqurls['wp']."/support/theme/".$vpluginslug."/reviews/?rate=5#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate Theme')."</a></li>";
-				} else {echo "<a href='".$wqurls['wp']."/support/plugin/".$vpluginslug."/reviews/?rate=5#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate Plugin')."</a></li>";}
+					echo "<a href='".$wqurls['wp']."/support/theme/".$vpluginslug."/reviews/#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate this Theme')."</a></li>";
+				} else {echo "<a href='".$wqurls['wp']."/support/plugin/".$vpluginslug."/reviews/#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate this Plugin')."</a></li>";}
 			}
-			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?tab=testimonial' target=_blank>&rarr; ".wqhelper_translate('Send a Testimonial')."</a></li>";
-			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/support/".$vpluginslug."' target=_blank>&rarr; ".wqhelper_translate('Give Feedback')."</a></li>";
+			// 1.7.2: removed unused testimonial link
+			// echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?tab=testimonial' target=_blank>&rarr; ".wqhelper_translate('Send a Testimonial')."</a></li>";
+			// 1.7.2: add share theme / plugin link
+			if ($vpluginslug == 'bioship') {
+				echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['bio']."#share' target=_blank>&rarr; ".wqhelper_translate('Share this Theme')."</a></li>";
+			} else {echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/plugins/".$vpluginslug."/#share' target=_blank>&rarr; ".wqhelper_translate('Share this Plugin')."</a></li>";}
+			// --- support / feedback ---
+			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/support/".$vpluginslug."' target=_blank>&rarr; ".wqhelper_translate('Support and Feedback')."</a></li>";
+			// --- contribute link ---
 			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?tab=development' target=_blank>&rarr; ".wqhelper_translate('Contribute to Development')."</a></li>";
-			// Pro Version plan link
+			// --- Pro Version plan link (Freemius) ---
 			if ( (isset($wqreminder['hasplans'])) && ($wqreminder['hasplans']) ) {
 				$vupgradeurl = admin_url('admin.php').'?page='.$wqreminder['slug'].'-pricing';
 				echo "<li style='display:inline-block;margin-left:15px;'><a href='".$vupgradeurl."'><b>&rarr; ".wqhelper_translate('Go PRO')."</b></a></li>";
 			}
 			echo "</ul></td><td style='text-align:right;'>";
-			// make notice dismissable link
+			// --- dismiss notice link ---
 			$vdismisslink = admin_url('admin-ajax.php').'?action=wqhelper_reminder_dismiss&slug='.$vpluginslug.'&notice='.$wqreminder[$vpluginslug]['notice'];
 			echo "<a href='".$vdismisslink."' target='wqdismissframe' style='text-decoration:none;' title='".wqhelper_translate('Dismiss this Notice')."'>";
 			echo "<div class='dashicons dashicons-dismiss' style='font-size:16px;'></div></a>";
@@ -564,8 +575,9 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	};
 }
 
-// Reminder Dismisser
-// ------------------
+// -----------------------
+// AJAX Reminder Dismisser
+// -----------------------
 $vfuncname = 'wqhelper_reminder_dismiss_'.$wqhv;
 if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname])) ) {
 	$wqfunctions[$vfuncname] = function() {
@@ -582,7 +594,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	};
 }
 
-
+// --------------------------
 // Get WordQuest Plugins Info
 // --------------------------
 $vfuncname = 'wqhelper_get_plugin_info_'.$wqhv;
@@ -612,6 +624,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	};
 }
 
+// ---------------------------
 // Version Specific Admin Page
 // ---------------------------
 $vfuncname = 'wqhelper_admin_page_'.$wqhv;
@@ -633,23 +646,25 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	}</script>";
 
 	echo '<style>#plugincolumn, #feedcolumn {display: inline-block; float:left; margin: 0 5px;}
-	#plugincolumn .postbox {max-width:330px;} #feedcolumn .postbox {max-width:330px;}
+	#plugincolumn .postbox {max-width:300px;} #feedcolumn .postbox {max-width:300px;}
 	#plugincolumn .postbox h2, #feedcolumn .postbox h2 {font-size: 16px; margin-top: 0; background-color: #E0E0EE; padding: 5px;}
 	#page-title a {text-decoration:none;} #page-title h2 {color: #3568A9;}
 	</style>';
 
 	// Floating Sidebar
 	// ----------------
-	// set dummy "plugin" values for sidebar
+	// set dummy "plugin" values for admin page sidebar
 	global $wordquestplugins, $wordquesthelper;
-	$wordquestplugins['wordquest']['version'] = $wordquesthelper;
-	$wordquestplugins['wordquest']['title'] = 'WordQuest Alliance';
-	$wordquestplugins['wordquest']['namespace'] = 'wordquest';
-	$wordquestplugins['wordquest']['settings'] = 'wq';
-	$wordquestplugins['wordquest']['plan'] = 'free';
-	$wordquestplugins['wordquest']['wporg'] = false;
-	$wordquestplugins['wordquest']['wporgslug'] = false;
-	$vargs = array('wordquest','special');
+	$wordquestplugins['wordquest'] = array(
+		'version'	=> $wordquesthelper,
+		'title'		=> 'WordQuest Alliance',
+		'namespace'	=> 'wordquest',
+		'settings'	=> 'wq',
+		'plan'		=> 'free',
+		'wporg'		=> false,
+		'wporgslug'	=> false,
+	);
+	$vargs = array('wordquest', 'special');
 	wqhelper_sidebar_floatbox($vargs);
 
 	// 1.6.5: replace floatmenu with stickykit
@@ -678,10 +693,10 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 	echo '<style>.wqlink {text-decoration:none;} .wqlink:hover {text-decoration:underline;}</style>';
 	echo '<table><tr><td width="20"></td><td><img src="'.$vwordquesticon.'"></td><td width="20"></td>';
 	echo '<td><div id="page-title"><a href="'.$wqurls['wq'].'" target=_blank><h2>WordQuest Alliance</h2></a></div></td>';
-	echo '<td width="30"></td><td><h3>&rarr; <a href="'.$wqurls['wq'].'/register/" class="wqlink" target=_blank>'.wqhelper_translate('Join').'</a></h3></td>';
-	echo '<td> / </td><td><h3><a href="'.$wqurls['wq'].'/login/"  class="wqlink" target=_blank>'.wqhelper_translate('Login').'</a></h3></td>';
-	echo '<td width="20"></td><td><h3>&rarr; <a href="'.$wqurls['wq'].'/solutions/"  class="wqlink" target=_blank>'.wqhelper_translate('Solutions').'</a></h3></td>';
-	echo '<td width="20"></td><td><h3>&rarr; <a href="'.$wqurls['wq'].'/contribute/"  class="wqlink" target=_blank>'.wqhelper_translate('Contribute').'</a></h3></td>';
+	echo '<td width="30"></td><td><h4>&rarr; <a href="'.$wqurls['wq'].'/register/" class="wqlink" target=_blank>'.wqhelper_translate('Join').'</a></h4></td>';
+	echo '<td> / </td><td><h4><a href="'.$wqurls['wq'].'/login/"  class="wqlink" target=_blank>'.wqhelper_translate('Login').'</a></h4></td>';
+	echo '<td width="20"></td><td><h4>&rarr; <a href="'.$wqurls['wq'].'/solutions/"  class="wqlink" target=_blank>'.wqhelper_translate('Solutions').'</a></h4></td>';
+	echo '<td width="20"></td><td><h4>&rarr; <a href="'.$wqurls['wq'].'/contribute/"  class="wqlink" target=_blank>'.wqhelper_translate('Contribute').'</a></h4></td>';
 	echo '</tr></table>';
 
 	// Output Plugins Column
@@ -717,6 +732,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// -------------------------------
 // Version Specific Plugins Column
 // -------------------------------
 $vfuncname = 'wqhelper_admin_plugins_column_'.$wqhv;
@@ -737,6 +753,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 
 	// Plugin Action Select Javascript
 	// -------------------------------
+	// 1.7.2: updated star rating link
 	// TODO: test all options here more thoroughly...
 	echo "<script>
 	function dopluginaction(pluginslug) {
@@ -751,7 +768,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 		if (actionvalue == 'support') {linkel.target = '_blank'; linkel.href = adminpageurl+'?page='+pluginslug+'-wp-support-forum';}
 		if (actionvalue == 'donate') {linkel.target = '_blank';	linkel.href = '".$wqurls['wq']."/contribute/?plugin='+pluginslug;}
 		if (actionvalue == 'testimonial') {linkel.target = '_blank'; linkel.href = '".$wqurls['wq']."/contribute/?tab=testimonial';}
-		if (actionvalue == 'rate') {linkel = '_blank'; linkel.href = '".$wqurls['wp']."/support/plugin/'+pluginslug+'/reviews/?rate=5#postform';}
+		if (actionvalue == 'rate') {linkel = '_blank'; linkel.href = '".$wqurls['wp']."/plugins/'+pluginslug+'/reviews/#new-post';}
 		if (actionvalue == 'development') {linkel.target = '_blank'; linkel.href= '".$wqurls['wq']."/contribute/?tab=development';}
 		if (actionvalue == 'contact') {linkel.target = '_self'; linkel.href = adminpageurl+'?page='+pluginslug+'-contact';}
 		if (actionvalue == 'home') {linkel.target = '_blank'; linkel.href = '".$wqurls['wq']."/plugins/'+pluginslug+'/';}
@@ -883,7 +900,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 		echo '<div class="inside" id="'.$boxid.'-inside" style="margin-bottom:0;"><table>';
 		foreach ($wordquestplugins as $vpluginslug => $vplugin) {
 			if ($vpluginslug != 'bioship') { // filter out theme here
-				if (in_array($vpluginslug,$vpluginupdates)) {
+				if (in_array($vpluginslug, $vpluginupdates)) {
 					$vupdatelink = wp_nonce_url(admin_url('update.php').'?action=upgrade-plugin&plugin='.$vpluginfiles[$vpluginslug],'upgrade-plugin_'.$vpluginfiles[$vpluginslug]);
 					echo "<input type='hidden' id='".$vpluginslug."-update-link' value='".$vupdatelink."'>";
 				}
@@ -892,7 +909,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 				echo "<td>".$vplugin['version']."</td><td width='20'></td>";
 
 				echo "<td><select name='".$vpluginslug."-action' id='".$vpluginslug."-action' style='font-size:8pt;'>";
-				if (in_array($vpluginslug,$vpluginupdates)) {
+				if (in_array($vpluginslug, $vpluginupdates)) {
 					echo "<option value='update' selected='selected'>".wqhelper_translate('Update')."</option>";
 					echo "<option value='settings'>".wqhelper_translate('Settings')."</option>";
 				} else {echo "<option value='settings' selected='selected'>".wqhelper_translate('Settings')."</option>";}
@@ -904,10 +921,11 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 				if (isset($vplugin['wporgslug'])) {echo "<option value='Rate'>".wqhelper_translate('Rate')."</option>";}
 
 				// check for Pro Plan availability
-				// if ($vplugin['plan'] == 'premium') {echo "<option value='contact'>Contact</option>";}
+				// 1.7.2: added missing translation wrappers
+				// if ($vplugin['plan'] == 'premium') {echo "<option value='contact'>".wqhelper_translate('Contact')."</option>";}
 				if ( (isset($wordquestplugins[$vpluginslug]['hasplans'])) && ($wordquestplugins[$vpluginslug]['hasplans']) ) {
-					if ($vplugin['plan'] != 'premium') {echo "<option style='font-weight:bold;' value='upgrade'>Go PRO!</option>";}
-					else {echo "<option value='account'>Account</option>";}
+					if ($vplugin['plan'] != 'premium') {echo "<option style='font-weight:bold;' value='upgrade'>".wqhelper_translate('Go PRO!')."</option>";}
+					else {echo "<option value='account'>".wqhelper_translate('Account')."</option>";}
 				}
 
 				echo "</select></td><td width='20'></td>";
@@ -1111,7 +1129,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 			}
 
 			// TODO: future link for rating BioShip on wordpress.org theme repository ?
-			// $vratelink = 'https://wordpress.org/support/theme/bioship/reviews/?rate=5#new-post';
+			// $vratelink = 'https://wordpress.org/support/theme/bioship/reviews/#new-post';
 			// echo '<br><a href="'.$vratelink.'" target=_blank>'.wqhelper_translate('Rate BioShip on WordPress.Org').'</a><br>';
 		}
 
@@ -1135,6 +1153,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// ----------------------------
 // Version Specific Feed Column
 // ----------------------------
 $vfuncname = 'wqhelper_admin_feeds_column_'.$wqhv;
@@ -1231,6 +1250,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// -----------------------------
 // Version Specific Admin Styles
 // -----------------------------
 $vfuncname = 'wqhelper_admin_styles_'.$wqhv;
@@ -1248,6 +1268,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// -----------------------------
 // Version Specific Admin Script
 // -----------------------------
 $vfuncname = 'wqhelper_admin_scripts_'.$wqhv;
@@ -1276,6 +1297,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// --------------------------
 // Install a WordQuest Plugin
 // --------------------------
 // 1.6.5: hook to update.php update-custom_{ACTION} where ACTION = 'wordquest_plugin_install'
@@ -1350,6 +1372,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 // === Sidebar FloatBox ===
 // ------------------------
 
+// ----------------------
 // Main Floatbox Function
 // ----------------------
 $vfuncname = 'wqhelper_sidebar_floatbox_'.$wqhv;
@@ -1496,14 +1519,15 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 		echo '<div class="stuffbox" style="width:250px;background-color:#ffffff;">';
 		echo '<h3>'.wqhelper_translate('Gifts of Appreciation').'</h3><div class="inside">';
 		wqhelper_sidebar_paypal_donations($vargs);
-		wqhelper_sidebar_testimonial_box($vargs);
-		if ($vwporgslug != '') {
-			echo "<a href='".$wqurls['wp']."/support/plugin/'".$vwporgslug."'/reviews/?rate=5#postform' target='_blank'>";
-			echo "&#9733; ".wqhelper_translate('Rate this Plugin on Wordpress.Org')."</a></center>";
-		}
-		// elseif ($vpluginslug == 'bioship') {
+		// 1.7.2: remove testimonial box from sidebar
+		// wqhelper_sidebar_testimonial_box($vargs);
+		// 1.7.2: remove rate link from sidebar
+		// if ($vwporgslug != '') {
+			// echo "<a href='".$wqurls['wp']."/plugins/'".$vwporgslug."'/reviews/#new-post' target='_blank'>";
+			// echo "&#9733; ".wqhelper_translate('Rate this Plugin on Wordpress.Org')."</a></center>";
+		// } elseif ($vpluginslug == 'bioship') {
 			// 1.5.0: add star rating for theme (when in repository)
-			// echo "<a href='https://wordpress.org/support/view/theme-reviews/bioship#postform' target='_blank'>";
+			// echo "<a href='".$wqurls['wp']."/support/theme/bioship/reviews/#new-post' target='_blank'>";
 			// echo "&#9733; ".wqhelper_translate('Rate this Theme on Wordpress.Org')."</a></center>";
 		// }
 		echo '</div></div>';
@@ -1517,38 +1541,48 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 
 	// Bonus Subscription Form
 	// -----------------------
-	// ...populated for current user...
-	global $current_user; $current_user = wp_get_current_user();
-	$vuseremail = $current_user->user_email; if (strstr($vuseremail, '@localhost')) {$vuseremail = '';}
-	$vuserid = $current_user->ID; $vuserdata = get_userdata($vuserid);
-	$vusername = $vuserdata->first_name; $vlastname = $vuserdata->last_name;
-	if ($vlastname != '') {$vusername .= ' '.$vlastname;}
+	// 1.7.2: allow for bonus offer box override
+	$vfuncname = $vpre.'_sidebar_bonus_offer';
+	if (function_exists($vfuncname)) {call_user_func($vfuncname);}
+	else {
+		// (populated for current user)
+		global $current_user; $current_user = wp_get_current_user();
+		$vuseremail = $current_user->user_email; if (strstr($vuseremail, '@localhost')) {$vuseremail = '';}
+		$vuserid = $current_user->ID; $vuserdata = get_userdata($vuserid);
+		$vusername = $vuserdata->first_name; $vlastname = $vuserdata->last_name;
+		if ($vlastname != '') {$vusername .= ' '.$vlastname;}
 
-	if ($vpluginslug == 'bioship') {$vreportimage = get_template_directory_uri()."/images/rv-report.jpg";}
-	else {$vreportimage = plugins_url('images/rv-report.jpg', __FILE__);}
-	echo '<div id="bonusoffer"';
-	if (get_option($vpre.'_report_box_off') == 'checked') {echo " style='display:none;'>";} else {echo ">";}
-	echo '<div class="stuffbox" style="width:250px;background-color:#ffffff;">';
-	echo '<h3>'.wqhelper_translate('Bonus Offer').'</h3><div class="inside">';
-	echo "<center><table cellpadding='0' cellspacing='0'><tr><td align='center'><img src='".$vreportimage."' width='60' height='80'><br>";
-	echo "<font style='font-size:6pt;'><a href='".$wqurls['prn']."/return-visitors-report/' target=_blank>".wqhelper_translate('learn more')."...</a></font></td><td width='7'></td>";
-	echo "<td align='center'><b><font style='color:#ee0000;font-size:9pt;'>Maximize Sales Conversions:</font><br><font style='color:#0000ee;font-size:10pt;'>The Return Visitors Report</font></b><br>";
-	echo "<form style='margin-top:7px;' action='".$wqurls['prn']."/?visitorfunnel=join' target='_blank' method='post'>";
-	echo "<input type='hidden' name='source' value='".$vpluginslug."-sidebar'>";
-	echo "<input placeholder='".wqhelper_translate('Your Email')."...' type='text' style='width:150px;font-size:9pt;' name='subemail' value='".$vuseremail."'><br>";
-	echo "<table><tr><td><input placeholder='".wqhelper_translate('Your Name')."...' type='text' style='width:90px;font-size:9pt;' name='subname' value='".$vusername."'></td>";
-	echo "<td><input type='submit' class='button-secondary' value='".wqhelper_translate('Get it!')."'></td></tr></table>";
-	echo "</td></tr></table></form></center>";
-	echo '</div></div></div>';
-
-	// PluginReview.Net Plugin Ad
-	// --------------------------
-	if ($sidebaroptions['adsboxoff'] != 'checked') {
-		echo '<div id="pluginads">';
-		echo '<div class="stuffbox" style="width:250px;">';
-		echo '<h3>'.wqhelper_translate('Recommended').'</h3><div class="inside">';
-		echo "<script language='javascript' src='".$wqurls['prn']."/recommends/?s=yes&a=majick&c=".$vpluginslug."&t=sidebar'></script>";
+		if ($vpluginslug == 'bioship') {$vreportimage = get_template_directory_uri()."/images/rv-report.jpg";}
+		else {$vreportimage = plugins_url('images/rv-report.jpg', __FILE__);}
+		echo '<div id="bonusoffer"';
+		if (get_option($vpre.'_report_box_off') == 'checked') {echo " style='display:none;'>";} else {echo ">";}
+		echo '<div class="stuffbox" style="width:250px;background-color:#ffffff;">';
+		echo '<h3>'.wqhelper_translate('Bonus Offer').'</h3><div class="inside">';
+		echo "<center><table cellpadding='0' cellspacing='0'><tr><td align='center'><img src='".$vreportimage."' width='60' height='80'><br>";
+		echo "<font style='font-size:6pt;'><a href='".$wqurls['prn']."/return-visitors-report/' target=_blank>".wqhelper_translate('learn more')."...</a></font></td><td width='7'></td>";
+		echo "<td align='center'><b><font style='color:#ee0000;font-size:9pt;'>Maximize Sales Conversions:</font><br><font style='color:#0000ee;font-size:10pt;'>The Return Visitors Report</font></b><br>";
+		echo "<form style='margin-top:7px;' action='".$wqurls['prn']."/?visitorfunnel=join' target='_blank' method='post'>";
+		echo "<input type='hidden' name='source' value='".$vpluginslug."-sidebar'>";
+		echo "<input placeholder='".wqhelper_translate('Your Email')."...' type='text' style='width:150px;font-size:9pt;' name='subemail' value='".$vuseremail."'><br>";
+		echo "<table><tr><td><input placeholder='".wqhelper_translate('Your Name')."...' type='text' style='width:90px;font-size:9pt;' name='subname' value='".$vusername."'></td>";
+		echo "<td><input type='submit' class='button-secondary' value='".wqhelper_translate('Get it!')."'></td></tr></table>";
+		echo "</td></tr></table></form></center>";
 		echo '</div></div></div>';
+	}
+
+	// PluginReview.Net Plugin Recommendations
+	// ---------------------------------------
+	if ($sidebaroptions['adsboxoff'] != 'checked') {
+		// 1.7.2: allow for recommendation box override
+		$vfuncname = $vpre.'_sidebar_plugin_recommendation';
+		if (function_exists($vfuncname)) {call_user_func($vfuncname);}
+		else {
+			echo '<div id="pluginads">';
+			echo '<div class="stuffbox" style="width:250px;">';
+			echo '<h3>'.wqhelper_translate('Recommended').'</h3><div class="inside">';
+			echo "<script language='javascript' src='".$wqurls['prn']."/recommends/?s=yes&a=majick&c=".$vpluginslug."&t=sidebar'></script>";
+			echo '</div></div></div>';
+		}
 	}
 
 	// Call Plugin Footer Function
@@ -1580,9 +1614,8 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 		echo '</div></div></div>';
 	}
 
-	echo '</div>';
+	echo '</div>'; // close #floatdiv
 
-	// echo '</div>';
  };
 }
 
@@ -2110,10 +2143,11 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 }
 
 
-// =====================
-// Dashboard Feed Widget
-// =====================
+// =============================
+// --- Dashboard Feed Widget ---
+// =============================
 
+// -----------------------------
 // Add the Dashboard Feed Widget
 // -----------------------------
 $vrequesturi = $_SERVER['REQUEST_URI'];
@@ -2125,6 +2159,7 @@ if ( (preg_match('|index.php|i', $vrequesturi))
 	}
 }
 
+// ------------------------
 // Load the Dashboard Feeds
 // ------------------------
 $vfuncname = 'wqhelper_add_dashboard_feed_widget_'.$wqhv;
@@ -2153,6 +2188,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// -----------------------------------
 // WordQuest Dashboard Feed Javascript
 // -----------------------------------
 $vfuncname = 'wqhelper_dashboard_feed_javascript_'.$wqhv;
@@ -2169,6 +2205,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// -------------------------------
 // WordQuest Dashboard Feed Widget
 // -------------------------------
 $vfuncname = 'wqhelper_dashboard_feed_widget_'.$wqhv;
@@ -2333,6 +2370,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// ---------------------------------
 // Plugin Review Network Feed Widget
 // ---------------------------------
 $vfuncname = 'wqhelper_pluginreview_feed_widget_'.$wqhv;
@@ -2437,6 +2475,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// --------------------
 // Load a Category Feed
 // --------------------
 $vfuncname = 'wqhelper_load_feed_category_'.$wqhv;
@@ -2467,6 +2506,7 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
  };
 }
 
+// ----------------
 // Process RSS Feed
 // ----------------
 $vfuncname = 'wqhelper_process_rss_feed_'.$wqhv;
@@ -2501,4 +2541,3 @@ if ( (!isset($wqfunctions[$vfuncname])) || (!is_callable($wqfunctions[$vfuncname
 // debug point
 // print_r($wqfunctions);
 
-?>

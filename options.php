@@ -9,6 +9,7 @@
  * === BioShip Theme Options ===
  *  ... for Titan Framework ...
  *  .. and Options Framework ..
+ *  . and WordPress Customizer .
  *
 **/
 
@@ -17,20 +18,21 @@ if (!function_exists('add_action')) {exit;}
 // =============================
 // === options.php structure ===
 // =============================
-// - Titan Framework Integration
-// - Options Framework Integration
-// - Font Options Arrays
-// - All Theme Options Array
+// --- Titan Framework Integration
+// --- Options Framework Integration
+// --- Font Options
+// --- All Theme Options
 // =============================
 
 // 1.8.0: moved all UI / admin pages to admin.php
 // (Framework specific integrations remain here)
 
 
-// ===================================
+// -----------------------------------
 // === Titan Framework Integration ===
-// ===================================
+// -----------------------------------
 
+// ----------------------------------------------------
 // Convert Options Framework to Titan Framework Options
 // ----------------------------------------------------
 // note: do not change, used for checking in functions.php
@@ -38,138 +40,179 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
  function bioship_optionsframework_to_titan() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-	global $vthemename, $vtitan, $vthemeoptions;
+	global $vthemename, $vthemetitan, $vthemeoptions;
 	// echo "<!-- Loading Titan Options for ".$vthemename." -->";
-	$vtitan = TitanFramework::getInstance($vthemename);
-	// echo "<!-- Settings: ".print_r($vtitan->settings,true)." -->";
+	$vthemetitan = TitanFramework::getInstance($vthemename);
+	$titanoptionkey = $vthemetitan->optionNamespace;
+	// echo "<!-- Titan Object: ".print_r($vthemetitan,true)." -->";
+	// echo "<!-- Titan Settings: ".print_r($vthemetitan->settings,true)." -->";
+	// echo "<!-- Titan Option Namespace: ".($titanoptionkey)." -->";
 
 	// 1.9.5: do NOT output generated styles, thanks Titan
-	$vtitan->settings['css'] = false;
+	$vthemetitan->settings['css'] = false;
 
-	// 2.0.9: fix to use updated Titan color picker alpha script
-	// ref: https://github.com/kallookoo/wp-color-picker-alpha-plugin
-	add_filter('script_loader_tag', 'bioship_titan_color_picker_alpha_fix', 10, 2);
-	if (!function_exists('bioship_titan_color_picker_alpha_fix')) {
-	 function bioship_titan_color_picker_alpha_fix($vtag, $vhandle) {
-	 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-	 	if ($vhandle == 'wp-color-picker-alpha') {
-	 		// debug: uncomment to use non-minified dev version
-	 		// $vtag = str_replace('/js/min/wp-color-picker-alpha-min.js', '/js/dev/wp-color-picker-alpha.js', $vtag);
-	 		// modify the querystring to cachebust the script load
-	 		$vtag = str_replace('&ver=', '&updated=yes&ver=', $vtag);
-	 		$vtag = str_replace('?ver=', '?updated=yes&ver=', $vtag);
-	 	}
-	 	return $vtag;
+	// 2.1.1: hey, that includes Google webfont stacks thanks!
+	if (!function_exists('bioship_titan_no_font_enqueueing')) {
+
+	 add_filter('tf_enqueue_google_webfont_'.$titanoptionkey, 'bioship_titan_no_font_enqueueing', 10, 2);
+
+	 function bioship_titan_no_font_enqueueing($url, $name) {
+		// echo "<!--- Font Name: ".$name." - Font URL: ".$url." -->";
+		return false;
 	 }
 	}
 
-	// Set Custom WebSafe Fonts
-	// ------------------------
+	// 2.0.9: fix to use updated Titan color picker alpha script
+	// ref: https://github.com/kallookoo/wp-color-picker-alpha-plugin
+	// TODO: recheck if this fix is still needed after Titan update
+	if (!function_exists('bioship_titan_color_picker_alpha_fix')) {
+
+	 // 2.1.1: move add_filter internally for consistency
+	 // add_filter('script_loader_tag', 'bioship_titan_color_picker_alpha_fix', 10, 2);
+
+	 function bioship_titan_color_picker_alpha_fix($tag, $handle) {
+	 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	 	if ($handle == 'wp-color-picker-alpha') {
+	 		// to debug: uncomment to use non-minified dev version
+	 		// $tag = str_replace('/js/min/wp-color-picker-alpha-min.js', '/js/dev/wp-color-picker-alpha.js', $tag);
+	 		// modify the querystring to cachebust the script load
+	 		$tag = str_replace('&ver=', '&updated=yes&ver=', $tag);
+	 		$tag = str_replace('?ver=', '?updated=yes&ver=', $tag);
+	 	}
+	 	return $tag;
+	 }
+	}
+
+	// ------------------------------
+	// Set Custom WebSafe Font Stacks
+	// ------------------------------
 	// (since Titan by default adds ALL the Google Fonts here!)
-	add_filter('titan_websafefonts','bioship_titan_websafe_fonts');
-	function bioship_titan_websafe_fonts($vfonts) {
+	// 2.1.1: added missing function_exists wrapper
+	if (!function_exists('bioship_titan_websafe_fonts')) {
+
+	 add_filter('titan_websafefonts', 'bioship_titan_websafe_fonts');
+
+	 function bioship_titan_websafe_fonts($fonts) {
 		// 1.9.8: use global value to avoid multiple calls
 		global $vthemewebfontstacks;
 		if (!isset($vthemewebfontstacks)) {$vthemewebfontstacks = bioship_options_web_font_stacks(array());}
 		return $vthemewebfontstacks;
+	 }
 	}
 
+	// --------------------------
 	// Custom Filter Google Fonts
 	// --------------------------
 	// note: this filter could be removed if you want all Google Font options
-	add_filter('titan_googlefonts','bioship_titan_google_fonts');
-	function bioship_titan_google_fonts($vfonts) {
-		$voptionsfonts = bioship_options_title_fonts();
-		$vi = 0;
-		foreach ($vfonts as $vfont) {
-			$vkeep = false;
-			foreach ($voptionsfonts as $vfontkey => $vfontname) {
-				// echo $vfont['name'].'---'.$vfontname.PHP_EOL; // debug point
-				if ($vfont['name'] == $vfontname) {$vkeep = true;}
+	// 2.1.1: added missing function exists wrapper
+	if (!function_exists('bioship_titan_google_fonts')) {
+
+	 add_filter('titan_googlefonts', 'bioship_titan_google_fonts');
+
+	 function bioship_titan_google_fonts($fonts) {
+		$optionsfonts = bioship_options_title_fonts();
+		// 2.1.1: use simple array index in loop
+		foreach ($fonts as $i => $font) {
+			$keep = false;
+			foreach ($optionsfonts as $fontkey => $fontname) {
+				// echo $font['name'].'---'.$fontname.PHP_EOL; // debug point
+				if ($font['name'] == $fontname) {$keep = true;}
 			}
-			if (!$vkeep) {unset($vfonts[$vi]);}
-			$vi++;
+			if (!$keep) {unset($fonts[$i]);}
 		}
-		return $vfonts;
+		return $fonts;
+	 }
 	}
 
+	// -------------------------------------
 	// Convert Options Array for Titan Usage
 	// -------------------------------------
-	$vi = 0; $vj = 0; $vk = 0; $vl = 0; $vm = 0;
-	foreach ($vthemeoptions as $voptionkey => $voptionvalues) {
+	$i = $j = $k = $l = $m = 0;
+	foreach ($vthemeoptions as $optionkey => $optionvalues) {
 
-		// convert some naming convention crackliness
-		if (!isset($voptionvalues['default'])) {
-			if (isset($voptionvalues['std'])) {$voptionvalues['default'] = $voptionvalues['std'];}
+		// --- convert some option naming convention crackliness ---
+		if (!isset($optionvalues['default'])) {
+			if (isset($optionvalues['std'])) {$optionvalues['default'] = $optionvalues['std'];}
 		}
-		if ($voptionvalues['type'] == 'typography') {$voptionvalues['type'] = 'font';}
-		elseif ($voptionvalues['type'] == 'info') {$voptionvalues['type'] = 'note';}
+		if ($optionvalues['type'] == 'typography') {$optionvalues['type'] = 'font';}
+		elseif ($optionvalues['type'] == 'info') {$optionvalues['type'] = 'note';}
 
-		// convert id to class (for headings)
-		$vlayers = array('skin','muscle','skeleton');
-		if (isset($voptionvalues['id'])) {
-			if (in_array($voptionvalues['id'],$vlayers)) {
-				$voptionvalues['class'] = $voptionvalues['id'];
-				$voptionvalues['id'] = $voptionvalues['name'];
+		// --- convert id to class (for headings) ---
+		$layers = array('skin', 'muscle', 'skeleton');
+		if (isset($optionvalues['id'])) {
+			if (in_array($optionvalues['id'], $layers)) {
+				$optionvalues['class'] = $optionvalues['id'];
+				$optionvalues['id'] = $optionvalues['name'];
 			}
 		}
 
-		// resort into skin-muscle-skeleton layers by class
-		$vthemeoptions[$voptionkey] = $voptionvalues;
-		if (strstr($voptionvalues['class'],'skin')) {$vskinoptions[$vi] = $voptionvalues; $vi++;}
-		elseif (strstr($voptionvalues['class'],'muscle')) {$vmuscleoptions[$vj] = $voptionvalues; $vj++;}
-		elseif (strstr($voptionvalues['class'],'skeleton')) {$vskeletonoptions[$vk] = $voptionvalues; $vk++;}
-		else {$vhiddenoptions[$vl] = $voptionvalues; $vl++;}
+		// --- resort options into layers by class ---
+		$vthemeoptions[$optionkey] = $optionvalues;
+		if (strstr($optionvalues['class'], 'skin')) {$skinoptions[$i] = $optionvalues; $i++;}
+		elseif (strstr($optionvalues['class'], 'muscle')) {$muscleoptions[$j] = $optionvalues; $j++;}
+		elseif (strstr($optionvalues['class'], 'skeleton')) {$skeletonoptions[$k] = $optionvalues; $k++;}
+		else {$hiddenoptions[$l] = $optionvalues; $l++;}
 
-		// ? live preview customizer options array ?
-		// (this Titan option is not used, using a custom customizer.php integration)
-		// if (isset($voptionvalues['livepreview'])) {$vcustomizeroptions[$vm] = $voptionvalues; $vm++;}
+		// --- live preview customizer options array ---
+		// (this Titan option is not used, as using a custom customizer.php integration)
+		// if (isset($optionvalues['livepreview'])) {$customizeroptions[$m] = $optionvalues; $m++;}
 	}
 
-	// print_r($vskinoptions); // debug point
-	// print_r($vmuscleoptions); // debug point
-	// print_r($vskeletonoptions); // debug point
+	// debug points
+	// print_r($skinoptions);
+	// print_r($muscleoptions);
+	// print_r($skeletonoptions);
+	// print_r($hiddenoptions);
 
 	// Create the Admin Page
 	// ---------------------
-	$voptionspagename = bioship_apply_filters('options_admin_menu_title', __('BioShip Options','bioship'));
-	$voptionspageposition = bioship_apply_filters('options_admin_menu_position', 61);
-	$voptionspageicon = bioship_apply_filters('options_admin_menu_icon', 'dashicons-welcome-view-site'); // "\f115"
-	$voptionspageargs = array('name' => $voptionspagename, 'position' => $voptionspageposition, 'icon' => $voptionspageicon);
-	$vadminpanel = $vtitan->createAdminPanel($voptionspageargs);
+	$optionspagename = bioship_apply_filters('options_admin_menu_title', __('BioShip Options','bioship'));
+	$optionspageposition = bioship_apply_filters('options_admin_menu_position', 61);
+	$optionspageicon = bioship_apply_filters('options_admin_menu_icon', 'dashicons-welcome-view-site'); // "\f115"
+	$optionspageargs = array('name' => $optionspagename, 'position' => $optionspageposition, 'icon' => $optionspageicon);
+	$adminpanel = $vthemetitan->createAdminPanel($optionspageargs);
 
 	// Notes for adding an option to existing customizer sections via Titan
 	// - title_tagline, colors, background_image, nav, static_front_page -
-	// $vsection = $vtitan->createThemeCustomizerSection(array('name' => 'title_tagline'));
+	// $section = $vthemetitan->createThemeCustomizerSection(array('name' => 'title_tagline'));
 	// - panel, desc, capability, position -
-	// $vsection->createOption($vsomeoption);
+	// $section->createOption($someoption);
 	// note: Titan method is not used here as we are handling tabs differently...
-	// $vskinpanel = $vadminpanel->createOption(array('type'=>'heading','name'=>'Skin','id'=>'skintab'));
-	// $vskintab = $vskinpanel->createTab(array('name' => 'Skin'));
+	// $skinpanel = $adminpanel->createOption(array('type'=>'heading','name'=>'Skin','id'=>'skintab'));
+	// $skintab = $skinpanel->createTab(array('name' => 'Skin'));
 
+	// ---------------------------------------------------
 	// Add Skin / Muscle / Skeleton Options to Titan Admin
 	// ---------------------------------------------------
-	foreach ($vskinoptions as $vskinoption) {$vaddoption = $vadminpanel->createOption($vskinoption);}
-	// $vmusclepanel = $vadminpanel->createOption(array('type'=>'heading','name'=>'Muscle','id'=>'muscletab'));
-	foreach ($vmuscleoptions as $vmuscleoption) {$vaddoption = $vadminpanel->createOption($vmuscleoption);}
-	// $vskeletonpanel = $vadminpanel->createOption(array('type'=>'heading','name'=>'Skeleton','id'=>'skeletontab'));
-	foreach ($vskeletonoptions as $vskeletonoption) {$vaddoption = $vadminpanel->createOption($vskeletonoption);}
-	// ...add the hidden option values...
-	foreach ($vhiddenoptions as $vhiddenoption) {$vadminpanel->createOption($vhiddenoption);}
-	// ...and add a Save Button..!
-	$vadminpanel->createOption(array('type' => 'save'));
+	foreach ($skinoptions as $skinoption) {$addoption = $adminpanel->createOption($skinoption);}
+	// --- Muscle options ---
+	foreach ($muscleoptions as $muscleoption) {$addoption = $adminpanel->createOption($muscleoption);}
+	// --- Skeleton options ---
+	foreach ($skeletonoptions as $skeletonoption) {$addoption = $adminpanel->createOption($skeletonoption);}
+	// --- add the hidden option values ----
+	foreach ($hiddenoptions as $hiddenoption) {$addoption = $adminpanel->createOption($hiddenoption);}
+	// ---- add a Save Button ---
+	$adminpanel->createOption(array('type' => 'save'));
 
+	// ----------------------------------------------
 	// Replace Titan Tabs with Options Framework Tabs
 	// ----------------------------------------------
 	// 1.8.0: for Titan admin tab and layer filter button compatibility
 	// (this is so as to prevent page refreshes for each tab - a downside of Titan)
-	add_action('tf_admin_page_start','bioship_titan_options_tabs');
 	if (!function_exists('bioship_titan_options_tab')) {
+
+	 // 2.1.1: moved add_action internally for consistency
+	 add_action('tf_admin_page_start','bioship_titan_options_tabs');
+
 	 function bioship_titan_options_tabs() {
-		// replace Titan tabs: ie. foreach ( $this->tabs as $tab ) {$tab->displayTab();}
+	 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+		// replace Titan tabs: ie. foreach ($this->tabs as $tab) {$tab->displayTab();}
 		// ...with Options Framework style Titan tabs (from optionsframework_tabs)
 
-		global $vthemeoptions; $counter = 0; $menu = ''; $prevclass = '';
+		global $vthemeoptions;
+		$counter = 0; $menu = $prevclass = '';
 
 		echo '<h2 class="nav-tab-wrapper"><div class="menu-block">';
 		foreach ($vthemeoptions as $key => $value) {
@@ -187,22 +230,30 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 	 }
 	}
 
+	// ----------------------------------------
 	// Replace Titan Admin Options Table Output
 	// ----------------------------------------
 	// 1.8.0: restyle and wrap the option sections for one-page tabbing
 	// (this makes options tabs cross-compatible with options framwork javascript)
-	add_action('tf_admin_page_table_start','bioship_titan_admin_page_options');
 	if (!function_exists('bioship_titan_admin_page_options')) {
+
+	 // 2.1.1: moved add_action internally for consistency
+	 add_action('tf_admin_page_table_start','bioship_titan_admin_page_options');
+
 	 function bioship_titan_admin_page_options() {
-		global $vthemesettings, $vthemename, $vtitan;
-		$vtitan = TitanFramework::getInstance($vthemename);
+		global $vthemesettings, $vthemename, $vthemetitan;
 
-		$containers = $vtitan->mainContainers;
+		// --- get Titan instance ---
+		$vthemetitan = TitanFramework::getInstance($vthemename);
+
+		// --- get admin page containers ---
+		$containers = $vthemetitan->mainContainers;
 		$adminpage = $containers['admin-page'][0];
-		// $vtitandata = print_r($adminpage,true); // huh? printing directly here fails?!
-		// error_log($vtitandata, 3, dirname(__FILE__).'/debug/titan-admin-debug.txt');
-		// unset($vtitandata);
+		// $titandata = print_r($adminpage, true); // huh? printing directly here fails?!
+		// error_log($titandata, 3, dirname(__FILE__).'/debug/titan-admin-debug.txt');
+		// unset($titandata);
 
+		// --- loop admin page options ---
 		$tabcounter = 0;
 		$optionheader = '<tr valign="top" class="'; // "
 		$optionheading = '<tr valign="top" class="even first tf-heading">';
@@ -212,16 +263,20 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 
 			$optiontype = $settings['type'];
 			// echo '***'.$optiontype.'***'; // debug point
-			$layerclass = $settings['class'];
-			$layerclass = str_replace('mini', '', $layerclass);
-			$layerclass = str_replace('none', '', $layerclass);
-			$layerclass = str_replace('hidden', '', $layerclass);
-			$layerclass = str_replace(' ', '', $layerclass);
+			// 2.1.1: fix for undefined class index
+			if (!isset($settings['class'])) {$layerclass = '';}
+			else {
+				$layerclass = $settings['class'];
+				$layerclass = str_replace('mini', '', $layerclass);
+				$layerclass = str_replace('none', '', $layerclass);
+				$layerclass = str_replace('hidden', '', $layerclass);
+				$layerclass = str_replace(' ', '', $layerclass);
+			}
 
-			// buffer to grab class method output
+			// --- buffer to grab class method output ---
 			ob_start(); $option->display(); $optionoutput = ob_get_contents();
 
-			// tweak the output for save/headings
+			// --- tweak the output for save/headings ---
 			if ($optiontype == 'save') {
 				// ergh, bit of a painful workaround, but all good...
 				$output = '</table></div><table class="form-table"><tbody><tr><td>';
@@ -239,67 +294,79 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 				else {$optionoutput = '</table></div>'.$optionoutput;}
 			}
 
-			// clear the buffer and output option
+			// --- clear the buffer and output option ---
 			ob_end_clean(); echo $optionoutput;
 		}
-		ob_start(); // start output buffer to catch default display
+		// --- start output buffer to catch default display ---
+		ob_start();
 	 }
 	}
 
+	// ---------------------------------------------
 	// Clear Buffer of Default Titan Options Display
 	// ---------------------------------------------
 	// (having fully replaced the Titan tabs/options output - clear default)
-	add_action('tf_admin_page_table_end', 'bioship_titan_admin_page_clean');
 	if (!function_exists('bioship_titan_admin_page_clean')) {
+
+		// 2.1.1: moved add_action internally for consistency
+		add_action('tf_admin_page_table_end', 'bioship_titan_admin_page_clean');
+
 		function bioship_titan_admin_page_clean() {ob_end_clean();}
 	}
 
 	// enqueue the Options Framework tab script for Titan use
 	// ------------------------------------------------------
-	// 1.8.0: use the Options Framework tab script for Titan tabbing
 	// (good to go now that the tabbing has been standardized!)
-	// 1.8.5: replaced this with standalone tab click in admin.php
-	// add_action('admin_enqueue_scripts','bioship_options_titan_tab_script');
+	// 1.8.0: use the Options Framework tab script for Titan tabbing
+	// 1.8.5: [deprecated] replaced this with standalone tab clicking in admin.php
 	// if (!function_exists('bioship_options_titan_tab_script')) {
+	// add_action('admin_enqueue_scripts','bioship_options_titan_tab_script');
 	// function bioship_options_titan_tab_script() {
 	// 	if (strstr($_SERVER['REQUEST_URI'], 'admin.php?page='.$vthemename)) {
-	//		$vtabscripturl = bioship_file_hierarchy('url','options-custom.js',array('javascripts','includes/options/js'));
-	//		if ($vtabscripturl) {wp_enqueue_script('options-custom', $vtabscripturl, array('jquery'), TF_VERSION);}
+	//		$tabscripturl = bioship_file_hierarchy('url', 'options-custom.js', array('scripts', 'includes/options/js'));
+	//		if (tabscripturl) {wp_enqueue_script('options-custom', $tabscripturl, array('jquery'), TF_VERSION);}
 	//	}
 	// }
 	// }
 
+	// ----------------------
 	// Titan Nonce Keep Alive
 	// ----------------------
 	// 2.0.9: keep-alive by refreshing Titan Nonce cyclically
-	add_action('admin_footer', 'bioship_titan_nonce_refresher');
 	if (!function_exists('bioship_titan_nonce_refresher')) {
+
+	 // 2.1.1: move add_action internally for consistency
+	 add_action('admin_footer', 'bioship_titan_nonce_refresher');
+
 	 function bioship_titan_nonce_refresher() {
+	 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
 	 	// 2.1.0: only load if on Bioship Titan options page
-	 	if ( (!isset($_GET['page'])) || ($_GET['page'] != 'bioship-options') ) {return;}
-	 	$vadminajax = admin_url('admin-ajax.php');
-	 	$vrefreshsrc = add_query_arg('action', 'bioship_theme_options_refresh_titan_nonce', $vadminajax);
+	 	if (!isset($_GET['page']) || ($_GET['page'] != THEMESLUG.'-options') ) {return;}
+	 	$adminajax = admin_url('admin-ajax.php');
+	 	$refreshurl = add_query_arg('action', 'bioship_theme_options_refresh_titan_nonce', $adminajax);
 	 	echo "<script>jQuery(document).ready(function() {
 	 		setInterval(function() {
-	 			document.getElementById('titan-nonce-refresh').src = '".$vrefreshsrc."';
+	 			document.getElementById('titan-nonce-refresh').src = '".$refreshurl."';
 	 		}, 300000);
 	 	});</script>".PHP_EOL;
 	 	echo "<iframe id='titan-nonce-refresh' src='javascript:void(0)'></iframe>".PHP_EOL;
 	 }
 	}
 
+	// ------------------
 	// Enqueue Sticky Kit
 	// ------------------
-	add_action('admin_enqueue_scripts','bioship_options_enqueue_stickykit');
+	add_action('admin_enqueue_scripts', 'bioship_options_enqueue_stickykit');
 
 	return true; // too tru bru, too tru...
  }
 }
 
 
-// =====================================
+// -------------------------------------
 // === Options Framework Integration ===
-// =====================================
+// -------------------------------------
 
 // -----------------------------
 // Options Framework Option Name
@@ -308,13 +375,13 @@ if (!function_exists('bioship_optionsframework_option_name')) {
  function bioship_optionsframework_option_name() {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
-	$vtheme = wp_get_theme();
+	$theme = wp_get_theme();
 
 	/** A unique identifier is defined to store the options in the database and reference them from the theme.
 	 * By default it uses the theme name, in lowercase and without spaces, but this can be changed if needed.
 	 * If the identifier changes, it will appear as if the options have been reset. */
 
-	$themename = $vtheme['Name'];
+	$themename = $theme['Name'];
 	$themename = preg_replace("/\W/", "_", strtolower($themename));
 	$themename = bioship_apply_filters('options_framework_themename', $themename);
 
@@ -330,78 +397,94 @@ if (!function_exists('bioship_optionsframework_option_name')) {
 // ----------------------------------
 // 1.8.0: fix for use of plugin_dir_url() in enqueues (as this is not a plugin!)
 // (see class Options_Framework_Admin in class-options-framework-admin.php)
-add_action('admin_enqueue_scripts', 'bioship_optionsframework_resource_url_fix', 11);
-
 if (!function_exists('bioship_optionsframework_resource_url_fix')) {
+
+ // 2.1.1: moved add_action internally for consistency
+ add_action('admin_enqueue_scripts', 'bioship_optionsframework_resource_url_fix', 11);
+
  function bioship_optionsframework_resource_url_fix() {
+ 	if (THEMETRACE) {bioship_trace('F',__FUNCTION,__FILE__);}
 
-	if ( (!class_exists('Options_Framework')) || (THEMETITAN) ) {return;}
+	if (THEMETITAN || !class_exists('Options_Framework')) {return;}
 
-	$voptionsframework = bioship_file_hierarchy('url','options-framework.php',array('includes/options','options'));
-	if ($voptionsframework) {
-		$voptionsurlpath = str_replace('options-framework.php','',$voptionsframework);
+	// --- set Options Framework directories ---
+	global $vthemedirs;
+	if (count($vthemedirs['includes']) > 0) {
+		foreach ($vthemedirs['includes'] as $i => $dir) {$optionsdir[$i] = $dir.DIRSEP.'options';}
+	}
+	$optionsdirs = array_merge(array('options'), $optionsdirs);
 
+	// --- get options.php location ---
+	$optionsframework = bioship_file_hierarchy('url', 'options-framework.php', $optiondirs);
+
+	if ($optionsframework) {
+
+		$optionsurlpath = str_replace('options-framework.php', '', $optionsframework);
+
+		// --- Options Framework style URL fix ---
 		global $wp_styles;
-		foreach ($wp_styles->registered as $vhandle => $vstyle) {
-			if ($vhandle == 'optionsframework') {
-				$vstyle->src = $voptionsurlpath.'css/optionsframework.css';
-				$wp_styles->registered[$vhandle] = $vstyle;
+		foreach ($wp_styles->registered as $handle => $style) {
+			if ($handle == 'optionsframework') {
+				$style->src = $optionsurlpath.'css/optionsframework.css';
+				$wp_styles->registered[$handle] = $style;
 			}
 		}
-		// print_r($wp_styles); // debug point
 
+		// --- Options Framework script URL fix ---
 		global $wp_scripts;
-		foreach ($wp_scripts->registered as $vhandle => $vscript) {
-			if ($vhandle == 'options-custom') {
-				$vscript->src = $voptionsurlpath.'js/options-custom.js';
-				$wp_scripts->registered[$vhandle] = $vscript;
+		foreach ($wp_scripts->registered as $handle => $script) {
+			if ($handle == 'options-custom') {
+				$script->src = $optionsurlpath.'js/options-custom.js';
+				$wp_scripts->registered[$handle] = $script;
 			}
-			if ($vhandle == 'of-media-uploader') {
+			if ($handle == 'of-media-uploader') {
 				// 1.8.5: fix to media-uploader.js
-				$vscript->src = $voptionsurlpath.'js/media-uploader.js';
-				$wp_scripts->registered[$vhandle] = $vscript;
+				$script->src = $optionsurlpath.'js/media-uploader.js';
+				$wp_scripts->registered[$handle] = $script;
 			}
 		}
-		// print_r($wp_scripts); // debug point
 	}
 
-	// Enqueue Sticky Kit
-	// ------------------
+	// --- enqueue Sticky Kit ---
 	// 1.9.5: moved here from optionsframework_option_name above
 	bioship_options_enqueue_stickykit();
  }
 }
 
+// -----------------------
 // Admin Stickykit Enqueue
 // -----------------------
 if (!function_exists('bioship_options_enqueue_stickykit')) {
-	function bioship_options_enqueue_stickykit() {
-		global $vthemesettings, $vjscachebust, $vthemedirs;
-		$vstickykit = bioship_file_hierarchy('both', 'jquery.sticky-kit.min.js', $vthemedirs['script']);
-		if (is_array($vstickykit)) {
-			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {
-				$vjscachebust = date('ymdHi', filemtime($vstickykit['file']));
-			}
-			wp_enqueue_script('stickykit', $vstickykit['url'], array('jquery'), $vjscachebust, true);
-		}
+ function bioship_options_enqueue_stickykit() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	global $vthemesettings, $vjscachebust, $vthemedirs;
+	$stickykit = bioship_file_hierarchy('both', 'jquery.sticky-kit.min.js', $vthemedirs['script']);
+	if (is_array($stickykit)) {
+		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {
+			$cachebust = date('ymdHi', filemtime($stickykit['file']));
+		} else {$cachebust  = $vjscachebust;}
+		wp_enqueue_script('stickykit', $stickykit['url'], array('jquery'), $cachebust, true);
 	}
+ }
 }
 
 
-// ==========================
-// === Font Option Arrays ===
-// ==========================
+// --------------------
+// === Font Options ===
+// --------------------
 
 // -----------------------
 // Default Web Font Stacks
 // -----------------------
 // ref: http://www.onedesigns.com/tutorials/font-families-for-cross-compatible-typography
 // ref: https://wiki.bath.ac.uk/display/webservices/Fonts+-+readable,+cross-platform+typography
-
-// add the font filter (Options Framework only)
-if (function_exists('add_filter')) {add_filter('of_recognized_font_faces', 'bioship_options_web_font_stacks');}
-
 if (!function_exists('bioship_options_web_font_stacks')) {
+
+ // --- add the font filter for Options Framework ---
+ // 2.1.1: move add_filter internally for consistency
+ if (function_exists('add_filter')) {add_filter('of_recognized_font_faces', 'bioship_options_web_font_stacks');}
+
  function bioship_options_web_font_stacks($faces) {
   	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
@@ -443,7 +526,7 @@ if (!function_exists('bioship_options_title_fonts')) {
   	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
 	// 1.9.0: re-added Raleway, legacy skeleton boilerplate default
-	$vtitlefonts = array(
+	$titlefonts = array(
 		'Sans-Serif' => 'Sans-Serif',
 		'Serif' => 'Serif',
 		'Abel' => 'Abel',
@@ -483,24 +566,33 @@ if (!function_exists('bioship_options_title_fonts')) {
 	// 1.8.0: automatically add 'extra fonts' to selections
 	global $vthemesettings;
 	if ($vthemesettings['extrafonts'] != '') {
+		// --- get extra fonts ---
 		if (strstr($vthemesettings['extrafonts'],',')) {
-			$vextrafonts = explode(',',$vthemesettings['extrafonts']);
-		} else {$vextrafonts[0] = $vthemesettings['extrafonts'];}
-		foreach ($vextrafonts as $vextrafont) {
-			$vextrafont = trim($vextrafont);
-			$vextrafontkey = str_replace(' ','+',$vextrafont);
+			$extrafonts = explode(',', $vthemesettings['extrafonts']);
+		} else {$extrafonts[0] = $vthemesettings['extrafonts'];}
+
+		// --- create extra fonts array ---
+		foreach ($extrafonts as $extrafont) {
+			$extrafont = trim($extrafont);
+			$extrafontkey = str_replace(' ', '+', $extrafont);
 			// 1.8.5: fix to font array key
-			$vextrafontarray[$vextrafontkey] = $vextrafont;
+			$extrafontarray[$extrafontkey] = $extrafont;
 		}
-		$vtitlefonts = array_merge($vextrafontarray,$vtitlefonts);
+
+		// --- merge extra fonts with title fonts ---
+		$titlefonts = array_merge($extrafontarray, $titlefonts);
 	}
 
-	return bioship_apply_filters('options_title_fonts', $vtitlefonts);
+	// --- apply filters and return ---
+	$titlefonts = bioship_apply_filters('options_title_fonts', $titlefonts);
+	return $titlefonts;
  }
 }
 
+// ------------------
 // Title Font Display
 // ------------------
+// note: displayed via /wp-admin/admin.php?show=titlefontexamples
 // 2.0.9: check for request internally
 if (!function_exists('bioship_options_title_font_display')) {
 
@@ -509,8 +601,7 @@ if (!function_exists('bioship_options_title_font_display')) {
 
  function bioship_options_title_font_display() {
 
- 	if (!isset($_GET['show'])) {return;}
- 	if ($_GET['show'] != 'titlefontexamples') {return;}
+ 	if (!isset($_GET['show']) || ($_GET['show'] != 'titlefontexamples')) {return;}
  	$titlefonts = bioship_options_title_fonts();
 
 	$table = "<center><table>"; $loadfonts = '';
@@ -534,8 +625,10 @@ if (!function_exists('bioship_options_title_font_display')) {
  }
 }
 
+// ------------------
 // Display Body Fonts
 // ------------------
+// note: displayed via /wp-admin/admin.php?show=bodyfontexamples
 // 2.0.9: check for display request internally
 if (!function_exists('bioship_options_body_font_display')) {
 
@@ -544,11 +637,11 @@ if (!function_exists('bioship_options_body_font_display')) {
 
  function bioship_options_body_font_display() {
 
-	if (!isset($_GET['show'])) {return;}
-	if ($_GET['show'] != 'bodyfontexamples') {return;}
+	if (!isset($_GET['show']) || ($_GET['show'] != 'bodyfontexamples')) {return;}
 	$bodyfonts = bioship_options_web_font_stacks(array());
 
-	$table = "<center><table>"; $loadfonts = ''; $queried = array();
+	$table = "<center><table>";
+	$loadfonts = ''; $queried = array();
 	foreach ($bodyfonts as $font => $display) {
 		if ($font != '') {
 			$table .= "<tr><td colspan='3' class='displayname'>".$display."</td></tr>";
@@ -556,9 +649,9 @@ if (!function_exists('bioship_options_body_font_display')) {
 			foreach ($fontfaces as $fontface) {
 				$fontface = trim($fontface);
 				if ( ($fontface != 'sans-serif') && ($fontface != 'serif') && ($fontface != 'monospace') ) {
-					if (strstr($fontface,'+')) {$fontface = str_replace('+',' ',$fontface);}
-					if (strstr($fontface,'"')) {$fontface = str_replace('"','',$fontface);}
-					if (!in_array($fontface,$queried)) {
+					if (strstr($fontface, '+')) {$fontface = str_replace('+', ' ', $fontface);}
+					if (strstr($fontface, '"')) {$fontface = str_replace('"', '', $fontface);}
+					if (!in_array($fontface, $queried)) {
 						$loadfonts .= "<link rel='stylesheet' id='skeleton-body-fonts-css'  href='http://fonts.googleapis.com/css?family=".$fontface."' type='text/css' media='all' />";
 						$queried[] = $fontface;
 					}
@@ -580,9 +673,9 @@ if (!function_exists('bioship_options_body_font_display')) {
  }
 }
 
-// ==========================
-// == Theme Options Array ===
-// ==========================
+// -----------------------------
+// === Set All Theme Options ===
+// -----------------------------
 
 /**
  * Defines an array of options that will be used to generate the settings page and be saved in the database.
@@ -593,31 +686,28 @@ if (!function_exists('bioship_options_body_font_display')) {
  */
 
 if (!function_exists('bioship_options')) {
- function bioship_options($vinternal=true) {
+ function bioship_options($internal=true) {
 
 	global $vthemename, $vthemesettings;
-
-	// Load Font Arrays
-	// ----------------
-	$title_fonts = bioship_options_title_fonts();
-	$body_fonts = bioship_options_web_font_stacks(array());
 
 	// Header Typography Options
 	// -------------------------
 	// 2.0.9: added missing tranlation wrappers
+	$titlefonts = bioship_options_title_fonts();
 	$headertype_options = array(
 		'sizes' => array( '12','13','14','15','16','17','18','19','20','21','22','23','24','26','28','30','32','34','36','40','44','48' ),
-		'faces' => $title_fonts,
+		'faces' => $titlefonts,
 		'styles' => array('normal' => __('Normal','bioship'), 'bold' => __('Bold','bioship'), 'italics' => __('Italics','bioship')),
 		'color' => true
 	);
 
 	// Body Typography Options
 	// -----------------------
-	// 2.0.9: added missing tranlation wrappers
+	// 2.0.9: added missing translation wrappers
+	$bodyfonts = bioship_options_web_font_stacks(array());
 	$typography_options = array(
 		'sizes' => array( '8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','26','28','30','32','34','36' ),
-		'faces' => $body_fonts,
+		'faces' => $bodyfonts,
 		'styles' => array('normal' => __('Normal','bioship'), 'bold' => __('Bold','bioship'), 'italics' => __('Italics','bioship')),
 		'color' => true
 	);
@@ -625,7 +715,7 @@ if (!function_exists('bioship_options')) {
 	// Category Array
 	// --------------
 	$options_categories = array();
-	if ($vinternal) {
+	if ($internal) {
 		$args = array('hide_empty' => 0);
 		$options_categories_obj = get_categories($args);
 		foreach ($options_categories_obj as $category) {
@@ -668,21 +758,21 @@ if (!function_exists('bioship_options')) {
 
 	// Custom Post Type Array
 	// ----------------------
-	$vcpts[0] = 'page'; $vcpts[1] = 'post';
-	$vargs = array('public' => true, '_builtin' => false);
-	$vthumbcpt_options['page'] = 'Page';
+	$cpts[0] = 'page'; $cpts[1] = 'post';
+	$args = array('public' => true, '_builtin' => false);
+	$thumbcpt_options['page'] = 'Page';
 
-	if ($vinternal) {
-		$vcptlist = get_post_types($vargs, 'names', 'and');
-		$vcpts = array_merge($vcpts, $vcptlist);
+	if ($internal) {
+		$cptlist = get_post_types($args, 'names', 'and');
+		$cpts = array_merge($cpts, $cptlist);
 
-		foreach ($vcpts as $vcpt) {
+		foreach ($cpts as $cpt) {
 			// 2.0.9: get post type label from post type object
-			// $vcptname = strtoupper(substr($vcpt,0,1)).substr($vcpt,1);
-			$vposttypeobject = get_post_type_object($vcpt);
-			$vcptname = $vposttypeobject->labels->singular_name;
-			$cpt_options[$vcpt] = $vcptname;
-			if ($vcpt != 'post') {$thumbcpt_options[$vcpt] = $vcptname;}
+			// $cptname = strtoupper(substr($cpt,0,1)).substr($cpt,1);
+			$posttypeobject = get_post_type_object($cpt);
+			$cptname = $posttypeobject->labels->singular_name;
+			$cpt_options[$cpt] = $cptname;
+			if ($cpt != 'post') {$thumbcpt_options[$cpt] = $cptname;}
 		}
 	}
 
@@ -690,7 +780,7 @@ if (!function_exists('bioship_options')) {
 	// --- START THEME OPTIONS ---
 	// ---------------------------
 
-	$voptions = array();
+	$options = array();
 
 	// ============
 	// === SKIN ===
@@ -700,7 +790,7 @@ if (!function_exists('bioship_options')) {
 	// === Styles ===
 	// --------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Styles', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -708,7 +798,7 @@ if (!function_exists('bioship_options')) {
 
 	// Dynamic CSS
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Dynamic Custom CSS', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'id' => 'dynamiccustomcss',
@@ -730,7 +820,7 @@ if (!function_exists('bioship_options')) {
 	$rvdesc .= '%BORDERRADIUS% = '.__('Full URL to border-radius.htc file - eg. behavior:url(','bioship').'%BORDERRADIUS%); (<a href="http://www.htmlremix.com/css/curved-corner-border-radius-cross-browser" target="_blank">'.__('more info','bioship').'</a>)<br>';
 	$rvdesc .= __('Note:','bioship').'<i>custom.css</i>'.__('will also be loaded if it exists.','bioship').'<br>';
 
-	$voptions[] = array(
+	$options[] = array(
 	 	'name' => __('Replacement Values', 'bioship'),
 		'desc' => $rvdesc,
 		'class' => 'skin',
@@ -747,7 +837,7 @@ if (!function_exists('bioship_options')) {
 		'header' => __('Print in HTML Page Header', 'bioship'),
 		'footer' => __('Print in HTML Page Footer', 'bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Dynamic CSS Mode', 'bioship'),
 		'desc' => __('Whether to load Dynamic Skin and Grid via AJAX or Direct URL.', 'bioship'),
 		'id' => 'themecssmode',
@@ -765,7 +855,7 @@ if (!function_exists('bioship_options')) {
 		'normalize'=> __('Use normalize.css','bioship'),
 		'reset'=> __('Use reset.css','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Perform CSS Reset', 'bioship'),
 		'desc' => __('Whether to do a CSS reset before loading main stylesheets. Can use either normalize.css (recommended) or plain CSS reset.', 'bioship'),
 		'id' => 'cssreset',
@@ -778,7 +868,7 @@ if (!function_exists('bioship_options')) {
 
 	// Formalize
 	// ---------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load Formalize (CSS and JS)', 'bioship'),
 		'desc' => __('Loads Formalize CSS and Javascript for cleaner cross-browser &lt;form&gt; element styling.', 'bioship'),
 		'id' => 'loadformalize',
@@ -790,7 +880,7 @@ if (!function_exists('bioship_options')) {
 
 	// Combine Core Stylesheets
 	// ------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Combine Core Stylesheets', 'bioship'),
 		'desc' => __('Core BioShip Stylesheets will be combined and used upon saving (but <i>only</i> upon saving, so re-save if you change any!)', 'bioship'),
 		'id' => 'combinecsscore',
@@ -802,7 +892,7 @@ if (!function_exists('bioship_options')) {
 	// Stylesheet Cache Busting
 	// ------------------------
 	// 2.0.7: change default to filemtime
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Cache Busting for Stylesheets', 'bioship'),
 		'desc' => __('Querystring used as version for cache busting Stylesheet files.', 'bioship'),
 		'id' => 'stylesheetcachebusting',
@@ -815,7 +905,7 @@ if (!function_exists('bioship_options')) {
 	// HTML Comments
 	// -------------
 	// 1.8.0: added this option
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('HTML Element Comments', 'bioship'),
 		'desc' => __('Add Comment Wrappers to main HTML Elements for easier reading of page source while developing. You may want to turn this off later.',  'bioship'),
 		'id' => 'htmlcomments',
@@ -829,7 +919,7 @@ if (!function_exists('bioship_options')) {
 	// === Background ===
 	// ------------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Background', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -837,7 +927,7 @@ if (!function_exists('bioship_options')) {
 
 	// Background Colour
 	// -----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Background Colour', 'bioship'),
 		'desc' => __('Sets the default body background-color property.', 'bioship'),
 		'id' => 'body_bg_color',
@@ -851,7 +941,7 @@ if (!function_exists('bioship_options')) {
 
 	// Background Image
 	// ----------------
-	$voptions[] = array( 'name' => __('Background Image','bioship'),
+	$options[] = array( 'name' => __('Background Image','bioship'),
 		'desc' => __('Set the body background image, you can upload or paste the URL here. <strong>Your background should be resized prior to uploading</strong>','bioship'),
 		'id' => 'background_image',
 		'std' => '',
@@ -864,7 +954,7 @@ if (!function_exists('bioship_options')) {
 
 	// Background Position
 	// -------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Background Position', 'bioship'),
 		'desc' => __('Set the body background-position CSS property.', 'bioship'),
 		'id' => 'background_position',
@@ -878,7 +968,7 @@ if (!function_exists('bioship_options')) {
 
 	// Background Size
 	// ---------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Background Size', 'bioship'),
 		'desc' => __('Set the body background-size CSS property.', 'bioship'),
 		'id' => 'background_size',
@@ -897,7 +987,7 @@ if (!function_exists('bioship_options')) {
 	$backgroundrepeat_options = array( 'no-repeat'=>__('No Repeat','bioship'),'repeat' => __('Repeat (Tile)','bioship'),
 		'repeat-x' => __('Repeat Horizontal','bioship').' (x)', 'repeat-y' => __('Repeat Vertical','bioship').' (y)',
 		'initial' => __('Initial','bioship'), 'inherit' => __('Inherit','bioship') );
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Background Repeat', 'bioship'),
 		'desc' => __('Set the body background-repeat CSS property.', 'bioship'),
 		'id' => 'background_repeat',
@@ -915,7 +1005,7 @@ if (!function_exists('bioship_options')) {
 	// 1.8.5: use select dropdown options instead of text field
 	$backgroundattach_options = array( 'scroll' => __('Scroll','bioship'),'Fixed' => __('Fixed','bioship'),
 		'local' => __('Local','bioship'), 'initial' => __('Initial','bioship'), 'inherit' => __('Inherit','bioship') );
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Background Attachment', 'bioship'),
 		'desc' => __('Set the body background-attachment CSS property.', 'bioship'),
 		'id' => 'background_attachment',
@@ -933,7 +1023,7 @@ if (!function_exists('bioship_options')) {
 	// === Header ===
 	// --------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header','bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -941,7 +1031,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Background Colour
 	// ------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header Background Colour', 'bioship'),
 		'desc' => __('Sets the default body background-color property.', 'bioship'),
 		'id' => 'headerbgcolor',
@@ -956,7 +1046,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Background Image
 	// -----------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header Background Image','bioship'),
 		'desc' => __('Set the header image background image, you can upload or paste the URL here. <strong>Your background should be resized prior to uploading</strong>','bioship'),
 		'id' => 'header_background_image',
@@ -971,7 +1061,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Background Position
 	// --------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header Background Position', 'bioship'),
 		'desc' => __('Set the header image background-position CSS property.', 'bioship'),
 		'id' => 'header_background_position',
@@ -985,7 +1075,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Background Size
 	// ----------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header Background Size', 'bioship'),
 		'desc' => __('Set the header image background-size CSS property.', 'bioship'),
 		'id' => 'header_background_size',
@@ -1000,7 +1090,7 @@ if (!function_exists('bioship_options')) {
 	// Header Background Repeat
 	// ------------------------
 	// 1.8.5: use select dropdown options instead of text field
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header Background Repeat', 'bioship'),
 		'desc' => __('Set the header image background-repeat CSS property.', 'bioship'),
 		'id' => 'header_background_repeat',
@@ -1015,7 +1105,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Logo
 	// -----------
-	$voptions[] = array( 'name' => __('Header Logo','bioship'),
+	$options[] = array( 'name' => __('Header Logo','bioship'),
 		'desc' => __('If you prefer to show a graphic logo in place of the site title, you can upload or paste the URL here. <strong>Your logo should be resized prior to uploading</strong>','bioship'),
 		'id' => 'header_logo',
 		'std' => '',
@@ -1030,7 +1120,7 @@ if (!function_exists('bioship_options')) {
 	// ------------------
 	// 2.0.9: added this option for header resizing (experimental)
 	// TEMP: disabled while in further development, activated via filter
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Auto Resize Header', 'bioship'),
 	//	'desc' => __('Resizes the header proportionally with window resize.', 'bioship'),
 	//	'id' => 'headerresize',
@@ -1042,7 +1132,7 @@ if (!function_exists('bioship_options')) {
 
 	// Auto Resize Logo
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Auto Resize Logo', 'bioship'),
 		'desc' => __('Resizes the logo image proportionally with header on window resize.', 'bioship'),
 		'id' => 'logoresize',
@@ -1056,7 +1146,7 @@ if (!function_exists('bioship_options')) {
 	// ---------------------------
 	// 2.0.9: added option for scaling of site title text (experimental)
 	// TEMP: disabled while in further development, activated via filter
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Auto Resize Site Title Text', 'bioship'),
 	//	'desc' => __('Resizes the site title text and description with header on window resize.', 'bioship'),
 	//	'id' => 'sitetextresize',
@@ -1068,7 +1158,7 @@ if (!function_exists('bioship_options')) {
 
 	// Text Header Info
 	// ----------------
-	// $voptions[] = array( 'name' => __('Text Header Settings','bioship'),
+	// $options[] = array( 'name' => __('Text Header Settings','bioship'),
 	//	'desc' => __('If you choose not to upload a logo for your header, the options below allow you to customize the text and tagline.<br>If you have uploaded a logo, the settings below have no effect.','bioship'),
 	//	'class' => 'none skin',
 	//	'type' => 'info');
@@ -1077,7 +1167,7 @@ if (!function_exists('bioship_options')) {
 	// -------------------
 	$textheader_defaults = array('sitetitle'=>'1', 'sitedescription'=>'1');
 	$textheader_options = array('sitetitle'=>__('Display Site Title Headline','bioship'),'sitedescription'=>__('Site Description Tagline','bioship'));
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Display Header Text', 'bioship'),
 		'desc' => __('Select which header title text elements to display.', 'bioship'),
 		'id' => 'header_texts',
@@ -1092,7 +1182,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Site Title Typography
 	// ----------------------------
-	$voptions[] = array( 'name' => __('Site Title Text Style','bioship'),
+	$options[] = array( 'name' => __('Site Title Text Style','bioship'),
 		'desc' => __('','bioship'),
 		'id' => 'headline_typography',
 		'std' => array('size' => '40px', 'face' => 'Open+Sans', 'style' => 'normal', 'color' => '#181818'),
@@ -1110,7 +1200,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Tagline Typography
 	// -------------------------
-	$voptions[] = array( 'name' => __('Site Tagline Text Style','bioship'),
+	$options[] = array( 'name' => __('Site Tagline Text Style','bioship'),
 		'desc' => __('','bioship'),
 		'id' => 'tagline_typography',
 		'std' => array('size' => '24px', 'face' => 'Open+Sans', 'style' => 'normal', 'color' => '#CCCCCC'),
@@ -1131,7 +1221,7 @@ if (!function_exists('bioship_options')) {
 	// === Menu ===
 	// ------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Menu', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -1140,7 +1230,7 @@ if (!function_exists('bioship_options')) {
 	// Auto Space Menu
 	// ---------------
 	// 1.8.5: added this option
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Auto Space Navigation', 'bioship'),
 		'desc' => __('Sets percentage widths for top level Menu Item Display based on number of items (tip: works well with short menu item names, not well with long ones.)', 'bioship'),
 		'id' => 'navmenuautospace',
@@ -1153,7 +1243,7 @@ if (!function_exists('bioship_options')) {
 	// Menu Item Typography
 	// --------------------
 	// 2.0.9: removed text shadows
-	$voptions[] = array( 'name' => __('Main Menu Item Typography','bioship'),
+	$options[] = array( 'name' => __('Main Menu Item Typography','bioship'),
 		'desc' => __('Typography for top level menu items.','bioship'),
 		'id' => 'navmenu_typography',
 		'std' => array('size' => '20px', 'face' => 'Open Sans', 'style' => 'bold', 'color' => '#222222'),
@@ -1172,7 +1262,7 @@ if (!function_exists('bioship_options')) {
 	// Submenu Item Typography
 	// -----------------------
 	// 2.0.9: removed text shadows
-	$voptions[] = array( 'name' => __('Main SubMenu Item Typography','bioship'),
+	$options[] = array( 'name' => __('Main SubMenu Item Typography','bioship'),
 		'desc' => __('Typography for secondary level submenu items.','bioship'),
 		'id' => 'navsubmenu_typography',
 		'std' => array('size' => '16px', 'face' => 'Open Sans', 'style' => 'bold', 'color' => '#444444'),
@@ -1191,7 +1281,7 @@ if (!function_exists('bioship_options')) {
 	// Navigation Background Colour
 	// ----------------------------
 	// 1.8.5: added this style option
-	$voptions[] = array( 'name' => __('Navigation Container Background Color','bioship'),
+	$options[] = array( 'name' => __('Navigation Container Background Color','bioship'),
 		'desc' => __('Background Color for Navigation Container.','bioship'),
 		'id' => 'navmenubgcolor',
 		'std' => '',
@@ -1205,7 +1295,7 @@ if (!function_exists('bioship_options')) {
 	// Default Menu Item Background Colour
 	// -----------------------------------
 	// 1.8.5: added this style option
-	$voptions[] = array( 'name' => __('Menu Item Background Color','bioship'),
+	$options[] = array( 'name' => __('Menu Item Background Color','bioship'),
 		'desc' => __('Background Color for Menu Items.','bioship'),
 		'id' => 'navmenuitembgcolor',
 		'std' => '',
@@ -1219,7 +1309,7 @@ if (!function_exists('bioship_options')) {
 	// Active Menu Item Colour
 	// -----------------------
 	// 1.8.5: added this style option
-	$voptions[] = array( 'name' => __('Active Menu Item Text Color','bioship'),
+	$options[] = array( 'name' => __('Active Menu Item Text Color','bioship'),
 		'desc' => __('Text Color for Current Page Menu Item.','bioship'),
 		'id' => 'navmenuactivecolor',
 		'std' => '#DDDDDD',
@@ -1233,7 +1323,7 @@ if (!function_exists('bioship_options')) {
 	// Active Menu Item Background Colour
 	// ----------------------------------
 	// 1.8.5: added this style option
-	$voptions[] = array( 'name' => __('Active Menu Item Background Color','bioship'),
+	$options[] = array( 'name' => __('Active Menu Item Background Color','bioship'),
 		'desc' => __('Background Color for Current Page Menu Item.','bioship'),
 		'id' => 'navmenuactivebgcolor',
 		'std' => '#E0E0E0',
@@ -1248,7 +1338,7 @@ if (!function_exists('bioship_options')) {
 	// ----------------------
 	// 1.8.5: added this style option
 	// 2.0.9: fix to label name (removed background)
-	$voptions[] = array( 'name' => __('Hover Menu Item Text Color','bioship'),
+	$options[] = array( 'name' => __('Hover Menu Item Text Color','bioship'),
 		'desc' => __('Text Color for Page Menu Item Hover.','bioship'),
 		'id' => 'navmenuhovercolor',
 		'std' => '',
@@ -1262,7 +1352,7 @@ if (!function_exists('bioship_options')) {
 	// Hover Menu Item Background Colour
 	// ---------------------------------
 	// 1.8.5: added this style option
-	$voptions[] = array( 'name' => __('Hover Menu Item Background Color','bioship'),
+	$options[] = array( 'name' => __('Hover Menu Item Background Color','bioship'),
 		'desc' => __('Background Color for Page Menu Item Hover.','bioship'),
 		'id' => 'navmenuhoverbgcolor',
 		'std' => '#F0F0F0',
@@ -1276,7 +1366,7 @@ if (!function_exists('bioship_options')) {
 	// Submenu Background Colour
 	// -------------------------
 	// 1.8.5: added this style option
-	$voptions[] = array( 'name' => __('SubMenu Container Background Color','bioship'),
+	$options[] = array( 'name' => __('SubMenu Container Background Color','bioship'),
 		'desc' => __('Background Color for Navigation SubMenu Container.','bioship'),
 		'id' => 'navmenusubbgcolor',
 		'std' => '#FFFFFF',
@@ -1290,7 +1380,7 @@ if (!function_exists('bioship_options')) {
 	// Hover SubMenu Item Colour
 	// -------------------------
 	// 2.0.9: added this submenu style option
-	$voptions[] = array( 'name' => __('Hover SubMenu Item Text Color','bioship'),
+	$options[] = array( 'name' => __('Hover SubMenu Item Text Color','bioship'),
 		'desc' => __('Text Color for Page SubMenu Item Hover.','bioship'),
 		'id' => 'submenuhovercolor',
 		'std' => '',
@@ -1304,7 +1394,7 @@ if (!function_exists('bioship_options')) {
 	// Hover SubMenu Item Background Colour
 	// ------------------------------------
 	// 2.0.9: added this submenu style option
-	$voptions[] = array( 'name' => __('Hover SubMenu Item Background Color','bioship'),
+	$options[] = array( 'name' => __('Hover SubMenu Item Background Color','bioship'),
 		'desc' => __('Background Color for Page SubMenu Item Hover.','bioship'),
 		'id' => 'submenuhoverbgcolor',
 		'std' => '#F0F0F0',
@@ -1322,7 +1412,7 @@ if (!function_exists('bioship_options')) {
 	// TODO: maybe use rgba colorpicker? (not available for options framework yet)
 	// TODO: somehow allow for 'transparent' property if doing that?
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Colours', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -1331,7 +1421,7 @@ if (!function_exists('bioship_options')) {
 	// Inputs Text Colour
 	// ------------------
 	// 1.8.5: added this option
-	$voptions[] = array( 'name' => __('Input Text Color','bioship'),
+	$options[] = array( 'name' => __('Input Text Color','bioship'),
 		'desc' => __('Default input text color (text input, select input, textarea)','bioship'),
 		'id' => 'inputcolor',
 		'std' => '#111111',
@@ -1345,7 +1435,7 @@ if (!function_exists('bioship_options')) {
 	// Inputs Background Colour
 	// ------------------------
 	// 1.8.5: added this option
-	$voptions[] = array( 'name' => __('Input Background Color','bioship'),
+	$options[] = array( 'name' => __('Input Background Color','bioship'),
 		'desc' => __('Default input text background color (body a)','bioship'),
 		'id' => 'inputbgcolor',
 		'std' => '#FFFFFF',
@@ -1358,7 +1448,7 @@ if (!function_exists('bioship_options')) {
 
 	// Colour Info
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('', 'bioship'),
 		'desc' => __('Here you can set some basic styles that will be loaded via the Dynamic CSS file.', 'bioship'),
 		'class' => 'skin',
@@ -1367,7 +1457,7 @@ if (!function_exists('bioship_options')) {
 
 	// Main Div Section
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Main Div Area Colours', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
@@ -1376,7 +1466,7 @@ if (!function_exists('bioship_options')) {
 
 	// Colourpicker Info
 	// -----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Colorpicker', 'bioship'),
 		'desc' => __('Helps you pick hex colours. But does not set anything as you might want to use transparent or rgb/rgba.', 'bioship'),
 		'id' => '',
@@ -1387,7 +1477,7 @@ if (!function_exists('bioship_options')) {
 
 	// Wrapper Background Colour
 	// -------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Wrapper Background Colour', 'bioship'),
 		'desc' => __('Sets background-color property for #wrap div.', 'bioship'),
 		'id' => 'wrapbgcolor',
@@ -1401,7 +1491,7 @@ if (!function_exists('bioship_options')) {
 		'page' => 'basic');
 
 	// moved to header section
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Header Background Colour', 'bioship'),
 	//	'desc' => __('Sets background-color property for #header div.', 'bioship'),
 	//	'id' => 'headerbgcolor',
@@ -1413,7 +1503,7 @@ if (!function_exists('bioship_options')) {
 
 	// Content Background Colour
 	// -------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Content Background Colour', 'bioship'),
 		'desc' => __('Sets background-color property for #content div.', 'bioship'),
 		'id' => 'contentbgcolor',
@@ -1428,7 +1518,7 @@ if (!function_exists('bioship_options')) {
 
 	// Sidebar Background Colour
 	// -------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Sidebar Background Colour', 'bioship'),
 		'desc' => __('Sets background-color property for #sidebar div.', 'bioship'),
 		'id' => 'sidebarbgcolor',
@@ -1443,7 +1533,7 @@ if (!function_exists('bioship_options')) {
 
 	// SubSidebar Background Colour
 	// ----------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Subsidiary Sidebar Background Colour', 'bioship'),
 		'desc' => __('Sets background-color property for #sidebar-subsidiary div.', 'bioship'),
 		'id' => 'subsidebarbgcolor',
@@ -1458,7 +1548,7 @@ if (!function_exists('bioship_options')) {
 
 	// Footer Background Colour
 	// ------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Footer Background Colour', 'bioship'),
 		'desc' => __('Sets background-color property for #footer div.', 'bioship'),
 		'id' => 'footerbgcolor',
@@ -1481,7 +1571,7 @@ if (!function_exists('bioship_options')) {
 	// - show_font_variant (default false)
 	// - show_text_shadow (default false)
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Fonts', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -1491,7 +1581,7 @@ if (!function_exists('bioship_options')) {
 	// ---------------
 	if (function_exists('admin_url')) {$fontstackexamplelink = admin_url('admin.php').'?show=bodyfontexamples=yes';}
 	else {$fontstackexamplelink = '/wp-admin/admin.php?show=bodyfontexamples';}
-	$voptions[] = array( 'name' => __('Body Content Typography','bioship'),
+	$options[] = array( 'name' => __('Body Content Typography','bioship'),
 		'desc' => __('Default Main Typography for the webpage Body.','bioship').' <a href="'.$fontstackexamplelink.'" target=_blank>'.__('Example Font Stack Page','bioship').'</a>.',
 		'id' => 'body_typography',
 		'std' => array('size' => '14px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#444444'),
@@ -1512,7 +1602,7 @@ if (!function_exists('bioship_options')) {
 
 	// Extra Fonts
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Extra Fonts', 'bioship'),
 		'desc' => __('Fonts to load via Google Fonts, comma separated. You can then customize font stacks via the options_font_stacks filter (see filters.php)', 'bioship'),
 		'id' => 'extrafonts',
@@ -1522,7 +1612,7 @@ if (!function_exists('bioship_options')) {
 		'page' => 'basic');
 
 	// TODO: maybe load a local Open Sans font?
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Local Open Sans','bioship'),
 	//	'desc' => __('Theme Default Font, you can load a local copy instead of using Google Fonts. Handy for offline development.');
 	//	'std' => '0';
@@ -1531,7 +1621,7 @@ if (!function_exists('bioship_options')) {
 
 	// Section Header
 	// --------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Section Typography', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
@@ -1540,7 +1630,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Typography
 	// -----------------
-	$voptions[] = array( 'name' => __('Header Typography','bioship'),
+	$options[] = array( 'name' => __('Header Typography','bioship'),
 		'desc' => __('Typography for within the #header div.','bioship'),
 		'id' => 'header_typography',
 		'std' => array('size' => '14px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#444444'),
@@ -1561,7 +1651,7 @@ if (!function_exists('bioship_options')) {
 
 	// Sidebar Typography
 	// ------------------
-	$voptions[] = array( 'name' => __('Sidebar Typography','bioship'),
+	$options[] = array( 'name' => __('Sidebar Typography','bioship'),
 		'desc' => __('Typography for within the #sidebar div.','bioship'),
 		'id' => 'sidebar_typography',
 		'std' => array('size' => '14px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#444444'),
@@ -1582,7 +1672,7 @@ if (!function_exists('bioship_options')) {
 
 	// Subsidebar Typography
 	// ---------------------
-	$voptions[] = array( 'name' => __('Subsidebar Typography','bioship'),
+	$options[] = array( 'name' => __('Subsidebar Typography','bioship'),
 		'desc' => __('Typography for within the #subsidebar div.','bioship'),
 		'id' => 'subsidebar_typography',
 		'std' => array('size' => '14px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#444444'),
@@ -1603,7 +1693,7 @@ if (!function_exists('bioship_options')) {
 
 	// Content Typography
 	// ------------------
-	$voptions[] = array( 'name' => __('Content Area Typography','bioship'),
+	$options[] = array( 'name' => __('Content Area Typography','bioship'),
 		'desc' => __('Typography for within the #content div.','bioship'),
 		'id' => 'content_typography',
 		'std' => array('size' => '15px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#444444'),
@@ -1624,7 +1714,7 @@ if (!function_exists('bioship_options')) {
 
 	// Footer Typography
 	// -----------------
-	$voptions[] = array( 'name' => __('Footer Typography','bioship'),
+	$options[] = array( 'name' => __('Footer Typography','bioship'),
 		'desc' => __('Typography for within the #footer div.','bioship'),
 		'id' => 'footer_typography',
 		'std' => array('size' => '14px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#444444'),
@@ -1647,7 +1737,7 @@ if (!function_exists('bioship_options')) {
 	// ------------------------
 	if (function_exists('admin_url')) {$titlefontslink = admin_url('admin.php').'?show=titlefontexamples';}
 	else {$titlefontslink = '/wp-admin/admin.php?show=titlefontexamples';}
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Headings Typography', 'bioship'),
 		'desc' => __('Selected Heading fonts are auto-loaded via Google Fonts.','bioship').' <a href="'.$titlefontslink.'" target=_blank>'.__('Example Title Font Page','bioship').'</a>. '.__('Customize available font selections via the bioship_options_title_fonts filter (see filters.php)', 'bioship'),
 		'class' => 'skin',
@@ -1656,7 +1746,7 @@ if (!function_exists('bioship_options')) {
 
 	// H1 Typography
 	// -------------
-	$voptions[] = array( 'name' => __('&lt;H1&gt; Heading Typography','bioship'),
+	$options[] = array( 'name' => __('&lt;H1&gt; Heading Typography','bioship'),
 		'desc' => __('Heading One typography.','bioship'),
 		'id' => 'h1_typography',
 		'std' => array('size' => '32px','face' => 'Open+Sans','style' => 'normal','color' => '#181818'),
@@ -1674,7 +1764,7 @@ if (!function_exists('bioship_options')) {
 
 	// H2 Typography
 	// -------------
-	$voptions[] = array( 'name' => __('&lt;H2&gt; Heading Typography','bioship'),
+	$options[] = array( 'name' => __('&lt;H2&gt; Heading Typography','bioship'),
 		'desc' => __('Heading Two typography.','bioship'),
 		'id' => 'h2_typography',
 		'std' => array('size' => '28px','face' => 'Open+Sans','style' => 'normal','color' => '#181818'),
@@ -1692,7 +1782,7 @@ if (!function_exists('bioship_options')) {
 
 	// H3 Typography
 	// -------------
-	$voptions[] = array( 'name' => __('&lt;H3&gt; Heading Typography','bioship'),
+	$options[] = array( 'name' => __('&lt;H3&gt; Heading Typography','bioship'),
 		'desc' => __('Heading Three typography.','bioship'),
 		'id' => 'h3_typography',
 		'std' => array('size' => '22px','face' => 'Open+Sans','style' => 'normal','color' => '#181818'),
@@ -1710,7 +1800,7 @@ if (!function_exists('bioship_options')) {
 
 	// H4 Typography
 	// -------------
-	$voptions[] = array( 'name' => __('&lt;H4&gt; Heading Typography','bioship'),
+	$options[] = array( 'name' => __('&lt;H4&gt; Heading Typography','bioship'),
 		'desc' => __('Heading Four typography.','bioship'),
 		'id' => 'h4_typography',
 		'std' => array('size' => '20px','face' => 'Open+Sans','style' => 'bold','color' => '#181818'),
@@ -1727,7 +1817,7 @@ if (!function_exists('bioship_options')) {
 
 	// H5 Typography
 	// -------------
-	$voptions[] = array( 'name' => __('&lt;H5&gt; Heading Typography','bioship'),
+	$options[] = array( 'name' => __('&lt;H5&gt; Heading Typography','bioship'),
 		'desc' => __('Heading Five typography.','bioship'),
 		'id' => 'h5_typography',
 		'std' => array('size' => '18px','face' => 'Open+Sans','style' => 'bold','color' => '#181818'),
@@ -1745,7 +1835,7 @@ if (!function_exists('bioship_options')) {
 
 	// H6 Typography
 	// -------------
-	$voptions[] = array( 'name' => __('&lt;H6&gt; Heading Typography','bioship'),
+	$options[] = array( 'name' => __('&lt;H6&gt; Heading Typography','bioship'),
 		'desc' => __('Heading Six typography.','bioship'),
 		'id' => 'h6_typography',
 		'std' => array('size' => '16px','face' => 'Open+Sans','style' => 'bold','color' => '#181818'),
@@ -1766,8 +1856,8 @@ if (!function_exists('bioship_options')) {
 	// === Links ===
 	// -------------
 
-	$link_array = array('inherit'=>'Do Not Set', 'underline'=>'Underline', 'none'=>'No Underline');
-	$voptions[] = array(
+	$link_options = array('inherit' => 'Do Not Set', 'underline' => 'Underline', 'none' => 'No Underline');
+	$options[] = array(
 		'name' => __('Links', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -1775,7 +1865,7 @@ if (!function_exists('bioship_options')) {
 
 	// Link Section
 	// ------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Link Styles', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
@@ -1784,7 +1874,7 @@ if (!function_exists('bioship_options')) {
 
 	// Standard Links Colour
 	// ---------------------
-	$voptions[] = array( 'name' => __('Link Color','bioship'),
+	$options[] = array( 'name' => __('Link Color','bioship'),
 		'desc' => __('Default hyperlinks color (body a)','bioship'),
 		'id' => 'link_color',
 		'std' => '#3568A9',
@@ -1797,7 +1887,7 @@ if (!function_exists('bioship_options')) {
 
 	// Link Underlines
 	// ---------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Link Underlines', 'bioship'),
 		'desc' => __('Underlines for hyperlinks (body a)', 'bioship'),
 		'id' => 'alinkunderline',
@@ -1807,12 +1897,12 @@ if (!function_exists('bioship_options')) {
 		// 'css' => 'body a {text-decoration: value;}',
 		'csselement' => 'body a',
 		'cssproperty' => 'text-decoration',
-		'options' => $link_array,
+		'options' => $link_options,
 		'page' => 'basic');
 
 	// Hover Links Colour
 	// ------------------
-	$voptions[] = array( 'name' => __('Hover Link Color','bioship'),
+	$options[] = array( 'name' => __('Hover Link Color','bioship'),
 		'desc' => __('Hover hyperlinks color (body a:hover)','bioship'),
 		'id' => 'link_hover_color',
 		'std' => '#3376EA',
@@ -1825,7 +1915,9 @@ if (!function_exists('bioship_options')) {
 
 	// Hover Link Underlines
 	// ---------------------
-	$voptions[] = array(
+	// TODO: maybe add option for link hover highlighting ?
+	// TODO: maybe add option for link hover underline/highlight colour ?
+	$options[] = array(
 		'name' => __('Link Hover Underlines', 'bioship'),
 		'desc' => __('Underlines for Hover hyperlinks (body a:hover)', 'bioship'),
 		'id' => 'alinkhoverunderline',
@@ -1835,7 +1927,7 @@ if (!function_exists('bioship_options')) {
 		// 'css' => 'body a {text-decoration: value;}',
 		'csselement' => 'body a:hover',
 		'cssproperty' => 'text-decoration',
-		'options' => $link_array,
+		'options' => $link_options,
 		'page' => 'basic');
 
 
@@ -1843,7 +1935,7 @@ if (!function_exists('bioship_options')) {
 	// === Buttons ===
 	// ---------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Buttons', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -1851,7 +1943,7 @@ if (!function_exists('bioship_options')) {
 
 	// Link Section
 	// ------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Button Styles', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skin',
@@ -1861,7 +1953,7 @@ if (!function_exists('bioship_options')) {
 	// Button Typography
 	// -----------------
 	// 1.8.5: turned off some Titan options (for websafe fonts)
-	$voptions[] = array( 'name' => __('Button Typography','bioship'),
+	$options[] = array( 'name' => __('Button Typography','bioship'),
 		'desc' => __('Button Typography.','bioship'),
 		'id' => 'button_typography',
 		'std' => array('size' => '12px','face' => 'helvetica, arial, "Nimbus Sans L", sans-serif','style' => 'normal','color' => '#EEEEEE'),
@@ -1883,7 +1975,7 @@ if (!function_exists('bioship_options')) {
 
 	// Button Font Hover Colour
 	// ------------------------
-	$voptions[] = array( 'name' => __('Button Font Hover Colour','bioship'),
+	$options[] = array( 'name' => __('Button Font Hover Colour','bioship'),
 		'desc' => __('Button Font Hover Colour.','bioship'),
 		'id' => 'button_font_hover',
 		'std' => '#FFFFFF',
@@ -1896,7 +1988,7 @@ if (!function_exists('bioship_options')) {
 
 	// Button Gradient Colour Top
 	// --------------------------
-	$voptions[] = array( 'name' => __('Button Gradient Top Colour','bioship'),
+	$options[] = array( 'name' => __('Button Gradient Top Colour','bioship'),
 		'desc' => __('Default Buttons, Gradient Top Colour.','bioship'),
 		'id' => 'button_bgcolor_top',
 		'std' => '#2a72c0',
@@ -1908,7 +2000,7 @@ if (!function_exists('bioship_options')) {
 
 	// Button Gradient Colour Bottom
 	// -----------------------------
-	$voptions[] = array( 'name' => __('Button Gradient Bottom Colour','bioship'),
+	$options[] = array( 'name' => __('Button Gradient Bottom Colour','bioship'),
 		'desc' => __('Default Buttons, Gradient Bottom Colour.','bioship'),
 		'id' => 'button_bgcolor_bottom',
 		'std' => '#1d65b3',
@@ -1920,7 +2012,7 @@ if (!function_exists('bioship_options')) {
 
 	// Hover Button Gradient Colour Top
 	// --------------------------------
-	$voptions[] = array( 'name' => __('Hover Button Gradient Top Colour ','bioship'),
+	$options[] = array( 'name' => __('Hover Button Gradient Top Colour ','bioship'),
 		'desc' => __('On Button Hover, Gradient Top Colour.','bioship'),
 		'id' => 'button_hoverbg_top',
 		'std' => '#156bc6',
@@ -1933,7 +2025,7 @@ if (!function_exists('bioship_options')) {
 
 	// Hover Button Gradient Colour Bottom
 	// -----------------------------------
-	$voptions[] = array( 'name' => __('Hover Button Gradient Bottom Colour','bioship'),
+	$options[] = array( 'name' => __('Hover Button Gradient Bottom Colour','bioship'),
 		'desc' => __('On Button Hover, Gradient Bottom Colour.','bioship'),
 		'id' => 'button_hoverbg_bottom',
 		'std' => '#156bc6',
@@ -1947,7 +2039,7 @@ if (!function_exists('bioship_options')) {
 	// Comment Buttons
 	// ---------------
 	// a.comment-edit-link, a.comment-reply-link
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Comment Buttons', 'bioship'),
 		'desc' => __('Also apply the above button styling to make Edit/Reply Comment Links into buttons.', 'bioship'),
 		'id' => 'commentbuttons',
@@ -1959,7 +2051,7 @@ if (!function_exists('bioship_options')) {
 
 	// WooCommerce Button Selectors
 	// ----------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('WooCommerce Buttons', 'bioship'),
 		'desc' => __('Also apply the above button styling to WooCommerce CSS Button selectors.', 'bioship'),
 		'id' => 'woocommercebuttons',
@@ -1973,7 +2065,7 @@ if (!function_exists('bioship_options')) {
 
 	// Extra Button CSS Selectors
 	// --------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Extra Button Selectors', 'bioship'),
 		'desc' => __('Also apply the above button styling to a comma separates list of CSS selectors with !important (note: hover rule will be added for each selector. Useful if default button code is being over-ridden by 3rd party stylesheets. eg. button.alm-load-more-btn.more for AJAX Load More Button.)', 'bioship'),
 		'id' => 'extrabuttonselectors',
@@ -1992,7 +2084,7 @@ if (!function_exists('bioship_options')) {
 	// === Login ===
 	// -------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Login', 'bioship'),
 		'id' => 'skin',
 		'type' => 'heading',
@@ -2007,7 +2099,7 @@ if (!function_exists('bioship_options')) {
 		'custom' => __('Use the header logo image', 'bioship'),
 		'upload' => __('Use uploaded image below', 'bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Login Page Logo', 'bioship'),
 		'desc' => __('Replaces the Logo on your wp-login.php Page.', 'bioship'),
 		'id' => 'loginlogo',
@@ -2019,7 +2111,7 @@ if (!function_exists('bioship_options')) {
 
 	// Login Logo URL
 	// --------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Upload Login Page Logo', 'bioship'),
 		'desc' => __('Replaces Wordpress Logo on Login Page.', 'bioship'),
 		'id' => 'loginlogourl',
@@ -2031,7 +2123,7 @@ if (!function_exists('bioship_options')) {
 	// Login Form Wrap Background
 	// --------------------------
 	// 1.8.5: added this style option
-	$voptions[] = array( 'name' => __('Login Form Wrap Color','bioship'),
+	$options[] = array( 'name' => __('Login Form Wrap Color','bioship'),
 		'desc' => __('Background Colour for the Login Form Wrapper','bioship'),
 		'id' => 'loginwrapbgcolor',
 		'std' => '#F0F0F0',
@@ -2041,7 +2133,7 @@ if (!function_exists('bioship_options')) {
 
 	// Login Background URL
 	// --------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Login Background Image', 'bioship'),
 		'desc' => __('Leave blank to use main background image. For styling use body.login', 'bioship'),
 		'id' => 'loginbackgroundurl',
@@ -2056,7 +2148,7 @@ if (!function_exists('bioship_options')) {
 
 	// TML Info
 	// --------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Theme My Login', 'bioship'),
 		'desc' => __('Integrated TML Templates into Theme (if TML plugin is installed.)', 'bioship'),
 		'class' => 'skin',
@@ -2065,7 +2157,7 @@ if (!function_exists('bioship_options')) {
 
 	// TML Templates
 	// -------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Improve TML Template Hierarchy', 'bioship'),
 		'desc' => __('Makes TML look for TML templates in child and parent theme directories first (note: must be active for below image options to work!)', 'bioship'),
 		'id' => 'tmltemplates',
@@ -2076,7 +2168,7 @@ if (!function_exists('bioship_options')) {
 
 	// Login Button URL
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Login Button Image URL', 'bioship'),
 		'desc' => __('Replace TML login submit button with image.', 'bioship'),
 		'id' => 'loginbuttonurl',
@@ -2087,7 +2179,7 @@ if (!function_exists('bioship_options')) {
 
 	// Register Button URL
 	// -------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Register Button Image URL', 'bioship'),
 		'desc' => __('Replace TML register submit button with image.', 'bioship'),
 		'id' => 'registerbuttonurl',
@@ -2098,7 +2190,7 @@ if (!function_exists('bioship_options')) {
 
 	// Update Button URL
 	// -----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Profile Update Button Image URL', 'bioship'),
 		'desc' => __('Replace TML profile update submit button with image.', 'bioship'),
 		'id' => 'profilebuttonurl',
@@ -2109,7 +2201,7 @@ if (!function_exists('bioship_options')) {
 
 	// Logo on Register
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Login Logo on Register Form', 'bioship'),
 		'desc' => __('Add Admin login logo to top of TML Register Form.', 'bioship'),
 		'id' => 'registerformimage',
@@ -2120,7 +2212,7 @@ if (!function_exists('bioship_options')) {
 
 	// Logo on Login
 	// -------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Login Logo on Login Form', 'bioship'),
 		'desc' => __('Add Admin login logo to top of TML Login Form.', 'bioship'),
 		'id' => 'loginformimage',
@@ -2141,14 +2233,14 @@ if (!function_exists('bioship_options')) {
 	// ---------------
 	// note: use transport refresh for most scripts...
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Scripts', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
 		'page' => 'advanced');
 
 	// 1.5.0: Deprecated (page cache fail) - Add Browser Classes
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Add Browser Classes', 'bioship'),
 	//	'desc' => __('Detects Browser and adds related classes to &lt;body&gt; tag to help with cross browser styling<br>(lynx, gecko, opera, ns4, safari, chrome, ie, macie, winie, unknown, iphone)', 'bioship'),
 	//	'id' => 'browserclass',
@@ -2159,7 +2251,7 @@ if (!function_exists('bioship_options')) {
 	// Javascript Cache Busting
 	// ------------------------
 	// 2.0.7: change default to filemtime
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Cache Busting for Javascripts', 'bioship'),
 		'desc' => __('Querystring used as version for cache busting Javascript files.', 'bioship'),
 		'id' => 'javascriptcachebusting',
@@ -2171,7 +2263,7 @@ if (!function_exists('bioship_options')) {
 
 	// Load jQuery from Google CDN
 	// ---------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load jQuery from Google CDN', 'bioship'),
 		'desc' => __('Loads jQuery from the Google CDN instead of the WordPress copy. Can speed up pageload as it is probably already cached in most browsers. (Automatically falls back to local copy if Google CDN is unreachable.)', 'bioship'),
 		'id' => 'jquerygooglecdn',
@@ -2183,7 +2275,7 @@ if (!function_exists('bioship_options')) {
 
 	// Load PrefixFree
 	// ---------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load PrefixFree Javascript', 'bioship'),
 		'desc' => __('Auto-adds browser-specific prefixes to unprefixed CSS code.','bioship').' ('.__('See','bioship').' <a href="http://leaverou.github.io/prefixfree/" target="_blank">PrefixFree</a> '.__('for details.','bioship').' '.__('Dynamic DOM and jQuery plugins included.', 'bioship').')',
 		'id' => 'prefixfree',
@@ -2205,7 +2297,7 @@ if (!function_exists('bioship_options')) {
 	);
 	$iesupports_std = array('selectivizr'=>'1','html5shiv'=>'1','supersleight'=>'1','flexibility'=>'0');
 	$iesupports_default = array('selectivizr'=>'1','html5shiv'=>'1','supersleight'=>'1','flexibility'=>'0');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Internet Exporer Specific Supports', 'bioship'),
 		'desc' => __('Load','bioship').' <a href="http://selectivizr.com" target="_blank">Selectivizr</a>, '.__('HTML5, SuperSleight and/or Flexibility.', 'bioship'),
 		'id' => 'iesupports',
@@ -2224,7 +2316,7 @@ if (!function_exists('bioship_options')) {
 		'respond' => __('Respond.js: Fast and lightweight','bioship'),
 		'mediaqueries' => __('MediaQueries.js: Slower but fuller support','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Media Queries Javascript', 'bioship'),
 		'desc' => __('Polyfill to help fix CSS3 Media Queries for older browsers eg. IE6-IE8. (See ','bioship').'<a href="https://github.com/scottjehl/Respond" target=_blank>Respond</a> '.__('and','bioship').' <a href="https://code.google.com/p/css3-mediaqueries-js/" target=_blank>MediaQueries</a>)',
 		'id' => 'mediaqueries',
@@ -2237,7 +2329,7 @@ if (!function_exists('bioship_options')) {
 
 	// Fastclick Javascript
 	// --------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load Fastclick Javascript', 'bioship'),
 		'desc' => __('Loads fastclick.js (polyfill to remove click delays on browsers with touch UIs.)', 'bioship'),
 		'id' => 'loadfastclick',
@@ -2249,7 +2341,7 @@ if (!function_exists('bioship_options')) {
 
 	// Mousewheel Javascript
 	// ---------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load Mousewheel Javascript', 'bioship'),
 		'desc' => __('Loads mousewheel.js (polyfill to enable mousewheel on older browsers.)', 'bioship'),
 		'id' => 'loadmousewheel',
@@ -2261,7 +2353,7 @@ if (!function_exists('bioship_options')) {
 
 	// Load NWWatcher
 	// --------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load NW Watcher Javascript', 'bioship'),
 		'desc' => __('Adds further CSS selector support (See <a href="http://javascript.nwbox.com/NWMatcher/" target="_blank">NWWatcher</a> for details.)', 'bioship'),
 		'id' => 'nwwatcher',
@@ -2273,7 +2365,7 @@ if (!function_exists('bioship_options')) {
 
 	// Load NWEvents
 	// -------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load NW Event Javascript', 'bioship'),
 		'desc' => __('Adds improved Event Manager support (Requires NWWatcher. See <a href="http://javascript.nwbox.com/NWEvents/" target="_blank">NWEvents</a> for details.)', 'bioship'),
 		'id' => 'nwevents',
@@ -2286,7 +2378,7 @@ if (!function_exists('bioship_options')) {
 	// Load Modernizr
 	// --------------
 	$modernizr_options = array('off'=>__('Do Not Load','bioship'), 'production'=>__('Load Production version','bioship'), 'development'=>__('Load Development version','bioship'));
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load Modernizr', 'bioship'),
 		'desc' => __('Whether to load','bioship').' <a href="http://modernizr.com" target=_blank>'.__('Modernizr','bioship').'</a> '.__('javascript or not, production (~10kb) or development (~50kb) Note: required for loading Foundation.', 'bioship'),
 		'id' => 'loadmodernizr',
@@ -2299,7 +2391,7 @@ if (!function_exists('bioship_options')) {
 
 	// CSS Supports
 	// ------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load CSS.Supports Javascript', 'bioship'),
 		'desc' => __('Loads CSS.Supports (polyfill for Javascript API to check for CSS rule support.)', 'bioship'),
 		'id' => 'loadcsssupports',
@@ -2311,7 +2403,7 @@ if (!function_exists('bioship_options')) {
 
 	// MatchMedia
 	// ----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load MatchMedia Javascript', 'bioship'),
 		'desc' => __('Loads MatchMedia (polyfill for Javascript MatchMedia media query support.)', 'bioship'),
 		'id' => 'loadmatchmedia',
@@ -2326,7 +2418,7 @@ if (!function_exists('bioship_options')) {
 	// === Extras ===
 	// --------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Extras', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
@@ -2334,7 +2426,7 @@ if (!function_exists('bioship_options')) {
 
 	// Discreet Text Widget
 	// 1.8.5: removed option, always on by default
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Enable Discreet Text Widget', 'bioship'),
 	//	'desc' => __('Adds a new text widget type that only shows if not empty.','bioship').'<br>'.__('Useful for executing shortcodes within widgets (thus avoiding widget titles with no content or unwanted spaces.)','bioship').'<br>'.__('Warning: check for active discreet text widgets before disabling.', 'bioship'),
 	//	'id' => 'discreetwidget',
@@ -2346,7 +2438,7 @@ if (!function_exists('bioship_options')) {
 	// Disable Emojis
 	// --------------
 	// 1.9.5: added this option
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Disable Emojis', 'bioship'),
 		'desc' => __('Unqueues Emoji scripts and styles from frontend and backend.', 'bioship'),
 		'id' => 'disableemojis',
@@ -2358,7 +2450,7 @@ if (!function_exists('bioship_options')) {
 
 	// Smooth Scrolling
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load Smooth Scrolling', 'bioship'),
 		'desc' => __('Loads jQuery Smooth Scrolling for #hash (a name) links.', 'bioship'),
 		'id' => 'smoothscrolling',
@@ -2370,7 +2462,7 @@ if (!function_exists('bioship_options')) {
 
 	// jQuery Match Height
 	// -------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load jQuery Match Height', 'bioship'),
 		'desc' => __('Loads jQuery MatchHeight to apply matching heights to any page element with .matchheight class.', 'bioship'),
 		'id' => 'loadmatchheight',
@@ -2382,7 +2474,7 @@ if (!function_exists('bioship_options')) {
 
 	// jQuery Sticky Kit
 	// -----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load jQuery Sticky Kit', 'bioship'),
 		'desc' => __('Loads jQuery Sticky Kit for smart scrolling page elements inside parent element.', 'bioship'),
 		'id' => 'loadstickykit',
@@ -2394,7 +2486,7 @@ if (!function_exists('bioship_options')) {
 
 	// Sticky Kit Elements
 	// -------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Sticky Kit Elements', 'bioship'),
 		'desc' => __('List of elements to apply Sticky Kit to, comma separated.', 'bioship'),
 		'id' => 'stickyelements',
@@ -2406,7 +2498,7 @@ if (!function_exists('bioship_options')) {
 
 	// Load Fitvids
 	// ------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load FitVids Javascript', 'bioship'),
 		'desc' => __('Loads fitvids.js and applies it to the selected elements (auto-fits video widths to element area.)', 'bioship'),
 		'id' => 'loadfitvids',
@@ -2418,7 +2510,7 @@ if (!function_exists('bioship_options')) {
 
 	// Fitvids Elements
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('FitVids Elements', 'bioship'),
 		'desc' => __('List of elements to apply Fitvids to, comma separated.', 'bioship'),
 		'id' => 'fitvidselements',
@@ -2430,7 +2522,7 @@ if (!function_exists('bioship_options')) {
 
 	// jQuery Scroll To Fixed
 	// ----------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load jQuery Scroll To Fixed', 'bioship'),
 		'desc' => __('Loads jQuery Scroll To Fixed for floating fixed position scrolling elements.', 'bioship'),
 		'id' => 'loadscrolltofixed',
@@ -2445,7 +2537,7 @@ if (!function_exists('bioship_options')) {
 	// === Reading ===
 	// ---------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Reading', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
@@ -2453,7 +2545,7 @@ if (!function_exists('bioship_options')) {
 
 	// Site Credits
 	// ------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Site Credits', 'bioship'),
 		'desc' => __('Set the site credits to display in the Footer. 0 for blank.', 'bioship'),
 		'id' => 'sitecredits',
@@ -2471,7 +2563,7 @@ if (!function_exists('bioship_options')) {
 		'exclude' => __('Exclude Selected Categories', 'bioship'),
 		'includeexclude' => __('Include and Exclude Categories', 'bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('"Home" Blog Category Mode', 'bioship'),
 		'desc' => __('Whether to filter category query on "Home" Blog Page.', 'bioship'),
 		'id' => 'homecategorymode',
@@ -2484,7 +2576,7 @@ if (!function_exists('bioship_options')) {
 	// Select Categories [deprecated method]
 	// if ($options_categories) {
 	//	$homecats_defaults = array();
-	//	$voptions[] = array(
+	//	$options[] = array(
 	//		'name' => __('Include Selected Categories', 'bioship'),
 	//		'desc' => __('Used if Category Mode above is include or both include/exclude.', 'bioship'),
 	//		'id' => 'homecategories',
@@ -2498,7 +2590,7 @@ if (!function_exists('bioship_options')) {
 	// -------------------------
 	if ($options_categories) {
 		$homecats_defaults = array();
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Include Selected Categories', 'bioship'),
 			'desc' => __('Used if Category Mode above is include or both include/exclude.', 'bioship'),
 			'id' => 'homeincludecategories',
@@ -2514,7 +2606,7 @@ if (!function_exists('bioship_options')) {
 	// -------------------------
 	if ($options_categories) {
 		$homecats_defaults = array();
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Exclude Selected Categories', 'bioship'),
 			'desc' => __('Used if Category Mode above is exclude or both include/exclude.', 'bioship'),
 			'id' => 'homeexcludecategories',
@@ -2528,7 +2620,7 @@ if (!function_exists('bioship_options')) {
 
 	// Include CPTs on Home Page? Off. Leave to devs.
 	//	$cpt_defaults = array('post'=>'1');
-	//	$voptions[] = array(
+	//	$options[] = array(
 	//		'name' => __('Add Custom Post Types to "Home" Blog Page Results', 'bioship'),
 	//		'desc' => __('Includes the selected Custom Post Types in the Home Blog page.', 'bioship'),
 	//		'id' => 'homeblogcpts',
@@ -2540,7 +2632,7 @@ if (!function_exists('bioship_options')) {
 	// Number of Search Results
 	// ------------------------
 	// 1.8.5: add number sanitization
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Search Results per Page', 'bioship'),
 		'desc' => __('Number of search results to show for keyword search.', 'bioship'),
 		'id' => 'searchresults',
@@ -2553,7 +2645,7 @@ if (!function_exists('bioship_options')) {
 	// Make CPTs Searchable
 	// --------------------
 	$cpt_defaults = array('post'=>'1','page'=>'1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Searchable Post Types', 'bioship'),
 		'desc' => __('Includes the selected Post Types in the site search results.', 'bioship'),
 		'id' => 'searchablecpts',
@@ -2570,7 +2662,7 @@ if (!function_exists('bioship_options')) {
 		'scroll' => __('Autoload Scrolling','bioship'),
 		'click' => __('Click to Load Link','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Jetpack Infinite Scroll', 'bioship'),
 		'desc' => __('Adds theme support for Jetpack Infinite Scroll.','bioship').' '.__('Alternatively use','bioship').' <a href="https://wordpress.org/plugins/ajax-load-more/" target=_blank>AJAX Load More</a> ('.__('with loop template','bioship').' <i>/templates/ajax-load-more/</i>)',
 		'id' => 'infinitescroll',
@@ -2585,7 +2677,7 @@ if (!function_exists('bioship_options')) {
 	// Excerpt/Read More
 	// -----------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Excerpts', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
@@ -2594,7 +2686,7 @@ if (!function_exists('bioship_options')) {
 	// Page Excerpts
 	// -------------
 	// 1.8.0: page excerpt support option
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Page Excerpts', 'bioship'),
 		'desc' => __('Add Excerpt Support to Pages', 'bioship'),
 		'id' => 'pageexcerpts',
@@ -2605,7 +2697,7 @@ if (!function_exists('bioship_options')) {
 
 	// Excerpt Shortcodes
 	// ------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Excerpt Shortcodes', 'bioship'),
 		'desc' => __('Process Shortcodes in Excerpts. (Note: formatting is still stripped from shortcode output.)', 'bioship'),
 		'id' => 'excerptshortcodes',
@@ -2618,7 +2710,7 @@ if (!function_exists('bioship_options')) {
 	// Excerpt Length
 	// --------------
 	// 1.8.5: number sanitization
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Excerpt Length', 'bioship'),
 		'desc' => __('Number of words to show in Excerpts.','bioship').' ('.__('Blank for default of 55, 0 for full content.', 'bioship').')',
 		'id' => 'excerptlength',
@@ -2631,7 +2723,7 @@ if (!function_exists('bioship_options')) {
 
 	// Read More Anchor
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Read More Anchor', 'bioship'),
 		'desc' => __('Anchor Text for the Read More Link.', 'bioship'),
 		'id' => 'readmoreanchor',
@@ -2643,7 +2735,7 @@ if (!function_exists('bioship_options')) {
 
 	// Read More Link
 	// --------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Before Read More Link', 'bioship'),
 		'desc' => __('Replaces ... or hellip before Read More link.', 'bioship'),
 		'id' => 'readmorebefore',
@@ -2660,7 +2752,7 @@ if (!function_exists('bioship_options')) {
 
 	// TODO: author archive author box options
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Meta', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
@@ -2686,7 +2778,7 @@ if (!function_exists('bioship_options')) {
 	$rvdesc .= '#NEWLINE# - '.__('Insert a Line Break','bioship').' (&lt;br&gt;)<br>';
 	$rvdesc .= __('Note: Categories and Tags also work for Custom Post Type taxonomies. :-)','bioship').'<br>';
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Post Meta Formatting', 'bioship'),
 		'desc' => $rvdesc,
 		'class' => 'muscle',
@@ -2695,7 +2787,7 @@ if (!function_exists('bioship_options')) {
 
 	// Post Meta Top
 	// -------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Post Meta Top', 'bioship'),
 		'desc' => __('The byline and author info to display below the post title.', 'bioship'),
 		'id' => 'postmetatop',
@@ -2707,7 +2799,7 @@ if (!function_exists('bioship_options')) {
 
 	// Post Meta Bottom
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Post Meta Bottom', 'bioship'),
 		'desc' => __('The category/tags etc. to display below the post content.', 'bioship'),
 		'id' => 'postmetabottom',
@@ -2719,7 +2811,7 @@ if (!function_exists('bioship_options')) {
 
 	// Page Meta Top
 	// -------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Page Meta Top', 'bioship'),
 		'desc' => __('The byline etc. to display below the page title.', 'bioship'),
 		'id' => 'pagemetatop',
@@ -2731,7 +2823,7 @@ if (!function_exists('bioship_options')) {
 
 	// Post Meta Bottom
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Page Meta Bottom', 'bioship'),
 		'desc' => __('What to display below the page content.', 'bioship'),
 		'id' => 'pagemetabottom',
@@ -2741,7 +2833,7 @@ if (!function_exists('bioship_options')) {
 		'type' => 'text',
 		'page' => 'advanced');
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Custom Post Type Metas', 'bioship'),
 		'desc' => __('Note: Meta Top and Bottom for Custom Post Types can be set via filters.', 'bioship'),
 		'class' => 'muscle',
@@ -2750,7 +2842,7 @@ if (!function_exists('bioship_options')) {
 
 	// Entry Meta Top in Post Lists
 	// ----------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Entry Meta Top in Post Lists', 'bioship'),
 		'desc' => __('Whether to show the entry meta top in post lists such as archives, category pages, searches etc.', 'bioship'),
 		'id' => 'listentrymetatop',
@@ -2762,7 +2854,7 @@ if (!function_exists('bioship_options')) {
 
 	// Entry Meta Bottom in Post Lists
 	// -------------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Entry Meta Bottom in Post Lists', 'bioship'),
 		'desc' => __('Whether to show the entry meta bottom in post lists such as archives, category pages, searches etc.', 'bioship'),
 		'id' => 'listentrymetabottom',
@@ -2774,7 +2866,7 @@ if (!function_exists('bioship_options')) {
 
 	// Author Bio
 	// ----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Author Bio', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'muscle',
@@ -2786,7 +2878,7 @@ if (!function_exists('bioship_options')) {
 	// Show Author Bio for CPTs
 	// ------------------------
 	$cpt_defaults = array('post'=>'1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Author Bio Box', 'bioship'),
 		'desc' => __('Show Author Biography Box for selected Post Types.','bioship').' ('.__('Only if author description is not empty!','bioship').')',
 		'id' => 'authorbiocpts',
@@ -2805,7 +2897,7 @@ if (!function_exists('bioship_options')) {
 		'bottom' => __('Bottom Position','bioship'),
 		'topandbottom' => __('Top and Bottom','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Bio Box Position', 'bioship'),
 		'desc' => __('Where to show the Author Bio Box for select posted types.', 'bioship'),
 		'id' => 'authorbiopos',
@@ -2820,7 +2912,7 @@ if (!function_exists('bioship_options')) {
 	// Author Avatar Size
 	// ------------------
 	// 1.8.5: number sanitization
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Author Avatar Size', 'bioship'),
 		'desc' => __('The squared size of the Author Avatar in the Bio Box (default 64)', 'bioship'),
 		'id' => 'authoravatarsize',
@@ -2835,8 +2927,9 @@ if (!function_exists('bioship_options')) {
 	// ---------------
 	// === Writing ===
 	// ---------------
+	// TODO: add multicheck option for Theme Options Metabox on CPTs
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Writing', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
@@ -2845,7 +2938,7 @@ if (!function_exists('bioship_options')) {
 	// Dynamic Editor Styles
 	// ---------------------
 	// 1.9.5: added this option
-	$voptions[] = array(
+	$options[] = array(
 		'name' => 'Dynamic Editor Styles',
 		'desc' => __('Automatically add relevent theme styles to the TinyMCE Post Writing Editor.','bioship'),
 		'id' => 'dynamiceditorstyles',
@@ -2856,7 +2949,7 @@ if (!function_exists('bioship_options')) {
 
 	// QuickSave/AutoSave Net
 	// 1.8.0: [deprecated] plugin to be installed/activated via TGMPA
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Load AutoSave Net', 'bioship'),
 	//	'desc' => __('Loads internal <a href="http://wordquest.org/plugins/autosave-net/" target=_blank>QuickSave Content Backup Timer</a> plugin to prevent editing content loss. Auto-save on steroids. (Note: if the plugin is installed, plugin has precedence to prevent conflicts.)', 'bioship'),
 	//	'id' => 'loadquicksave',
@@ -2867,7 +2960,7 @@ if (!function_exists('bioship_options')) {
 	// Limit Post Revisions
 	// --------------------
 	// [deprecated] unworking method, leave this for plugin territory!
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Limit Post Revisions', 'bioship'),
 	//	'desc' => __('Set maximum number of Post Revisions stored to avoid Database bloat. Blank or 0 for off. Does not override if already set in wp-config.php. To limit revisions by post type, use <a href="https://wordpress.org/plugins/revision-control/" target=_blank>Revision Control</a> plugin.', 'bioship'),
 	//	'id' => 'postrevisions',
@@ -2877,7 +2970,7 @@ if (!function_exists('bioship_options')) {
 
 	// Post Format Support
 	// -------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Post Formats Support', 'bioship'),
 		'desc' => __('Adds specified Post Formats selection to the post writing screen.', 'bioship'),
 		'id' => 'postformatsupport',
@@ -2900,7 +2993,7 @@ if (!function_exists('bioship_options')) {
 		'video' => __('Video','bioship')
 	);
 	$multicheck_defaults = array('aside'=>'1', 'audio'=>'1', 'chat'=>'0', 'image'=>'1', 'gallery'=>'1', 'link'=>'0', 'quote'=>'0', 'status'=>'0', 'video'=>'1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Active Post Formats', 'bioship'),
 		'desc' => __('Make these post formats available (if Post Formats Support is active.)', 'bioship'),
 		'id' => 'postformats',
@@ -2913,7 +3006,7 @@ if (!function_exists('bioship_options')) {
 	// WP Subtitle Support
 	// -------------------
 	$subtitle_defaults = array('post' => '1', 'page' => '1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Subtitle Support', 'bioship'),
 		'desc' => __('Add Subtitles Field to specified Post Types.','bioship').'<br>('.__('Requires','bioship').' <a href="http://wordpress.org/plugins/wp-subtitle/" target="_blank">'.__('WP Subtitle','bioship').'</a>',
 		'id' => 'subtitlecpts',
@@ -2929,7 +3022,7 @@ if (!function_exists('bioship_options')) {
 	// === RSS ===
 	// -----------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('RSS', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
@@ -2937,7 +3030,7 @@ if (!function_exists('bioship_options')) {
 
 	// Automatic Feed Links
 	// --------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Automatic Feed Links Theme Support', 'bioship'),
 		'desc' => __('Automatically Add Feed Links to page &lt;head&gt;', 'bioship'),
 		'id' => 'autofeedlinks',
@@ -2953,7 +3046,7 @@ if (!function_exists('bioship_options')) {
 		// RSS Excerpt Length
 		// ------------------
 		// 1.8.5: sanitize number callback
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('RSS Item Excerpt Length', 'bioship'),
 			'desc' => __('Number of words to show in RSS Feed Excerpts.','bioship').' ('.__('Blank for excerpt default, 0 for full content.','bioship').')',
 			'id' => 'rssexcerptlength',
@@ -2966,7 +3059,7 @@ if (!function_exists('bioship_options')) {
 		// RSS Publish Delay
 		// -----------------
 		// 1.8.5: sanitize number callback
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('RSS Publish Delay', 'bioship'),
 			'desc' => __('Delays Publishing of Post to RSS Feed for x minutes. Helpful to let you fix typos etc.','bioship').' ('.__('Blank or 0 for off.', 'bioship').')',
 			'id' => 'rsspublishdelay',
@@ -2979,7 +3072,7 @@ if (!function_exists('bioship_options')) {
 		// Post Types in Feed
 		// ------------------
 		$cpt_defaults = array();
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Post Types in RSS Feed', 'bioship'),
 			'desc' => __('Include the selected Post Types in the main RSS Feed. Uncheck all to not use this post type filtering.', 'bioship'),
 			'id' => 'cptsinfeed',
@@ -2992,7 +3085,7 @@ if (!function_exists('bioship_options')) {
 		// Full Content Page Feeds
 		// -----------------------
 		// 1.8.5: added this option
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Page Content Feeds', 'bioship'),
 			'desc' => __('Output full page content for page feed links','bioship').' (<i>/pagename/feed/</i>) '.__('instead of page comments','bioship').' ('.__('comments will then be available via','bioship').' <i>/pagename/feed/?withcomments=1</i>',
 			'id' => 'pagecontentfeeds',
@@ -3007,7 +3100,7 @@ if (!function_exists('bioship_options')) {
 	// === Admin ===
 	// -------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Admin', 'bioship'),
 		'id' => 'muscle',
 		'type' => 'heading',
@@ -3016,7 +3109,7 @@ if (!function_exists('bioship_options')) {
 	// 1.5.0: Theme Update Admin Notification
 	// TODO: maybe resurrect this at some stage?
 	// TODO: maybe add an admin email for updates
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Admin Update Notification', 'bioship'),
 	//	'desc' => __('Display Theme Update Available Notifications in the Admin Header Notices (for capability update_themes)', 'bioship'),
 	//	'id' => 'admindisplayupdates',
@@ -3026,7 +3119,7 @@ if (!function_exists('bioship_options')) {
 
 	// Disable Self Pings
 	// ------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Disable Self Pings', 'bioship'),
 		'desc' => __('Stops pingbacks (trackback links) sent from this site to itself.', 'bioship'),
 		'id' => 'disableselfpings',
@@ -3038,7 +3131,7 @@ if (!function_exists('bioship_options')) {
 	// All Options Page
 	// ----------------
 	// TODO: may need to remove this option?
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Add All Options Page', 'bioship'),
 		'desc' => __('Add an "All Options" Page to the Settings Menu.', 'bioship'),
 		'id' => 'alloptionspage',
@@ -3049,7 +3142,7 @@ if (!function_exists('bioship_options')) {
 
 	// Admin Only Update Notice
 	// ------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Admin Only Core Update Notice', 'bioship'),
 		'desc' => __('Only Show Update Core Notice to Admins.', 'bioship'),
 		'id' => 'removeupdatenotice',
@@ -3060,7 +3153,7 @@ if (!function_exists('bioship_options')) {
 
 	// Disable New User Notifications
 	// ------------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Disable Admin New User Notifications', 'bioship'),
 		'desc' => __('Catch and cancel email notifications to site admin regarding new users and lost/reset passwords.', 'bioship'),
 		'id' => 'disablenotifications',
@@ -3071,7 +3164,7 @@ if (!function_exists('bioship_options')) {
 
 	// Cleaner Adminbar
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Cleaner Admin Bar', 'bioship'),
 		'desc' => __('Remove the WordPress Links from the top Admin Bar.', 'bioship'),
 		'id' => 'cleaneradminbar',
@@ -3083,7 +3176,7 @@ if (!function_exists('bioship_options')) {
 
 	// Template Dropdown
 	// -----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Templates Dropdown', 'bioship'),
 		'desc' => __('Add an ordered list of included templates for the current page to the Admin Bar.', 'bioship'),
 		'id' => 'templatesdropdown',
@@ -3094,7 +3187,7 @@ if (!function_exists('bioship_options')) {
 	// Admin Bar Link
 	// --------------
 	// 1.8.5: changed from option to filter
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Admin Bar Link', 'bioship'),
 	//	'desc' => __('Add a link to Theme Options in the Admin Bar.', 'bioship'),
 	//	'id' => 'adminbarlink',
@@ -3104,7 +3197,7 @@ if (!function_exists('bioship_options')) {
 	//	'type' => 'checkbox');
 
 	// TODO: check matching muscle function and fix or remove
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Show Thumbnail Column in Admin Post List', 'bioship'),
 	//	'desc' => __('Adds a thumbnail display column to the post list screen.', 'bioship'),
 	// 	'id' => 'adminthumbnailcolumn',
@@ -3114,7 +3207,7 @@ if (!function_exists('bioship_options')) {
 
 	// CPTs in Dashboard
 	// -----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Show CPTs in "Right Now"', 'bioship'),
 		'desc' => __('Adds the display of Custom Post Types to the "Right Now" Dashboard widget.', 'bioship'),
 		'id' => 'cptsrightnow',
@@ -3126,7 +3219,7 @@ if (!function_exists('bioship_options')) {
 	// Theme Tracer
 	// ------------
 	// 1.8.0: [deprecated] this is run separately for performance testing
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Theme Performance Tracer', 'bioship'),
 	//	'desc' => __('Loads Theme Performance Tracer functions (for developing / bugfixing)',  'bioship'),
 	//	'id' => 'themetracer',
@@ -3143,7 +3236,7 @@ if (!function_exists('bioship_options')) {
 	$admincss_default .= "/* Widget Saver Display Fix */".PHP_EOL.".widget-liquid-left {float:none !important;}".PHP_EOL;
 	$admincss_default .= "div#widgets-left {float: left !important;}".PHP_EOL.".widget-liquid-left .widgets-holder-wrap {background-color: #F3F9FF;}".PHP_EOL;
 	$admincss_default .= PHP_EOL;
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Dynamic Admin CSS', 'bioship'),
 		'desc' => __('Loads this custom CSS in the Admin Area. Defaults hide WP admin bar logo, and thankyou/version footer.', 'bioship'),
 		'id' => 'dynamicadmincss',
@@ -3154,7 +3247,7 @@ if (!function_exists('bioship_options')) {
 
 	// Admin CSS Mode
 	// --------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Admin CSS Mode', 'bioship'),
 		'desc' => __('How to load the Dynamic Admin CSS.', 'bioship'),
 		'id' => 'admincssmode',
@@ -3177,7 +3270,7 @@ if (!function_exists('bioship_options')) {
 	// RETEST: Customizer Live Preview for Grid
 	// (as values need to be passed to grid.php)
 
-	$voptions[] = array( 'name' => __('Layout','bioship'),
+	$options[] = array( 'name' => __('Layout','bioship'),
 		'id' => 'skeleton',
 		'type' => 'heading',
 		'page' => 'both');
@@ -3185,7 +3278,7 @@ if (!function_exists('bioship_options')) {
 	// Maximum Layout Width
 	// --------------------
 	// 1.8.5: sanitize number callback
-	$voptions[] = array( 'name' => __('Max Layout Width','bioship'),
+	$options[] = array( 'name' => __('Max Layout Width','bioship'),
 		'desc' => __('Select preferred container maximum container layout width in pixels. (Media queries will not scale container above this point.) Originally 960, 1140 or 1200 selection but can be anything now.','bioship'),
 		'id' => 'layout',
 		'std' => '960',
@@ -3204,7 +3297,7 @@ if (!function_exists('bioship_options')) {
 		'twenty' => __('Twenty Column Grid','bioship'),
 		'twentyfour' => __('Twenty Four Column Grid','bioship')
 	);
-	$voptions[] = array( 'name' => __('Layout Grid Columns','bioship'),
+	$options[] = array( 'name' => __('Layout Grid Columns','bioship'),
 		'desc' => __('Number of Grid Columns used to generate dynamic Layout Grid.','bioship').' ('.__('Warning: If you change this, remember to adjust content and sidebar column values to match.','bioship').')',
 		'id' => 'gridcolumns',
 		'std' => 'sixteen',
@@ -3216,7 +3309,7 @@ if (!function_exists('bioship_options')) {
 
 	// Responsive Grid Breakpoints
 	// ---------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Responsive Grid Breakpoints','bioship'),
 		'desc' => __('Dynamic Layout Grid Breakpoints. Media queries are built from these which auto-size the container width based on window width.','bioship').' '.__('Default','bioship').': 320,480,640,768,960,1140,1200',
 		'id' => 'breakpoints',
@@ -3228,7 +3321,7 @@ if (!function_exists('bioship_options')) {
 
 	// Content Grid Columns
 	// --------------------
-	$voptions[] = array( 'name' => __('Content Grid Columns','bioship'),
+	$options[] = array( 'name' => __('Content Grid Columns','bioship'),
 		'desc' => __('Default Number of Grid Columns used for dynamic Content Grid.','bioship').' ('.__('Warning: If you change this, existing content markup may need to be changed to match.','bioship').')',
 		'id' => 'contentgridcolumns',
 		'std' => 'twentyfour',
@@ -3248,7 +3341,7 @@ if (!function_exists('bioship_options')) {
 		// TODO: 'bootstrap' => __('Bootstrap 3 (Twitter)','bioship'),
 	);
 	$compat_defaults = array();
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Content Grid Compatibility','bioship'),
 		'desc' => __('Adds Classes for these Grid Boilerplates to your content columns if you prefer to use their syntax.','bioship'),
 		'id' => 'gridcompatibility',
@@ -3275,7 +3368,7 @@ if (!function_exists('bioship_options')) {
 		'twentyone' => __('21 Columns','bioship'), 'twentytwo' => __('22 Columns','bioship'),
 		'twentythree' => __('23 Columns','bioship'), 'twentyfour' => __('24 Columns','bioship')
 	);
-	$voptions[] = array( 'name' => __('Content Width','bioship'),
+	$options[] = array( 'name' => __('Content Width','bioship'),
 		'desc' => __('Define the width of your content area in columns out of total layout grid columns.','bioship'),
 		'id' => 'content_width',
 		'std' => 'twelve',
@@ -3287,7 +3380,7 @@ if (!function_exists('bioship_options')) {
 
 	// Content Padding
 	// ---------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Content Padding', 'bioship'),
 		'desc' => __('Sets the CSS padding property for the #contentpadding wrapper around #content. Use px or em or %.','bioship').'<br>'.__('Also used to help calculate actual content width area for embeds and images.', 'bioship'),
 		'id' => 'contentpadding',
@@ -3304,7 +3397,7 @@ if (!function_exists('bioship_options')) {
 	// === Sidebars ===
 	// ----------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Sidebars', 'bioship'),
 		'id' => 'skeleton',
 		'type' => 'heading',
@@ -3315,7 +3408,7 @@ if (!function_exists('bioship_options')) {
 	// 1.8.5: removed old warning (no longer needed, sidebars are now registered anyway)
 	// [Old] Warning: By changing sidebar modes or disabling sidebars their associated widgets will be found in an "Inactive Sidebar" on the Widgets page. Best to take note of your existing widgets before changing these!
 	// (Sidebars are registered so you can add widgets to them and display them in other ways.)
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('', 'bioship'),
 		'desc' => __('All sidebars are registered regardless of their active state so the you can add widgets while inactive. Note: You can save/restore widget layouts with','bioship').' <a href="https://wordpress.org/plugins/widget-saver/" target=_blank>Widget Saver</a>, '.__('or import/export widgets with ','bioship').'<a href="https://wordpress.org/plugins/widget-settings-importexport/" target=_blank>Widget Import/Export</a>',
 		'class' => 'skeleton',
@@ -3333,7 +3426,7 @@ if (!function_exists('bioship_options')) {
 		'unified' => __('Unified Sidebar for Posts and Pages','bioship'),
 		'dual' => __('Separate Post and Page Sidebars','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Sidebar Mode', 'bioship'),
 		'desc' => __('Whether to use a single sidebar area for both posts and pages, or a different sidebar for posts and pages.', 'bioship'),
 		'id' => 'sidebarmode',
@@ -3351,7 +3444,7 @@ if (!function_exists('bioship_options')) {
 		'left' => __('Left Sidebar','bioship'),
 		'right' => __('Right Sidebar','bioship'),
 	);
-	$voptions[] = array( 'name' => __('Sidebar Position','bioship'),
+	$options[] = array( 'name' => __('Sidebar Position','bioship'),
 		'desc' => __('Default primary sidebar layout position.','bioship'),
 		'id' => 'page_layout',
 		'std' => $sidebar_default,
@@ -3372,7 +3465,7 @@ if (!function_exists('bioship_options')) {
 		'nine' => __('9 Columns','bioship'), 	'ten' => __('10 Columns','bioship'),
 		'eleven' => __('11 Columns','bioship'), 'twelve' => __('12 Columns','bioship')
 	);
-	$voptions[] = array( 'name' => __('Sidebar Width','bioship'),
+	$options[] = array( 'name' => __('Sidebar Width','bioship'),
 		'desc' => __('Define the width of primary Sidebar in columns out of total layout grid columns.)','bioship'),
 		'id' => 'sidebar_width',
 		'std' => 'four',
@@ -3391,7 +3484,7 @@ if (!function_exists('bioship_options')) {
 		'unified' => __('Add a unified subsidebar to Posts and Pages','bioship'),
 		'dual' => __('Add a separate subsidebar for Posts and Pages','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Subsidiary Sidebar', 'bioship'),
 		'desc' => __('Adds a Subsidiary Sidebar Widget Area. Either for posts or pages, or for both posts/pages together, or for posts/pages separately.', 'bioship'),
 		'id' => 'subsidiarysidebar',
@@ -3409,7 +3502,7 @@ if (!function_exists('bioship_options')) {
 		'internal' => __('Internal to Primary Sidebar','bioship'),
 		'opposite' => __('Opposite to Primary Sidebar','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Subsidiary Sidebar Position', 'bioship'),
 		'desc' => __('Whether to call the Subsidiary Sidebar external to (towards wrapper), or internal to (towards content), or opposite to the Primary Sidebar.', 'bioship'),
 		'id' => 'subsidiaryposition',
@@ -3428,7 +3521,7 @@ if (!function_exists('bioship_options')) {
 		'five' => __('5 Columns','bioship'), 'six' => __('6 Columns','bioship'),
 		'seven' => __('7 Columns','bioship'), 'eight' => __('8 Columns','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Subsidiary Sidebar Columns', 'bioship'),
 		'desc' => __('Number of columns for subsidiary sidebar out of total layout grid columns.', 'bioship'),
 		'id' => 'subsidiarycolumns',
@@ -3441,7 +3534,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Widget Area
 	// ------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header Widget Area', 'bioship'),
 		'desc' => __('Enable the Header Sidebar Widget Area', 'bioship'),
 		'id' => 'headersidebar',
@@ -3460,7 +3553,7 @@ if (!function_exists('bioship_options')) {
 		'3' => __('Three Widget Areas','bioship'),
 		'4' => __('Four Widget Areas','bioship')
 	);
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Footer Widget Areas', 'bioship'),
 		'desc' => __('Number of Footer Sidebar Widget Areas to make available. Actual display is split into columns based on widget areas with widgets.','bioship'),
 		'id' => 'footersidebars',
@@ -3488,7 +3581,7 @@ if (!function_exists('bioship_options')) {
 		'date' => __('Date Archive Sidebar','bioship')
 	);
 	$sidebar_defaults = array('frontpage'=>'1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Display Contextual Sidebars', 'bioship'),
 		'desc' => __('Which contextual Sidebars to Display by default. They will only be displayed if they have widgets in them.', 'bioship'),
 		'id' => 'sidebars',
@@ -3515,7 +3608,7 @@ if (!function_exists('bioship_options')) {
 		'subdate' => __('Date Archive SubSidebar','bioship')
 	);
 	$subsidebar_defaults = array();
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Display Contextual SubSidebars', 'bioship'),
 		'desc' => __('Which contextual SubSidebars to Display by default. They will only be displayed if they have widgets in them.', 'bioship'),
 		'id' => 'subsidebars',
@@ -3533,7 +3626,7 @@ if (!function_exists('bioship_options')) {
 
 	// Navigation Menus
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Navigation', 'bioship'),
 		'id' => 'skeleton',
 		'type' => 'heading',
@@ -3541,7 +3634,7 @@ if (!function_exists('bioship_options')) {
 
 	// Primary Menu
 	// ------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Primary Menu', 'bioship'),
 		'desc' => __('Enable the Primary Navigation Menu', 'bioship'),
 		'id' => 'primarymenu',
@@ -3553,7 +3646,7 @@ if (!function_exists('bioship_options')) {
 
 	// Secondary Menu
 	// --------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Secondary Menu', 'bioship'),
 		'desc' => __('Enable the Secondary Navigation Menu', 'bioship'),
 		'id' => 'secondarymenu',
@@ -3565,7 +3658,7 @@ if (!function_exists('bioship_options')) {
 
 	// Header Menu
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Header Menu', 'bioship'),
 		'desc' => __('Enable the Header Navigation Menu', 'bioship'),
 		'id' => 'headermenu',
@@ -3577,7 +3670,7 @@ if (!function_exists('bioship_options')) {
 
 	// Footer Menu
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Footer Menu', 'bioship'),
 		'desc' => __('Enable the Footer Navigation Menu', 'bioship'),
 		'id' => 'footermenu',
@@ -3591,7 +3684,7 @@ if (!function_exists('bioship_options')) {
 	// ---------
 	// 1.8.5: moved here from meta tab
 	$pagenav_defaults = array('post'=>'1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Page Navigation Display', 'bioship'),
 		'desc' => __('Which Post Types to display Post/Page Navigation on.', 'bioship'),
 		'id' => 'pagenavposttypes',
@@ -3606,7 +3699,7 @@ if (!function_exists('bioship_options')) {
 	// -----------------
 	// 1.8.5: moved here from meta tab
 	$pagenav_defaults = array('post'=>'1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Archive Navigation Display', 'bioship'),
 		'desc' => __('Which Post Types to display Archive Navigation on.', 'bioship'),
 		'id' => 'pagenavarchivetypes',
@@ -3622,7 +3715,7 @@ if (!function_exists('bioship_options')) {
 	// ----------------------
 	// 1.8.5: added this option
 	$breadcrumb_defaults = array();
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Breadcrumbs Posts Display', 'bioship'),
 		'desc' => __('Which Post Types to display Breadcrumbs on.', 'bioship'),
 		'id' => 'breadcrumbposttypes',
@@ -3636,7 +3729,7 @@ if (!function_exists('bioship_options')) {
 	// Breadcrumb Archive Types
 	// ------------------------
 	// 1.8.5: added this option
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Breadcrumbs Archive Display', 'bioship'),
 		'desc' => __('Which Post Archive Types to display Breadcrumbs on.', 'bioship'),
 		'id' => 'breadcrumbarchivetypes',
@@ -3652,7 +3745,7 @@ if (!function_exists('bioship_options')) {
 	// === Thumbnails ===
 	// ------------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Thumbnails', 'bioship'),
 		'id' => 'skeleton',
 		'type' => 'heading',
@@ -3660,7 +3753,7 @@ if (!function_exists('bioship_options')) {
 
 	// Thumbsize Change Note
 	// ---------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Thumbnail Size Changes Reminder', 'bioship'),
 		'desc' => __('If this is a new theme install, or you have changed the explicit thumbnail sizes via filters, you can use','bioship').' <a href="http://wordpress.org/plugins/regenerate-thumbnails/" target=_blank>Regenerate Thumbnails</a> '.__('to re-process your existing thumbnails.', 'bioship'),
 		'class' => 'skeleton',
@@ -3672,7 +3765,7 @@ if (!function_exists('bioship_options')) {
 	// 2.0.9: added missing min and max number values
 	// 2.1.0: changed back to text as Titan 1.12 number control is broken
 	// ? TEST: does this input type work in options framework ?
-	$voptions[] = array( 'name' => __('JPEG Quality','bioship'),
+	$options[] = array( 'name' => __('JPEG Quality','bioship'),
 		'desc' => __('Set JPEG Quality for Media Library.','bioship').' ('.__('0 or blank for off.','bioship').')',
 		'id' => 'jpegquality',
 		'std' => '90',
@@ -3697,7 +3790,7 @@ if (!function_exists('bioship_options')) {
 		'bottom-center' => __('Bottom Center','bioship'),
 		'bottom-right' => __('Bottom Right','bioship')
 	);
-	$voptions[] = array( 'name' => __('Thumbnail Cropping','bioship'),
+	$options[] = array( 'name' => __('Thumbnail Cropping','bioship'),
 		'desc' => __('Set Default Cropping for Thumbnails.','bioship').__('For specific image size cropping use filters.','bioship'),
 		'id' => 'thumbnailcrop',
 		'std' => 'auto',
@@ -3715,7 +3808,7 @@ if (!function_exists('bioship_options')) {
 		'large' => __('Large','bioship').' ('.get_option('large_size_w').' x '.get_option('large_size_h').')',
 		'full' => __('Full Size (Original)','bioship')
 	);
-	if ($vinternal) {
+	if ($internal) {
 		$image_sizes = get_intermediate_image_sizes();
 		global $_wp_additional_image_sizes;
 		foreach ($image_sizes as $size_name) {
@@ -3734,7 +3827,7 @@ if (!function_exists('bioship_options')) {
 
 	// Post List Thumbnail Display Size
 	// --------------------------------
-	$voptions[] = array( 'name' => __('Post List Thumbnail Image Display Size','bioship'),
+	$options[] = array( 'name' => __('Post List Thumbnail Image Display Size','bioship'),
 		'desc' => __('Set Post Thumbnail size for Post Lists (Blog/Category/Archive/Search pages etc.)','bioship'),
 		'id' => 'listthumbsize',
 		'std' => 'thumbnail',
@@ -3755,7 +3848,7 @@ if (!function_exists('bioship_options')) {
 		'alternateleftright' => __('Alternate Left-Right','bioship'),
 		'alternaterightleft' => __('Alternate Right-Left','bioship')
 	);
-	$voptions[] = array( 'name' => __('Post List Thumbnail Alignment','bioship'),
+	$options[] = array( 'name' => __('Post List Thumbnail Alignment','bioship'),
 		'desc' => __('Post Thumbnail alignment class for Post Lists (Blog/Category/Archive/Search pages etc.)','bioship'),
 		'id' => 'thumblistalign',
 		'std' => 'alignleft',
@@ -3767,7 +3860,7 @@ if (!function_exists('bioship_options')) {
 
 	// Post Thumbnail Display Size
 	// ---------------------------
-	$voptions[] = array( 'name' => __('Single Post Thumbnail Image Display Size','bioship'),
+	$options[] = array( 'name' => __('Single Post Thumbnail Image Display Size','bioship'),
 		'desc' => __('Set Post Thumbnail size for Single Post display. PerPost size via edit post metabox. Suggested minimum 200 square (for social sharing.)','bioship'),
 		'id' => 'postthumbsize',
 		'std' => 'off',
@@ -3786,7 +3879,7 @@ if (!function_exists('bioship_options')) {
 		'alignright' => __('Align Right','bioship').' (<i>.alignright</i>)',
 		'aligncenter' => __('Align Center','bioship').' (<i>.aligncenter</i>)'
 	);
-	$voptions[] = array( 'name' => __('Single Post Thumbnail Alignment','bioship'),
+	$options[] = array( 'name' => __('Single Post Thumbnail Alignment','bioship'),
 		'desc' => __('Post Thumbnail alignment class for Single Post display.','bioship'),
 		'id' => 'thumbnailalign',
 		'std' => 'alignleft',
@@ -3799,7 +3892,7 @@ if (!function_exists('bioship_options')) {
 	// Page Featured Image Display Size
 	// --------------------------------
 	// 1.5.0: added this option
-	$voptions[] = array( 'name' => __('Single Page Featured Image Display Size','bioship'),
+	$options[] = array( 'name' => __('Single Page Featured Image Display Size','bioship'),
 		'desc' => __('Set Feature Image (page thumbnail) size for Single Page display. PerPage size via edit page metabox. Suggested minimum 200 square (for social sharing.)','bioship'),
 		'id' => 'pagethumbsize',
 		'std' => 'off',
@@ -3812,7 +3905,7 @@ if (!function_exists('bioship_options')) {
 	// Feature Image Alignment Class
 	// -----------------------------
 	// 1.5.0: added this option
-	$voptions[] = array( 'name' => __('Single Page Featured Image Alignment','bioship'),
+	$options[] = array( 'name' => __('Single Page Featured Image Alignment','bioship'),
 		'desc' => __('Featured Image alignment class for Single Page display.','bioship'),
 		'id' => 'featuredalign',
 		'std' => 'alignleft',
@@ -3826,7 +3919,7 @@ if (!function_exists('bioship_options')) {
 	// ----------------------
 	// 1.5.0: added this option
 	$thumbcpt_defaults = array('page'=>'1');
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Add Thumbnails Support for Custom Post Types', 'bioship'),
 		'desc' => __('Adds Thumbnail support for selected Custom Post Types. Will not remove existing support.', 'bioship'),
 		'id' => 'thumbnailcpts',
@@ -3841,7 +3934,7 @@ if (!function_exists('bioship_options')) {
 	// -------------
 	// 1.8.5: moved from skin section to skeleton
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Icons', 'bioship'),
 		'id' => 'skeleton',
 		'type' => 'heading',
@@ -3850,7 +3943,7 @@ if (!function_exists('bioship_options')) {
 	// Site Icon Note
 	// --------------
 	// 2.0.8: added this note for site icon support
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Site Icon Note', 'bioship'),
 		'desc' => __('If a Site Icon is set via Customizer, it will be used instead of these icons. Specifically named files will override both for that size. See documentation for more details.', 'bioship'),
 		'class' => 'skeleton',
@@ -3859,7 +3952,7 @@ if (!function_exists('bioship_options')) {
 
 	// Default Gravatar
 	// ----------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Default Gravatar URL', 'bioship'),
 		'desc' => __('Default','bioship').' 96x96 <i>gravatar.png</i>. ('.__('Alternatively place in your parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'gravatarurl',
@@ -3871,7 +3964,7 @@ if (!function_exists('bioship_options')) {
 	// Favicon.ico
 	// -----------
 	// 1.8.5: set default to empty, fallback to root handled in function
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Favicon.ico URL', 'bioship'),
 		'desc' => __('Default','bioship').' 32x32 or 16x16 <i>favicon.ico</i>. ('.__('Alternatively place in parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'faviconico',
@@ -3882,7 +3975,7 @@ if (!function_exists('bioship_options')) {
 
 	// Favicon.png
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Favicon.png URL', 'bioship'),
 		'desc' => __('Default','bioship').' 96x96 <i>favicon.png</i> ('.__('Alternatively place in parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'faviconpng',
@@ -3893,7 +3986,7 @@ if (!function_exists('bioship_options')) {
 
 	// Apple Touch Default
 	// -------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Apple Touch Icon URL', 'bioship'),
 		'desc' => __('Default','bioship').' 57x57 <i>apple-touch-icon.png</i> ('.__('Alternatively place in parent or child theme','bioship').' <i>/images/</i>)',
 		'id' => 'appletouchicon',
@@ -3904,7 +3997,7 @@ if (!function_exists('bioship_options')) {
 
 	// Win8 Tile/Apple Touch 144
 	// -------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Windows 8 Tile/Apple Touch 144', 'bioship'),
 		'desc' => __('Default','bioship').' 144x144 <i>win8-tile.png</i> '.__('for Windows 8/Apple Touch','bioship').'. ('.__('Alternatively place in child or parent theme','bioship').' <i>/images/</i>)',
 		'id' => 'wineighttile',
@@ -3915,7 +4008,7 @@ if (!function_exists('bioship_options')) {
 
 	// Win8 Tile Background Colour
 	// ---------------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Windows 8 Tile Background', 'bioship'),
 		'desc' => __('Background Color for Windows 8 Tile Icon.', 'bioship'),
 		'id' => 'wineightbg',
@@ -3927,7 +4020,7 @@ if (!function_exists('bioship_options')) {
 	// Apple Touch Icon Sizes
 	// ----------------------
 	// sizes: 57, 72, 76, 114, 120, 144, 152, 180, 192
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Enable Apple Touch Icon Sizes', 'bioship'),
 		'desc' => __('Adds header code for all the specific Apple Touch Icon sizes (if found.)','bioship').'<br>'.__('Place files in child or parent theme','bioship').' <i>/images/</i> <br>'.__('Filenames','bioship').': <i>apple-touch-icon-XXXxYYY-precomposed.png</i> - '.__('Sizes','bioship').' ('.__('square','bioship').'): 57,72,76,114,120,144,152,180,192',
 		'id' => 'appleiconsizes',
@@ -3939,7 +4032,7 @@ if (!function_exists('bioship_options')) {
 	// Apple Startup Image Sizes
 	// -------------------------
 	// sizes: 320x460,640x920,640x1096,1024x748,768x1004,1536x2008,2048x1496
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Enable Apple Touch Startup Images', 'bioship'),
 		'desc' => __('Adds header code for all the specific Apple Touch Startup Image sizes (if found.)','bioship').'<br>'.__('Place files in child or parent theme','bioship').' <i>/images/</i><br>'.__('Filenames','bioship').': <i>startup-XXXXxYYYY.png</i> - '.__('Sizes','bioship').': 320x460,640x920,640x1096,1024x748,768x1004,1536x2008,2048x1496',
 		'id' => 'startupimages',
@@ -3961,7 +4054,7 @@ if (!function_exists('bioship_options')) {
 		// 'wineighttile' => __('WinTile/AppleTouch 144x144', 'bioship'),	// too small
 		// 'appleiconsizes' => __('Largest Apple Icon Size', 'bioship')		// too small
 	);
-	$voptions[] = array( 'name' => __('Open Graph Default Image','bioship'),
+	$options[] = array( 'name' => __('Open Graph Default Image','bioship'),
 		'desc' => __('Recommended miniumum','bioship').' 200x200px '.__('requires','bioship').' <a href="http://wordpress.org/plugins/open-graph-protocol-framework/" target=_blank>'.__('Open Graph Protocol','bioship').'</a> '.__('plugin installed and active.','bioship'),
 		'id' => 'ogdefaultimage',
 		'std' => 'header_logo',
@@ -3972,7 +4065,7 @@ if (!function_exists('bioship_options')) {
 
 	// Open Graph Image URL
 	// --------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Default Open Graph Image URL', 'bioship'),
 		'desc' => __('Only used if the option above option is URL and the Open Graph Protocol plugin is installed and active.', 'bioship'),
 		'id' => 'ogimageurl',
@@ -3986,7 +4079,7 @@ if (!function_exists('bioship_options')) {
 	// === Hybrid Core ===
 	// -------------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Hybrid', 'bioship'),
 		'id' => 'skeleton',
 		'type' => 'heading',
@@ -4004,7 +4097,7 @@ if (!function_exists('bioship_options')) {
 	);
 	// 2.0.9: deprecate Hybrid 2 for WordPress.org version
 	if (THEMEWPORG) {unset($hybrid_options[1]);}
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Load Hybrid Core', 'bioship'),
 		'desc' => __('Loads the Hybrid Core Library Version (highly recommended)', 'bioship'),
 		'id' => 'hybridloadcore',
@@ -4017,7 +4110,7 @@ if (!function_exists('bioship_options')) {
 
 	// Hybrid Hook
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Hybrid Hook', 'bioship'),
 		'desc' => __('Modified plugin to add HTML block to all available theme Hooks. Note: Does not require Hybrid Core.', 'bioship').' (<i>includes/hybrid-hook/hybrid-hook.php</i>)',
 		'id' => 'hybridhook',
@@ -4029,7 +4122,7 @@ if (!function_exists('bioship_options')) {
 	// Hybrid Shortcodes
 	// -----------------
 	// 1.8.0: [deprecated] removed hybrid shortcodes
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Hybrid Shortcode Support', 'bioship'),
 	//	'desc' => __('Activate extra Hybrid Shortcodes (hybrid2/functions/shortcodes.php)', 'bioship'),
 	//	'id' => 'hybridshortcodes',
@@ -4040,7 +4133,7 @@ if (!function_exists('bioship_options')) {
 	// Hybrid Post Format Filters
 	// --------------------------
 	// TODO: recheck the full effects of using post format filters?
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Hybrid Post Format Filters', 'bioship'),
 		'desc' => __('Activate extra Post Formats Filters (note: full effects untested.)', 'bioship'),
 		'id' => 'hybridpostformats',
@@ -4053,7 +4146,7 @@ if (!function_exists('bioship_options')) {
 	// Hybrid Extensions
 	// -----------------
 
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Hybrid Extensions', 'bioship'),
 		'desc' => __('', 'bioship'),
 		'class' => 'skeleton',
@@ -4062,7 +4155,7 @@ if (!function_exists('bioship_options')) {
 
 	// Get the Image
 	// -------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Get the Image Extension', 'bioship'),
 		'desc' => __('Recommended! Activate Thumbnail/Image Script Extension.', 'bioship'),
 		'id' => 'hybridthumbnails',
@@ -4073,7 +4166,7 @@ if (!function_exists('bioship_options')) {
 
 	// Hybrid Breadcrumbs
 	// ------------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Breadcrumb Trail Extension', 'bioship'),
 		'desc' => __('Activate Breadcrumb Trail Extension (required for Breadcrumb display)', 'bioship'),
 		'id' => 'hybridbreadcrumbs',
@@ -4084,7 +4177,7 @@ if (!function_exists('bioship_options')) {
 
 	// Cleaner Gallery
 	// ---------------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Cleaner Gallery Extension', 'bioship'),
 		'desc' => __('Activate Cleaner Gallery Extension.', 'bioship'),
 		'id' => 'hybridgallery',
@@ -4096,7 +4189,7 @@ if (!function_exists('bioship_options')) {
 	// Loop Pagination
 	// ---------------
 	// 1.8.0: [deprecated] removed to match Hybrid Core 3
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Loop Pagination Extension', 'bioship'),
 	//	'desc' => __('Activate Loop Pagination Extension (Hybrid 2 only)', 'bioship'),
 	//	'id' => 'hybridpagination',
@@ -4106,7 +4199,7 @@ if (!function_exists('bioship_options')) {
 
 	// Cleaner Captions
 	// ----------------
-	// $voptions[] = array(
+	// $options[] = array(
 	// 	'name' => __('Cleaner Captions Extension', 'bioship'),
 	//	'desc' => __('Activate Cleaner Captions Extension (hybrid/extensions/cleaner-caption.php', 'bioship'),
 	//	'id' => 'hybridcaptions',
@@ -4117,7 +4210,7 @@ if (!function_exists('bioship_options')) {
 	// Random Background
 	// ----------------
 	// 1.8.0: [deprecated]
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Random Background Extension', 'bioship'),
 	//	'desc' => __('Activate Random Background Extension (hybrid/extensions/random-custom-background.php)', 'bioship'),
 	//	'id' => 'hybridrandombackground',
@@ -4128,7 +4221,7 @@ if (!function_exists('bioship_options')) {
 	// Post Stylesheets
 	// ----------------
 	// 1.5.0: [deprecated] done via theme display metabox
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('Post Stylesheets Extension', 'bioship'),
 	//	'desc' => __('Activate Post Stylesheets Extension (hybrid/extensions/post-stylesheets.php)', 'bioship'),
 	//	'id' => 'hybridpoststylesheets',
@@ -4139,7 +4232,7 @@ if (!function_exists('bioship_options')) {
 	// PerPost Headers
 	// ---------------
 	// 1.3.0: removed as custom_header is no longer supported
-	// $voptions[] = array(
+	// $options[] = array(
 	//	'name' => __('PerPost Featured Headers Extension', 'bioship'),
 	//	'desc' => __('Activate PerPost Featured Headers Extension (hybrid/extensions/featured-header.php)', 'bioship'),
 	//	'id' => 'hybridfeatuedheaders',
@@ -4158,7 +4251,7 @@ if (!function_exists('bioship_options')) {
 		// see: http://foundation.zurb.com/docs
 		// eg. http://community.sitepoint.com/t/htmlboilerplate-modernizr-yepnope-polyfills-js-awesome-web-design/80590
 
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Foundation', 'bioship'),
 			'id' => 'skeleton',
 			'type' => 'heading',
@@ -4174,7 +4267,7 @@ if (!function_exists('bioship_options')) {
 			'foundation5' => 'Foundation 5 (5.5.2)',
 			'foundation6' => 'Foundation 6 (6.2)'
 		);
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Foundation Version', 'bioship'),
 			'desc' => __('What major release version of Foundation to use.', 'bioship'),
 			'id' => 'foundationversion',
@@ -4187,7 +4280,7 @@ if (!function_exists('bioship_options')) {
 
 		// Foundation Stylesheet
 		// ---------------------
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Foundation Stylesheet', 'bioship'),
 			'desc' => __('Whether to Enqueue the Foundation Stylesheet (~145kb, or ~55kb if using essentials below.)', 'bioship'),
 			'id' => 'foundationcss',
@@ -4205,7 +4298,7 @@ if (!function_exists('bioship_options')) {
 			'selective' => __('Selective Load','bioship'),
 			'full' => __('Kitchen Sink (Everything)','bioship')
 		);
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Load Foundation Javascript', 'bioship'),
 			'desc' => __('Whether to load Foundation or not, essentials (~20kb), selectively (see below) or the kitchen sink (everything ~180kb)', 'bioship'),
 			'id' => 'loadfoundation',
@@ -4239,7 +4332,7 @@ if (!function_exists('bioship_options')) {
 			'topbar' => 	__('Top Bar','bioship')
 		);
 		$selected_defaults = array();
-		$voptions[] = array(
+		$options[] = array(
 			'name' => __('Selective Foundation Javascript','bioship'),
 			'desc' => __('Which Foundation Javascripts to load if using selective load option. Combined javascript file is built upon saving Theme Options. See the Foundation ','bioship').'<a href="http://foundation.zurb.com/docs/components/kitchen_sink.html" target=_blank>'.__('Kitchen Sink','bioship').'</a>'.__(' page to decide what you want.','bioship'),
 			'id' => 'foundationselect',
@@ -4260,7 +4353,7 @@ if (!function_exists('bioship_options')) {
 
 	// Layer Tab
 	// ---------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Layer Tab', 'bioship'),
 		'desc' => __('Reserved for Saving current display Layer tab.', 'bioship'),
 		'id' => 'layertab',
@@ -4272,7 +4365,7 @@ if (!function_exists('bioship_options')) {
 
 	// Options Tab
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Options Tab', 'bioship'),
 		'desc' => __('Reserved for Saving current display Options tab.', 'bioship'),
 		'id' => 'optionstab',
@@ -4285,7 +4378,7 @@ if (!function_exists('bioship_options')) {
 	// Save Time
 	// ---------
 	// 1.8.5: added save time record
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Save Time', 'bioship'),
 		'desc' => __('Reserved for preserving options save timestamp.', 'bioship'),
 		'id' => 'savetime',
@@ -4297,7 +4390,7 @@ if (!function_exists('bioship_options')) {
 
 	// Backup Time
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Backup Time', 'bioship'),
 		'desc' => __('Reserved for preserving user backup timestamp.', 'bioship'),
 		'id' => 'backuptime',
@@ -4310,7 +4403,7 @@ if (!function_exists('bioship_options')) {
 	// Restore Time
 	// ------------
 	// 1.8.0: added missing restore time (for completeness)
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Restore Time', 'bioship'),
 		'desc' => __('Reserved for preserving user restore timestamp.', 'bioship'),
 		'id' => 'restoretime',
@@ -4322,7 +4415,7 @@ if (!function_exists('bioship_options')) {
 
 	// Import Time
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Import Time', 'bioship'),
 		'desc' => __('Reserved for preserving user import timestamp.', 'bioship'),
 		'id' => 'importtime',
@@ -4334,7 +4427,7 @@ if (!function_exists('bioship_options')) {
 
 	// Export Time
 	// -----------
-	$voptions[] = array(
+	$options[] = array(
 		'name' => __('Export Time', 'bioship'),
 		'desc' => __('Reserved for preserving user export timestamp.', 'bioship'),
 		'id' => 'exporttime',
@@ -4347,7 +4440,8 @@ if (!function_exists('bioship_options')) {
 	// -----------------------
 	// -- END THEME OPTIONS --
 
-	$voptions = bioship_apply_filters('options_themeoptions', $voptions);
-	return $voptions;
+	// --- filter and return ---
+	$options = bioship_apply_filters('options_themeoptions', $options);
+	return $options;
  }
 }

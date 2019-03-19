@@ -1,3 +1,28 @@
+= 2.1.1 =
+- Updated: Full Code Review of all core theme files!
+- Updated: Documentation to match previous version changes
+- Updated: translations file (/languages/bioship.pot)
+- Changed: moved template includes tracing functions to tracer.php
+- Changed: moved skin loading functions from functions.php to skull.php
+- Changed: skeleton_navigation_hide filter to skeleton_navigation_remove
+- Fixed: lots of minor bugs found during code review
+- Fixed: PerPost Theme Options Metabox saving keys (newly prefixed)
+- Fixed: possible error in file modified time cachebusting conditionals
+- Fixed: stop Titan trying to load webfont stacks via Google Fonts
+- Fixed: removed all line breaks from dynamic editor styles
+- Fixed: typo cutting off comment styles in skeleton.css
+- Fixed: Hybrid Cleaner Gallery minified stylesheet loading
+- Fixed: add missing heading styles to Dynamic Editor Styles
+- Fixed: theme file settings backup file() read for unserialization
+- Optimized: moved all trigger checks inside functions for consistency
+- Optimized: moved all add_actions inside function exists for consistency
+- Optimized: page template includes indexing and admin bar display names
+- Added: Theme Options Metabox quicksave override settings buttons
+- Added: separated file admin/tools.php for Theme Tools functions
+- Added: allow for alternative include directory path
+- Added: extra (optional) value argument to bioship_apply_filters
+- Added: single action or template tracing to theme tracer
+
 = 2.1.0 = 
 - Updated: Titan Framework to v1.12
 - Added: Cookie field to comment form for GDPR Compliance

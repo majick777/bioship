@@ -7,61 +7,67 @@
  * @author DreamJester - DreamJester.Net
  *
  * ====== Dynamic Grid Style Loader ======
- * - Creates Grid CSS from Theme Options -
+ * - Create Grid CSS from Theme Settings -
  *
 **/
 
-// Output CSS Header
-// -----------------
-header("Content-type: text/css; charset: UTF-8");
-$vstarttime = microtime(true);
-
-// set Debug Option
+// ----------------
+// Set Debug Option
 // ----------------
 // 2.0.5: moved to top to prevent possible undefined constant warning
 if (!defined('THEMEDEBUG')) {
 	// 2.0.5: removed unused option switch check here
-	$vthemedebug = false;
+	$themedebug = false;
 	if (isset($_REQUEST['themedebug'])) {
-		$vdebug = $_REQUEST['themedebug'];
+		$debug = $_REQUEST['themedebug'];
 		// note: no on/off switching allowed here
-		if ( ($vdebug == '2') || ($vdebug == 'yes') ) {$vthemedebug = true;}
-		if ( ($vdebug == '3') || ($vdebug == 'no') ) {$vthemedebug = false;}
+		if ( ($debug == '2') || ($debug == 'yes') ) {$themedebug = true;}
+		if ( ($debug == '3') || ($debug == 'no') ) {$themedebug = false;}
 	}
-	define('THEMEDEBUG', $vthemedebug);
+	define('THEMEDEBUG', $themedebug);
 }
 
+// -----------------
+// Output CSS Header
+// -----------------
+header("Content-type: text/css; charset: UTF-8");
+$starttime = microtime(true);
 
-// ================
-// Helper Functions
-// ================
+
+// --------------------
+// === Grid Helpers ===
+// --------------------
 // 2.0.5: removed WordPress (SHORTINIT) loading
 // 2.0.5: removed Theme Test Drive check
 // 2.0.5: removed theme settings loading
 
+// ---------------------
+// Number to Word Helper
+// ---------------------
 // 2.0.5: standalone copy of bioship_number_to_word helper
 if (!function_exists('bioship_grid_number_to_word')) {
- function bioship_grid_number_to_word($vnumber) {
-	$vnumberwords = array(
+ function bioship_grid_number_to_word($number) {
+	$numberwords = array(
 		'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
 		'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
 		'seventeen', 'eighteen', 'nineteen', 'twenty', 'twentyone', 'twentytwo', 'twentythree', 'twentyfour'
 	);
-	if (array_key_exists($vnumber, $vnumberwords)) {return $vnumberwords[$vnumber];}
+	if (array_key_exists($number, $numberwords)) {return $numberwords[$number];}
 	return false;
  }
 }
 
-// ===============
-// set Grid Values
-// ===============
+// -----------------------
+// === Set Grid Values ===
+// -----------------------
 // 1.8.5: fix to global scope for admin-ajax load method
 // 1.9.5: added separate content columns value
 // 2.0.5: optimized global declarations
 global $gridcolumns, $contentcolumns, $contentpercent, $maxwidth, $contentwidth;
 global $gridspacing, $contentspacing, $gridcompat, $empixels, $fontpercent;
 
-// set Layout Grid Columns
+// -----------------------
+// Set Layout Grid Columns
 // -----------------------
 // 12, 16, 20 or 24
 $gridcolumns = 16; // 16 default
@@ -71,7 +77,8 @@ if (isset($_REQUEST['gridcolumns'])) {
 }
 if (THEMEDEBUG) {echo "/* Grid Columns: ".$gridcolumns." */".PHP_EOL;}
 
-// set Content Grid Columns
+// ------------------------
+// Set Content Grid Columns
 // ------------------------
 $contentcolumns = 24;
 if (isset($_REQUEST['contentgridcolumns'])) {
@@ -80,28 +87,31 @@ if (isset($_REQUEST['contentgridcolumns'])) {
 }
 if (THEMEDEBUG) {echo "/* Content Grid Columns: ".$contentcolumns." */".PHP_EOL;}
 
-// set Maximum Layout Width
 // ------------------------
-$vmaxwidth = '960'; // 960 is default
-if ( (isset($_REQUEST['maxwidth'])) && (abs(intval($_REQUEST['maxwidth'])) > 0) ) {
+// Set Maximum Layout Width
+// ------------------------
+$maxwidth = '960'; // 960 is default
+if (isset($_REQUEST['maxwidth']) && (abs(intval($_REQUEST['maxwidth'])) > 0)) {
 	$maxwidth = abs(intval($_REQUEST['maxwidth']));
 }
 if (THEMEDEBUG) {echo "/* Max Width: ".$maxwidth." */".PHP_EOL;}
 
-// set Content Width
+// -----------------
+// Set Content Width
 // -----------------
 // 2.0.5: removed non-viable fallback calculation
 $contentwidth = 960; // no default, assume full width
-if ( (isset($_REQUEST['contentwidth'])) && (abs(intval($_REQUEST['contentwidth'])) > 0) ) {
+if (isset($_REQUEST['contentwidth']) && (abs(intval($_REQUEST['contentwidth'])) > 0)) {
 	$contentwidth = abs(intval($_REQUEST['contentwidth']));
 }
 if (THEMEDEBUG) {echo  "/* Content Width: ".$contentwidth." */".PHP_EOL;}
 
-// set Content Padding Percentage
+// ------------------------------
+// Set Content Padding Percentage
 // ------------------------------
 // 2.0.5: use calculated rather than raw padding value
 $contentpadding = 0;
-if ( (isset($_REQUEST['contentpadding'])) && (abs(intval($_REQUEST['contentpadding'])) > 0) ) {
+if (isset($_REQUEST['contentpadding']) && (abs(intval($_REQUEST['contentpadding'])) > 0) ) {
 	$contentpadding = abs(intval($_REQUEST['contentpadding']));
 }
 if (THEMEDEBUG) {echo "/* Content Padding: ".$contentpadding." */".PHP_EOL;}
@@ -110,9 +120,10 @@ if (THEMEDEBUG) {echo "/* Content Padding: ".$contentpadding." */".PHP_EOL;}
 $contentpercent = round( (($contentwidth - $contentpadding) / $maxwidth), 3, PHP_ROUND_HALF_DOWN);
 if (THEMEDEBUG) {echo "/* Content Percentage: ".$contentpercent." */".PHP_EOL;}
 
-// set EM Pixels
 // -------------
-// note: we are using em values over px or percentages
+// Set EM Pixels
+// -------------
+// note: we are using em values for columns rather thanr pixels or percentages
 // ref: http://blog.cloudfour.com/the-ems-have-it-proportional-media-queries-ftw/
 // $empixels = 16; // so 1em ~= 16px ...recommend to not change this!
 // use of a different percentage value probably would be okay though,
@@ -128,15 +139,17 @@ if (THEMEDEBUG) {
 	echo "/* EM Pixels: ".$empixels." */".PHP_EOL;
 }
 
+// --------------
 // Column Spacing
 // --------------
 // note: it is actually padding acting as an internal margin now
 // 1.8.5: made array and added content margins
 // 1.9.5: changed variable name from margins to spacing
 // 2.0.5: set default to em pixel value adjusted via font percent
+// 2.1.1: added missing argument for strstr check
 $gridspacing['left'] = $gridspacing['right'] = $empixels;
 if (isset($_REQUEST['gridspacing'])) {
-	if (!strstr($_REQUEST['gridspacing'])) {
+	if (!strstr($_REQUEST['gridspacing'], ',')) {
 		if (abs(intval($_REQUEST['gridspacing'])) > 0) {
 			$spacing = abs(intval($_REQUEST['gridspacing']));
 			$gridspacing['left'] = $gridspacing['right'] = $spacing;
@@ -179,8 +192,8 @@ if (isset($_REQUEST['compat'])) {
 }
 if (THEMEDEBUG) {echo "/* Grid Compatibility: "; print_r($gridcompat); echo " */".PHP_EOL;}
 
-
-// maybe buffer output
+// -------------------
+// Maybe Buffer Output
 // -------------------
 // to get CSS output length - just for curiosity really
 $buffer = false;
@@ -272,7 +285,6 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 		echo PHP_EOL.$pushrules.','.PHP_EOL.$pullrules.' {position:relative;}'.PHP_EOL;
 	}
 
-
 	// Percentage Content Columns
 	// --------------------------
 	// 1.9.5: percentages prototype
@@ -282,10 +294,10 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 	// echo '#content .container_'.$contentcolumns.':before, .container_'.$contentcolumns.':after
 	// echo " {content: "."; display: block; overflow: hidden; visibility: hidden;  width: 0; height: 0; font-size: 0; line-height: 0;}'.PHP_EOL;
 
-	// no need to set anything for inner columns here?
+	// no need to set anything for inner columns here ?
 	// #content .column .inner, #content .columns .inner {}
 
-	$rules = array('content'=>'', 'padleft'=>'', 'padright'=>'', 'shiftleft'=>'', 'shiftright'=>'');
+	$rules = array('content' => '', 'padleft' => '', 'padright'=> '' , 'shiftleft' => '', 'shiftright' => '');
 	$rules = bioship_content_grid_generate_rules($rules, 24);
 	$rules = bioship_content_grid_generate_rules($rules, 20);
 	$rules = bioship_content_grid_generate_rules($rules, 16);
@@ -303,10 +315,11 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 	function bioship_content_grid_generate_rules($rules, $columns) {
 
 		global $gridcompat, $contentcolumns; $c = $columns;
-		$contentrules = ''; $padleftrules = ''; $padrightrules = ''; $shiftleftrules = ''; $shiftrightrules = '';
+		$contentrules = $padleftrules = $padrightrules = $shiftleftrules = $shiftrightrules = '';
 
-		// 24 columns container
+		// --- 24 columns container ---
 		for ($i = 1; $i < ($c+1); $i++) {
+
 			$word = bioship_grid_number_to_word($i);
 			$percent = round( (99 * ($i / $c)), 3, PHP_ROUND_HALF_DOWN);
 
@@ -445,6 +458,8 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 
 	// Column Size Calculations
 	// ------------------------
+
+	// --- margins ---
 	$leftmarginem = round(($gridspacing['left'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
 	$rightmarginem = round(($gridspacing['right'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
 	$halfleftmarginem = round(($leftmarginem / 2), 3, PHP_ROUND_HALF_DOWN);
@@ -453,10 +468,12 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 	$contentleftmarginem = round(($contentspacing['left'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
 	$contentrightmarginem = round(($contentspacing['right'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
 
+	// --- total width ---
 	$totalwidthem = round(($totalwidth / $empixels), 3, PHP_ROUND_HALF_DOWN);
 	$almostfullwidth = round((($totalwidth - $gridspacing['left'] - $gridspacing['right']) / $empixels), 3, PHP_ROUND_HALF_DOWN);
 	// $totalwidthem = $totalwidthem - $halfleftmarginem - $halfrightmarginem;
 
+	// --- layout columns ---
 	// 1.8.0: removed outer margins for replacement by inner padding
 	// $totalwidth = $totalwidth - (($gridspacing['left'] + $gridspacing['right']) / 2);
 	$columnwidth = $totalwidth / $gridcolumns;
@@ -466,6 +483,7 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 	$thirdcolumnwidthem = round( (($columnwidth / 3) / $empixels), 3, PHP_ROUND_HALF_DOWN);
 	$quartercolumnwidthem = round( (($columnwidth / 4) / $empixels), 3, PHP_ROUND_HALF_DOWN);
 
+	// --- content columns ---
 	// 1.8.0: work out content column widths (via actual content width passed in querystring)
 	$thiscontentwidth = round( ($totalwidth * $contentpercent), 3, PHP_ROUND_HALF_DOWN);
 	// 1.9.5: for mobile sizes, use layout width rules for full width content columns
@@ -481,11 +499,11 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 	$thirdcontentcolumnwidthem = round(($contentcolumnsem / 3), 3, PHP_ROUND_HALF_DOWN);
 	$quartercontentcolumnsem = round(($contentcolumnsem / 4), 3, PHP_ROUND_HALF_DOWN);
 
-	// Header for this Media Width Size
+	// --- Header for this Media Width Size ---
 	$rules = PHP_EOL.'	/* Column Width Rules based on '.$totalwidth.'px ('.$totalwidthem.'em) */'.PHP_EOL.PHP_EOL;
 	$contentrules = '';
 
-	// Set numbered column widths array in em
+	// --- set numbered column widths array in em ---
 	for ($i = 1; $i < ($gridcolumns+1); $i++) {
 		$column[$i] = $columnwidthem * $i;
 		// $halfcolumn{$i] = $halfcolumnwidthem * $i;
@@ -497,7 +515,7 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 		$halfcontentcolumn[$i] = round(($halfcontentcolumnsem * $i), 3, PHP_ROUND_HALF_DOWN);
 	}
 
-	/* Skeleton Boilerplate */
+	// --- Skeleton Boilerplate ---
 	// 1.9.5: set container width only here, moved common rules out and above
 	// $rules .= '	.container {position:relative; width:'.$totalwidthem.'em; margin:0 auto; padding:0;}'.PHP_EOL;
 	// $rules .= '	.column, .columns {float:left; display:inline;}'.PHP_EOL;
@@ -511,7 +529,7 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 	$rules .= '	#content .column .inner, #content .columns .inner {padding-left:'.$contentleftmarginem.'em; padding-right:'.$contentrightmarginem.'em;}'.PHP_EOL;
 
 
-	/* 960 Grid System */
+	// --- 960 Grid System ---
 	// 1.9.5: for content grid only, removed duplicate rules
 	if ($gridcompat['960gs'] == '1') {
 		// $contentrules .= '	#content .container_'.$contentcolumns.' {margin-left: auto; margin-right: auto; width: '.$thiscontentwidthem.'em; font-size:initial;}'.PHP_EOL;
@@ -522,16 +540,17 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 	$contentrules .= '	#content .container {width: 100%;}'.PHP_EOL;
 	// $contentrules .= '	#content .container {width: '.$thiscontentwidthem.'em; font-size:initial;}'.PHP_EOL;
 
-	// set element rule names
-	$widthrules = array(); $padleftrules = array(); $padrightrules = array();
-	$pushrules = array(); $pullrules = array(); $mobilequeries = '';
+	// --- set element rule names ---
+	$widthrules = $padleftrules = $padrightrules = $pushrules = $pullrules = array();
+	$mobilequeries = '';
 
 	// if ($mobile) {$offsetprefix = '.container ';} else {$offsetprefix = '';}
 	$offsetprefix = '';
 
+	// Layout Grid Column Rules
+	// ------------------------
 	for ($i = 1; $i < ($gridcolumns+1); $i++) {
 
-		/* Skeleton Boilerplate */
 		// 1.8.0: added inner width rules
 		// .spanx and .xxxxx.columns
 		$widthrulea = '.span'.$i;
@@ -548,10 +567,11 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 		$innerwidthrules[$i] = $innerwidthrulea.$innerwidthruleb;
 	}
 
+	// Content Grid Column Rules
+	// -------------------------
 	// 1.9.5: separate content columns grid loop
 	for ($i = 1; $i < ($contentcolumns+1); $i++) {
 
-		/* BioShip Content Grid */
 		// 1.5.5: fix, #content subelements (not main #content element)
 		// 1.8.0: added inner content rules
 		$contentwidthrulea = '	#content .span'.$i;
@@ -574,7 +594,7 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 		$pushrules[$i] = '	.shiftright'.$i;
 		$pullrules[$i] = '	.shiftleft'.$i;
 
-		/* 960 Grid System */
+		// --- 960 Grid System ---
 		// 1.9.5: add to content grid only
 		if ( (isset($gridcompat['960gs'])) && ($gridcompat['960gs'] == '1') ) {
 			// $widthrules[$i] .= ', .grid_'.$i;
@@ -589,7 +609,7 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 			}
 		}
 
-		/* Blueprint */
+		// --- Blueprint ---
 		// 1.9.5: add to content grid only
 		if ( (isset($gridcompat['blueprint'])) && ($gridcompat['blueprint'] == '1') ) {
 			// $widthrules[$i] .= ', .span-'.$i;
@@ -798,9 +818,9 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 }
 
 
-// -------------------------- //
-/* Media Screen Width Queries */
-// -------------------------- //
+// ----------------------------------
+// === Media Screen Width Queries ===
+// ----------------------------------
 
 // Get Breakpoints
 // ---------------
@@ -896,8 +916,8 @@ echo $mediaqueries.PHP_EOL.PHP_EOL;
 
 // Output Generation Time
 // ----------------------
-$vendtime = microtime(true); $vdifference = $vendtime - $vstarttime;
-echo "/* Generation Time: ".$vdifference." */".PHP_EOL;
+$endtime = microtime(true); $difference = $endtime - $starttime;
+echo "/* Generation Time: ".$difference." */".PHP_EOL;
 
 // maybe output buffered length
 // ----------------------------
@@ -908,14 +928,16 @@ if ($buffer) {
 
 exit;
 
-// -------------------------------- //
-/* Media Query Breakpoint Reference */
-// -------------------------------- //
+
+// ----------------------------------------
+// === Media Query Breakpoint Reference ===
+// ----------------------------------------
 
 // ref: http://bradfrost.com/blog/post/7-habits-of-highly-effective-media-queries/
 
-/* Default Breakpoints */
-/* ------------------- */
+// -------------------
+// BioShip Breakpoints
+// -------------------
 // [320, 400, 480, 640, 768, 960, 1040, 1200]
 
 // @media only screen and (max-width: 319px) {}
@@ -928,9 +950,9 @@ exit;
 // @media only screen and (min-width: 1140px) and (max-width: 1199px) {}
 // @media only screen and (min-width: 1200px) {}
 
-
-/* Skeleton Boilerplate */
-/* -------------------- */
+// --------------------
+// Skeleton Boilerplate
+// --------------------
 // [400, 550, 750, 1000]
 // ref: http://getskeleton.com/
 
@@ -949,9 +971,9 @@ exit;
 /* Desktop HD */
 // @media only screen and (min-width : 1200px) {}
 
-
-/* Twitter Bootstrap */
-/* ----------------- */
+// -----------------
+// Twitter Bootstrap
+// -----------------
 // [320, 480, 758, 992, 1200]
 // http://getbootstrap.com/examples/grid/
 // https://scotch.io/tutorials/understanding-the-bootstrap-3-grid-system
@@ -971,9 +993,9 @@ exit;
 /* Large Devices, Wide Screens */
 // @media only screen and (min-width : 1200px) {}
 
-
-/* Foundation */
-/* ---------- */
+// ----------
+// Foundation
+// ----------
 // [various]
 // note: taken from Foundation 5
 // http://foundation.zurb.com/docs/media-queries.html

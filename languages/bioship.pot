@@ -1,1468 +1,1599 @@
-# Copyright (C) 2017 majick
+# Copyright (C) 2019 majick
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: BioShip 2.0.5\n"
+"Project-Id-Version: BioShip 2.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/bioship\n"
-"POT-Creation-Date: 2017-03-21 13:11:36+00:00\n"
+"POT-Creation-Date: 2019-03-19 06:43:38+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: admin/admin.php:124
-msgid "Show you appreciation for %1$s by helping us improve it! Opt in to "
-msgstr ""
-
-#: admin/admin.php:262
-msgid "Transfer Failed! Could not retrieve existing settings."
-msgstr ""
-
-#: admin/admin.php:309
-msgid "Transferred Existing Theme Settings to Titan Framework."
-msgstr ""
-
-#: admin/admin.php:380
-msgid "Theme Settings have been copied from "
-msgstr ""
-
-#: admin/admin.php:380
-msgid " to "
-msgstr ""
-
-#: admin/admin.php:383
-msgid "Theme Settings failed to copy to "
-msgstr ""
-
-#: admin/admin.php:387
-msgid "Copy Theme Settings failed! Could not retrieve settings for "
-msgstr ""
-
-#: admin/admin.php:433 admin/admin.php:434
-msgid "BioShip Options"
-msgstr ""
-
-#: admin/admin.php:519
-msgid "Live Preview"
-msgstr ""
-
-#: admin/admin.php:678
-msgid "Theme Options"
-msgstr ""
-
-#: admin/admin.php:698
-msgid "Logged in as "
-msgstr ""
-
-#: admin/admin.php:878
-msgid "News"
-msgstr ""
-
-#: admin/admin.php:879
-msgid "Docs"
-msgstr ""
-
-#: admin/admin.php:881
-msgid "Dev"
-msgstr ""
-
-#: admin/admin.php:906
-msgid "Check your file system owner/group permissions!"
-msgstr ""
-
-#: admin/admin.php:933
-msgid "Create Child Theme"
-msgstr ""
-
-#: admin/admin.php:935 admin/admin.php:953
-msgid "Note: alphanumeric and spaces only."
-msgstr ""
-
-#: admin/admin.php:935
-msgid "Create"
-msgstr ""
-
-#: admin/admin.php:951
-msgid "Clone Child Theme to"
-msgstr ""
-
-#: admin/admin.php:953
-msgid "Clone"
-msgstr ""
-
-#: admin/admin.php:962
-msgid "Info"
-msgstr ""
-
-#: admin/admin.php:966
-msgid "Skin"
-msgstr ""
-
-#: admin/admin.php:970
-msgid "Muscle"
-msgstr ""
-
-#: admin/admin.php:974
-msgid "Skeleton"
-msgstr ""
-
-#: admin/admin.php:978
-msgid "ALL"
-msgstr ""
-
-#: admin/admin.php:1343 admin/admin.php:3444 admin/admin.php:3533
-msgid "Whoops! Nonce has expired. Try reloading the page."
-msgstr ""
-
-#: admin/admin.php:1344 admin/admin.php:3445 admin/admin.php:3534
-msgid "Failed. Looks like you may need to login again!"
-msgstr ""
-
-#: admin/admin.php:1368
-msgid "BioShip Theme Info"
-msgstr ""
-
-#: admin/admin.php:1412
-msgid "Admin Notices"
-msgstr ""
-
-#: admin/admin.php:1424
-msgid "Theme Settings Tools"
-msgstr ""
-
-#: admin/admin.php:1437
-msgid "Theme Links"
-msgstr ""
-
-#: admin/admin.php:1444
-msgid "BioShip Documentation"
-msgstr ""
-
-#: admin/admin.php:1447
-msgid "Support Solutions"
-msgstr ""
-
-#: admin/admin.php:1448
-msgid "Features and Feedback"
-msgstr ""
-
-#: admin/admin.php:1450
-msgid "Development via GitHub"
-msgstr ""
-
-#: admin/admin.php:1452
-msgid "BioShip Extensions"
-msgstr ""
-
-#: admin/admin.php:1462
-msgid "WordQuest Alliance"
-msgstr ""
-
-#: admin/admin.php:1469
-msgid "Plugin Panel"
-msgstr ""
-
-#: admin/admin.php:1471
-msgid "Join the Alliance"
-msgstr ""
-
-#: admin/admin.php:1472
-msgid "Members Login"
-msgstr ""
-
-#: admin/admin.php:1473
-msgid "Solutions Forum"
-msgstr ""
-
-#: admin/admin.php:1474
-msgid "WordQuest Plugins"
-msgstr ""
-
-#: admin/admin.php:1486
-msgid "Recommended"
-msgstr ""
-
-#: admin/admin.php:1513 muscle.php:1473
-msgid "BioShip News"
-msgstr ""
-
-#: admin/admin.php:1526
-msgid "WordQuest News"
-msgstr ""
-
-#: admin/admin.php:1539
-msgid "Plugin Reviews"
-msgstr ""
-
-#: admin/admin.php:1580 admin/admin.php:1613
-msgid "Parent Theme"
-msgstr ""
-
-#: admin/admin.php:1598
+#: admin/admin.php:375
 msgid "Warning! Updating this Child Theme will lose any file customizations you have made! 'Cancel' to stop, 'OK' to update."
 msgstr ""
 
-#: admin/admin.php:1601
+#: admin/admin.php:377
 msgid "New Child Theme available.<br><a href=\"%2$s\" title=\"%3$s\" target=_blank>View v%4$s Details</a> or <a href=\"%5$s\">Update Now</a>.<br>"
 msgstr ""
 
-#: admin/admin.php:1622
+#: admin/admin.php:405
 msgid "Updating this Theme Framework will lose any file customizations not in your Child Theme. 'Cancel' to stop, 'OK' to update."
 msgstr ""
 
-#: admin/admin.php:1625
+#: admin/admin.php:407
 msgid "New Framework version available!<br><a href=\"%2$s\" title=\"%3$s\" target=_blank>v%4$s Details</a> or <a href=\"%5$s\">Update Now</a>.<br>"
 msgstr ""
 
-#: admin/admin.php:1647
-msgid "Error: Child Theme Name cannot be empty."
+#: admin/admin.php:523
+msgid "Show your appreciation for %1$s by helping us improve it! Opt in to diagnostic tracking and receive security and feature notifications."
 msgstr ""
 
-#: admin/admin.php:1648 admin/admin.php:1833
-msgid "Error. Letters, numbers and spaces only please!"
+#: admin/admin.php:584
+msgid "Theme Tools"
 msgstr ""
 
-#: admin/admin.php:1668 admin/admin.php:1844
-msgid "Aborted! Child Theme directory of that name already exists!"
+#: admin/admin.php:642 admin/admin.php:643 options.php:170
+msgid "BioShip Options"
 msgstr ""
 
-#: admin/admin.php:1669 admin/admin.php:1845
-msgid "Remove or rename the existing directory and try again."
+#: admin/admin.php:665 admin/admin.php:1002
+msgid "Theme Options"
 msgstr ""
 
-#: admin/admin.php:1685
-msgid "Aborted: Could not create Child Theme directory."
+#: admin/admin.php:688
+msgid "Customize Advanced"
 msgstr ""
 
-#: admin/admin.php:1686
-msgid "Check your permissions or do a"
+#: admin/admin.php:688
+msgid "Advanced Options"
 msgstr ""
 
-#: admin/admin.php:1686
-msgid "manual install"
+#: admin/admin.php:749
+msgid "Live Preview"
 msgstr ""
 
-#: admin/admin.php:1730
-msgid "Error: Child Theme source files missing"
+#: admin/admin.php:880 admin/admin.php:1943 muscle.php:2045
+msgid "Documentation"
 msgstr ""
 
-#: admin/admin.php:1755
-msgid "No Parent Theme settings! Child Theme set to default settings."
+#: admin/admin.php:1032
+msgid "Logged in as"
 msgstr ""
 
-#: admin/admin.php:1756
-msgid "See documentation to manually transfer settings between themes."
+#: admin/admin.php:1310
+msgid "Parent Theme"
 msgstr ""
 
-#: admin/admin.php:1760
-msgid "Parent Theme settings transferred to new Child Theme."
+#: admin/admin.php:1310
+msgid "BioShip Framework"
 msgstr ""
 
-#: admin/admin.php:1762
-msgid "Child Theme settings exist, Parent Theme settings not transferred."
+#: admin/admin.php:1312
+msgid "News"
 msgstr ""
 
-#: admin/admin.php:1785
-msgid "with errors"
+#: admin/admin.php:1313
+msgid "Docs"
 msgstr ""
 
-#: admin/admin.php:1786
-msgid "successfully"
+#: admin/admin.php:1315
+msgid "Dev"
 msgstr ""
 
-#: admin/admin.php:1789 admin/admin.php:1904
-msgid "New Child Theme"
+#: admin/admin.php:1342
+msgid "Check your file system owner/group permissions!"
 msgstr ""
 
-#: admin/admin.php:1789
-msgid "created"
+#: admin/admin.php:1369
+msgid "Create Child Theme"
 msgstr ""
 
-#: admin/admin.php:1790 admin/admin.php:1905
-msgid "Base Directory"
+#: admin/admin.php:1371 admin/admin.php:1390
+msgid "Note: alphanumeric and spaces only."
 msgstr ""
 
-#: admin/admin.php:1791 admin/admin.php:1906
-msgid "Theme Subdirectory"
+#: admin/admin.php:1371
+msgid "Create"
 msgstr ""
 
-#: admin/admin.php:1792 admin/admin.php:1907
-msgid "Activate it on your"
+#: admin/admin.php:1388
+msgid "Clone Child Theme to"
 msgstr ""
 
-#: admin/admin.php:1792 admin/admin.php:1907
-msgid "Themes Page"
+#: admin/admin.php:1390
+msgid "Clone"
 msgstr ""
 
-#: admin/admin.php:1798 admin/admin.php:1912
-msgid "or just"
+#: admin/admin.php:1399
+msgid "Info"
 msgstr ""
 
-#: admin/admin.php:1798 admin/admin.php:1912
-msgid "click here to activate it"
+#: admin/admin.php:1403
+msgid "Skin"
 msgstr ""
 
-#: admin/admin.php:1803 admin/admin.php:1916
-msgid "or"
+#: admin/admin.php:1407
+msgid "Muscle"
 msgstr ""
 
-#: admin/admin.php:1803 admin/admin.php:1916
-msgid "Theme Test Drive options without activating"
+#: admin/admin.php:1411
+msgid "Skeleton"
 msgstr ""
 
-#: admin/admin.php:1818 admin/admin.php:1819
-msgid "Error: Source Child Theme not specified."
+#: admin/admin.php:1415
+msgid "ALL"
 msgstr ""
 
-#: admin/admin.php:1824
-msgid "Error: Source Child Theme Settings are empty!"
+#: admin/admin.php:1771
+msgid "Save Settings"
 msgstr ""
 
-#: admin/admin.php:1828
-msgid "Cloning Aborted! Child Theme parent must be BioShip!"
-msgstr ""
-
-#: admin/admin.php:1832
-msgid "Error: New Child Theme Name cannot be empty."
-msgstr ""
-
-#: admin/admin.php:1835
-msgid "Aborted! Theme Settings already exist for this name!"
-msgstr ""
-
-#: admin/admin.php:1841
-msgid "Aborted! Source Child Theme directory does not exist!"
-msgstr ""
-
-#: admin/admin.php:1904
-msgid "cloned successfully."
-msgstr ""
-
-#: admin/admin.php:2038 admin/admin.php:2043 admin/admin.php:2050
-#: admin/admin.php:2056 admin/admin.php:2064 admin/admin.php:2105
-#: functions.php:926 functions.php:956
-msgid "Warning"
-msgstr ""
-
-#: admin/admin.php:2038 admin/admin.php:2043 admin/admin.php:2050
-#: admin/admin.php:2056 admin/admin.php:2064
-msgid "CSS Combine could not find"
-msgstr ""
-
-#: admin/admin.php:2105
-msgid "Foundation JS Combine could not find"
-msgstr ""
-
-#: admin/admin.php:2158
-msgid "Are you sure you want to Restore the Theme Settings Backup?"
-msgstr ""
-
-#: admin/admin.php:2159
-msgid "Are you sure you want to Import these Theme Settings?"
-msgstr ""
-
-#: admin/admin.php:2160
-msgid "Are you sure you want to Revert to Theme Settings prior to Import?"
-msgstr ""
-
-#: admin/admin.php:2201
-msgid "Backup"
-msgstr ""
-
-#: admin/admin.php:2205
-msgid "Restore"
-msgstr ""
-
-#: admin/admin.php:2208 admin/admin.php:2235
-msgid "Export"
-msgstr ""
-
-#: admin/admin.php:2211 admin/admin.php:2269
-msgid "Import"
-msgstr ""
-
-#: admin/admin.php:2232
-msgid "Export Format"
-msgstr ""
-
-#: admin/admin.php:2250
-msgid "Import Method"
-msgstr ""
-
-#: admin/admin.php:2251
-msgid "File Upload"
-msgstr ""
-
-#: admin/admin.php:2252
-msgid "Text Area"
-msgstr ""
-
-#: admin/admin.php:2264
-msgid "Select Theme Options file to Import"
-msgstr ""
-
-#: admin/admin.php:2303 admin/admin.php:2312
-msgid "Current Theme Settings User Backup has been Created!"
-msgstr ""
-
-#: admin/admin.php:2350
-msgid "Theme Settings Backup Restored! (You can switch back by using this method again.)"
-msgstr ""
-
-#: admin/admin.php:2477
-msgid "Failed: format not recognized. Please use valid XML or JSON only."
-msgstr ""
-
-#: admin/admin.php:2486
-msgid "Upload Error"
-msgstr ""
-
-#: admin/admin.php:2525
-msgid "Theme Settings have been Imported successfully!"
-msgstr ""
-
-#: admin/admin.php:2547
-msgid "Pre-Import Theme Settings have been reverted."
-msgstr ""
-
-#: admin/admin.php:2548
-msgid "(You can switch back to the Imported Settings by using this method again.)"
-msgstr ""
-
-#: admin/admin.php:2550
-msgid "Revert Failed! Pre-Import Theme Settings are empty or corrupt!"
-msgstr ""
-
-#: admin/admin.php:2622
-msgid "Invalid parameters."
-msgstr ""
-
-#: admin/admin.php:2630
-msgid "No file sent."
-msgstr ""
-
-#: admin/admin.php:2633 admin/admin.php:2640
-msgid "Exceeded filesize limit."
-msgstr ""
-
-#: admin/admin.php:2635
-msgid "Unknown errors."
-msgstr ""
-
-#: admin/admin.php:2642
-msgid "File is empty."
-msgstr ""
-
-#: admin/admin.php:2657
-msgid "Invalid file format."
-msgstr ""
-
-#: admin/admin.php:2665
-msgid "Invalid file extension."
-msgstr ""
-
-#: admin/admin.php:2882
-msgid "Theme Display Overrides"
-msgstr ""
-
-#: admin/admin.php:2898
-msgid "Featured Image"
-msgstr ""
-
-#: admin/admin.php:2899 admin/admin.php:2902 muscle.php:1582 options.php:3382
-msgid "Thumbnail"
-msgstr ""
-
-#: admin/admin.php:2903 options.php:3383
-msgid "Medium"
-msgstr ""
-
-#: admin/admin.php:2904 options.php:3384
-msgid "Large"
-msgstr ""
-
-#: admin/admin.php:2905
-msgid "Full Size"
-msgstr ""
-
-#: admin/admin.php:2905
-msgid "original"
-msgstr ""
-
-#: admin/admin.php:2978 options.php:2892
-msgid "Layout"
-msgstr ""
-
-#: admin/admin.php:2981 options.php:3012
-msgid "Sidebars"
-msgstr ""
-
-#: admin/admin.php:2984
-msgid "Content"
-msgstr ""
-
-#: admin/admin.php:2987 options.php:646
-msgid "Styles"
-msgstr ""
-
-#: admin/admin.php:3005
-msgid "Layout Display Overrides"
-msgstr ""
-
-#: admin/admin.php:3007
-msgid "No Wrap Margins"
-msgstr ""
-
-#: admin/admin.php:3010
-msgid "Hide Header"
-msgstr ""
-
-#: admin/admin.php:3013
-msgid "Hide Footer"
-msgstr ""
-
-#: admin/admin.php:3023
-msgid "Navigation Display"
-msgstr ""
-
-#: admin/admin.php:3023 admin/admin.php:3138 admin/admin.php:3189
-#: admin/admin.php:3196
-msgid "Hide"
-msgstr ""
-
-#: admin/admin.php:3024
-msgid "Main Nav Menu"
-msgstr ""
-
-#: admin/admin.php:3027
-msgid "Secondary Nav Menu"
-msgstr ""
-
-#: admin/admin.php:3030
-msgid "Header Nav Menu"
-msgstr ""
-
-#: admin/admin.php:3033
-msgid "Footer Nav Menu"
-msgstr ""
-
-#: admin/admin.php:3036 hooks.php:146 hooks.php:200
-msgid "Breadcrumbs"
-msgstr ""
-
-#: admin/admin.php:3039
-msgid "Post/Page Navi"
-msgstr ""
-
-#: admin/admin.php:3054 admin/admin.php:3092 admin/admin.php:3093
-#: admin/admin.php:3123 admin/admin.php:3124
-msgid "Default"
-msgstr ""
-
-#: admin/admin.php:3055
-msgid " 1 "
-msgstr ""
-
-#: admin/admin.php:3055
-msgid " 2 "
-msgstr ""
-
-#: admin/admin.php:3056
-msgid " 3 "
-msgstr ""
-
-#: admin/admin.php:3056
-msgid " 4 "
-msgstr ""
-
-#: admin/admin.php:3057
-msgid " 5 "
-msgstr ""
-
-#: admin/admin.php:3057
-msgid " 6 "
-msgstr ""
-
-#: admin/admin.php:3058
-msgid " 7 "
-msgstr ""
-
-#: admin/admin.php:3058
-msgid " 8 "
-msgstr ""
-
-#: admin/admin.php:3061
-msgid " 9 "
-msgstr ""
-
-#: admin/admin.php:3061
-msgid "10 "
-msgstr ""
-
-#: admin/admin.php:3062
-msgid "11 "
-msgstr ""
-
-#: admin/admin.php:3062
-msgid "12 "
-msgstr ""
-
-#: admin/admin.php:3065
-msgid "13 "
-msgstr ""
-
-#: admin/admin.php:3065
-msgid "14 "
-msgstr ""
-
-#: admin/admin.php:3066
-msgid "15 "
-msgstr ""
-
-#: admin/admin.php:3066
-msgid "16 "
-msgstr ""
-
-#: admin/admin.php:3067
-msgid "17 "
-msgstr ""
-
-#: admin/admin.php:3067
-msgid "18 "
-msgstr ""
-
-#: admin/admin.php:3068
-msgid "19 "
-msgstr ""
-
-#: admin/admin.php:3068
-msgid "20 "
-msgstr ""
-
-#: admin/admin.php:3069
-msgid "21 "
-msgstr ""
-
-#: admin/admin.php:3069
-msgid "22 "
-msgstr ""
-
-#: admin/admin.php:3070
-msgid "23 "
-msgstr ""
-
-#: admin/admin.php:3070
-msgid "24 "
-msgstr ""
-
-#: admin/admin.php:3072
-msgid "Content Columns"
-msgstr ""
-
-#: admin/admin.php:3079
+#: admin/admin.php:1774 admin/admin.php:2942 skeleton.php:876
 msgid "Sidebar"
 msgstr ""
 
-#: admin/admin.php:3080 admin/admin.php:3142
-msgid "SubSidebar"
+#: admin/admin.php:1774 admin/customizer.php:1262
+msgid "Options"
 msgstr ""
 
-#: admin/admin.php:3081
-msgid "Columns"
+#: admin/admin.php:1813 admin/admin.php:3479 admin/admin.php:3620
+msgid "Whoops! Nonce has expired. Try reloading the page."
 msgstr ""
 
-#: admin/admin.php:3092 admin/admin.php:3093
-msgid "None"
+#: admin/admin.php:1814 admin/admin.php:3485
+msgid "Failed. Looks like you may need to login again!"
 msgstr ""
 
-#: admin/admin.php:3092 admin/admin.php:3093
-msgid "Blank"
+#: admin/admin.php:1858
+msgid "Oops! Your session has timed out."
 msgstr ""
 
-#: admin/admin.php:3092
-msgid "Primary"
+#: admin/admin.php:1859
+msgid "Do not attempt to save changes - login again in another window first."
 msgstr ""
 
-#: admin/admin.php:3093
-msgid "Subsidiary"
+#: admin/admin.php:1879
+msgid "BioShip Theme Info"
 msgstr ""
 
-#: admin/admin.php:3094 skeleton.php:1953 skull.php:2080
-msgid "Page"
+#: admin/admin.php:1928
+msgid "Admin Notices"
 msgstr ""
 
-#: admin/admin.php:3094 skeleton.php:1954 skull.php:2081
-msgid "Post"
+#: admin/admin.php:1942
+msgid "Welcome!"
 msgstr ""
 
-#: admin/admin.php:3095
-msgid "Front"
+#: admin/admin.php:1956
+msgid "Theme Settings Tools"
 msgstr ""
 
-#: admin/admin.php:3095
-msgid "Home"
+#: admin/admin.php:1969
+msgid "Theme Links"
 msgstr ""
 
-#: admin/admin.php:3095
-msgid "Archive"
+#: admin/admin.php:1976
+msgid "BioShip Documentation"
 msgstr ""
 
-#: admin/admin.php:3096
-msgid "Category"
+#: admin/admin.php:1980
+msgid "Support Solutions"
 msgstr ""
 
-#: admin/admin.php:3096
-msgid "Taxonomy"
+#: admin/admin.php:1981
+msgid "Features and Feedback"
 msgstr ""
 
-#: admin/admin.php:3097
-msgid "Tag"
+#: admin/admin.php:1983
+msgid "Development via GitHub"
 msgstr ""
 
-#: admin/admin.php:3097
-msgid "Author"
+#: admin/admin.php:1985
+msgid "BioShip Extensions"
 msgstr ""
 
-#: admin/admin.php:3097
-msgid "Date"
+#: admin/admin.php:1995
+msgid "WordQuest Alliance"
 msgstr ""
 
-#: admin/admin.php:3098
-msgid "Search"
+#: admin/admin.php:2003
+msgid "Plugin Panel"
 msgstr ""
 
-#: admin/admin.php:3098
-msgid "NotFound"
+#: admin/admin.php:2005
+msgid "Join the Alliance"
 msgstr ""
 
-#: admin/admin.php:3123 admin/customizer.php:1567
-msgid "Left"
+#: admin/admin.php:2006
+msgid "Members Login"
 msgstr ""
 
-#: admin/admin.php:3123 admin/customizer.php:1568
-msgid "Right"
+#: admin/admin.php:2007
+msgid "Solutions Forum"
 msgstr ""
 
-#: admin/admin.php:3124
-msgid "Opposite"
+#: admin/admin.php:2008
+msgid "WordQuest Plugins"
 msgstr ""
 
-#: admin/admin.php:3125
-msgid "Internal"
+#: admin/admin.php:2020
+msgid "Recommended"
 msgstr ""
 
-#: admin/admin.php:3125
-msgid "External"
+#: admin/admin.php:2048 muscle.php:1994
+msgid "BioShip News"
 msgstr ""
 
-#: admin/admin.php:3138
-msgid "Sidebar Display"
+#: admin/admin.php:2061
+msgid "WordQuest News"
 msgstr ""
 
-#: admin/admin.php:3139
-msgid "Main Sidebar"
+#: admin/admin.php:2074
+msgid "Plugin Reviews"
 msgstr ""
 
-#: admin/admin.php:3145
-msgid "Header Widgets"
+#: admin/admin.php:2128
+msgid "Welcome aboard"
 msgstr ""
 
-#: admin/admin.php:3148
-msgid "Footer Widgets"
+#: admin/admin.php:2129
+msgid "And thanks for choosing to pilot BioShip..."
 msgstr ""
 
-#: admin/admin.php:3151 admin/admin.php:3154 admin/admin.php:3157
-#: admin/admin.php:3160
-msgid "Footer Area"
+#: admin/admin.php:2136 admin/admin.php:2159 admin/admin.php:2163
+msgid "QuickStart Guide"
 msgstr ""
 
-#: admin/admin.php:3175 admin/customizer.php:1577
+#: admin/admin.php:2159
+msgid "Show"
+msgstr ""
+
+#: admin/admin.php:2163 admin/admin.php:2811 admin/admin.php:2822
+#: admin/admin.php:3056 admin/admin.php:3155
+msgid "Hide"
+msgstr ""
+
+#: admin/admin.php:2236 admin/admin.php:2241 admin/admin.php:2248
+#: admin/admin.php:2255 admin/admin.php:2264 admin/admin.php:2319
+#: functions.php:1521 functions.php:1571
+msgid "Warning"
+msgstr ""
+
+#: admin/admin.php:2236 admin/admin.php:2241 admin/admin.php:2248
+#: admin/admin.php:2255 admin/admin.php:2264
+msgid "CSS Combine could not find"
+msgstr ""
+
+#: admin/admin.php:2319
+msgid "Foundation JS Combine could not find"
+msgstr ""
+
+#: admin/admin.php:2595
+msgid "Theme Display Overrides"
+msgstr ""
+
+#: admin/admin.php:2710
+msgid "Content"
+msgstr ""
+
+#: admin/admin.php:2717 options.php:3401
+msgid "Sidebars"
+msgstr ""
+
+#: admin/admin.php:2724 options.php:3273
+msgid "Layout"
+msgstr ""
+
+#: admin/admin.php:2731 options.php:794
+msgid "Styles"
+msgstr ""
+
+#: admin/admin.php:2747
+msgid "Featured Image"
+msgstr ""
+
+#: admin/admin.php:2748 admin/admin.php:2750 hooks.php:193 muscle.php:2117
+#: options.php:3806
+msgid "Thumbnail"
+msgstr ""
+
+#: admin/admin.php:2751 options.php:3807
+msgid "Medium"
+msgstr ""
+
+#: admin/admin.php:2752 options.php:3808
+msgid "Large"
+msgstr ""
+
+#: admin/admin.php:2753
+msgid "Full Size"
+msgstr ""
+
+#: admin/admin.php:2753
+msgid "original"
+msgstr ""
+
+#: admin/admin.php:2795 admin/customizer.php:2051
 msgid "Size"
 msgstr ""
 
-#: admin/admin.php:3175
+#: admin/admin.php:2795
 msgid "default"
 msgstr ""
 
-#: admin/admin.php:3179
+#: admin/admin.php:2798
 msgid "Theme Settings Default"
 msgstr ""
 
-#: admin/admin.php:3182
+#: admin/admin.php:2801
 msgid "No Thumbail Output"
 msgstr ""
 
-#: admin/admin.php:3195
+#: admin/admin.php:2821
 msgid "Content Display"
 msgstr ""
 
-#: admin/admin.php:3197
+#: admin/admin.php:2825
 msgid "Title"
 msgstr ""
 
-#: admin/admin.php:3201
+#: admin/admin.php:2831
 msgid "Subtitle"
 msgstr ""
 
-#: admin/admin.php:3205
+#: admin/admin.php:2837
 msgid "Top Meta"
 msgstr ""
 
-#: admin/admin.php:3209
+#: admin/admin.php:2843
 msgid "Bottom Meta"
 msgstr ""
 
-#: admin/admin.php:3213 options.php:2522
+#: admin/admin.php:2849 options.php:2870
 msgid "Author Bio"
 msgstr ""
 
-#: admin/admin.php:3221
+#: admin/admin.php:2861
 msgid "Content Filter"
 msgstr ""
 
-#: admin/admin.php:3221
+#: admin/admin.php:2862
 msgid "Disable"
 msgstr ""
 
-#: admin/admin.php:3272
+#: admin/admin.php:2890 admin/admin.php:3108 admin/admin.php:3195
+msgid "Saved!"
+msgstr ""
+
+#: admin/admin.php:2892 admin/admin.php:3110 admin/admin.php:3197
+msgid "Save Overrides"
+msgstr ""
+
+#: admin/admin.php:2909 admin/admin.php:2968 admin/admin.php:2969
+#: admin/admin.php:3026 admin/admin.php:3040 options.php:3314 options.php:3957
+#: options.php:3969 options.php:3980 options.php:3991 options.php:4002
+msgid "Default"
+msgstr ""
+
+#: admin/admin.php:2910
+msgid "1"
+msgstr ""
+
+#: admin/admin.php:2910
+msgid "2"
+msgstr ""
+
+#: admin/admin.php:2911
+msgid "3"
+msgstr ""
+
+#: admin/admin.php:2911
+msgid "4"
+msgstr ""
+
+#: admin/admin.php:2912
+msgid "5"
+msgstr ""
+
+#: admin/admin.php:2912
+msgid "6"
+msgstr ""
+
+#: admin/admin.php:2913
+msgid "7"
+msgstr ""
+
+#: admin/admin.php:2913
+msgid "8"
+msgstr ""
+
+#: admin/admin.php:2916
+msgid "9"
+msgstr ""
+
+#: admin/admin.php:2916
+msgid "10"
+msgstr ""
+
+#: admin/admin.php:2917
+msgid "11"
+msgstr ""
+
+#: admin/admin.php:2917
+msgid "12"
+msgstr ""
+
+#: admin/admin.php:2920
+msgid "13"
+msgstr ""
+
+#: admin/admin.php:2920
+msgid "14"
+msgstr ""
+
+#: admin/admin.php:2921
+msgid "15"
+msgstr ""
+
+#: admin/admin.php:2921
+msgid "16"
+msgstr ""
+
+#: admin/admin.php:2922
+msgid "17"
+msgstr ""
+
+#: admin/admin.php:2922
+msgid "18"
+msgstr ""
+
+#: admin/admin.php:2923
+msgid "19"
+msgstr ""
+
+#: admin/admin.php:2923
+msgid "20"
+msgstr ""
+
+#: admin/admin.php:2924
+msgid "21"
+msgstr ""
+
+#: admin/admin.php:2924
+msgid "22"
+msgstr ""
+
+#: admin/admin.php:2925
+msgid "23"
+msgstr ""
+
+#: admin/admin.php:2925
+msgid "24"
+msgstr ""
+
+#: admin/admin.php:2930
+msgid "Content Columns"
+msgstr ""
+
+#: admin/admin.php:2943 admin/admin.php:3065
+msgid "SubSidebar"
+msgstr ""
+
+#: admin/admin.php:2944
+msgid "Columns"
+msgstr ""
+
+#: admin/admin.php:2968 admin/admin.php:2969
+msgid "None"
+msgstr ""
+
+#: admin/admin.php:2968 admin/admin.php:2969
+msgid "Blank"
+msgstr ""
+
+#: admin/admin.php:2968
+msgid "Primary"
+msgstr ""
+
+#: admin/admin.php:2969
+msgid "Subsidiary"
+msgstr ""
+
+#: admin/admin.php:2972 skeleton.php:2501 skull.php:2579
+msgid "Page"
+msgstr ""
+
+#: admin/admin.php:2972 skeleton.php:2502 skull.php:2580
+msgid "Post"
+msgstr ""
+
+#: admin/admin.php:2973
+msgid "Front"
+msgstr ""
+
+#: admin/admin.php:2973
+msgid "Home"
+msgstr ""
+
+#: admin/admin.php:2973
+msgid "Archive"
+msgstr ""
+
+#: admin/admin.php:2974
+msgid "Category"
+msgstr ""
+
+#: admin/admin.php:2974
+msgid "Taxonomy"
+msgstr ""
+
+#: admin/admin.php:2975
+msgid "Tag"
+msgstr ""
+
+#: admin/admin.php:2975
+msgid "Author"
+msgstr ""
+
+#: admin/admin.php:2975
+msgid "Date"
+msgstr ""
+
+#: admin/admin.php:2976
+msgid "Search"
+msgstr ""
+
+#: admin/admin.php:2976
+msgid "NotFound"
+msgstr ""
+
+#: admin/admin.php:2979
+msgid "Custom"
+msgstr ""
+
+#: admin/admin.php:2984
+msgid "Template"
+msgstr ""
+
+#: admin/admin.php:2986
+msgid "Slug"
+msgstr ""
+
+#: admin/admin.php:3026 admin/customizer.php:2041
+msgid "Left"
+msgstr ""
+
+#: admin/admin.php:3026 admin/customizer.php:2042
+msgid "Right"
+msgstr ""
+
+#: admin/admin.php:3029
+msgid "Position"
+msgstr ""
+
+#: admin/admin.php:3040
+msgid "Opposite"
+msgstr ""
+
+#: admin/admin.php:3041
+msgid "Internal"
+msgstr ""
+
+#: admin/admin.php:3041
+msgid "External"
+msgstr ""
+
+#: admin/admin.php:3055
+msgid "Sidebar Display"
+msgstr ""
+
+#: admin/admin.php:3059
+msgid "Main Sidebar"
+msgstr ""
+
+#: admin/admin.php:3071
+msgid "Header Widgets"
+msgstr ""
+
+#: admin/admin.php:3077
+msgid "Footer Widgets"
+msgstr ""
+
+#: admin/admin.php:3083 admin/admin.php:3089 admin/admin.php:3095
+#: admin/admin.php:3101
+msgid "Footer Area"
+msgstr ""
+
+#: admin/admin.php:3125
+msgid "Layout Display Overrides"
+msgstr ""
+
+#: admin/admin.php:3130
+msgid "No Wrap Margins"
+msgstr ""
+
+#: admin/admin.php:3136
+msgid "Hide Header"
+msgstr ""
+
+#: admin/admin.php:3142
+msgid "Hide Footer"
+msgstr ""
+
+#: admin/admin.php:3154
+msgid "Navigation Display"
+msgstr ""
+
+#: admin/admin.php:3158
+msgid "Main Nav Menu"
+msgstr ""
+
+#: admin/admin.php:3164
+msgid "Secondary Nav Menu"
+msgstr ""
+
+#: admin/admin.php:3170
+msgid "Header Nav Menu"
+msgstr ""
+
+#: admin/admin.php:3176
+msgid "Footer Nav Menu"
+msgstr ""
+
+#: admin/admin.php:3182 hooks.php:222
+msgid "Breadcrumbs"
+msgstr ""
+
+#: admin/admin.php:3188
+msgid "Post/Page Navi"
+msgstr ""
+
+#: admin/admin.php:3253
 msgid "Post Specific CSS Style Rules"
 msgstr ""
 
-#: admin/admin.php:3273
+#: admin/admin.php:3254
 msgid "Expand"
 msgstr ""
 
-#: admin/admin.php:3274
+#: admin/admin.php:3255
 msgid "Collapse"
 msgstr ""
 
-#: admin/admin.php:3278
+#: admin/admin.php:3262
 msgid "CSS Saved!"
 msgstr ""
 
-#: admin/admin.php:3279
+#: admin/admin.php:3263
 msgid "QuickSave CSS"
 msgstr ""
 
-#: admin/admin.php:3679
+#: admin/admin.php:3484 admin/admin.php:3627
+msgid "Failed! You do not have permission to edit this post."
+msgstr ""
+
+#: admin/admin.php:3628
+msgid "Failed! Looks like you may need to login again!"
+msgstr ""
+
+#: admin/admin.php:3686
+msgid "Your session has timed out. Please Login again to continue editing."
+msgstr ""
+
+#: admin/admin.php:3889
 msgid "BioShip Theme Framework Recommended Plugins"
 msgstr ""
 
-#: admin/admin.php:3791
+#: admin/admin.php:4034
 msgid "BioShip Theme Framework"
 msgstr ""
 
-#: admin/admin.php:3792
+#: admin/admin.php:4035
 msgid "Recommended Plugins"
 msgstr ""
 
-#: admin/admin.php:3814
+#: admin/admin.php:4057
 msgid "Install Recommended Plugins"
 msgstr ""
 
-#: admin/admin.php:3815
+#: admin/admin.php:4058
 msgid "Theme Plugins"
 msgstr ""
 
-#: admin/admin.php:3816
+#: admin/admin.php:4059
 msgid "Installing Plugin: %s"
 msgstr ""
 
-#: admin/admin.php:3817
+#: admin/admin.php:4060
 msgid "Something went wrong with the plugin API."
 msgstr ""
 
-#: admin/admin.php:3818
+#: admin/admin.php:4061
 msgid "This theme requires the following plugin: %1$s."
 msgid_plural "This theme requires the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3823
+#: admin/admin.php:4066
 msgid "This theme recommends the following plugin: %1$s."
 msgid_plural "This theme recommends the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3828
+#: admin/admin.php:4071
 msgid "Sorry, but you do not have the correct permissions to install the %1$s plugin."
 msgid_plural "Sorry, but you do not have the correct permissions to install the %1$s plugins."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3833
+#: admin/admin.php:4076
 msgid "The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s."
 msgid_plural "The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3838
+#: admin/admin.php:4081
 msgid "There is a plugin update available for: %1$s."
 msgid_plural "There are updates available for the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3843
+#: admin/admin.php:4086
 msgid "Sorry, but you do not have the correct permissions to update the %1$s plugin."
 msgid_plural "Sorry, but you do not have the correct permissions to update the %1$s plugins."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3848
+#: admin/admin.php:4091
 msgid "Warning! The following required plugin is currently inactive: %1$s."
 msgid_plural "Warning! The following required plugins are currently inactive: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3853
+#: admin/admin.php:4096
 msgid "The following recommended plugin is currently inactive: %1$s."
 msgid_plural "The following recommended plugins are currently inactive: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3858
+#: admin/admin.php:4101
 msgid "Sorry, but you do not have the correct permissions to activate the %1$s plugin."
 msgid_plural "Sorry, but you do not have the correct permissions to activate the %1$s plugins."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3863
+#: admin/admin.php:4106
 msgid "Begin installing plugin"
 msgid_plural "Begin installing plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3864
+#: admin/admin.php:4107
 msgid "Begin updating plugin"
 msgid_plural "Begin updating plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3865
+#: admin/admin.php:4108
 msgid "Begin activating plugin"
 msgid_plural "Begin activating plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin.php:3866
+#: admin/admin.php:4109
 msgid "Return to Recommended Plugins Installer"
 msgstr ""
 
-#: admin/admin.php:3867
+#: admin/admin.php:4110
 msgid "Plugin activated successfully."
 msgstr ""
 
-#: admin/admin.php:3868
+#: admin/admin.php:4111
 msgid "The following plugin was activated successfully:"
 msgstr ""
 
-#: admin/admin.php:3869
+#: admin/admin.php:4112
 msgid "No action taken. Plugin %1$s was already active."
 msgstr ""
 
-#: admin/admin.php:3870
+#: admin/admin.php:4113
 msgid "Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin."
 msgstr ""
 
-#: admin/admin.php:3871
+#: admin/admin.php:4114
 msgid "All plugins installed and activated successfully. %1$s"
 msgstr ""
 
-#: admin/admin.php:3872
+#: admin/admin.php:4115
 msgid "Please contact the administrator of this site for help."
 msgstr ""
 
-#: admin/customizer.php:302 admin/customizer.php:952
+#: admin/customizer.php:359 admin/customizer.php:1248
 msgid "You are customizing %s"
 msgstr ""
 
-#: admin/customizer.php:496
+#: admin/customizer.php:683
 msgid "Site Options"
 msgstr ""
 
-#: admin/customizer.php:549
+#: admin/customizer.php:766
 msgid "Skin Options"
 msgstr ""
 
-#: admin/customizer.php:550
+#: admin/customizer.php:767
 msgid "All the Skin Layer Options"
 msgstr ""
 
-#: admin/customizer.php:554
+#: admin/customizer.php:771
 msgid "Muscle Options"
 msgstr ""
 
-#: admin/customizer.php:555
+#: admin/customizer.php:772
 msgid "All the Muscle Layer Options"
 msgstr ""
 
-#: admin/customizer.php:559
+#: admin/customizer.php:776
 msgid "Skeleton Options"
 msgstr ""
 
-#: admin/customizer.php:560
+#: admin/customizer.php:777
 msgid "All the Skeleton Layer Options"
 msgstr ""
 
-#: admin/customizer.php:926
+#: admin/customizer.php:1216
 msgid "The Customizer lets you preview live style changes before applying them. You can also navigate to preview other pages on your site."
 msgstr ""
 
-#: admin/customizer.php:933
+#: admin/customizer.php:1224
 msgid "Feeling restricted?"
 msgstr ""
 
-#: admin/customizer.php:934
+#: admin/customizer.php:1225
 msgid "Access All Options via Titan"
 msgstr ""
 
-#: admin/customizer.php:943
+#: admin/customizer.php:1234
 msgid "Feel restricted?"
 msgstr ""
 
-#: admin/customizer.php:944
+#: admin/customizer.php:1235
 msgid "Install Titan Framework"
 msgstr ""
 
-#: admin/customizer.php:945
+#: admin/customizer.php:1236
 msgid "To access All Options via Titan"
 msgstr ""
 
-#: admin/customizer.php:966
-msgid "Options"
-msgstr ""
-
-#: admin/customizer.php:967 admin/customizer.php:968
+#: admin/customizer.php:1263 admin/customizer.php:1264
 msgid "General"
 msgstr ""
 
-#: admin/customizer.php:969 admin/customizer.php:970
+#: admin/customizer.php:1265 admin/customizer.php:1266
 msgid "Advanced"
 msgstr ""
 
-#: admin/customizer.php:971 admin/customizer.php:972 admin/customizer.php:1539
+#: admin/customizer.php:1267 admin/customizer.php:1268
+#: admin/customizer.php:2013
 msgid "All"
 msgstr ""
 
-#: admin/customizer.php:1512
+#: admin/customizer.php:1986
 msgid "Background Color"
 msgstr ""
 
-#: admin/customizer.php:1513 options.php:784
+#: admin/customizer.php:1987 options.php:944
 msgid "Background Image"
 msgstr ""
 
-#: admin/customizer.php:1514 options.php:824
+#: admin/customizer.php:1988 options.php:987
 msgid "No Repeat"
 msgstr ""
 
-#: admin/customizer.php:1515
+#: admin/customizer.php:1989
 msgid "Repeat All"
 msgstr ""
 
-#: admin/customizer.php:1516
+#: admin/customizer.php:1990
 msgid "Repeat Horizontally"
 msgstr ""
 
-#: admin/customizer.php:1517
+#: admin/customizer.php:1991
 msgid "Repeat Vertically"
 msgstr ""
 
-#: admin/customizer.php:1518 options.php:826 options.php:843
+#: admin/customizer.php:1992 options.php:989 options.php:1007
 msgid "Inherit"
 msgstr ""
 
-#: admin/customizer.php:1519 options.php:828
+#: admin/customizer.php:1993 options.php:991
 msgid "Background Repeat"
 msgstr ""
 
-#: admin/customizer.php:1520
+#: admin/customizer.php:1994
 msgid "Cover"
 msgstr ""
 
-#: admin/customizer.php:1521
+#: admin/customizer.php:1995
 msgid "Contain"
 msgstr ""
 
-#: admin/customizer.php:1522 options.php:810
+#: admin/customizer.php:1996 options.php:972
 msgid "Background Size"
 msgstr ""
 
-#: admin/customizer.php:1523 options.php:842
+#: admin/customizer.php:1997 options.php:1006
 msgid "Fixed"
 msgstr ""
 
-#: admin/customizer.php:1524 options.php:842
+#: admin/customizer.php:1998 options.php:1006
 msgid "Scroll"
 msgstr ""
 
-#: admin/customizer.php:1525 options.php:845
+#: admin/customizer.php:1999 options.php:1009
 msgid "Background Attachment"
 msgstr ""
 
-#: admin/customizer.php:1526
+#: admin/customizer.php:2000
 msgid "Left Top"
 msgstr ""
 
-#: admin/customizer.php:1527
+#: admin/customizer.php:2001
 msgid "Left Center"
 msgstr ""
 
-#: admin/customizer.php:1528
+#: admin/customizer.php:2002
 msgid "Left Bottom"
 msgstr ""
 
-#: admin/customizer.php:1529
+#: admin/customizer.php:2003
 msgid "Right Top"
 msgstr ""
 
-#: admin/customizer.php:1530
+#: admin/customizer.php:2004
 msgid "Right Center"
 msgstr ""
 
-#: admin/customizer.php:1531
+#: admin/customizer.php:2005
 msgid "Right Bottom"
 msgstr ""
 
-#: admin/customizer.php:1532
+#: admin/customizer.php:2006
 msgid "Center Top"
 msgstr ""
 
-#: admin/customizer.php:1533 options.php:3364
+#: admin/customizer.php:2007 options.php:3787
 msgid "Center Center"
 msgstr ""
 
-#: admin/customizer.php:1534
+#: admin/customizer.php:2008
 msgid "Center Bottom"
 msgstr ""
 
-#: admin/customizer.php:1535 options.php:797
+#: admin/customizer.php:2009 options.php:958
 msgid "Background Position"
 msgstr ""
 
-#: admin/customizer.php:1536
+#: admin/customizer.php:2010
 msgid "Background Opacity"
 msgstr ""
 
-#: admin/customizer.php:1537
+#: admin/customizer.php:2011
 msgid "ON"
 msgstr ""
 
-#: admin/customizer.php:1538
+#: admin/customizer.php:2012
 msgid "OFF"
 msgstr ""
 
-#: admin/customizer.php:1540
+#: admin/customizer.php:2014
 msgid "Cyrillic"
 msgstr ""
 
-#: admin/customizer.php:1541
+#: admin/customizer.php:2015
 msgid "Cyrillic Extended"
 msgstr ""
 
-#: admin/customizer.php:1542
+#: admin/customizer.php:2016
 msgid "Devanagari"
 msgstr ""
 
-#: admin/customizer.php:1543
+#: admin/customizer.php:2017
 msgid "Greek"
 msgstr ""
 
-#: admin/customizer.php:1544
+#: admin/customizer.php:2018
 msgid "Greek Extended"
 msgstr ""
 
-#: admin/customizer.php:1545
+#: admin/customizer.php:2019
 msgid "Khmer"
 msgstr ""
 
-#: admin/customizer.php:1546
+#: admin/customizer.php:2020
 msgid "Latin"
 msgstr ""
 
-#: admin/customizer.php:1547
+#: admin/customizer.php:2021
 msgid "Latin Extended"
 msgstr ""
 
-#: admin/customizer.php:1548
+#: admin/customizer.php:2022
 msgid "Vietnamese"
 msgstr ""
 
-#: admin/customizer.php:1549
+#: admin/customizer.php:2023
 msgid "Hebrew"
 msgstr ""
 
-#: admin/customizer.php:1550
+#: admin/customizer.php:2024
 msgid "Arabic"
 msgstr ""
 
-#: admin/customizer.php:1551
+#: admin/customizer.php:2025
 msgid "Bengali"
 msgstr ""
 
-#: admin/customizer.php:1552
+#: admin/customizer.php:2026
 msgid "Gujarati"
 msgstr ""
 
-#: admin/customizer.php:1553
+#: admin/customizer.php:2027
 msgid "Tamil"
 msgstr ""
 
-#: admin/customizer.php:1554
+#: admin/customizer.php:2028
 msgid "Telugu"
 msgstr ""
 
-#: admin/customizer.php:1555
+#: admin/customizer.php:2029
 msgid "Thai"
 msgstr ""
 
-#: admin/customizer.php:1556
+#: admin/customizer.php:2030
 msgctxt "font style"
 msgid "Serif"
 msgstr ""
 
-#: admin/customizer.php:1557
+#: admin/customizer.php:2031
 msgctxt "font style"
 msgid "Sans Serif"
 msgstr ""
 
-#: admin/customizer.php:1558
+#: admin/customizer.php:2032
 msgctxt "font style"
 msgid "Monospace"
 msgstr ""
 
-#: admin/customizer.php:1559
+#: admin/customizer.php:2033
 msgid "Font Family"
 msgstr ""
 
-#: admin/customizer.php:1560
+#: admin/customizer.php:2034
 msgid "Font Size"
 msgstr ""
 
-#: admin/customizer.php:1561
+#: admin/customizer.php:2035
 msgid "Font Weight"
 msgstr ""
 
-#: admin/customizer.php:1562
+#: admin/customizer.php:2036
 msgid "Line Height"
 msgstr ""
 
-#: admin/customizer.php:1563
+#: admin/customizer.php:2037
 msgid "Font Style"
 msgstr ""
 
-#: admin/customizer.php:1564
+#: admin/customizer.php:2038
 msgid "Letter Spacing"
 msgstr ""
 
-#: admin/customizer.php:1565
+#: admin/customizer.php:2039
 msgid "Top"
 msgstr ""
 
-#: admin/customizer.php:1566
+#: admin/customizer.php:2040
 msgid "Bottom"
 msgstr ""
 
-#: admin/customizer.php:1569
+#: admin/customizer.php:2043
 msgid "Color"
 msgstr ""
 
-#: admin/customizer.php:1570
+#: admin/customizer.php:2044
 msgid "Add Image"
 msgstr ""
 
-#: admin/customizer.php:1571
+#: admin/customizer.php:2045
 msgid "Change Image"
 msgstr ""
 
-#: admin/customizer.php:1572
+#: admin/customizer.php:2046
 msgid "Remove"
 msgstr ""
 
-#: admin/customizer.php:1573
+#: admin/customizer.php:2047
 msgid "No Image Selected"
 msgstr ""
 
-#: admin/customizer.php:1574
+#: admin/customizer.php:2048
 msgid "Select a font-family"
 msgstr ""
 
-#: admin/customizer.php:1575
+#: admin/customizer.php:2049
 msgid "Variant"
 msgstr ""
 
-#: admin/customizer.php:1576
+#: admin/customizer.php:2050
 msgid "Subset"
 msgstr ""
 
-#: admin/customizer.php:1578
+#: admin/customizer.php:2052
 msgid "Height"
 msgstr ""
 
-#: admin/customizer.php:1579
+#: admin/customizer.php:2053
 msgid "Spacing"
 msgstr ""
 
-#: admin/customizer.php:1580
+#: admin/customizer.php:2054
 msgid "Ultra-Light 100"
 msgstr ""
 
-#: admin/customizer.php:1581
+#: admin/customizer.php:2055
 msgid "Ultra-Light 100 Italic"
 msgstr ""
 
-#: admin/customizer.php:1582
+#: admin/customizer.php:2056
 msgid "Light 200"
 msgstr ""
 
-#: admin/customizer.php:1583
+#: admin/customizer.php:2057
 msgid "Light 200 Italic"
 msgstr ""
 
-#: admin/customizer.php:1584
+#: admin/customizer.php:2058
 msgid "Book 300"
 msgstr ""
 
-#: admin/customizer.php:1585
+#: admin/customizer.php:2059
 msgid "Book 300 Italic"
 msgstr ""
 
-#: admin/customizer.php:1586
+#: admin/customizer.php:2060
 msgid "Normal 400"
 msgstr ""
 
-#: admin/customizer.php:1587
+#: admin/customizer.php:2061
 msgid "Normal 400 Italic"
 msgstr ""
 
-#: admin/customizer.php:1588
+#: admin/customizer.php:2062
 msgid "Medium 500"
 msgstr ""
 
-#: admin/customizer.php:1589
+#: admin/customizer.php:2063
 msgid "Medium 500 Italic"
 msgstr ""
 
-#: admin/customizer.php:1590
+#: admin/customizer.php:2064
 msgid "Semi-Bold 600"
 msgstr ""
 
-#: admin/customizer.php:1591
+#: admin/customizer.php:2065
 msgid "Semi-Bold 600 Italic"
 msgstr ""
 
-#: admin/customizer.php:1592
+#: admin/customizer.php:2066
 msgid "Bold 700"
 msgstr ""
 
-#: admin/customizer.php:1593
+#: admin/customizer.php:2067
 msgid "Bold 700 Italic"
 msgstr ""
 
-#: admin/customizer.php:1594
+#: admin/customizer.php:2068
 msgid "Extra-Bold 800"
 msgstr ""
 
-#: admin/customizer.php:1595
+#: admin/customizer.php:2069
 msgid "Extra-Bold 800 Italic"
 msgstr ""
 
-#: admin/customizer.php:1596
+#: admin/customizer.php:2070
 msgid "Ultra-Bold 900"
 msgstr ""
 
-#: admin/customizer.php:1597
+#: admin/customizer.php:2071
 msgid "Ultra-Bold 900 Italic"
 msgstr ""
 
-#: admin/customizer.php:1598
+#: admin/customizer.php:2072
 msgid "Invalid Value"
 msgstr ""
 
-#: content/author-bio.php:5
+#: admin/tools.php:37
+msgid "Error: Child Theme Name cannot be empty."
+msgstr ""
+
+#: admin/tools.php:38 admin/tools.php:269
+msgid "Error. Letters, numbers and spaces only please!"
+msgstr ""
+
+#: admin/tools.php:78 admin/tools.php:283
+msgid "Aborted! Child Theme directory of that name already exists!"
+msgstr ""
+
+#: admin/tools.php:79 admin/tools.php:284
+msgid "Remove or rename the existing directory and try again."
+msgstr ""
+
+#: admin/tools.php:91
+msgid "Aborted: Could not create Child Theme directory."
+msgstr ""
+
+#: admin/tools.php:92
+msgid "Check your permissions or do a"
+msgstr ""
+
+#: admin/tools.php:92
+msgid "manual install"
+msgstr ""
+
+#: admin/tools.php:155
+msgid "Error: Child Theme source files missing"
+msgstr ""
+
+#: admin/tools.php:180
+msgid "No Parent Theme settings! Child Theme set to default settings."
+msgstr ""
+
+#: admin/tools.php:181
+msgid "See documentation to manually transfer settings between themes."
+msgstr ""
+
+#: admin/tools.php:184
+msgid "Parent Theme settings transferred to new Child Theme."
+msgstr ""
+
+#: admin/tools.php:186
+msgid "Child Theme settings exist, Parent Theme settings not transferred."
+msgstr ""
+
+#: admin/tools.php:209
+msgid "with errors"
+msgstr ""
+
+#: admin/tools.php:210
+msgid "successfully"
+msgstr ""
+
+#: admin/tools.php:212 admin/tools.php:347
+msgid "New Child Theme"
+msgstr ""
+
+#: admin/tools.php:212
+msgid "created"
+msgstr ""
+
+#: admin/tools.php:213 admin/tools.php:348
+msgid "Base Directory"
+msgstr ""
+
+#: admin/tools.php:214 admin/tools.php:349
+msgid "Theme Subdirectory"
+msgstr ""
+
+#: admin/tools.php:215 admin/tools.php:350
+msgid "Activate it on your"
+msgstr ""
+
+#: admin/tools.php:215 admin/tools.php:350
+msgid "Themes Page"
+msgstr ""
+
+#: admin/tools.php:224 admin/tools.php:360
+msgid "or just"
+msgstr ""
+
+#: admin/tools.php:224 admin/tools.php:360
+msgid "click here to activate it"
+msgstr ""
+
+#: admin/tools.php:232 admin/tools.php:368
+msgid "or"
+msgstr ""
+
+#: admin/tools.php:232 admin/tools.php:368
+msgid "Theme Test Drive without activating"
+msgstr ""
+
+#: admin/tools.php:250 admin/tools.php:251
+msgid "Error: Source Child Theme not specified."
+msgstr ""
+
+#: admin/tools.php:257
+msgid "Error: Source Child Theme Settings are empty!"
+msgstr ""
+
+#: admin/tools.php:263
+msgid "Cloning Aborted! Child Theme parent must be BioShip!"
+msgstr ""
+
+#: admin/tools.php:268
+msgid "Error: New Child Theme Name cannot be empty."
+msgstr ""
+
+#: admin/tools.php:271
+msgid "Aborted! Theme Settings already exist for this name!"
+msgstr ""
+
+#: admin/tools.php:279
+msgid "Aborted! Source Child Theme directory does not exist!"
+msgstr ""
+
+#: admin/tools.php:347
+msgid "cloned successfully."
+msgstr ""
+
+#: admin/tools.php:424
+msgid "Transfer Failed! Could not retrieve existing settings."
+msgstr ""
+
+#: admin/tools.php:436
+msgid "Error! Could not unserialize settings from file!"
+msgstr ""
+
+#: admin/tools.php:482
+msgid "Transferred Existing Theme Settings to Titan Framework."
+msgstr ""
+
+#: admin/tools.php:557
+msgid "Theme Settings have been copied from "
+msgstr ""
+
+#: admin/tools.php:557
+msgid "to"
+msgstr ""
+
+#: admin/tools.php:558
+msgid "Theme Settings failed to copy to "
+msgstr ""
+
+#: admin/tools.php:560
+msgid "Copy Theme Settings failed! Could not retrieve settings for "
+msgstr ""
+
+#: admin/tools.php:611
+msgid "Are you sure you want to Restore the Theme Settings Backup?"
+msgstr ""
+
+#: admin/tools.php:612
+msgid "Are you sure you want to Import these Theme Settings?"
+msgstr ""
+
+#: admin/tools.php:613
+msgid "Are you sure you want to Revert to Theme Settings prior to Import?"
+msgstr ""
+
+#: admin/tools.php:654
+msgid "Backup"
+msgstr ""
+
+#: admin/tools.php:659
+msgid "Restore"
+msgstr ""
+
+#: admin/tools.php:663 admin/tools.php:703
+msgid "Export"
+msgstr ""
+
+#: admin/tools.php:667 admin/tools.php:740
+msgid "Import"
+msgstr ""
+
+#: admin/tools.php:697
+msgid "Export Format"
+msgstr ""
+
+#: admin/tools.php:722
+msgid "Import Method"
+msgstr ""
+
+#: admin/tools.php:723
+msgid "File Upload"
+msgstr ""
+
+#: admin/tools.php:724
+msgid "Text Area"
+msgstr ""
+
+#: admin/tools.php:729
+msgid "XML, JSON or Serialized"
+msgstr ""
+
+#: admin/tools.php:729
+msgid "are auto-recognized."
+msgstr ""
+
+#: admin/tools.php:735
+msgid "Select Theme Options file to Import"
+msgstr ""
+
+#: admin/tools.php:798
+msgid "Current Theme Settings User Backup has been Created!"
+msgstr ""
+
+#: admin/tools.php:850
+msgid "Theme Settings Backup Restored! (You can switch back by using this method again.)"
+msgstr ""
+
+#: admin/tools.php:1007
+msgid "Failed: format not recognized. Please upload valid XML, JSON or Serialized data."
+msgstr ""
+
+#: admin/tools.php:1015
+msgid "Upload Error"
+msgstr ""
+
+#: admin/tools.php:1059
+msgid "Theme Settings have been Imported successfully!"
+msgstr ""
+
+#: admin/tools.php:1060
+msgid "No changed Theme Settings detected in import!"
+msgstr ""
+
+#: admin/tools.php:1062
+msgid "Could not convert import data to Theme Settings array."
+msgstr ""
+
+#: admin/tools.php:1113
+msgid "Pre-Import Theme Settings have been reverted."
+msgstr ""
+
+#: admin/tools.php:1114
+msgid "(You can switch back to the Imported Settings by using this method again.)"
+msgstr ""
+
+#: admin/tools.php:1116
+msgid "Revert Failed! Pre-Import Theme Settings are empty or corrupt!"
+msgstr ""
+
+#: admin/tools.php:1197
+msgid "Invalid parameters."
+msgstr ""
+
+#: admin/tools.php:1205
+msgid "No file sent."
+msgstr ""
+
+#: admin/tools.php:1208 admin/tools.php:1215
+msgid "Exceeded filesize limit."
+msgstr ""
+
+#: admin/tools.php:1210
+msgid "Unknown errors."
+msgstr ""
+
+#: admin/tools.php:1217
+msgid "File is empty."
+msgstr ""
+
+#: admin/tools.php:1232
+msgid "Invalid file format."
+msgstr ""
+
+#: admin/tools.php:1243
+msgid "Invalid file extension."
+msgstr ""
+
+#: admin/tracer.php:305
+msgid "Theme Function Call Occurrences"
+msgstr ""
+
+#: admin/tracer.php:307
+msgid "All Function Calls Order"
+msgstr ""
+
+#: admin/tracer.php:540
+msgid "Templates"
+msgstr ""
+
+#: admin/tracer.php:543
+msgid "Ordered list of included templates for this pageload."
+msgstr ""
+
+#: content/author-bio.php:7
 msgid "Author Bio Template"
 msgstr ""
 
-#: content/comments-error.php:5
+#: content/comments-error.php:8
 msgid "Comments Error Template"
 msgstr ""
 
-#. Translators: The two %s are placeholders for HTML. The order can't be
+#. Translators: The two %s are placeholders for HTML. The order cannot be
 #. changed.
 
-#: content/comments-error.php:14
-msgid "Comments are closed, but %strackbacks%s and pingbacks are open."
+#: content/comments-error.php:19
+msgid "Comments are closed, but %1$strackbacks%2$s and pingbacks are open."
 msgstr ""
 
-#: content/comments-nav.php:5
+#: content/comments-error.php:27
+msgid "Comments are closed."
+msgstr ""
+
+#: content/comments-nav.php:8
 msgid "Comments Nav Template"
 msgstr ""
 
-#: content/comments-nav.php:13
+#: content/comments-nav.php:18
 msgid "Comments Navigation"
 msgstr ""
 
-#: content/comments-nav.php:15
+#: content/comments-nav.php:20
 msgctxt "comments navigation"
 msgid "&larr; Previous"
 msgstr ""
 
 #. Translators: Comments page numbers. 1 is current page and 2 is total pages.
 
-#: content/comments-nav.php:19
+#: content/comments-nav.php:24
 msgid "Page %1$s of %2$s"
 msgstr ""
 
-#: content/comments-nav.php:22
+#: content/comments-nav.php:27
 msgctxt "comments navigation"
 msgid "Next &rarr;"
 msgstr ""
 
-#: content/comments.php:5
+#: content/comments.php:8
 msgid "Comments Template"
 msgstr ""
 
-#: content/comments.php:18
+#: content/comments.php:24
 msgid "One Response to %2$s"
 msgid_plural "%1$s Responses to %2$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: content/comments.php:49
+#: content/comments.php:61
 msgid "Your Name"
 msgstr ""
 
-#: content/comments.php:55
+#: content/comments.php:66
 msgid "Your Email"
 msgstr ""
 
-#: content/comments.php:60 templates/theme-my-login/profile-form.php:98
+#: content/comments.php:69 templates/theme-my-login/profile-form.php:98
 msgid "Website"
 msgstr ""
 
-#: content/comments.php:64
-msgid "Comment:"
+#: content/comments.php:73
+msgid "Comment"
 msgstr ""
 
-#: content/comments.php:72
+#: content/comments.php:80
 msgid "You must be logged in to post a comment."
 msgstr ""
 
-#: content/error.php:5
+#: content/error.php:8
 msgid "Error Template"
 msgstr ""
 
-#: content/error.php:14
+#: content/error.php:20
 msgid "Nothing Found"
 msgstr ""
 
-#: content/error.php:23
+#: content/error.php:34
 msgid "Apologies, but no entries were found."
 msgstr ""
 
-#: content/formats/attachment-audio.php:30 skeleton.php:1137
+#: content/formats/attachment-audio.php:30 skeleton.php:1516
 msgid "Audio Info"
 msgstr ""
 
@@ -1470,15 +1601,15 @@ msgstr ""
 msgid "Sizes: %s"
 msgstr ""
 
-#: content/formats/attachment-image.php:62 skeleton.php:1139
+#: content/formats/attachment-image.php:62 skeleton.php:1518
 msgid "Image Info"
 msgstr ""
 
-#: content/formats/attachment-image.php:73 options.php:2632
+#: content/formats/attachment-image.php:73 options.php:2989
 msgid "Gallery"
 msgstr ""
 
-#: content/formats/attachment-video.php:30 skeleton.php:1138
+#: content/formats/attachment-video.php:30 skeleton.php:1517
 msgid "Video Info"
 msgstr ""
 
@@ -1497,7 +1628,7 @@ msgid "Tagged %s"
 msgstr ""
 
 #: content/formats/format-gallery.php:6 content/formats/format-gallery.php:27
-#: skeleton.php:1274
+#: skeleton.php:1672
 msgid "Permalink to %s"
 msgstr ""
 
@@ -1536,7 +1667,7 @@ msgstr ""
 msgid "% Comments"
 msgstr ""
 
-#: content/formats/format-gallery.php:44 skeleton.php:1770
+#: content/formats/format-gallery.php:44 skeleton.php:2307
 msgid "Edit"
 msgstr ""
 
@@ -1547,3358 +1678,3639 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: content/formats/link.php:38 content/formats/quote.php:28
-#: content/formats/status.php:46 skull.php:2097
+#: content/formats/status.php:46 skull.php:2606
 msgid "Permalink"
 msgstr ""
 
-#: content/loop-meta.php:5
+#: content/loop-meta.php:8
 msgid "Loop Meta Template"
 msgstr ""
 
-#: content/loop-nav.php:5
+#: content/loop-nav.php:8
 msgid "Loop Nav Template"
 msgstr ""
 
-#: footer.php:3
+#: footer.php:7
 msgid "Footer Template"
 msgstr ""
 
-#: functions.php:140
+#: functions.php:156
 msgid "BioShip Theme"
 msgstr ""
 
-#: functions.php:927
+#: functions.php:1522
 msgid "Theme Settings from Force Update Used and Restored!"
 msgstr ""
 
-#: functions.php:957
+#: functions.php:1572
 msgid "Theme Settings from File Settings Used and Restored!"
 msgstr ""
 
-#: functions.php:986
+#: functions.php:1621
 msgid "Error"
 msgstr ""
 
-#: functions.php:987
+#: functions.php:1622
 msgid "Theme Settings Empty! Existing Settings AutoBackup Restored."
 msgstr ""
 
-#: functions.php:1100
-msgid "Theme Tools"
-msgstr ""
-
-#: functions.php:1128 functions.php:1265
+#: functions.php:1905 functions.php:2074
 msgid "Uh oh, the required Theme Option definitions are missing! Reinstall?!"
 msgstr ""
 
-#: header.php:2
+#: functions.php:2422
+msgid "Uh oh, the required Hybrid Core Framework is missing!"
+msgstr ""
+
+#: header.php:7
 msgid "Header Template"
 msgstr ""
 
-#: hooks.php:66
+#: hooks.php:76
 msgid "Start Wrap Container"
 msgstr ""
 
-#: hooks.php:67
+#: hooks.php:77
 msgid "Before Wrap Container"
 msgstr ""
 
-#: hooks.php:68
+#: hooks.php:78
 msgid "Wrap Container Open"
 msgstr ""
 
-#: hooks.php:69
-msgid "Main DIV Wrapper Open"
+#: hooks.php:79
+msgid "Main Container Wrap Open"
 msgstr ""
 
-#: hooks.php:74 options.php:862
+#: hooks.php:84 options.php:1027
 msgid "Header"
 msgstr ""
 
-#: hooks.php:75
+#: hooks.php:85
 msgid "Before Header Area"
 msgstr ""
 
-#: hooks.php:76
+#: hooks.php:86
 msgid "Full Width Top Banner"
 msgstr ""
 
-#: hooks.php:78
+#: hooks.php:88
 msgid "Secondary Navigation Menu"
 msgstr ""
 
-#: hooks.php:80
+#: hooks.php:90
 msgid "Main Header"
 msgstr ""
 
-#: hooks.php:82 options.php:3261
+#: hooks.php:91
+msgid "Header Wrap Open"
+msgstr ""
+
+#: hooks.php:92 options.php:3662
 msgid "Header Menu"
 msgstr ""
 
-#: hooks.php:83
+#: hooks.php:93
+msgid "Clear Div"
+msgstr ""
+
+#: hooks.php:94
 msgid "Site Logo/Title"
 msgstr ""
 
-#: hooks.php:84 options.php:3141 skull.php:220 skull.php:221
+#: hooks.php:95 options.php:3538 skull.php:385 skull.php:386
 msgid "Header Widget Area"
 msgstr ""
 
-#: hooks.php:85
+#: hooks.php:96
 msgid "HTML Area"
 msgstr ""
 
-#: hooks.php:87
-msgid "Before Header Widgets"
-msgstr ""
-
-#: hooks.php:89
-msgid "After Header Widgets"
-msgstr ""
-
-#: hooks.php:91
-msgid "After Header Area"
-msgstr ""
-
-#: hooks.php:92
-msgid "After Header Banner"
-msgstr ""
-
 #: hooks.php:97
-msgid "Navigation Bar"
+msgid "Header Wrap Close"
 msgstr ""
 
 #: hooks.php:98
-msgid "Before Main NavBar"
+msgid "Before Header Widgets"
 msgstr ""
 
 #: hooks.php:100
-msgid "Main Navigation Bar"
+msgid "Header Widget Area Template"
 msgstr ""
 
 #: hooks.php:102
-msgid "Mobile Button for Sidebar"
-msgstr ""
-
-#: hooks.php:103
-msgid "Mobile Button for Main Menu"
+msgid "After Header Widgets"
 msgstr ""
 
 #: hooks.php:104
-msgid "Mobile Button for Subsidebar"
+msgid "After Header Area"
 msgstr ""
 
 #: hooks.php:105
-msgid "Superfish Dropdown Main Menu"
-msgstr ""
-
-#: hooks.php:108
-msgid "After Main NavBar"
+msgid "After Header Banner"
 msgstr ""
 
 #: hooks.php:110
-msgid "Full Width Navbar Banner"
+msgid "Navigation Bar"
+msgstr ""
+
+#: hooks.php:111
+msgid "Before Main NavBar"
+msgstr ""
+
+#: hooks.php:113
+msgid "Main Navigation Bar"
+msgstr ""
+
+#: hooks.php:114
+msgid "Main Menu Wrap Open"
+msgstr ""
+
+#: hooks.php:115
+msgid "Mobile Button for Sidebar"
 msgstr ""
 
 #: hooks.php:116
-msgid "Primary Sidebar"
+msgid "Mobile Button for Main Menu"
 msgstr ""
 
 #: hooks.php:117
-msgid "Before Main Sidebar"
+msgid "Mobile Button for Subsidebar"
 msgstr ""
 
-#: hooks.php:120
-msgid "After Sidebar"
+#: hooks.php:118
+msgid "Superfish Dropdown Main Menu"
 msgstr ""
 
-#: hooks.php:126 options.php:3094
-msgid "Subsidiary Sidebar"
+#: hooks.php:119
+msgid "Main Menu Wrap Close"
 msgstr ""
 
-#: hooks.php:127
-msgid "Before SubSidebar"
+#: hooks.php:121
+msgid "After Main NavBar"
+msgstr ""
+
+#: hooks.php:123
+msgid "Full Width Navbar Banner"
+msgstr ""
+
+#: hooks.php:129
+msgid "Primary Sidebar"
 msgstr ""
 
 #: hooks.php:130
-msgid "After SubSidebar"
+msgid "Before Primary Sidebar"
 msgstr ""
 
-#: hooks.php:137
-msgid "Start Content Area"
+#: hooks.php:131
+msgid "Primary Sidebar Wrap Open"
 msgstr ""
 
-#: hooks.php:138
-msgid "Before Content Area"
+#: hooks.php:133
+msgid "Sidebar Widget Template"
 msgstr ""
 
-#: hooks.php:140
-msgid "Content Wrap Open"
+#: hooks.php:135
+msgid "After Primary Sidebar"
 msgstr ""
 
-#: hooks.php:141
-msgid "Frontpage Only Top"
+#: hooks.php:136
+msgid "Primary Sidebar Wrap Close"
+msgstr ""
+
+#: hooks.php:141 options.php:3488
+msgid "Subsidiary Sidebar"
 msgstr ""
 
 #: hooks.php:142
-msgid "Frontpage Only Content"
+msgid "Before Subsidiary Sidebar"
 msgstr ""
 
 #: hooks.php:143
-msgid "Home (Blog) Only Top"
-msgstr ""
-
-#: hooks.php:144
-msgid "Home (Blog) Only Content"
+msgid "Subsidiary Sidebar Wrap Open"
 msgstr ""
 
 #: hooks.php:145
-msgid "Before Any Loop"
+msgid "SubSidebar Widget Template"
 msgstr ""
 
 #: hooks.php:147
-msgid "Before Any Archive Loop"
+msgid "After Subsidiary Sidebar"
 msgstr ""
 
 #: hooks.php:148
-msgid "Before Category Archive Loop"
+msgid "Subsidiary Sidebar Wrap Close"
 msgstr ""
 
-#: hooks.php:149
-msgid "Before Taxonomy Archive Loop"
+#: hooks.php:154
+msgid "Start Content Area"
 msgstr ""
 
-#: hooks.php:150
-msgid "Before Tag Archive Loop"
+#: hooks.php:155
+msgid "Before Content Area"
 msgstr ""
 
-#: hooks.php:151
-msgid "Before Author Archive Loop"
+#: hooks.php:157
+msgid "Content Area Wrap Open"
 msgstr ""
 
-#: hooks.php:152
-msgid "Author Archive Top Bio"
+#: hooks.php:158 hooks.php:280
+msgid "Frontpage Only Top"
 msgstr ""
 
-#: hooks.php:153
-msgid "Before Date Archive Loop"
+#: hooks.php:159 hooks.php:281
+msgid "Frontpage Only Content"
 msgstr ""
 
-#: hooks.php:158
-msgid "Start Entry Loop"
+#: hooks.php:160 hooks.php:282
+msgid "Home (Blog) Only Top"
 msgstr ""
 
-#: hooks.php:159
-msgid "Before Entry"
+#: hooks.php:161 hooks.php:283
+msgid "Home (Blog) Only Content"
 msgstr ""
 
-#: hooks.php:160
-msgid "Media Handler Action"
+#: hooks.php:162
+msgid "Before Any Loop"
 msgstr ""
 
-#: hooks.php:161
-msgid "Attachment Media Handler"
+#: hooks.php:163
+msgid "Navigation Breadcrumbs"
 msgstr ""
 
 #: hooks.php:164
-msgid "Entry Header Hook"
+msgid "Before Any Archive Loop"
+msgstr ""
+
+#: hooks.php:165
+msgid "Before Category Archive Loop"
 msgstr ""
 
 #: hooks.php:166
-msgid "Post/Page Title"
+msgid "Before Taxonomy Archive Loop"
 msgstr ""
 
 #: hooks.php:167
-msgid "Post/Page SubTitle"
+msgid "Before Tag Archive Loop"
 msgstr ""
 
 #: hooks.php:168
-msgid "Entry Meta Top"
+msgid "Before Author Archive Loop"
 msgstr ""
 
-#: hooks.php:172
-msgid "Thumbnail or Featured Image"
+#: hooks.php:169
+msgid "Author Archive Top Bio"
 msgstr ""
 
-#: hooks.php:173
-msgid "Echo Thumbnail"
+#: hooks.php:170
+msgid "Before Date Archive Loop"
 msgstr ""
 
-#: hooks.php:174
-msgid "Before Thumbnail"
+#: hooks.php:175
+msgid "Start Entry Loop"
 msgstr ""
 
 #: hooks.php:176
-msgid "After Thumbnail"
+msgid "Before Entry"
+msgstr ""
+
+#: hooks.php:177
+msgid "Media Handler Action"
+msgstr ""
+
+#: hooks.php:178
+msgid "Attachment Media Handler"
 msgstr ""
 
 #: hooks.php:181
-msgid "Post Excerpts"
+msgid "Entry Header Hook"
 msgstr ""
 
 #: hooks.php:182
-msgid "Before Excerpt"
+msgid "Entry Header Wrap Open"
 msgstr ""
 
 #: hooks.php:183
-msgid "Main Excerpt Output Hook"
+msgid "Post/Page Title"
 msgstr ""
 
 #: hooks.php:184
-msgid "Main Excerpt Output"
+msgid "Post/Page SubTitle"
+msgstr ""
+
+#: hooks.php:185
+msgid "Entry Meta Top"
 msgstr ""
 
 #: hooks.php:186
-msgid "After Excerpt"
-msgstr ""
-
-#: hooks.php:188
-msgid "Entry Footer"
+msgid "Entry Header Wrap Close"
 msgstr ""
 
 #: hooks.php:189
-msgid "Bottom Meta Open"
+msgid "Thumbnail or Featured Image"
 msgstr ""
 
 #: hooks.php:190
-msgid "Entry Meta Bottom"
+msgid "Echo Thumbnail"
 msgstr ""
 
 #: hooks.php:191
-msgid "Bottom Meta Close"
+msgid "Before Thumbnail"
 msgstr ""
 
-#: hooks.php:198
-msgid "Singular Content"
+#: hooks.php:194
+msgid "After Thumbnail"
 msgstr ""
 
 #: hooks.php:199
-msgid "Before Singular Content"
+msgid "Post Excerpts"
 msgstr ""
 
-#: hooks.php:203
-msgid "Author Bio Top Position"
+#: hooks.php:200
+msgid "Before Excerpt"
+msgstr ""
+
+#: hooks.php:201
+msgid "Main Excerpt"
+msgstr ""
+
+#: hooks.php:202
+msgid "Echo the Excerpt"
 msgstr ""
 
 #: hooks.php:204
-msgid "Before Author Bio"
+msgid "Excerpt Content"
 msgstr ""
 
 #: hooks.php:206
-msgid "After Author Bio"
+msgid "After Excerpt"
 msgstr ""
 
 #: hooks.php:209
-msgid "Before the Content"
+msgid "Entry Footer"
 msgstr ""
 
-#: hooks.php:213
-msgid "After the Content"
+#: hooks.php:210
+msgid "Bottom Meta Open"
 msgstr ""
 
-#: hooks.php:218
-msgid "Author Bio Bottom Position"
+#: hooks.php:211
+msgid "Entry Meta Bottom"
 msgstr ""
 
-#: hooks.php:223
-msgid "After Singular Content"
+#: hooks.php:212
+msgid "Bottom Meta Close"
+msgstr ""
+
+#: hooks.php:220
+msgid "Singular Content"
+msgstr ""
+
+#: hooks.php:221
+msgid "Before Singular Content"
+msgstr ""
+
+#: hooks.php:225
+msgid "Author Bio Top Position"
+msgstr ""
+
+#: hooks.php:226
+msgid "Before Author Bio"
 msgstr ""
 
 #: hooks.php:228
-msgid "Before Comments"
+msgid "Author Bio Content"
 msgstr ""
 
 #: hooks.php:230
-msgid "After Comments"
+msgid "After Author Bio"
+msgstr ""
+
+#: hooks.php:233
+msgid "Before the Content"
+msgstr ""
+
+#: hooks.php:234 hooks.php:237
+msgid "Main Content"
+msgstr ""
+
+#: hooks.php:235
+msgid "Echo Main Content"
 msgstr ""
 
 #: hooks.php:239
-msgid "End Entry Loop"
-msgstr ""
-
-#: hooks.php:240
-msgid "After Entry"
-msgstr ""
-
-#: hooks.php:241 hooks.php:242
-msgid "Page Navigation"
-msgstr ""
-
-#: hooks.php:243
-msgid "After Date Archive Loop"
+msgid "After the Content"
 msgstr ""
 
 #: hooks.php:244
-msgid "After Author Archive Loop"
-msgstr ""
-
-#: hooks.php:245
-msgid "Author Archive Bottom Bio"
-msgstr ""
-
-#: hooks.php:246
-msgid "After Tag Archive Loop"
-msgstr ""
-
-#: hooks.php:247
-msgid "After Taxonomy Archive Loop"
-msgstr ""
-
-#: hooks.php:248
-msgid "After Category Archive Loop"
+msgid "Author Bio Bottom Position"
 msgstr ""
 
 #: hooks.php:249
-msgid "After Any Archive Loop"
+msgid "After Singular Content"
 msgstr ""
 
-#: hooks.php:250
-msgid "After Any Loop"
+#: hooks.php:254
+msgid "Before Comments"
 msgstr ""
 
-#: hooks.php:251
-msgid "After Content"
+#: hooks.php:256
+msgid "Comment Content"
 msgstr ""
 
-#: hooks.php:252
-msgid "Content Wrap Close"
-msgstr ""
-
-#: hooks.php:261
-msgid "Footer"
-msgstr ""
-
-#: hooks.php:262
-msgid "Before Footer"
-msgstr ""
-
-#: hooks.php:263
-msgid "Full Width Footer Banner"
-msgstr ""
-
-#: hooks.php:265
-msgid "Main Footer"
+#: hooks.php:258
+msgid "After Comments"
 msgstr ""
 
 #: hooks.php:267
-msgid "Footer Extra HTML Area"
+msgid "End Entry Loop"
 msgstr ""
 
 #: hooks.php:268
-msgid "Footer Widget Area"
+msgid "After Entry"
 msgstr ""
 
-#: hooks.php:269 options.php:3272
-msgid "Footer Menu"
+#: hooks.php:269 hooks.php:270
+msgid "Page Navigation"
 msgstr ""
 
-#: hooks.php:270 options.php:2220
-msgid "Site Credits"
+#: hooks.php:271
+msgid "After Date Archive Loop"
 msgstr ""
 
 #: hooks.php:272
-msgid "Before Footer Widget"
+msgid "After Author Archive Loop"
+msgstr ""
+
+#: hooks.php:273
+msgid "Author Archive Bottom Bio"
 msgstr ""
 
 #: hooks.php:274
-msgid "After Footer Widget"
+msgid "After Tag Archive Loop"
 msgstr ""
 
 #: hooks.php:275
-msgid "After Footer"
+msgid "After Taxonomy Archive Loop"
 msgstr ""
 
 #: hooks.php:276
+msgid "After Category Archive Loop"
+msgstr ""
+
+#: hooks.php:277
+msgid "After Any Archive Loop"
+msgstr ""
+
+#: hooks.php:278
+msgid "After Any Loop"
+msgstr ""
+
+#: hooks.php:285
+msgid "After Content"
+msgstr ""
+
+#: hooks.php:286
+msgid "Content Wrap Close"
+msgstr ""
+
+#: hooks.php:295
+msgid "Footer"
+msgstr ""
+
+#: hooks.php:296
+msgid "Before Footer"
+msgstr ""
+
+#: hooks.php:297
+msgid "Full Width Footer Banner"
+msgstr ""
+
+#: hooks.php:300
+msgid "Main Footer"
+msgstr ""
+
+#: hooks.php:301
+msgid "Footer Wrap Open"
+msgstr ""
+
+#: hooks.php:302
+msgid "Footer Extra HTML Area"
+msgstr ""
+
+#: hooks.php:303
+msgid "Footer Widget Area"
+msgstr ""
+
+#: hooks.php:304 options.php:3674
+msgid "Footer Menu"
+msgstr ""
+
+#: hooks.php:305 options.php:2549
+msgid "Site Credits"
+msgstr ""
+
+#: hooks.php:306
+msgid "Footer Wrap Close"
+msgstr ""
+
+#: hooks.php:307
+msgid "Before Footer Widget"
+msgstr ""
+
+#: hooks.php:309
+msgid "Footer Widget Area Template"
+msgstr ""
+
+#: hooks.php:311
+msgid "After Footer Widget"
+msgstr ""
+
+#: hooks.php:312
+msgid "After Footer"
+msgstr ""
+
+#: hooks.php:313
 msgid "Full Width Bottom Banner"
 msgstr ""
 
-#: hooks.php:281
+#: hooks.php:318
 msgid "End Wrap Container"
 msgstr ""
 
-#: hooks.php:282
+#: hooks.php:319
 msgid "Main Container Close"
 msgstr ""
 
-#: hooks.php:283
-msgid "Main DIV Wrapper Close"
+#: hooks.php:320
+msgid "Main Container Wrap Close"
 msgstr ""
 
-#: hooks.php:284
+#: hooks.php:321
 msgid "After Wrap Container"
 msgstr ""
 
-#: index.php:10
+#: index.php:14
 msgid "Main Index Template"
 msgstr ""
 
-#: loop-index.php:6
+#: loop-index.php:9
 msgid "Loop Index Template"
 msgstr ""
 
-#: muscle.php:339
+#: muscle.php:456
+msgid "Arbitrary text or HTML."
+msgstr ""
+
+#: muscle.php:460
+msgid "Text"
+msgstr ""
+
+#: muscle.php:488
+msgid "Title:"
+msgstr ""
+
+#: muscle.php:490
+msgid "Content:"
+msgstr ""
+
+#: muscle.php:493
+msgid "Automatically add paragraphs"
+msgstr ""
+
+#: muscle.php:517
 msgid "Arbitrary text or HTML, only shown if not empty."
 msgstr ""
 
-#: muscle.php:342
+#: muscle.php:521
 msgid "Discreet Text"
 msgstr ""
 
-#: muscle.php:1264
+#: muscle.php:1733
 msgid "Continue reading"
 msgstr ""
 
-#: muscle.php:1528
+#: muscle.php:2046
+msgid "Development"
+msgstr ""
+
+#: muscle.php:2047
+msgid "Extensions"
+msgstr ""
+
+#: muscle.php:2054
 msgid "More"
 msgstr ""
 
-#: muscle.php:1529
+#: muscle.php:2055
 msgid "Feed currently unavailable."
 msgstr ""
 
-#: muscle.php:1611
+#: muscle.php:2152
 msgid "All Options"
 msgstr ""
 
-#: muscle.php:1657
-msgid "[%s] New User Registration"
+#: options.php:700 options.php:711
+msgid "Normal"
 msgstr ""
 
-#: muscle.php:1658
-msgid "[%s] Password Lost/Changed"
+#: options.php:700 options.php:711
+msgid "Bold"
 msgstr ""
 
-#: options.php:601
+#: options.php:700 options.php:711
+msgid "Italics"
+msgstr ""
+
+#: options.php:748
 msgid "Parent Theme Version"
 msgstr ""
 
-#: options.php:602
+#: options.php:749
 msgid "Child Theme Version"
 msgstr ""
 
-#: options.php:603
+#: options.php:750
 msgid "YearMonthDate"
 msgstr ""
 
-#: options.php:604
+#: options.php:751
 msgid "YearMonthDateHour"
 msgstr ""
 
-#: options.php:605
+#: options.php:752
 msgid "YearMonthDateHourMinutes"
 msgstr ""
 
-#: options.php:606
+#: options.php:753
 msgid "File Modified Time"
 msgstr ""
 
-#: options.php:653
+#: options.php:802
 msgid "Dynamic Custom CSS"
 msgstr ""
 
-#: options.php:663
+#: options.php:813
 msgid "Dynamic Stylesheet includes some replacement value support."
 msgstr ""
 
-#: options.php:664
+#: options.php:814
 msgid "Mostly for pointing to your stylesheet/template directory URLs, but also for some IE helper files."
 msgstr ""
 
-#: options.php:665
+#: options.php:815
 msgid "Full URL to your Stylesheet directory (eg. themes/my-child-theme/)"
 msgstr ""
 
-#: options.php:666
+#: options.php:816
 msgid "Full URL to your Stylesheet directory Images (eg. themes/my-child-theme/images/)"
 msgstr ""
 
-#: options.php:667
+#: options.php:817
 msgid "Full URL to your Template directory (themes/bioship/)"
 msgstr ""
 
-#: options.php:668
+#: options.php:818
 msgid "Full URL to your Template directory Images (themes/bioship/images/)"
 msgstr ""
 
-#: options.php:669
+#: options.php:819
 msgid "Full URL to pie.htc file - eg. behavior:url("
 msgstr ""
 
-#: options.php:669
+#: options.php:819
 msgid "for CSS3 on IE 6-9"
 msgstr ""
 
-#: options.php:669 options.php:670
+#: options.php:819 options.php:820
 msgid "more info"
 msgstr ""
 
-#: options.php:670
+#: options.php:820
 msgid "Full URL to border-radius.htc file - eg. behavior:url("
 msgstr ""
 
-#: options.php:671
+#: options.php:821
 msgid "Note:"
 msgstr ""
 
-#: options.php:671
+#: options.php:821
 msgid "will also be loaded if it exists."
 msgstr ""
 
-#: options.php:674
+#: options.php:824 options.php:2762
 msgid "Replacement Values"
 msgstr ""
 
-#: options.php:684
+#: options.php:835
 msgid "Load skin.php via URL (uses Shortinit)"
 msgstr ""
 
-#: options.php:685
+#: options.php:836
 msgid "Load using AJAX via admin-ajax.php"
 msgstr ""
 
-#: options.php:686
+#: options.php:837
 msgid "Print in HTML Page Header"
 msgstr ""
 
-#: options.php:687
+#: options.php:838
 msgid "Print in HTML Page Footer"
 msgstr ""
 
-#: options.php:690
+#: options.php:841
 msgid "Dynamic CSS Mode"
 msgstr ""
 
-#: options.php:691
+#: options.php:842
 msgid "Whether to load Dynamic Skin and Grid via AJAX or Direct URL."
 msgstr ""
 
-#: options.php:702
+#: options.php:854
 msgid "Do not reset"
 msgstr ""
 
-#: options.php:703
+#: options.php:855
 msgid "Use normalize.css"
 msgstr ""
 
-#: options.php:704
+#: options.php:856
 msgid "Use reset.css"
 msgstr ""
 
-#: options.php:707
+#: options.php:859
 msgid "Perform CSS Reset"
 msgstr ""
 
-#: options.php:708
+#: options.php:860
 msgid "Whether to do a CSS reset before loading main stylesheets. Can use either normalize.css (recommended) or plain CSS reset."
 msgstr ""
 
-#: options.php:719
+#: options.php:872
 msgid "Load Formalize (CSS and JS)"
 msgstr ""
 
-#: options.php:720
+#: options.php:873
 msgid "Loads Formalize CSS and Javascript for cleaner cross-browser &lt;form&gt; element styling."
 msgstr ""
 
-#: options.php:730
+#: options.php:884
 msgid "Combine Core Stylesheets"
 msgstr ""
 
-#: options.php:731
+#: options.php:885
 msgid "Core BioShip Stylesheets will be combined and used upon saving (but <i>only</i> upon saving, so re-save if you change any!)"
 msgstr ""
 
-#: options.php:740
+#: options.php:896
 msgid "Cache Busting for Stylesheets"
 msgstr ""
 
-#: options.php:741
-msgid "Querystring used as version for cache busting Stylesheet files. Recommended to set to hours or minutes when developing, version or date when finished."
+#: options.php:897
+msgid "Querystring used as version for cache busting Stylesheet files."
 msgstr ""
 
-#: options.php:752
+#: options.php:909
 msgid "HTML Element Comments"
 msgstr ""
 
-#: options.php:753
+#: options.php:910
 msgid "Add Comment Wrappers to main HTML Elements for easier reading of page source while developing. You may want to turn this off later."
 msgstr ""
 
-#: options.php:765
+#: options.php:923
 msgid "Background"
 msgstr ""
 
-#: options.php:772
+#: options.php:931
 msgid "Background Colour"
 msgstr ""
 
-#: options.php:773 options.php:876
+#: options.php:932 options.php:1036
 msgid "Sets the default body background-color property."
 msgstr ""
 
-#: options.php:785
+#: options.php:945
 msgid "Set the body background image, you can upload or paste the URL here. <strong>Your background should be resized prior to uploading</strong>"
 msgstr ""
 
-#: options.php:798
+#: options.php:959
 msgid "Set the body background-position CSS property."
 msgstr ""
 
-#: options.php:811
+#: options.php:973
 msgid "Set the body background-size CSS property."
 msgstr ""
 
-#: options.php:824
+#: options.php:987
 msgid "Repeat (Tile)"
 msgstr ""
 
-#: options.php:825
+#: options.php:988
 msgid "Repeat Horizontal"
 msgstr ""
 
-#: options.php:825
+#: options.php:988
 msgid "Repeat Vertical"
 msgstr ""
 
-#: options.php:826 options.php:843
+#: options.php:989 options.php:1007
 msgid "Initial"
 msgstr ""
 
-#: options.php:829
+#: options.php:992
 msgid "Set the body background-repeat CSS property."
 msgstr ""
 
-#: options.php:843
+#: options.php:1007
 msgid "Local"
 msgstr ""
 
-#: options.php:846
+#: options.php:1010
 msgid "Set the body background-attachment CSS property."
 msgstr ""
 
-#: options.php:875
+#: options.php:1035
 msgid "Header Background Colour"
 msgstr ""
 
-#: options.php:889
+#: options.php:1050
 msgid "Header Background Image"
 msgstr ""
 
-#: options.php:890
+#: options.php:1051
 msgid "Set the header image background image, you can upload or paste the URL here. <strong>Your background should be resized prior to uploading</strong>"
 msgstr ""
 
-#: options.php:903
+#: options.php:1065
 msgid "Header Background Position"
 msgstr ""
 
-#: options.php:904
+#: options.php:1066
 msgid "Set the header image background-position CSS property."
 msgstr ""
 
-#: options.php:916
+#: options.php:1079
 msgid "Header Background Size"
 msgstr ""
 
-#: options.php:917
+#: options.php:1080
 msgid "Set the header image background-size CSS property."
 msgstr ""
 
-#: options.php:930
+#: options.php:1094
 msgid "Header Background Repeat"
 msgstr ""
 
-#: options.php:931
+#: options.php:1095
 msgid "Set the header image background-repeat CSS property."
 msgstr ""
 
-#: options.php:943 options.php:3592
+#: options.php:1108 options.php:4049
 msgid "Header Logo"
 msgstr ""
 
-#: options.php:944
+#: options.php:1109
 msgid "If you prefer to show a graphic logo in place of the site title, you can upload or paste the URL here. <strong>Your logo should be resized prior to uploading</strong>"
 msgstr ""
 
-#: options.php:955
+#: options.php:1136
 msgid "Auto Resize Logo"
 msgstr ""
 
-#: options.php:956
+#: options.php:1137
 msgid "Resizes the logo image proportionally with header on window resize."
 msgstr ""
 
-#: options.php:972
+#: options.php:1169
 msgid "Display Site Title Headline"
 msgstr ""
 
-#: options.php:972
+#: options.php:1169
 msgid "Site Description Tagline"
 msgstr ""
 
-#: options.php:974
+#: options.php:1171
 msgid "Display Header Text"
 msgstr ""
 
-#: options.php:975
+#: options.php:1172
 msgid "Select which header title text elements to display."
 msgstr ""
 
-#: options.php:987
+#: options.php:1185
 msgid "Site Title Text Style"
 msgstr ""
 
-#: options.php:1004
+#: options.php:1203
 msgid "Site Tagline Text Style"
 msgstr ""
 
-#: options.php:1025
+#: options.php:1225
 msgid "Menu"
 msgstr ""
 
-#: options.php:1033
+#: options.php:1234
 msgid "Auto Space Navigation"
 msgstr ""
 
-#: options.php:1034
+#: options.php:1235
 msgid "Sets percentage widths for top level Menu Item Display based on number of items (tip: works well with short menu item names, not well with long ones.)"
 msgstr ""
 
-#: options.php:1043
+#: options.php:1246
 msgid "Main Menu Item Typography"
 msgstr ""
 
-#: options.php:1044
+#: options.php:1247
 msgid "Typography for top level menu items."
 msgstr ""
 
-#: options.php:1059
+#: options.php:1265
 msgid "Main SubMenu Item Typography"
 msgstr ""
 
-#: options.php:1060
+#: options.php:1266
 msgid "Typography for secondary level submenu items."
 msgstr ""
 
-#: options.php:1076
+#: options.php:1284
 msgid "Navigation Container Background Color"
 msgstr ""
 
-#: options.php:1077
+#: options.php:1285
 msgid "Background Color for Navigation Container."
 msgstr ""
 
-#: options.php:1089
+#: options.php:1298
 msgid "Menu Item Background Color"
 msgstr ""
 
-#: options.php:1090
+#: options.php:1299
 msgid "Background Color for Menu Items."
 msgstr ""
 
-#: options.php:1102
-msgid "SubMenu Container Background Color"
-msgstr ""
-
-#: options.php:1103
-msgid "Background Color for Navigation SubMenu Container."
-msgstr ""
-
-#: options.php:1115
+#: options.php:1312
 msgid "Active Menu Item Text Color"
 msgstr ""
 
-#: options.php:1116
+#: options.php:1313
 msgid "Text Color for Current Page Menu Item."
 msgstr ""
 
-#: options.php:1128
+#: options.php:1326
 msgid "Active Menu Item Background Color"
 msgstr ""
 
-#: options.php:1129
+#: options.php:1327
 msgid "Background Color for Current Page Menu Item."
 msgstr ""
 
-#: options.php:1141
-msgid "Hover Menu Item Background Text Color"
+#: options.php:1341
+msgid "Hover Menu Item Text Color"
 msgstr ""
 
-#: options.php:1142
+#: options.php:1342
 msgid "Text Color for Page Menu Item Hover."
 msgstr ""
 
-#: options.php:1154
+#: options.php:1355
 msgid "Hover Menu Item Background Color"
 msgstr ""
 
-#: options.php:1155
+#: options.php:1356
 msgid "Background Color for Page Menu Item Hover."
 msgstr ""
 
-#: options.php:1172
+#: options.php:1369
+msgid "SubMenu Container Background Color"
+msgstr ""
+
+#: options.php:1370
+msgid "Background Color for Navigation SubMenu Container."
+msgstr ""
+
+#: options.php:1383
+msgid "Hover SubMenu Item Text Color"
+msgstr ""
+
+#: options.php:1384
+msgid "Text Color for Page SubMenu Item Hover."
+msgstr ""
+
+#: options.php:1397
+msgid "Hover SubMenu Item Background Color"
+msgstr ""
+
+#: options.php:1398
+msgid "Background Color for Page SubMenu Item Hover."
+msgstr ""
+
+#: options.php:1416
 msgid "Colours"
 msgstr ""
 
-#: options.php:1178
+#: options.php:1424
 msgid "Input Text Color"
 msgstr ""
 
-#: options.php:1179
+#: options.php:1425
 msgid "Default input text color (text input, select input, textarea)"
 msgstr ""
 
-#: options.php:1190
+#: options.php:1438
 msgid "Input Background Color"
 msgstr ""
 
-#: options.php:1191
+#: options.php:1439
 msgid "Default input text background color (body a)"
 msgstr ""
 
-#: options.php:1204
+#: options.php:1453
 msgid "Here you can set some basic styles that will be loaded via the Dynamic CSS file."
 msgstr ""
 
-#: options.php:1211
+#: options.php:1461
 msgid "Main Div Area Colours"
 msgstr ""
 
-#: options.php:1219
+#: options.php:1470
 msgid "Colorpicker"
 msgstr ""
 
-#: options.php:1220
+#: options.php:1471
 msgid "Helps you pick hex colours. But does not set anything as you might want to use transparent or rgb/rgba."
 msgstr ""
 
-#: options.php:1229
+#: options.php:1481
 msgid "Wrapper Background Colour"
 msgstr ""
 
-#: options.php:1230
+#: options.php:1482
 msgid "Sets background-color property for #wrap div."
 msgstr ""
 
-#: options.php:1254
+#: options.php:1507
 msgid "Content Background Colour"
 msgstr ""
 
-#: options.php:1255
+#: options.php:1508
 msgid "Sets background-color property for #content div."
 msgstr ""
 
-#: options.php:1268
+#: options.php:1522
 msgid "Sidebar Background Colour"
 msgstr ""
 
-#: options.php:1269
+#: options.php:1523
 msgid "Sets background-color property for #sidebar div."
 msgstr ""
 
-#: options.php:1282
+#: options.php:1537
 msgid "Subsidiary Sidebar Background Colour"
 msgstr ""
 
-#: options.php:1283
+#: options.php:1538
 msgid "Sets background-color property for #sidebar-subsidiary div."
 msgstr ""
 
-#: options.php:1296
+#: options.php:1552
 msgid "Footer Background Colour"
 msgstr ""
 
-#: options.php:1297
+#: options.php:1553
 msgid "Sets background-color property for #footer div."
 msgstr ""
 
-#: options.php:1318
+#: options.php:1575
 msgid "Fonts"
 msgstr ""
 
-#: options.php:1325
+#: options.php:1584
 msgid "Body Content Typography"
 msgstr ""
 
-#: options.php:1326
+#: options.php:1585
 msgid "Default Main Typography for the webpage Body."
 msgstr ""
 
-#: options.php:1326
+#: options.php:1585
 msgid "Example Font Stack Page"
 msgstr ""
 
-#: options.php:1346
+#: options.php:1606
 msgid "Extra Fonts"
 msgstr ""
 
-#: options.php:1347
+#: options.php:1607
 msgid "Fonts to load via Google Fonts, comma separated. You can then customize font stacks via the options_font_stacks filter (see filters.php)"
 msgstr ""
 
-#: options.php:1364
+#: options.php:1625
 msgid "Section Typography"
 msgstr ""
 
-#: options.php:1371
+#: options.php:1633
 msgid "Header Typography"
 msgstr ""
 
-#: options.php:1372
+#: options.php:1634
 msgid "Typography for within the #header div."
 msgstr ""
 
-#: options.php:1391
+#: options.php:1654
 msgid "Sidebar Typography"
 msgstr ""
 
-#: options.php:1392
+#: options.php:1655
 msgid "Typography for within the #sidebar div."
 msgstr ""
 
-#: options.php:1411
+#: options.php:1675
 msgid "Subsidebar Typography"
 msgstr ""
 
-#: options.php:1412
+#: options.php:1676
 msgid "Typography for within the #subsidebar div."
 msgstr ""
 
-#: options.php:1431
+#: options.php:1696
 msgid "Content Area Typography"
 msgstr ""
 
-#: options.php:1432
+#: options.php:1697
 msgid "Typography for within the #content div."
 msgstr ""
 
-#: options.php:1451
+#: options.php:1717
 msgid "Footer Typography"
 msgstr ""
 
-#: options.php:1452
+#: options.php:1718
 msgid "Typography for within the #footer div."
 msgstr ""
 
-#: options.php:1474
+#: options.php:1741
 msgid "Headings Typography"
 msgstr ""
 
-#: options.php:1475
+#: options.php:1742
 msgid "Selected Heading fonts are auto-loaded via Google Fonts."
 msgstr ""
 
-#: options.php:1475
+#: options.php:1742
 msgid "Example Title Font Page"
 msgstr ""
 
-#: options.php:1475
+#: options.php:1742
 msgid "Customize available font selections via the bioship_options_title_fonts filter (see filters.php)"
 msgstr ""
 
-#: options.php:1481
+#: options.php:1749
 msgid "&lt;H1&gt; Heading Typography"
 msgstr ""
 
-#: options.php:1482
+#: options.php:1750
 msgid "Heading One typography."
 msgstr ""
 
-#: options.php:1498
+#: options.php:1767
 msgid "&lt;H2&gt; Heading Typography"
 msgstr ""
 
-#: options.php:1499
+#: options.php:1768
 msgid "Heading Two typography."
 msgstr ""
 
-#: options.php:1515
+#: options.php:1785
 msgid "&lt;H3&gt; Heading Typography"
 msgstr ""
 
-#: options.php:1516
+#: options.php:1786
 msgid "Heading Three typography."
 msgstr ""
 
-#: options.php:1532
+#: options.php:1803
 msgid "&lt;H4&gt; Heading Typography"
 msgstr ""
 
-#: options.php:1533
+#: options.php:1804
 msgid "Heading Four typography."
 msgstr ""
 
-#: options.php:1548
+#: options.php:1820
 msgid "&lt;H5&gt; Heading Typography"
 msgstr ""
 
-#: options.php:1549
+#: options.php:1821
 msgid "Heading Five typography."
 msgstr ""
 
-#: options.php:1565
+#: options.php:1838
 msgid "&lt;H6&gt; Heading Typography"
 msgstr ""
 
-#: options.php:1566
+#: options.php:1839
 msgid "Heading Six typography."
 msgstr ""
 
-#: options.php:1587
+#: options.php:1861
 msgid "Links"
 msgstr ""
 
-#: options.php:1594
+#: options.php:1869
 msgid "Link Styles"
 msgstr ""
 
-#: options.php:1601
+#: options.php:1877
 msgid "Link Color"
 msgstr ""
 
-#: options.php:1602
+#: options.php:1878
 msgid "Default hyperlinks color (body a)"
 msgstr ""
 
-#: options.php:1614
+#: options.php:1891
 msgid "Link Underlines"
 msgstr ""
 
-#: options.php:1615
+#: options.php:1892
 msgid "Underlines for hyperlinks (body a)"
 msgstr ""
 
-#: options.php:1627
+#: options.php:1905
 msgid "Hover Link Color"
 msgstr ""
 
-#: options.php:1628
+#: options.php:1906
 msgid "Hover hyperlinks color (body a:hover)"
 msgstr ""
 
-#: options.php:1640
+#: options.php:1921
 msgid "Link Hover Underlines"
 msgstr ""
 
-#: options.php:1641
+#: options.php:1922
 msgid "Underlines for Hover hyperlinks (body a:hover)"
 msgstr ""
 
-#: options.php:1658
+#: options.php:1939
 msgid "Buttons"
 msgstr ""
 
-#: options.php:1665
+#: options.php:1947
 msgid "Button Styles"
 msgstr ""
 
-#: options.php:1673
+#: options.php:1956
 msgid "Button Typography"
 msgstr ""
 
-#: options.php:1674
+#: options.php:1957
 msgid "Button Typography."
 msgstr ""
 
-#: options.php:1694
+#: options.php:1978
 msgid "Button Font Hover Colour"
 msgstr ""
 
-#: options.php:1695
+#: options.php:1979
 msgid "Button Font Hover Colour."
 msgstr ""
 
-#: options.php:1706
+#: options.php:1991
 msgid "Button Gradient Top Colour"
 msgstr ""
 
-#: options.php:1707
+#: options.php:1992
 msgid "Default Buttons, Gradient Top Colour."
 msgstr ""
 
-#: options.php:1717
+#: options.php:2003
 msgid "Button Gradient Bottom Colour"
 msgstr ""
 
-#: options.php:1718
+#: options.php:2004
 msgid "Default Buttons, Gradient Bottom Colour."
 msgstr ""
 
-#: options.php:1728
+#: options.php:2015
 msgid "Hover Button Gradient Top Colour "
 msgstr ""
 
-#: options.php:1729
+#: options.php:2016
 msgid "On Button Hover, Gradient Top Colour."
 msgstr ""
 
-#: options.php:1740
+#: options.php:2028
 msgid "Hover Button Gradient Bottom Colour"
 msgstr ""
 
-#: options.php:1741
+#: options.php:2029
 msgid "On Button Hover, Gradient Bottom Colour."
 msgstr ""
 
-#: options.php:1754
+#: options.php:2043
 msgid "Comment Buttons"
 msgstr ""
 
-#: options.php:1755
+#: options.php:2044
 msgid "Also apply the above button styling to make Edit/Reply Comment Links into buttons."
 msgstr ""
 
-#: options.php:1765
+#: options.php:2055
 msgid "WooCommerce Buttons"
 msgstr ""
 
-#: options.php:1766
+#: options.php:2056
 msgid "Also apply the above button styling to WooCommerce CSS Button selectors."
 msgstr ""
 
-#: options.php:1778
+#: options.php:2069
 msgid "Extra Button Selectors"
 msgstr ""
 
-#: options.php:1779
+#: options.php:2070
 msgid "Also apply the above button styling to a comma separates list of CSS selectors with !important (note: hover rule will be added for each selector. Useful if default button code is being over-ridden by 3rd party stylesheets. eg. button.alm-load-more-btn.more for AJAX Load More Button.)"
 msgstr ""
 
-#: options.php:1796
+#: options.php:2088
 msgid "Login"
 msgstr ""
 
-#: options.php:1804
+#: options.php:2097
 msgid "None - remove Logo"
 msgstr ""
 
-#: options.php:1805
+#: options.php:2098
 msgid "Default Wordpress Logo"
 msgstr ""
 
-#: options.php:1806
+#: options.php:2099
 msgid "Use the header logo image"
 msgstr ""
 
-#: options.php:1807
+#: options.php:2100
 msgid "Use uploaded image below"
 msgstr ""
 
-#: options.php:1810
+#: options.php:2103
 msgid "Login Page Logo"
 msgstr ""
 
-#: options.php:1811
+#: options.php:2104
 msgid "Replaces the Logo on your wp-login.php Page."
 msgstr ""
 
-#: options.php:1821
+#: options.php:2115
 msgid "Upload Login Page Logo"
 msgstr ""
 
-#: options.php:1822
+#: options.php:2116
 msgid "Replaces Wordpress Logo on Login Page."
 msgstr ""
 
-#: options.php:1831
+#: options.php:2126
 msgid "Login Form Wrap Color"
 msgstr ""
 
-#: options.php:1832
+#: options.php:2127
 msgid "Background Colour for the Login Form Wrapper"
 msgstr ""
 
-#: options.php:1841
+#: options.php:2137
 msgid "Login Background Image"
 msgstr ""
 
-#: options.php:1842
+#: options.php:2138
 msgid "Leave blank to use main background image. For styling use body.login"
 msgstr ""
 
-#: options.php:1854
+#: options.php:2152
 msgid "Theme My Login"
 msgstr ""
 
-#: options.php:1855
+#: options.php:2153
 msgid "Integrated TML Templates into Theme (if TML plugin is installed.)"
 msgstr ""
 
-#: options.php:1862
+#: options.php:2161
 msgid "Improve TML Template Hierarchy"
 msgstr ""
 
-#: options.php:1863
+#: options.php:2162
 msgid "Makes TML look for TML templates in child and parent theme directories first (note: must be active for below image options to work!)"
 msgstr ""
 
-#: options.php:1872
+#: options.php:2172
 msgid "Login Button Image URL"
 msgstr ""
 
-#: options.php:1873
+#: options.php:2173
 msgid "Replace TML login submit button with image."
 msgstr ""
 
-#: options.php:1882
+#: options.php:2183
 msgid "Register Button Image URL"
 msgstr ""
 
-#: options.php:1883
+#: options.php:2184
 msgid "Replace TML register submit button with image."
 msgstr ""
 
-#: options.php:1892
+#: options.php:2194
 msgid "Profile Update Button Image URL"
 msgstr ""
 
-#: options.php:1893
+#: options.php:2195
 msgid "Replace TML profile update submit button with image."
 msgstr ""
 
-#: options.php:1902
+#: options.php:2205
 msgid "Login Logo on Register Form"
 msgstr ""
 
-#: options.php:1903
+#: options.php:2206
 msgid "Add Admin login logo to top of TML Register Form."
 msgstr ""
 
-#: options.php:1912
+#: options.php:2216
 msgid "Login Logo on Login Form"
 msgstr ""
 
-#: options.php:1913
+#: options.php:2217
 msgid "Add Admin login logo to top of TML Login Form."
 msgstr ""
 
-#: options.php:1931
+#: options.php:2237
 msgid "Scripts"
 msgstr ""
 
-#: options.php:1947
+#: options.php:2255
 msgid "Cache Busting for Javascripts"
 msgstr ""
 
-#: options.php:1948
-msgid "Querystring used as version for cache busting Javascript files. Recommended to set to hours or minutes when developing, version or date when finished."
+#: options.php:2256
+msgid "Querystring used as version for cache busting Javascript files."
 msgstr ""
 
-#: options.php:1958
+#: options.php:2267
 msgid "Load jQuery from Google CDN"
 msgstr ""
 
-#: options.php:1959
-msgid "Loads jQuery from the Google CDN instead of the WordPress copy. Can speed up pageload as it is probably already cached in most browsers. (Automatically falls back to local copy if Google CDN is unreachable.) Similar to "
-msgstr ""
-
-#: options.php:1959
-msgid "WP jQuery Plus"
-msgstr ""
-
-#: options.php:1969
-msgid "Load PrefixFree Javascript"
-msgstr ""
-
-#: options.php:1970
-msgid "Auto-adds browser-specific prefixes to unprefixed CSS code (See <a href=\"http://leaverou.github.io/prefixfree/\" target=\"_blank\">PrefixFree</a> for details. Dynamic DOM and jQuery plugins included.)"
-msgstr ""
-
-#: options.php:1981
-msgid "Selectivizr (CSS3 Selectors for IE6-IE8)"
-msgstr ""
-
-#: options.php:1982
-msgid "HTML5 Shiv (HTML5 for IE6-9)"
-msgstr ""
-
-#: options.php:1983
-msgid "SuperSleight (Transparent PNGs IE6-)"
-msgstr ""
-
-#: options.php:1984
-msgid "DOM Fix (IE8 only)"
-msgstr ""
-
-#: options.php:1985
-msgid "Flexibility (Flexbox Polyfill IE8-9)"
-msgstr ""
-
-#: options.php:1990
-msgid "Internet Exporer Specific Supports"
-msgstr ""
-
-#: options.php:1991
-msgid "Load  "
-msgstr ""
-
-#: options.php:1991
-msgid "Selectivizr"
-msgstr ""
-
-#: options.php:1991
-msgid "HTML5, SuperSleight and/or Flexibility."
-msgstr ""
-
-#: options.php:2003
-msgid "Do not load polyfill support"
-msgstr ""
-
-#: options.php:2004
-msgid "Respond.js: Fast and lightweight"
-msgstr ""
-
-#: options.php:2005
-msgid "MediaQueries.js: Slower but fuller support"
-msgstr ""
-
-#: options.php:2008
-msgid "Media Queries Javascript"
-msgstr ""
-
-#: options.php:2009
-msgid "Polyfill to help fix CSS3 Media Queries for older browsers eg. IE6-IE8. (See "
-msgstr ""
-
-#: options.php:2009
-msgid "Respond"
-msgstr ""
-
-#: options.php:2009
-msgid "and"
-msgstr ""
-
-#: options.php:2009
-msgid "MediaQueries"
-msgstr ""
-
-#: options.php:2020
-msgid "Load Fastclick Javascript"
-msgstr ""
-
-#: options.php:2021
-msgid "Loads fastclick.js (polyfill to remove click delays on browsers with touch UIs.) Note: required for loading Foundation."
-msgstr ""
-
-#: options.php:2031
-msgid "Load Mousewheel Javascript"
-msgstr ""
-
-#: options.php:2032
-msgid "Loads mousewheel.js (polyfill to enable mousewheel on older browsers.)"
-msgstr ""
-
-#: options.php:2042
-msgid "Load NW Watcher Javascript"
-msgstr ""
-
-#: options.php:2043
-msgid "Adds further CSS selector support (See <a href=\"http://javascript.nwbox.com/NWMatcher/\" target=\"_blank\">NWWatcher</a> for details.)"
-msgstr ""
-
-#: options.php:2053
-msgid "Load NW Event Javascript"
-msgstr ""
-
-#: options.php:2054
-msgid "Adds improved Event Manager support (Requires NWWatcher. See <a href=\"http://javascript.nwbox.com/NWEvents/\" target=\"_blank\">NWEvents</a> for details.)"
-msgstr ""
-
-#: options.php:2065
-msgid "Load Modernizr"
-msgstr ""
-
-#: options.php:2066
-msgid "Whether to load "
-msgstr ""
-
-#: options.php:2066
-msgid "Modernizr"
-msgstr ""
-
-#: options.php:2066
-msgid "javascript or not, production (~10kb) or development (~50kb) Note: required for loading Foundation."
-msgstr ""
-
-#: options.php:2077
-msgid "Load CSS.Supports Javascript"
-msgstr ""
-
-#: options.php:2078
-msgid "Loads CSS.Supports (polyfill for Javascript API to check for CSS rule support.)"
-msgstr ""
-
-#: options.php:2088
-msgid "Load MatchMedia Javascript"
-msgstr ""
-
-#: options.php:2089
-msgid "Loads MatchMedia (polyfill for Javascript MatchMedia media query support.)"
-msgstr ""
-
-#: options.php:2102
-msgid "Extras"
-msgstr ""
-
-#: options.php:2121
-msgid "Disable Emojis"
-msgstr ""
-
-#: options.php:2122
-msgid "Unqueues Emoji scripts and styles from frontend and backend."
-msgstr ""
-
-#: options.php:2132
-msgid "Load Smooth Scrolling"
-msgstr ""
-
-#: options.php:2133
-msgid "Loads jQuery Smooth Scrolling for #hash (a name) links."
-msgstr ""
-
-#: options.php:2143
-msgid "Load jQuery Match Height"
-msgstr ""
-
-#: options.php:2144
-msgid "Loads jQuery MatchHeight to apply matching heights to any page element with .matchheight class."
-msgstr ""
-
-#: options.php:2154
-msgid "Load jQuery Sticky Kit"
-msgstr ""
-
-#: options.php:2155
-msgid "Loads jQuery Sticky Kit for smart scrolling page elements inside parent element."
-msgstr ""
-
-#: options.php:2165
-msgid "Sticky Kit Elements"
-msgstr ""
-
-#: options.php:2166
-msgid "List of elements to appl Sticky Kit to, comma separated."
-msgstr ""
-
-#: options.php:2176
-msgid "Load FitVids Javascript"
-msgstr ""
-
-#: options.php:2177
-msgid "Loads fitvids.js and applies it to the selected elements (auto-fits video widths to element area.)"
-msgstr ""
-
-#: options.php:2187
-msgid "FitVids Elements"
-msgstr ""
-
-#: options.php:2188
-msgid "List of elements to apply Fitvids to, comma separated."
-msgstr ""
-
-#: options.php:2198
-msgid "Load jQuery Scroll To Fixed"
-msgstr ""
-
-#: options.php:2199
-msgid "Loads jQuery Scroll To Fixed for floating fixed position scrolling elements."
-msgstr ""
-
-#: options.php:2213
-msgid "Reading"
-msgstr ""
-
-#: options.php:2221
-msgid "Set the site credits to display in the Footer. 0 for blank."
-msgstr ""
-
-#: options.php:2231
-msgid "All Categories"
-msgstr ""
-
-#: options.php:2232 options.php:2263
-msgid "Include Selected Categories"
-msgstr ""
-
-#: options.php:2233 options.php:2278
-msgid "Exclude Selected Categories"
-msgstr ""
-
-#: options.php:2234
-msgid "Include and Exclude Categories"
-msgstr ""
-
-#: options.php:2237
-msgid "\"Home\" Blog Category Mode"
-msgstr ""
-
-#: options.php:2238
-msgid "Whether to filter category query on \"Home\" Blog Page."
-msgstr ""
-
-#: options.php:2264
-msgid "Used if Category Mode above is include or both include/exclude."
+#: options.php:2268
+msgid "Loads jQuery from the Google CDN instead of the WordPress copy. Can speed up pageload as it is probably already cached in most browsers. (Automatically falls back to local copy if Google CDN is unreachable.)"
 msgstr ""
 
 #: options.php:2279
-msgid "Used if Category Mode above is exclude or both include/exclude."
+msgid "Load PrefixFree Javascript"
 msgstr ""
 
-#: options.php:2303
-msgid "Search Results per Page"
+#: options.php:2280
+msgid "Auto-adds browser-specific prefixes to unprefixed CSS code."
 msgstr ""
 
-#: options.php:2304
-msgid "Number of search results to show for keyword search."
+#: options.php:2280
+msgid "See"
+msgstr ""
+
+#: options.php:2280
+msgid "for details."
+msgstr ""
+
+#: options.php:2280
+msgid "Dynamic DOM and jQuery plugins included."
+msgstr ""
+
+#: options.php:2292
+msgid "Selectivizr (CSS3 Selectors for IE6-IE8)"
+msgstr ""
+
+#: options.php:2293
+msgid "HTML5 Shiv (HTML5 for IE6-9)"
+msgstr ""
+
+#: options.php:2294
+msgid "SuperSleight (Transparent PNGs IE6-)"
+msgstr ""
+
+#: options.php:2295
+msgid "DOM Fix (IE8 only)"
+msgstr ""
+
+#: options.php:2296
+msgid "Flexibility (Flexbox Polyfill IE8-9)"
+msgstr ""
+
+#: options.php:2301
+msgid "Internet Exporer Specific Supports"
+msgstr ""
+
+#: options.php:2302
+msgid "Load"
+msgstr ""
+
+#: options.php:2302
+msgid "HTML5, SuperSleight and/or Flexibility."
 msgstr ""
 
 #: options.php:2315
-msgid "Searchable Post Types"
+msgid "Do not load polyfill support"
 msgstr ""
 
 #: options.php:2316
-msgid "Includes the selected Post Types in the site search results."
+msgid "Respond.js: Fast and lightweight"
 msgstr ""
 
-#: options.php:2326
-msgid "Disable Support"
+#: options.php:2317
+msgid "MediaQueries.js: Slower but fuller support"
 msgstr ""
 
-#: options.php:2327
-msgid "Autoload Scrolling"
+#: options.php:2320
+msgid "Media Queries Javascript"
 msgstr ""
 
-#: options.php:2328
-msgid "Click to Load Link"
+#: options.php:2321
+msgid "Polyfill to help fix CSS3 Media Queries for older browsers eg. IE6-IE8. (See "
 msgstr ""
 
-#: options.php:2331
-msgid "Jetpack Infinite Scroll"
+#: options.php:2321
+msgid "and"
 msgstr ""
 
-#: options.php:2332
-msgid "Adds theme support for Jetpack Infinite Scroll... or you could use the <a href=\"https://wordpress.org/plugins/ajax-load-more/\" target=_blank>AJAX Load More</a> plugin (loop template available in /templates/ajax-load-more/)"
+#: options.php:2333
+msgid "Load Fastclick Javascript"
+msgstr ""
+
+#: options.php:2334
+msgid "Loads fastclick.js (polyfill to remove click delays on browsers with touch UIs.)"
+msgstr ""
+
+#: options.php:2345
+msgid "Load Mousewheel Javascript"
 msgstr ""
 
 #: options.php:2346
-msgid "Excerpts"
+msgid "Loads mousewheel.js (polyfill to enable mousewheel on older browsers.)"
 msgstr ""
 
-#: options.php:2354
-msgid "Page Excerpts"
+#: options.php:2357
+msgid "Load NW Watcher Javascript"
 msgstr ""
 
-#: options.php:2355
-msgid "Add Excerpt Support to Pages"
+#: options.php:2358
+msgid "Adds further CSS selector support (See <a href=\"http://javascript.nwbox.com/NWMatcher/\" target=\"_blank\">NWWatcher</a> for details.)"
 msgstr ""
 
-#: options.php:2364
-msgid "Excerpt Shortcodes"
+#: options.php:2369
+msgid "Load NW Event Javascript"
 msgstr ""
 
-#: options.php:2365
-msgid "Process Shortcodes in Excerpts (Note: formatting is still stripped from shortcode output.)"
+#: options.php:2370
+msgid "Adds improved Event Manager support (Requires NWWatcher. See <a href=\"http://javascript.nwbox.com/NWEvents/\" target=\"_blank\">NWEvents</a> for details.)"
 msgstr ""
 
-#: options.php:2376
-msgid "Excerpt Length"
-msgstr ""
-
-#: options.php:2377
-msgid "Number of words to show in Excerpts (blank for default 55, 0 for full content.)"
-msgstr ""
-
-#: options.php:2388
-msgid "Read More Anchor"
-msgstr ""
-
-#: options.php:2389
-msgid "Anchor Text for the Read More Link."
-msgstr ""
-
-#: options.php:2399
-msgid "Before Read More Link"
-msgstr ""
-
-#: options.php:2400
-msgid "Replaces ... or hellip before Read More link."
-msgstr ""
-
-#: options.php:2416
-msgid "Meta"
-msgstr ""
-
-#: options.php:2422
-msgid "Replacement Values:"
-msgstr ""
-
-#: options.php:2423
-msgid "Post/Page Permalink with Anchor of Post Date."
-msgstr ""
-
-#: options.php:2424
-msgid "Post/Page Permalink with Anchor \"Permalink\""
-msgstr ""
-
-#: options.php:2425
-msgid "Linkless name of the Page Parent (if any)"
-msgstr ""
-
-#: options.php:2426
-msgid "Linked name of the Page Parent (if any)"
-msgstr ""
-
-#: options.php:2427
-msgid "Linked comma separated post category list (<i>get_the_category_list</i>)"
-msgstr ""
-
-#: options.php:2428
-msgid "Outputs \"Category: \" {get_the_category_list} (but blank if none)"
-msgstr ""
-
-#: options.php:2429
-msgid "Linked comma separated post tag list (<i>get_the_tag_list</i>)"
-msgstr ""
-
-#: options.php:2430
-msgid "Outputs \"Tagged: \" {get_the_tag_list} (but blank if none)"
-msgstr ""
-
-#: options.php:2431
-msgid "Number of Comments with Comments Link"
-msgstr ""
-
-#: options.php:2432
-msgid "Number of Comments with Popup Link (<i>comments_popup_link</i>)"
-msgstr ""
-
-#: options.php:2433
-msgid "Linkless Author Display Name (<i>the_author</i>)"
-msgstr ""
-
-#: options.php:2434
-msgid "Author Posts Link URL (only) - no anchor (<i>author_posts_link</i>)"
-msgstr ""
-
-#: options.php:2435
-msgid "Author Posts Link with Author name anchor (<i>author_posts_link</i>)"
-msgstr ""
-
-#: options.php:2436
-msgid "Author Link with View (posttype) by Author anchor (<i>author_posts_link</i>)"
-msgstr ""
-
-#: options.php:2437
-msgid "Post/Page (admin/editor) Edit Link (<i>edit_post_link</i>)"
-msgstr ""
-
-#: options.php:2438
-msgid "Note: Categories and Tags works for Custom Post Type taxonomies. :-)"
-msgstr ""
-
-#: options.php:2441
-msgid "Post Meta Formatting"
-msgstr ""
-
-#: options.php:2449
-msgid "Post Meta Top"
-msgstr ""
-
-#: options.php:2450
-msgid "The byline and author info to display below the post title."
-msgstr ""
-
-#: options.php:2460
-msgid "Post Meta Bottom"
-msgstr ""
-
-#: options.php:2461
-msgid "The category/tags etc. to display below the post content."
-msgstr ""
-
-#: options.php:2471
-msgid "Page Meta Top"
-msgstr ""
-
-#: options.php:2472
-msgid "The byline etc. to display below the page title."
-msgstr ""
-
-#: options.php:2482
-msgid "Page Meta Bottom"
-msgstr ""
-
-#: options.php:2483
-msgid "What to display below the page content."
-msgstr ""
-
-#: options.php:2492
-msgid "Custom Post Type Metas"
-msgstr ""
-
-#: options.php:2493
-msgid "Meta Top and Bottom for Custom Post Types can be set via filters.php in your Child Theme."
-msgstr ""
-
-#: options.php:2500
-msgid "Entry Meta Top in Post Lists"
-msgstr ""
-
-#: options.php:2501
-msgid "Whether to show the entry meta top in post lists such as archives, category pages, searches etc."
-msgstr ""
-
-#: options.php:2511
-msgid "Entry Meta Bottom in Post Lists"
-msgstr ""
-
-#: options.php:2512
-msgid "Whether to show the entry meta bottom in post lists such as archives, category pages, searches etc."
-msgstr ""
-
-#: options.php:2533
-msgid "Author Bio Box"
-msgstr ""
-
-#: options.php:2534
-msgid "Show Author Biography Box for selected Post Types (Only if Author description is not empty!)"
-msgstr ""
-
-#: options.php:2545 options.php:3381
-msgid "Do Not Display"
-msgstr ""
-
-#: options.php:2546
-msgid "Top Position"
-msgstr ""
-
-#: options.php:2547
-msgid "Bottom Position"
-msgstr ""
-
-#: options.php:2548
-msgid "Top and Bottom"
-msgstr ""
-
-#: options.php:2551
-msgid "Bio Box Position"
-msgstr ""
-
-#: options.php:2552
-msgid "Where to show the Author Bio Box for select posted types. (Position filter available.)"
-msgstr ""
-
-#: options.php:2565
-msgid "Author Avatar Size"
-msgstr ""
-
-#: options.php:2566
-msgid "The squared size of the Author Avatar in the Bio Box (default 60)"
-msgstr ""
-
-#: options.php:2581
-msgid "Writing"
-msgstr ""
-
-#: options.php:2589
-msgid "Automatically add relevent theme styles to the TinyMCE Post Writing Editor."
-msgstr ""
-
-#: options.php:2618
-msgid "Post Formats Support"
-msgstr ""
-
-#: options.php:2619
-msgid "Adds specified Post Formats selection to the post writing screen."
-msgstr ""
-
-#: options.php:2628
-msgid "Aside"
-msgstr ""
-
-#: options.php:2629
-msgid "Audio"
-msgstr ""
-
-#: options.php:2630
-msgid "Chat"
-msgstr ""
-
-#: options.php:2631
-msgid "Image"
-msgstr ""
-
-#: options.php:2633
-msgid "Link"
-msgstr ""
-
-#: options.php:2634
-msgid "Quote"
-msgstr ""
-
-#: options.php:2635
-msgid "Status"
-msgstr ""
-
-#: options.php:2636
-msgid "Video"
-msgstr ""
-
-#: options.php:2640
-msgid "Active Post Formats"
-msgstr ""
-
-#: options.php:2641
-msgid "Make these post formats available (if Post Formats Support is active.)"
-msgstr ""
-
-#: options.php:2652
-msgid "Subtitle Support"
-msgstr ""
-
-#: options.php:2653
-msgid "Add Subtitles Field to specified Post Types.<br>(Requires "
-msgstr ""
-
-#: options.php:2653
-msgid "WP Subtitle"
-msgstr ""
-
-#: options.php:2653
-msgid " to be installed.)"
-msgstr ""
-
-#: options.php:2667
-msgid "RSS"
-msgstr ""
-
-#: options.php:2674
-msgid "Automatic Feed Links Theme Support"
-msgstr ""
-
-#: options.php:2675
-msgid "Automatically Add Feed Links to &lt;head&gt;"
-msgstr ""
-
-#: options.php:2686
-msgid "RSS Item Excerpt Length"
-msgstr ""
-
-#: options.php:2687
-msgid "Number of words to show in RSS Feed Excerpts (blank for excerpt default, 0 for full content.)"
-msgstr ""
-
-#: options.php:2698
-msgid "RSS Publish Delay"
-msgstr ""
-
-#: options.php:2699
-msgid "Delays Publishing of Post to RSS Feed for x minutes. Helpful to let you fix typos etc. Blank or 0 for off."
-msgstr ""
-
-#: options.php:2710
-msgid "Post Types in RSS Feed"
-msgstr ""
-
-#: options.php:2711
-msgid "Include the selected Post Types in the main RSS Feed ( /feed/ ) Uncheck all to not use this post type filtering or if filtering with a plugin."
-msgstr ""
-
-#: options.php:2722
-msgid "Page Content Feeds"
-msgstr ""
-
-#: options.php:2723
-msgid "Output full page content for page feeds (/page/feed/) instead of page comments (comments will then be available via /pagename/feed/?withcomments=1"
-msgstr ""
-
-#: options.php:2736
-msgid "Admin"
-msgstr ""
-
-#: options.php:2753
-msgid "Disable Self Pings"
-msgstr ""
-
-#: options.php:2754
-msgid "Stops pingbacks (trackback links) sent from this site to itself."
-msgstr ""
-
-#: options.php:2764
-msgid "Add All Options Page"
-msgstr ""
-
-#: options.php:2765
-msgid "Add an \"All Options\" Page to the Settings Menu"
-msgstr ""
-
-#: options.php:2774
-msgid "Admin Only Core Update Notice"
-msgstr ""
-
-#: options.php:2775
-msgid "Only Show Update Core Notice to Admins"
-msgstr ""
-
-#: options.php:2784
-msgid "Disable Admin New User Notifications"
-msgstr ""
-
-#: options.php:2785
-msgid "Catch and cancel email notifications to site admin regarding new users and lost/reset passwords."
-msgstr ""
-
-#: options.php:2794
-msgid "Cleaner Admin Bar"
-msgstr ""
-
-#: options.php:2795
-msgid "Remove the WordPress Links from the top Admin Bar."
-msgstr ""
-
-#: options.php:2804
-msgid "Templates Dropdown"
-msgstr ""
-
-#: options.php:2805
-msgid "Add an ordered list of included templates for the current page to the Admin Bar."
-msgstr ""
-
-#: options.php:2833
-msgid "Show CPTs in \"Right Now\""
-msgstr ""
-
-#: options.php:2834
-msgid "Adds the display of Custom Post Types to the \"Right Now\" Dashboard widget."
-msgstr ""
-
-#: options.php:2860
-msgid "Dynamic Admin CSS"
-msgstr ""
-
-#: options.php:2861
-msgid "Loads this custom CSS in the Admin Area. Defaults hide WP admin bar logo, and thankyou/version footer."
-msgstr ""
-
-#: options.php:2870
-msgid "Admin CSS Mode"
-msgstr ""
-
-#: options.php:2871
-msgid "How to load the Dynamic Admin CSS."
-msgstr ""
-
-#: options.php:2899
-msgid "Max Layout Width"
-msgstr ""
-
-#: options.php:2900
-msgid "Select preferred container maximum container layout width in pixels. (Media queries will not scale container above this point.) Originally 960, 1140 or 1200 selection but can be anything now."
-msgstr ""
-
-#: options.php:2912
-msgid "Twelve Column Grid"
-msgstr ""
-
-#: options.php:2913
-msgid "Sixteen Column Grid"
-msgstr ""
-
-#: options.php:2914
-msgid "Twenty Column Grid"
-msgstr ""
-
-#: options.php:2915
-msgid "Twenty Four Column Grid"
-msgstr ""
-
-#: options.php:2917
-msgid "Layout Grid Columns"
-msgstr ""
-
-#: options.php:2918
-msgid "Number of Grid Columns used to generate dynamic Layout Grid. (Warning: If you change this, remember to adjust content and sidebar column values too!)"
-msgstr ""
-
-#: options.php:2929
-msgid "Responsive Grid Breakpoints"
-msgstr ""
-
-#: options.php:2930
-msgid "Dynamic Layout Grid Breakpoints. Media queries are built from these which auto-size the container width based on window width. Default: 320,480,640,768,960,1140,1200"
-msgstr ""
-
-#: options.php:2939
-msgid "Content Grid Columns"
-msgstr ""
-
-#: options.php:2940
-msgid "Default Number of Grid Columns used for dynamic Content Grid .container class. (Warning: If you change this, existing content markup will need to be changed to match.)"
-msgstr ""
-
-#: options.php:2951
-msgid "960 Grid System"
-msgstr ""
-
-#: options.php:2952
-msgid "Blueprint"
-msgstr ""
-
-#: options.php:2959
-msgid "Content Grid Compatibility"
-msgstr ""
-
-#: options.php:2960
-msgid "Adds Classes for these Grid Boilerplates to your content columns if you prefer to use their syntax."
-msgstr ""
-
-#: options.php:2971
-msgid " 1 Column"
-msgstr ""
-
-#: options.php:2971 options.php:3068
-msgid " 2 Columns"
-msgstr ""
-
-#: options.php:2972 options.php:3069
-msgid " 3 Columns"
-msgstr ""
-
-#: options.php:2972 options.php:3069
-msgid " 4 Columns"
-msgstr ""
-
-#: options.php:2973 options.php:3070
-msgid " 5 Columns"
-msgstr ""
-
-#: options.php:2973 options.php:3070
-msgid " 6 Columns"
-msgstr ""
-
-#: options.php:2974 options.php:3071
-msgid " 7 Columns"
-msgstr ""
-
-#: options.php:2974 options.php:3071
-msgid " 8 Columns"
-msgstr ""
-
-#: options.php:2975
-msgid " 9 Columns"
-msgstr ""
-
-#: options.php:2975 options.php:3072
-msgid "10 Columns"
-msgstr ""
-
-#: options.php:2976 options.php:3073
-msgid "11 Columns"
-msgstr ""
-
-#: options.php:2976 options.php:3073
-msgid "12 Columns"
-msgstr ""
-
-#: options.php:2977
-msgid "13 Columns"
-msgstr ""
-
-#: options.php:2977
-msgid "14 Columns"
-msgstr ""
-
-#: options.php:2978
-msgid "15 Columns"
-msgstr ""
-
-#: options.php:2978
-msgid "16 Columns"
-msgstr ""
-
-#: options.php:2979
-msgid "17 Columns"
-msgstr ""
-
-#: options.php:2979
-msgid "18 Columns"
-msgstr ""
-
-#: options.php:2980
-msgid "19 Columns"
-msgstr ""
-
-#: options.php:2980
-msgid "20 Columns"
-msgstr ""
-
-#: options.php:2981
-msgid "21 Columns"
-msgstr ""
-
-#: options.php:2981
-msgid "22 Columns"
-msgstr ""
-
-#: options.php:2982
-msgid "23 Columns"
-msgstr ""
-
-#: options.php:2982
-msgid "24 Columns"
-msgstr ""
-
-#: options.php:2984
-msgid "Content Width"
-msgstr ""
-
-#: options.php:2985
-msgid "Define the width of your content area in columns (out of total grid columns.)"
-msgstr ""
-
-#: options.php:2996
-msgid "Content Padding"
-msgstr ""
-
-#: options.php:2997
-msgid "Sets the CSS padding property for the #contentpadding wrapper around #content. Use px or em or %.<br>Also used to help calculate actual content width area for embeds and images."
-msgstr ""
-
-#: options.php:3023
-msgid "All sidebars are registered regardless of their active state so the you can add widgets while inactive. Note: You can save/restore different widget layouts with the "
-msgstr ""
-
-#: options.php:3023
-msgid "Widget Saver"
-msgstr ""
-
-#: options.php:3023
-msgid " plugin, or import/export using the "
-msgstr ""
-
-#: options.php:3023
-msgid "Widget Import/Export"
-msgstr ""
-
-#: options.php:3023
-msgid " plugin.)"
-msgstr ""
-
-#: options.php:3032
-msgid "Do not add a Primary Sidebar"
-msgstr ""
-
-#: options.php:3033 options.php:3088
-msgid "Add to Posts only"
-msgstr ""
-
-#: options.php:3034 options.php:3089
-msgid "Add to Pages only"
-msgstr ""
-
-#: options.php:3035
-msgid "Unified Sidebar for Posts and Pages"
-msgstr ""
-
-#: options.php:3036
-msgid "Separate Post and Page Sidebars"
-msgstr ""
-
-#: options.php:3039
-msgid "Sidebar Mode"
-msgstr ""
-
-#: options.php:3040
-msgid "Whether to use a single sidebar area for both posts and pages, or a different sidebar for posts and pages."
-msgstr ""
-
-#: options.php:3052
-msgid "Left Sidebar"
-msgstr ""
-
-#: options.php:3053
-msgid "Right Sidebar"
-msgstr ""
-
-#: options.php:3055
-msgid "Sidebar Position"
-msgstr ""
-
-#: options.php:3056
-msgid "Select a sidebar layout position (left or right). You can also select a wide page layout on a per-page basis via edit screen metabox."
-msgstr ""
-
-#: options.php:3068
-msgid " 1 Columns"
-msgstr ""
-
-#: options.php:3072
-msgid "9 Columns"
-msgstr ""
-
-#: options.php:3075
-msgid "Sidebar Width"
-msgstr ""
-
-#: options.php:3076
-msgid "Define the width of primary Sidebar in columns (out of total grid columns.)"
-msgstr ""
-
-#: options.php:3087
-msgid "Do not add Subsidiary Sidebar"
-msgstr ""
-
-#: options.php:3090
-msgid "Add a unified subsidebar to Posts and Pages"
-msgstr ""
-
-#: options.php:3091
-msgid "Add a separate subsidebar for Posts and Pages"
-msgstr ""
-
-#: options.php:3095
-msgid "Adds a Subsidiary Sidebar Widget Area. Either for posts or pages, or for both posts/pages together, or for posts/pages separately.)"
-msgstr ""
-
-#: options.php:3106
-msgid "External to Primary Sidebar"
-msgstr ""
-
-#: options.php:3107
-msgid "Internal to Primary Sidebar"
-msgstr ""
-
-#: options.php:3108
-msgid "Opposite to Primary Sidebar"
-msgstr ""
-
-#: options.php:3111
-msgid "Subsidiary Sidebar Position"
-msgstr ""
-
-#: options.php:3112
-msgid "Whether to call the Subsidiary Sidebar external to (towards wrapper), or internal to (towards content), or opposite to (left-content-right) to the Primary Sidebar.)"
-msgstr ""
-
-#: options.php:3123
-msgid "1 Column"
-msgstr ""
-
-#: options.php:3123
-msgid "2 Columns"
-msgstr ""
-
-#: options.php:3124
-msgid "3 Columns"
-msgstr ""
-
-#: options.php:3124
-msgid "4 Columns"
-msgstr ""
-
-#: options.php:3125
-msgid "5 Columns"
-msgstr ""
-
-#: options.php:3125
-msgid "6 Columns"
-msgstr ""
-
-#: options.php:3126
-msgid "7 Columns"
-msgstr ""
-
-#: options.php:3126
-msgid "8 Columns"
-msgstr ""
-
-#: options.php:3129
-msgid "Subsidiary Sidebar Columns"
-msgstr ""
-
-#: options.php:3130
-msgid "Number of columns for subsidiary sidebar out of total grid columns."
-msgstr ""
-
-#: options.php:3142
-msgid "Enable the Header Sidebar Widget Area"
-msgstr ""
-
-#: options.php:3152
-msgid "No Footer Widget Areas"
-msgstr ""
-
-#: options.php:3153
-msgid "One Widget Area"
-msgstr ""
-
-#: options.php:3154
-msgid "Two Widget Areas"
-msgstr ""
-
-#: options.php:3155
-msgid "Three Widget Areas"
-msgstr ""
-
-#: options.php:3156
-msgid "Four Widget Areas"
-msgstr ""
-
-#: options.php:3159
-msgid "Footer Widget Areas"
-msgstr ""
-
-#: options.php:3160
-msgid "Number of Footer Sidebar Widget Areas to make available. (Actual display is split into columns based on widget areas with widgets. To add an empty footer area you could use an empty Text Widget.)"
-msgstr ""
-
-#: options.php:3174 skull.php:159
-msgid "Frontpage Sidebar"
-msgstr ""
-
-#: options.php:3175 skull.php:163
-msgid "Home (Blog) Sidebar"
-msgstr ""
-
-#: options.php:3176
-msgid "Searchpage Sidebar"
-msgstr ""
-
-#: options.php:3177
-msgid "404 Not Found Sidebar"
-msgstr ""
-
-#: options.php:3178
-msgid "Archive Page Sidebar"
-msgstr ""
-
-#: options.php:3179
-msgid "Category Archive Sidebar"
-msgstr ""
-
-#: options.php:3180
-msgid "Taxonomy Archive Sidebar"
-msgstr ""
-
-#: options.php:3181
-msgid "Tag Archive Sidebar"
-msgstr ""
-
-#: options.php:3182
-msgid "Author Archive Sidebar"
-msgstr ""
-
-#: options.php:3183
-msgid "Date Archive Sidebar"
-msgstr ""
-
-#: options.php:3187
-msgid "Display Contextual Sidebars"
-msgstr ""
-
-#: options.php:3188
-msgid "Which contextual Sidebars to Display by default. They will only be displayed if they have widgets in them."
-msgstr ""
-
-#: options.php:3201 skull.php:160
-msgid "Frontpage SubSidebar"
-msgstr ""
-
-#: options.php:3202 skull.php:164
-msgid "Home (Blog) SubSidebar"
-msgstr ""
-
-#: options.php:3203
-msgid "Searchpage SubSidebar"
-msgstr ""
-
-#: options.php:3204
-msgid "404 Not Found SubSidebar"
-msgstr ""
-
-#: options.php:3205 skull.php:169
-msgid "Archive Page SubSidebar"
-msgstr ""
-
-#: options.php:3206
-msgid "Category Archive SubSidebar"
-msgstr ""
-
-#: options.php:3207
-msgid "Taxonomy Archive SubSidebar"
-msgstr ""
-
-#: options.php:3208
-msgid "Tag Archive SubSidebar"
-msgstr ""
-
-#: options.php:3209
-msgid "Author Archive SubSidebar"
-msgstr ""
-
-#: options.php:3210
-msgid "Date Archive SubSidebar"
-msgstr ""
-
-#: options.php:3214
-msgid "Display Contextual SubSidebars"
-msgstr ""
-
-#: options.php:3215
-msgid "Which contextual SubSidebars to Display by default. They will only be displayed if they have widgets in them."
-msgstr ""
-
-#: options.php:3232
-msgid "Navigation"
-msgstr ""
-
-#: options.php:3239
-msgid "Primary Menu"
-msgstr ""
-
-#: options.php:3240
-msgid "Enable the Primary Navigation Menu"
-msgstr ""
-
-#: options.php:3250
-msgid "Secondary Menu"
-msgstr ""
-
-#: options.php:3251
-msgid "Enable the Secondary Navigation Menu"
-msgstr ""
-
-#: options.php:3262
-msgid "Enable the Header Navigation Menu"
-msgstr ""
-
-#: options.php:3273
-msgid "Enable the Footer Navigation Menu"
-msgstr ""
-
-#: options.php:3285
-msgid "Page Navigation Display"
-msgstr ""
-
-#: options.php:3286
-msgid "Which Post Types to display Post/Page Navigation on."
-msgstr ""
-
-#: options.php:3299
-msgid "Archive Navigation Display"
-msgstr ""
-
-#: options.php:3300
-msgid "Which Post Types to display Archive Navigation on."
-msgstr ""
-
-#: options.php:3314
-msgid "Breadcrumbs Posts Display"
-msgstr ""
-
-#: options.php:3315
-msgid "Which Post Types to display Breadcrumbs on."
-msgstr ""
-
-#: options.php:3327
-msgid "Breadcrumbs Archive Display"
-msgstr ""
-
-#: options.php:3328
-msgid "Which Post Archive Types to display Breadcrumbs on."
-msgstr ""
-
-#: options.php:3343
-msgid "Thumbnails"
-msgstr ""
-
-#: options.php:3350
-msgid "Thumbnail Size Changes Reminder"
-msgstr ""
-
-#: options.php:3351
-msgid "If this is a new theme install, or you have changed the explicit thumbnail sizes via filters, you can use the <a href=\"http://wordpress.org/plugins/regenerate-thumbnails/\" target=_blank>Regenerate Thumbnails</a> plugin to re-process your existing thumbnails (Note: Best not do this until theme is active just in case.)"
-msgstr ""
-
-#: options.php:3358
-msgid "No Crop"
-msgstr ""
-
-#: options.php:3359
-msgid "Auto Crop"
-msgstr ""
-
-#: options.php:3360
-msgid "Top Left"
-msgstr ""
-
-#: options.php:3361
-msgid "Top Center"
-msgstr ""
-
-#: options.php:3362
-msgid "Top Right"
-msgstr ""
-
-#: options.php:3363
-msgid "Center Left"
-msgstr ""
-
-#: options.php:3365
-msgid "Center Right"
-msgstr ""
-
-#: options.php:3366
-msgid "Bottom Left"
-msgstr ""
-
-#: options.php:3367
-msgid "Bottom Center"
-msgstr ""
-
-#: options.php:3368
-msgid "Bottom Right"
-msgstr ""
-
-#: options.php:3370
-msgid "Thumbnail Cropping"
-msgstr ""
-
-#: options.php:3371
-msgid "Set Default Cropping for Thumbnails. (see filters.php for specific image size cropping)"
-msgstr ""
-
-#: options.php:3385
-msgid "Full Size (Original)"
-msgstr ""
-
-#: options.php:3405
-msgid "Post List Thumbnail Image Display Size"
-msgstr ""
-
-#: options.php:3406
-msgid "Set Post Thumbnail size for Post Lists (Blog/Category/Archive/Search pages etc.)"
-msgstr ""
-
-#: options.php:3417 options.php:3447
-msgid "No Alignment Class"
-msgstr ""
-
-#: options.php:3418 options.php:3448
-msgid "Align Left"
-msgstr ""
-
-#: options.php:3419 options.php:3449
-msgid "Align Right"
-msgstr ""
-
-#: options.php:3420 options.php:3450
-msgid "Align Center"
-msgstr ""
-
-#: options.php:3421
-msgid "Alternate Left-Right"
-msgstr ""
-
-#: options.php:3422
-msgid "Alternate Right-Left"
-msgstr ""
-
-#: options.php:3424
-msgid "Post List Thumbnail Alignment"
-msgstr ""
-
-#: options.php:3425
-msgid "Post Thumbnail alignment class for Post Lists (Blog/Category/Archive/Search pages etc.)"
-msgstr ""
-
-#: options.php:3435
-msgid "Single Post Thumbnail Image Display Size"
-msgstr ""
-
-#: options.php:3436
-msgid "Set Post Thumbnail size for Single Post display. PerPost size via edit post metabox. Suggested minimum 200 square (for social sharing.)"
-msgstr ""
-
-#: options.php:3452
-msgid "Single Post Thumbnail Alignment"
-msgstr ""
-
-#: options.php:3453
-msgid "Post Thumbnail alignment class for Single Post display."
-msgstr ""
-
-#: options.php:3463
-msgid "Single Page Featured Image Display Size"
-msgstr ""
-
-#: options.php:3464
-msgid "Set Feature Image (page thumbnail) size for Single Page display. PerPage size via edit page metabox. Suggested minimum 200 square (for social sharing.)"
-msgstr ""
-
-#: options.php:3474
-msgid "Single Page Featured Image Alignment"
-msgstr ""
-
-#: options.php:3475
-msgid "Featured Image alignment class for Single Page display."
-msgstr ""
-
-#: options.php:3487
-msgid "Add Thumbnails Support for Custom Post Types"
-msgstr ""
-
-#: options.php:3488
-msgid "Adds Thumbnail support for selected Custom Post Types. Will not remove existing support. (Custom sizes and alignments can be handled via filters.)"
-msgstr ""
-
-#: options.php:3502
-msgid "Icons"
-msgstr ""
-
-#: options.php:3509
-msgid "Default Gravatar URL"
-msgstr ""
-
-#: options.php:3510
-msgid "Alternatively just put a 96x96 gravatar.png in your Themes /images/ directory."
-msgstr ""
-
-#: options.php:3520
-msgid "Favicon.ico URL"
-msgstr ""
-
-#: options.php:3521
-msgid "Default 32x32 or 16x16 favicon.ico icon image. (Alternatively just place in /images/ directory.)"
-msgstr ""
-
-#: options.php:3530
-msgid "Favicon.png URL"
-msgstr ""
-
-#: options.php:3531
-msgid "Default 96x96 favicon.png image. (Alternatively just place in /images/ directory.)"
-msgstr ""
-
-#: options.php:3540
-msgid "Apple Touch Icon URL"
-msgstr ""
-
-#: options.php:3541
-msgid "Default 57x57 apple-touch-icon.png image. (Alternatively just place in /images/ directory.)"
-msgstr ""
-
-#: options.php:3550
-msgid "Windows 8 Tile/Apple Touch 144"
-msgstr ""
-
-#: options.php:3551
-msgid "Default 144x144 win8-tile.png for Windows 8/Apple Touch.  (Alternatively just place in /images/ directory.)"
-msgstr ""
-
-#: options.php:3560
-msgid "Windows 8 Tile Background"
-msgstr ""
-
-#: options.php:3561
-msgid "Background Color for Windows 8 Tile Icon."
-msgstr ""
-
-#: options.php:3570
-msgid "Enable Apple Touch Icon Sizes"
-msgstr ""
-
-#: options.php:3571
-msgid "Adds header code for all the specific Apple Touch Icon sizes (if found.)<br>Place files in child or parent theme /images/ <br> Filenames: apple-touch-icon-XXXxYYY-precomposed.png - Sizes (square): 57,72,76,114,120,144,152,180,192"
-msgstr ""
-
-#: options.php:3580
-msgid "Enable Apple Touch Startup Images"
-msgstr ""
-
-#: options.php:3581
-msgid "Adds header code for all the specific Apple Touch Startup Image sizes (if found.)<br>Place files in child or parent theme /images/ <br> Filenames: startup-XXXXxYYYY.png -- Sizes: 320x460,640x920,640x1096,1024x748,768x1004,1536x2008,2048x1496"
-msgstr ""
-
-#: options.php:3591
-msgid "Image URL (Upload Below)"
-msgstr ""
-
-#: options.php:3599
-msgid "Open Graph Default Image"
-msgstr ""
-
-#: options.php:3600
-msgid "Default Open Graph image, recommended miniumum 200x200 (requires "
-msgstr ""
-
-#: options.php:3600
-msgid "Open Graph Protocol"
-msgstr ""
-
-#: options.php:3600
-msgid "plugin installed and active. If using another Open Graph plugin, ignore this section.) Filter also available."
-msgstr ""
-
-#: options.php:3610
-msgid "Default Open Graph Image URL"
-msgstr ""
-
-#: options.php:3611
-msgid "Only used if the option above option is URL and the Open Graph Protocol plugin is installed and active."
-msgstr ""
-
-#: options.php:3623
-msgid "Hybrid"
-msgstr ""
-
-#: options.php:3633
-msgid "Load Hybrid Core"
-msgstr ""
-
-#: options.php:3634
-msgid "Loads the Hybrid Core Library Version (highly recommended. also required for all options below)"
-msgstr ""
-
-#: options.php:3644
-msgid "Hybrid Hook"
-msgstr ""
-
-#: options.php:3645
-msgid "Modified plugin to add HTML block to all available theme Hooks. Note: Does not require Hybrid Core. (hybrid/hybrid-hook/hybrid-hook.php)"
-msgstr ""
-
-#: options.php:3665
-msgid "Hybrid Post Format Filters"
-msgstr ""
-
-#: options.php:3666
-msgid "Activate extra Post Formats Filters (note: full effects untested.)"
-msgstr ""
-
-#: options.php:3678
-msgid "Hybrid Extensions"
-msgstr ""
-
-#: options.php:3686
-msgid "Get the Image Extension"
-msgstr ""
-
-#: options.php:3687
-msgid "Recommended! Activate Thumbnail/Image Script Extension."
-msgstr ""
-
-#: options.php:3696
-msgid "Breadcrumb Trail Extension"
-msgstr ""
-
-#: options.php:3697
-msgid "Activate Breadcrumb Trail Extension (required for Breadcrumb display)"
-msgstr ""
-
-#: options.php:3706
-msgid "Cleaner Gallery Extension"
-msgstr ""
-
-#: options.php:3707
-msgid "Activate Cleaner Gallery Extension."
-msgstr ""
-
-#: options.php:3770
-msgid "Foundation"
-msgstr ""
-
-#: options.php:3777
-msgid "Foundation Notes"
-msgstr ""
-
-#: options.php:3778
-msgid "Integration of <a href=\"http://foundation.zurb.com/docs\" target=_blank>Foundation</a> is <i>experimental</i>. Defaults to not load as not needed by most. This is a loader only - do with Foundation what you will. Dependency Notes: Modernizr is required, as is fastclick.js (turn them on in the Muscle Scripts tab or Foundation will not be loaded.)"
-msgstr ""
-
-#: options.php:3790
-msgid "Foundation Version"
-msgstr ""
-
-#: options.php:3791
-msgid "What major release version of Foundation to use."
-msgstr ""
-
-#: options.php:3802
-msgid "Foundation Stylesheet"
-msgstr ""
-
-#: options.php:3803
-msgid "Whether to Enqueue the Foundation Stylesheet (~145kb, or ~55kb if using essentials below.)"
-msgstr ""
-
-#: options.php:3813
+#: options.php:2380 options.php:4094 options.php:4296
 msgid "Do Not Load"
 msgstr ""
 
-#: options.php:3814
-msgid "Load Essentials"
+#: options.php:2380
+msgid "Load Production version"
 msgstr ""
 
-#: options.php:3815
-msgid "Selective Load"
+#: options.php:2380
+msgid "Load Development version"
 msgstr ""
 
-#: options.php:3816
-msgid "Kitchen Sink (Everything)"
+#: options.php:2382
+msgid "Load Modernizr"
 msgstr ""
 
-#: options.php:3819
-msgid "Load Foundation Javascript"
+#: options.php:2383
+msgid "Whether to load"
 msgstr ""
 
-#: options.php:3820
-msgid "Whether to load Foundation or not, essentials (~20kb), selectively (see below) or the kitchen sink (everything ~180kb)"
+#: options.php:2383
+msgid "Modernizr"
 msgstr ""
 
-#: options.php:3832
-msgid "Abide"
+#: options.php:2383
+msgid "javascript or not, production (~10kb) or development (~50kb) Note: required for loading Foundation."
 msgstr ""
 
-#: options.php:3833
-msgid "Accordion"
+#: options.php:2395
+msgid "Load CSS.Supports Javascript"
 msgstr ""
 
-#: options.php:3834
-msgid "Alert"
+#: options.php:2396
+msgid "Loads CSS.Supports (polyfill for Javascript API to check for CSS rule support.)"
 msgstr ""
 
-#: options.php:3835
-msgid "Clearing"
+#: options.php:2407
+msgid "Load MatchMedia Javascript"
 msgstr ""
 
-#: options.php:3836
-msgid "Dropdown"
+#: options.php:2408
+msgid "Loads MatchMedia (polyfill for Javascript MatchMedia media query support.)"
 msgstr ""
 
-#: options.php:3837
-msgid "Equalizer"
+#: options.php:2422
+msgid "Extras"
 msgstr ""
 
-#: options.php:3838
-msgid "Interchange"
+#: options.php:2442
+msgid "Disable Emojis"
 msgstr ""
 
-#: options.php:3839
-msgid "Joyride"
+#: options.php:2443
+msgid "Unqueues Emoji scripts and styles from frontend and backend."
 msgstr ""
 
-#: options.php:3840
-msgid "Magellan"
+#: options.php:2454
+msgid "Load Smooth Scrolling"
 msgstr ""
 
-#: options.php:3841
-msgid "Off Canvas"
+#: options.php:2455
+msgid "Loads jQuery Smooth Scrolling for #hash (a name) links."
 msgstr ""
 
-#: options.php:3842
-msgid "Orbit"
+#: options.php:2466
+msgid "Load jQuery Match Height"
 msgstr ""
 
-#: options.php:3843
-msgid "Reveal"
+#: options.php:2467
+msgid "Loads jQuery MatchHeight to apply matching heights to any page element with .matchheight class."
 msgstr ""
 
-#: options.php:3844
-msgid "Slider"
+#: options.php:2478
+msgid "Load jQuery Sticky Kit"
 msgstr ""
 
-#: options.php:3845
-msgid "Tab"
+#: options.php:2479
+msgid "Loads jQuery Sticky Kit for smart scrolling page elements inside parent element."
 msgstr ""
 
-#: options.php:3846
-msgid "Tooltip"
+#: options.php:2490
+msgid "Sticky Kit Elements"
 msgstr ""
 
-#: options.php:3847
-msgid "Top Bar"
+#: options.php:2491
+msgid "List of elements to apply Sticky Kit to, comma separated."
+msgstr ""
+
+#: options.php:2502
+msgid "Load FitVids Javascript"
+msgstr ""
+
+#: options.php:2503
+msgid "Loads fitvids.js and applies it to the selected elements (auto-fits video widths to element area.)"
+msgstr ""
+
+#: options.php:2514
+msgid "FitVids Elements"
+msgstr ""
+
+#: options.php:2515
+msgid "List of elements to apply Fitvids to, comma separated."
+msgstr ""
+
+#: options.php:2526
+msgid "Load jQuery Scroll To Fixed"
+msgstr ""
+
+#: options.php:2527
+msgid "Loads jQuery Scroll To Fixed for floating fixed position scrolling elements."
+msgstr ""
+
+#: options.php:2541
+msgid "Reading"
+msgstr ""
+
+#: options.php:2550
+msgid "Set the site credits to display in the Footer. 0 for blank."
+msgstr ""
+
+#: options.php:2561
+msgid "All Categories"
+msgstr ""
+
+#: options.php:2562 options.php:2594
+msgid "Include Selected Categories"
+msgstr ""
+
+#: options.php:2563 options.php:2610
+msgid "Exclude Selected Categories"
+msgstr ""
+
+#: options.php:2564
+msgid "Include and Exclude Categories"
+msgstr ""
+
+#: options.php:2567
+msgid "\"Home\" Blog Category Mode"
+msgstr ""
+
+#: options.php:2568
+msgid "Whether to filter category query on \"Home\" Blog Page."
+msgstr ""
+
+#: options.php:2595
+msgid "Used if Category Mode above is include or both include/exclude."
+msgstr ""
+
+#: options.php:2611
+msgid "Used if Category Mode above is exclude or both include/exclude."
+msgstr ""
+
+#: options.php:2636
+msgid "Search Results per Page"
+msgstr ""
+
+#: options.php:2637
+msgid "Number of search results to show for keyword search."
+msgstr ""
+
+#: options.php:2649
+msgid "Searchable Post Types"
+msgstr ""
+
+#: options.php:2650
+msgid "Includes the selected Post Types in the site search results."
+msgstr ""
+
+#: options.php:2661
+msgid "Disable Support"
+msgstr ""
+
+#: options.php:2662
+msgid "Autoload Scrolling"
+msgstr ""
+
+#: options.php:2663
+msgid "Click to Load Link"
+msgstr ""
+
+#: options.php:2666
+msgid "Jetpack Infinite Scroll"
+msgstr ""
+
+#: options.php:2667
+msgid "Adds theme support for Jetpack Infinite Scroll."
+msgstr ""
+
+#: options.php:2667
+msgid "Alternatively use"
+msgstr ""
+
+#: options.php:2667
+msgid "with loop template"
+msgstr ""
+
+#: options.php:2681
+msgid "Excerpts"
+msgstr ""
+
+#: options.php:2690
+msgid "Page Excerpts"
+msgstr ""
+
+#: options.php:2691
+msgid "Add Excerpt Support to Pages"
+msgstr ""
+
+#: options.php:2701
+msgid "Excerpt Shortcodes"
+msgstr ""
+
+#: options.php:2702
+msgid "Process Shortcodes in Excerpts. (Note: formatting is still stripped from shortcode output.)"
+msgstr ""
+
+#: options.php:2714
+msgid "Excerpt Length"
+msgstr ""
+
+#: options.php:2715
+msgid "Number of words to show in Excerpts."
+msgstr ""
+
+#: options.php:2715
+msgid "Blank for default of 55, 0 for full content."
+msgstr ""
+
+#: options.php:2727
+msgid "Read More Anchor"
+msgstr ""
+
+#: options.php:2728
+msgid "Anchor Text for the Read More Link."
+msgstr ""
+
+#: options.php:2739
+msgid "Before Read More Link"
+msgstr ""
+
+#: options.php:2740
+msgid "Replaces ... or hellip before Read More link."
+msgstr ""
+
+#: options.php:2756
+msgid "Meta"
+msgstr ""
+
+#: options.php:2763
+msgid "Post/Page Permalink with Anchor of Post Date."
+msgstr ""
+
+#: options.php:2764
+msgid "Post/Page Permalink with Anchor \"Permalink\""
+msgstr ""
+
+#: options.php:2765
+msgid "Linkless name of the Page Parent (if any)"
+msgstr ""
+
+#: options.php:2766
+msgid "Linked name of the Page Parent (if any)"
+msgstr ""
+
+#: options.php:2767
+msgid "Linked comma separated post category list (<i>get_the_category_list</i>)"
+msgstr ""
+
+#: options.php:2768
+msgid "Outputs \"Category: \""
+msgstr ""
+
+#: options.php:2768 options.php:2770
+msgid "but blank if none"
+msgstr ""
+
+#: options.php:2769
+msgid "Linked comma separated post tag list"
+msgstr ""
+
+#: options.php:2770
+msgid "Outputs \"Tagged: \""
+msgstr ""
+
+#: options.php:2771
+msgid "Number of Comments with Comments Link"
+msgstr ""
+
+#: options.php:2772
+msgid "Number of Comments with Popup Link"
+msgstr ""
+
+#: options.php:2773
+msgid "Linkless Author Display Name"
+msgstr ""
+
+#: options.php:2774
+msgid "Author Posts Link URL (only) - no anchor"
+msgstr ""
+
+#: options.php:2775
+msgid "Author Posts Link with Author name anchor"
+msgstr ""
+
+#: options.php:2776
+msgid "Author Link with View (posttype) by Author anchor"
+msgstr ""
+
+#: options.php:2777
+msgid "Post/Page (admin/editor) Edit Link"
+msgstr ""
+
+#: options.php:2778
+msgid "Insert a Line Break"
+msgstr ""
+
+#: options.php:2779
+msgid "Note: Categories and Tags also work for Custom Post Type taxonomies. :-)"
+msgstr ""
+
+#: options.php:2782
+msgid "Post Meta Formatting"
+msgstr ""
+
+#: options.php:2791
+msgid "Post Meta Top"
+msgstr ""
+
+#: options.php:2792
+msgid "The byline and author info to display below the post title."
+msgstr ""
+
+#: options.php:2803
+msgid "Post Meta Bottom"
+msgstr ""
+
+#: options.php:2804
+msgid "The category/tags etc. to display below the post content."
+msgstr ""
+
+#: options.php:2815
+msgid "Page Meta Top"
+msgstr ""
+
+#: options.php:2816
+msgid "The byline etc. to display below the page title."
+msgstr ""
+
+#: options.php:2827
+msgid "Page Meta Bottom"
+msgstr ""
+
+#: options.php:2828
+msgid "What to display below the page content."
+msgstr ""
+
+#: options.php:2837
+msgid "Custom Post Type Metas"
+msgstr ""
+
+#: options.php:2838
+msgid "Note: Meta Top and Bottom for Custom Post Types can be set via filters."
+msgstr ""
+
+#: options.php:2846
+msgid "Entry Meta Top in Post Lists"
+msgstr ""
+
+#: options.php:2847
+msgid "Whether to show the entry meta top in post lists such as archives, category pages, searches etc."
+msgstr ""
+
+#: options.php:2858
+msgid "Entry Meta Bottom in Post Lists"
+msgstr ""
+
+#: options.php:2859
+msgid "Whether to show the entry meta bottom in post lists such as archives, category pages, searches etc."
+msgstr ""
+
+#: options.php:2882
+msgid "Author Bio Box"
+msgstr ""
+
+#: options.php:2883
+msgid "Show Author Biography Box for selected Post Types."
+msgstr ""
+
+#: options.php:2883
+msgid "Only if author description is not empty!"
+msgstr ""
+
+#: options.php:2895 options.php:3805
+msgid "Do Not Display"
+msgstr ""
+
+#: options.php:2896
+msgid "Top Position"
+msgstr ""
+
+#: options.php:2897
+msgid "Bottom Position"
+msgstr ""
+
+#: options.php:2898
+msgid "Top and Bottom"
+msgstr ""
+
+#: options.php:2901
+msgid "Bio Box Position"
+msgstr ""
+
+#: options.php:2902
+msgid "Where to show the Author Bio Box for select posted types."
+msgstr ""
+
+#: options.php:2916
+msgid "Author Avatar Size"
+msgstr ""
+
+#: options.php:2917
+msgid "The squared size of the Author Avatar in the Bio Box (default 64)"
+msgstr ""
+
+#: options.php:2933
+msgid "Writing"
+msgstr ""
+
+#: options.php:2943
+msgid "Automatically add relevent theme styles to the TinyMCE Post Writing Editor."
+msgstr ""
+
+#: options.php:2974
+msgid "Post Formats Support"
+msgstr ""
+
+#: options.php:2975
+msgid "Adds specified Post Formats selection to the post writing screen."
+msgstr ""
+
+#: options.php:2985
+msgid "Aside"
+msgstr ""
+
+#: options.php:2986
+msgid "Audio"
+msgstr ""
+
+#: options.php:2987
+msgid "Chat"
+msgstr ""
+
+#: options.php:2988
+msgid "Image"
+msgstr ""
+
+#: options.php:2990
+msgid "Link"
+msgstr ""
+
+#: options.php:2991
+msgid "Quote"
+msgstr ""
+
+#: options.php:2992
+msgid "Status"
+msgstr ""
+
+#: options.php:2993
+msgid "Video"
+msgstr ""
+
+#: options.php:2997
+msgid "Active Post Formats"
+msgstr ""
+
+#: options.php:2998
+msgid "Make these post formats available (if Post Formats Support is active.)"
+msgstr ""
+
+#: options.php:3010
+msgid "Subtitle Support"
+msgstr ""
+
+#: options.php:3011
+msgid "Add Subtitles Field to specified Post Types."
+msgstr ""
+
+#: options.php:3011
+msgid "Requires"
+msgstr ""
+
+#: options.php:3011
+msgid "WP Subtitle"
+msgstr ""
+
+#: options.php:3026
+msgid "RSS"
+msgstr ""
+
+#: options.php:3034
+msgid "Automatic Feed Links Theme Support"
+msgstr ""
+
+#: options.php:3035
+msgid "Automatically Add Feed Links to page &lt;head&gt;"
+msgstr ""
+
+#: options.php:3050
+msgid "RSS Item Excerpt Length"
+msgstr ""
+
+#: options.php:3051
+msgid "Number of words to show in RSS Feed Excerpts."
+msgstr ""
+
+#: options.php:3051
+msgid "Blank for excerpt default, 0 for full content."
+msgstr ""
+
+#: options.php:3063
+msgid "RSS Publish Delay"
+msgstr ""
+
+#: options.php:3064
+msgid "Delays Publishing of Post to RSS Feed for x minutes. Helpful to let you fix typos etc."
+msgstr ""
+
+#: options.php:3064
+msgid "Blank or 0 for off."
+msgstr ""
+
+#: options.php:3076
+msgid "Post Types in RSS Feed"
+msgstr ""
+
+#: options.php:3077
+msgid "Include the selected Post Types in the main RSS Feed. Uncheck all to not use this post type filtering."
+msgstr ""
+
+#: options.php:3089
+msgid "Page Content Feeds"
+msgstr ""
+
+#: options.php:3090
+msgid "Output full page content for page feed links"
+msgstr ""
+
+#: options.php:3090
+msgid "instead of page comments"
+msgstr ""
+
+#: options.php:3090
+msgid "comments will then be available via"
+msgstr ""
+
+#: options.php:3104
+msgid "Admin"
+msgstr ""
+
+#: options.php:3123
+msgid "Disable Self Pings"
+msgstr ""
+
+#: options.php:3124
+msgid "Stops pingbacks (trackback links) sent from this site to itself."
+msgstr ""
+
+#: options.php:3135
+msgid "Add All Options Page"
+msgstr ""
+
+#: options.php:3136
+msgid "Add an \"All Options\" Page to the Settings Menu."
+msgstr ""
+
+#: options.php:3146
+msgid "Admin Only Core Update Notice"
+msgstr ""
+
+#: options.php:3147
+msgid "Only Show Update Core Notice to Admins."
+msgstr ""
+
+#: options.php:3157
+msgid "Disable Admin New User Notifications"
+msgstr ""
+
+#: options.php:3158
+msgid "Catch and cancel email notifications to site admin regarding new users and lost/reset passwords."
+msgstr ""
+
+#: options.php:3168
+msgid "Cleaner Admin Bar"
+msgstr ""
+
+#: options.php:3169
+msgid "Remove the WordPress Links from the top Admin Bar."
+msgstr ""
+
+#: options.php:3180
+msgid "Templates Dropdown"
+msgstr ""
+
+#: options.php:3181
+msgid "Add an ordered list of included templates for the current page to the Admin Bar."
+msgstr ""
+
+#: options.php:3211
+msgid "Show CPTs in \"Right Now\""
+msgstr ""
+
+#: options.php:3212
+msgid "Adds the display of Custom Post Types to the \"Right Now\" Dashboard widget."
+msgstr ""
+
+#: options.php:3240
+msgid "Dynamic Admin CSS"
+msgstr ""
+
+#: options.php:3241
+msgid "Loads this custom CSS in the Admin Area. Defaults hide WP admin bar logo, and thankyou/version footer."
+msgstr ""
+
+#: options.php:3251
+msgid "Admin CSS Mode"
+msgstr ""
+
+#: options.php:3252
+msgid "How to load the Dynamic Admin CSS."
+msgstr ""
+
+#: options.php:3281
+msgid "Max Layout Width"
+msgstr ""
+
+#: options.php:3282
+msgid "Select preferred container maximum container layout width in pixels. (Media queries will not scale container above this point.) Originally 960, 1140 or 1200 selection but can be anything now."
+msgstr ""
+
+#: options.php:3295
+msgid "Twelve Column Grid"
+msgstr ""
+
+#: options.php:3296
+msgid "Sixteen Column Grid"
+msgstr ""
+
+#: options.php:3297
+msgid "Twenty Column Grid"
+msgstr ""
+
+#: options.php:3298
+msgid "Twenty Four Column Grid"
+msgstr ""
+
+#: options.php:3300
+msgid "Layout Grid Columns"
+msgstr ""
+
+#: options.php:3301
+msgid "Number of Grid Columns used to generate dynamic Layout Grid."
+msgstr ""
+
+#: options.php:3301
+msgid "Warning: If you change this, remember to adjust content and sidebar column values to match."
+msgstr ""
+
+#: options.php:3313
+msgid "Responsive Grid Breakpoints"
+msgstr ""
+
+#: options.php:3314
+msgid "Dynamic Layout Grid Breakpoints. Media queries are built from these which auto-size the container width based on window width."
+msgstr ""
+
+#: options.php:3324
+msgid "Content Grid Columns"
+msgstr ""
+
+#: options.php:3325
+msgid "Default Number of Grid Columns used for dynamic Content Grid."
+msgstr ""
+
+#: options.php:3325
+msgid "Warning: If you change this, existing content markup may need to be changed to match."
+msgstr ""
+
+#: options.php:3337
+msgid "960 Grid System"
+msgstr ""
+
+#: options.php:3338
+msgid "Blueprint"
+msgstr ""
+
+#: options.php:3345
+msgid "Content Grid Compatibility"
+msgstr ""
+
+#: options.php:3346
+msgid "Adds Classes for these Grid Boilerplates to your content columns if you prefer to use their syntax."
+msgstr ""
+
+#: options.php:3358
+msgid " 1 Column"
+msgstr ""
+
+#: options.php:3358 options.php:3461
+msgid " 2 Columns"
+msgstr ""
+
+#: options.php:3359 options.php:3462
+msgid " 3 Columns"
+msgstr ""
+
+#: options.php:3359 options.php:3462
+msgid " 4 Columns"
+msgstr ""
+
+#: options.php:3360 options.php:3463
+msgid " 5 Columns"
+msgstr ""
+
+#: options.php:3360 options.php:3463
+msgid " 6 Columns"
+msgstr ""
+
+#: options.php:3361 options.php:3464
+msgid " 7 Columns"
+msgstr ""
+
+#: options.php:3361 options.php:3464
+msgid " 8 Columns"
+msgstr ""
+
+#: options.php:3362
+msgid " 9 Columns"
+msgstr ""
+
+#: options.php:3362 options.php:3465
+msgid "10 Columns"
+msgstr ""
+
+#: options.php:3363 options.php:3466
+msgid "11 Columns"
+msgstr ""
+
+#: options.php:3363 options.php:3466
+msgid "12 Columns"
+msgstr ""
+
+#: options.php:3364
+msgid "13 Columns"
+msgstr ""
+
+#: options.php:3364
+msgid "14 Columns"
+msgstr ""
+
+#: options.php:3365
+msgid "15 Columns"
+msgstr ""
+
+#: options.php:3365
+msgid "16 Columns"
+msgstr ""
+
+#: options.php:3366
+msgid "17 Columns"
+msgstr ""
+
+#: options.php:3366
+msgid "18 Columns"
+msgstr ""
+
+#: options.php:3367
+msgid "19 Columns"
+msgstr ""
+
+#: options.php:3367
+msgid "20 Columns"
+msgstr ""
+
+#: options.php:3368
+msgid "21 Columns"
+msgstr ""
+
+#: options.php:3368
+msgid "22 Columns"
+msgstr ""
+
+#: options.php:3369
+msgid "23 Columns"
+msgstr ""
+
+#: options.php:3369
+msgid "24 Columns"
+msgstr ""
+
+#: options.php:3371
+msgid "Content Width"
+msgstr ""
+
+#: options.php:3372
+msgid "Define the width of your content area in columns out of total layout grid columns."
+msgstr ""
+
+#: options.php:3384
+msgid "Content Padding"
+msgstr ""
+
+#: options.php:3385
+msgid "Sets the CSS padding property for the #contentpadding wrapper around #content. Use px or em or %."
+msgstr ""
+
+#: options.php:3385
+msgid "Also used to help calculate actual content width area for embeds and images."
+msgstr ""
+
+#: options.php:3413
+msgid "All sidebars are registered regardless of their active state so the you can add widgets while inactive. Note: You can save/restore widget layouts with"
+msgstr ""
+
+#: options.php:3413
+msgid "or import/export widgets with "
+msgstr ""
+
+#: options.php:3423
+msgid "Do not add a Primary Sidebar"
+msgstr ""
+
+#: options.php:3424 options.php:3482
+msgid "Add to Posts only"
+msgstr ""
+
+#: options.php:3425 options.php:3483
+msgid "Add to Pages only"
+msgstr ""
+
+#: options.php:3426
+msgid "Unified Sidebar for Posts and Pages"
+msgstr ""
+
+#: options.php:3427
+msgid "Separate Post and Page Sidebars"
+msgstr ""
+
+#: options.php:3430
+msgid "Sidebar Mode"
+msgstr ""
+
+#: options.php:3431
+msgid "Whether to use a single sidebar area for both posts and pages, or a different sidebar for posts and pages."
+msgstr ""
+
+#: options.php:3444
+msgid "Left Sidebar"
+msgstr ""
+
+#: options.php:3445
+msgid "Right Sidebar"
+msgstr ""
+
+#: options.php:3447
+msgid "Sidebar Position"
+msgstr ""
+
+#: options.php:3448
+msgid "Default primary sidebar layout position."
+msgstr ""
+
+#: options.php:3461
+msgid " 1 Columns"
+msgstr ""
+
+#: options.php:3465
+msgid "9 Columns"
+msgstr ""
+
+#: options.php:3468
+msgid "Sidebar Width"
+msgstr ""
+
+#: options.php:3469
+msgid "Define the width of primary Sidebar in columns out of total layout grid columns.)"
+msgstr ""
+
+#: options.php:3481
+msgid "Do not add Subsidiary Sidebar"
+msgstr ""
+
+#: options.php:3484
+msgid "Add a unified subsidebar to Posts and Pages"
+msgstr ""
+
+#: options.php:3485
+msgid "Add a separate subsidebar for Posts and Pages"
+msgstr ""
+
+#: options.php:3489
+msgid "Adds a Subsidiary Sidebar Widget Area. Either for posts or pages, or for both posts/pages together, or for posts/pages separately."
+msgstr ""
+
+#: options.php:3501
+msgid "External to Primary Sidebar"
+msgstr ""
+
+#: options.php:3502
+msgid "Internal to Primary Sidebar"
+msgstr ""
+
+#: options.php:3503
+msgid "Opposite to Primary Sidebar"
+msgstr ""
+
+#: options.php:3506
+msgid "Subsidiary Sidebar Position"
+msgstr ""
+
+#: options.php:3507
+msgid "Whether to call the Subsidiary Sidebar external to (towards wrapper), or internal to (towards content), or opposite to the Primary Sidebar."
+msgstr ""
+
+#: options.php:3519
+msgid "1 Column"
+msgstr ""
+
+#: options.php:3519
+msgid "2 Columns"
+msgstr ""
+
+#: options.php:3520
+msgid "3 Columns"
+msgstr ""
+
+#: options.php:3520
+msgid "4 Columns"
+msgstr ""
+
+#: options.php:3521
+msgid "5 Columns"
+msgstr ""
+
+#: options.php:3521
+msgid "6 Columns"
+msgstr ""
+
+#: options.php:3522
+msgid "7 Columns"
+msgstr ""
+
+#: options.php:3522
+msgid "8 Columns"
+msgstr ""
+
+#: options.php:3525
+msgid "Subsidiary Sidebar Columns"
+msgstr ""
+
+#: options.php:3526
+msgid "Number of columns for subsidiary sidebar out of total layout grid columns."
+msgstr ""
+
+#: options.php:3539
+msgid "Enable the Header Sidebar Widget Area"
+msgstr ""
+
+#: options.php:3550
+msgid "No Footer Widget Areas"
+msgstr ""
+
+#: options.php:3551
+msgid "One Widget Area"
+msgstr ""
+
+#: options.php:3552
+msgid "Two Widget Areas"
+msgstr ""
+
+#: options.php:3553
+msgid "Three Widget Areas"
+msgstr ""
+
+#: options.php:3554
+msgid "Four Widget Areas"
+msgstr ""
+
+#: options.php:3557
+msgid "Footer Widget Areas"
+msgstr ""
+
+#: options.php:3558
+msgid "Number of Footer Sidebar Widget Areas to make available. Actual display is split into columns based on widget areas with widgets."
+msgstr ""
+
+#: options.php:3572 skull.php:320
+msgid "Frontpage Sidebar"
+msgstr ""
+
+#: options.php:3573 skull.php:325
+msgid "Home (Blog) Sidebar"
+msgstr ""
+
+#: options.php:3574
+msgid "Searchpage Sidebar"
+msgstr ""
+
+#: options.php:3575
+msgid "404 Not Found Sidebar"
+msgstr ""
+
+#: options.php:3576
+msgid "Archive Page Sidebar"
+msgstr ""
+
+#: options.php:3577
+msgid "Category Archive Sidebar"
+msgstr ""
+
+#: options.php:3578
+msgid "Taxonomy Archive Sidebar"
+msgstr ""
+
+#: options.php:3579
+msgid "Tag Archive Sidebar"
+msgstr ""
+
+#: options.php:3580
+msgid "Author Archive Sidebar"
+msgstr ""
+
+#: options.php:3581
+msgid "Date Archive Sidebar"
+msgstr ""
+
+#: options.php:3585
+msgid "Display Contextual Sidebars"
+msgstr ""
+
+#: options.php:3586
+msgid "Which contextual Sidebars to Display by default. They will only be displayed if they have widgets in them."
+msgstr ""
+
+#: options.php:3599 skull.php:321
+msgid "Frontpage SubSidebar"
+msgstr ""
+
+#: options.php:3600 skull.php:326
+msgid "Home (Blog) SubSidebar"
+msgstr ""
+
+#: options.php:3601
+msgid "Searchpage SubSidebar"
+msgstr ""
+
+#: options.php:3602
+msgid "404 Not Found SubSidebar"
+msgstr ""
+
+#: options.php:3603 skull.php:332
+msgid "Archive Page SubSidebar"
+msgstr ""
+
+#: options.php:3604
+msgid "Category Archive SubSidebar"
+msgstr ""
+
+#: options.php:3605
+msgid "Taxonomy Archive SubSidebar"
+msgstr ""
+
+#: options.php:3606
+msgid "Tag Archive SubSidebar"
+msgstr ""
+
+#: options.php:3607
+msgid "Author Archive SubSidebar"
+msgstr ""
+
+#: options.php:3608
+msgid "Date Archive SubSidebar"
+msgstr ""
+
+#: options.php:3612
+msgid "Display Contextual SubSidebars"
+msgstr ""
+
+#: options.php:3613
+msgid "Which contextual SubSidebars to Display by default. They will only be displayed if they have widgets in them."
+msgstr ""
+
+#: options.php:3630
+msgid "Navigation"
+msgstr ""
+
+#: options.php:3638
+msgid "Primary Menu"
+msgstr ""
+
+#: options.php:3639
+msgid "Enable the Primary Navigation Menu"
+msgstr ""
+
+#: options.php:3650
+msgid "Secondary Menu"
+msgstr ""
+
+#: options.php:3651
+msgid "Enable the Secondary Navigation Menu"
+msgstr ""
+
+#: options.php:3663
+msgid "Enable the Header Navigation Menu"
+msgstr ""
+
+#: options.php:3675
+msgid "Enable the Footer Navigation Menu"
+msgstr ""
+
+#: options.php:3688
+msgid "Page Navigation Display"
+msgstr ""
+
+#: options.php:3689
+msgid "Which Post Types to display Post/Page Navigation on."
+msgstr ""
+
+#: options.php:3703
+msgid "Archive Navigation Display"
+msgstr ""
+
+#: options.php:3704
+msgid "Which Post Types to display Archive Navigation on."
+msgstr ""
+
+#: options.php:3719
+msgid "Breadcrumbs Posts Display"
+msgstr ""
+
+#: options.php:3720
+msgid "Which Post Types to display Breadcrumbs on."
+msgstr ""
+
+#: options.php:3733
+msgid "Breadcrumbs Archive Display"
+msgstr ""
+
+#: options.php:3734
+msgid "Which Post Archive Types to display Breadcrumbs on."
+msgstr ""
+
+#: options.php:3749
+msgid "Thumbnails"
+msgstr ""
+
+#: options.php:3757
+msgid "Thumbnail Size Changes Reminder"
+msgstr ""
+
+#: options.php:3758
+msgid "If this is a new theme install, or you have changed the explicit thumbnail sizes via filters, you can use"
+msgstr ""
+
+#: options.php:3758
+msgid "to re-process your existing thumbnails."
+msgstr ""
+
+#: options.php:3768
+msgid "JPEG Quality"
+msgstr ""
+
+#: options.php:3769
+msgid "Set JPEG Quality for Media Library."
+msgstr ""
+
+#: options.php:3769
+msgid "0 or blank for off."
+msgstr ""
+
+#: options.php:3781
+msgid "No Crop"
+msgstr ""
+
+#: options.php:3782
+msgid "Auto Crop"
+msgstr ""
+
+#: options.php:3783
+msgid "Top Left"
+msgstr ""
+
+#: options.php:3784
+msgid "Top Center"
+msgstr ""
+
+#: options.php:3785
+msgid "Top Right"
+msgstr ""
+
+#: options.php:3786
+msgid "Center Left"
+msgstr ""
+
+#: options.php:3788
+msgid "Center Right"
+msgstr ""
+
+#: options.php:3789
+msgid "Bottom Left"
+msgstr ""
+
+#: options.php:3790
+msgid "Bottom Center"
+msgstr ""
+
+#: options.php:3791
+msgid "Bottom Right"
+msgstr ""
+
+#: options.php:3793
+msgid "Thumbnail Cropping"
+msgstr ""
+
+#: options.php:3794
+msgid "Set Default Cropping for Thumbnails."
+msgstr ""
+
+#: options.php:3794
+msgid "For specific image size cropping use filters."
+msgstr ""
+
+#: options.php:3809
+msgid "Full Size (Original)"
+msgstr ""
+
+#: options.php:3830
+msgid "Post List Thumbnail Image Display Size"
+msgstr ""
+
+#: options.php:3831
+msgid "Set Post Thumbnail size for Post Lists (Blog/Category/Archive/Search pages etc.)"
+msgstr ""
+
+#: options.php:3844 options.php:3877
+msgid "No Alignment Class"
+msgstr ""
+
+#: options.php:3845 options.php:3878
+msgid "Align Left"
+msgstr ""
+
+#: options.php:3846 options.php:3879
+msgid "Align Right"
+msgstr ""
+
+#: options.php:3847 options.php:3880
+msgid "Align Center"
+msgstr ""
+
+#: options.php:3848
+msgid "Alternate Left-Right"
+msgstr ""
+
+#: options.php:3849
+msgid "Alternate Right-Left"
 msgstr ""
 
 #: options.php:3851
+msgid "Post List Thumbnail Alignment"
+msgstr ""
+
+#: options.php:3852
+msgid "Post Thumbnail alignment class for Post Lists (Blog/Category/Archive/Search pages etc.)"
+msgstr ""
+
+#: options.php:3863
+msgid "Single Post Thumbnail Image Display Size"
+msgstr ""
+
+#: options.php:3864
+msgid "Set Post Thumbnail size for Single Post display. PerPost size via edit post metabox. Suggested minimum 200 square (for social sharing.)"
+msgstr ""
+
+#: options.php:3882
+msgid "Single Post Thumbnail Alignment"
+msgstr ""
+
+#: options.php:3883
+msgid "Post Thumbnail alignment class for Single Post display."
+msgstr ""
+
+#: options.php:3895
+msgid "Single Page Featured Image Display Size"
+msgstr ""
+
+#: options.php:3896
+msgid "Set Feature Image (page thumbnail) size for Single Page display. PerPage size via edit page metabox. Suggested minimum 200 square (for social sharing.)"
+msgstr ""
+
+#: options.php:3908
+msgid "Single Page Featured Image Alignment"
+msgstr ""
+
+#: options.php:3909
+msgid "Featured Image alignment class for Single Page display."
+msgstr ""
+
+#: options.php:3923
+msgid "Add Thumbnails Support for Custom Post Types"
+msgstr ""
+
+#: options.php:3924
+msgid "Adds Thumbnail support for selected Custom Post Types. Will not remove existing support."
+msgstr ""
+
+#: options.php:3938
+msgid "Icons"
+msgstr ""
+
+#: options.php:3947
+msgid "Site Icon Note"
+msgstr ""
+
+#: options.php:3948
+msgid "If a Site Icon is set via Customizer, it will be used instead of these icons. Specifically named files will override both for that size. See documentation for more details."
+msgstr ""
+
+#: options.php:3956
+msgid "Default Gravatar URL"
+msgstr ""
+
+#: options.php:3957
+msgid "Alternatively place in your parent or child theme"
+msgstr ""
+
+#: options.php:3968
+msgid "Favicon.ico URL"
+msgstr ""
+
+#: options.php:3969 options.php:3980 options.php:3991
+msgid "Alternatively place in parent or child theme"
+msgstr ""
+
+#: options.php:3979
+msgid "Favicon.png URL"
+msgstr ""
+
+#: options.php:3990
+msgid "Apple Touch Icon URL"
+msgstr ""
+
+#: options.php:4001
+msgid "Windows 8 Tile/Apple Touch 144"
+msgstr ""
+
+#: options.php:4002
+msgid "for Windows 8/Apple Touch"
+msgstr ""
+
+#: options.php:4002
+msgid "Alternatively place in child or parent theme"
+msgstr ""
+
+#: options.php:4012
+msgid "Windows 8 Tile Background"
+msgstr ""
+
+#: options.php:4013
+msgid "Background Color for Windows 8 Tile Icon."
+msgstr ""
+
+#: options.php:4024
+msgid "Enable Apple Touch Icon Sizes"
+msgstr ""
+
+#: options.php:4025
+msgid "Adds header code for all the specific Apple Touch Icon sizes (if found.)"
+msgstr ""
+
+#: options.php:4025 options.php:4037
+msgid "Place files in child or parent theme"
+msgstr ""
+
+#: options.php:4025 options.php:4037
+msgid "Filenames"
+msgstr ""
+
+#: options.php:4025 options.php:4037
+msgid "Sizes"
+msgstr ""
+
+#: options.php:4025
+msgid "square"
+msgstr ""
+
+#: options.php:4036
+msgid "Enable Apple Touch Startup Images"
+msgstr ""
+
+#: options.php:4037
+msgid "Adds header code for all the specific Apple Touch Startup Image sizes (if found.)"
+msgstr ""
+
+#: options.php:4048
+msgid "None (off)"
+msgstr ""
+
+#: options.php:4050
+msgid "Image URL (Upload Below)"
+msgstr ""
+
+#: options.php:4051
+msgid "Login Logo"
+msgstr ""
+
+#: options.php:4052
+msgid "WordPress Site Icon"
+msgstr ""
+
+#: options.php:4057
+msgid "Open Graph Default Image"
+msgstr ""
+
+#: options.php:4058
+msgid "Recommended miniumum"
+msgstr ""
+
+#: options.php:4058
+msgid "requires"
+msgstr ""
+
+#: options.php:4058
+msgid "Open Graph Protocol"
+msgstr ""
+
+#: options.php:4058
+msgid "plugin installed and active."
+msgstr ""
+
+#: options.php:4069
+msgid "Default Open Graph Image URL"
+msgstr ""
+
+#: options.php:4070
+msgid "Only used if the option above option is URL and the Open Graph Protocol plugin is installed and active."
+msgstr ""
+
+#: options.php:4083
+msgid "Hybrid"
+msgstr ""
+
+#: options.php:4095
+msgid "Hybrid Core 2"
+msgstr ""
+
+#: options.php:4096
+msgid "Hybrid Core 3"
+msgstr ""
+
+#: options.php:4101
+msgid "Load Hybrid Core"
+msgstr ""
+
+#: options.php:4102
+msgid "Loads the Hybrid Core Library Version (highly recommended)"
+msgstr ""
+
+#: options.php:4114
+msgid "Hybrid Hook"
+msgstr ""
+
+#: options.php:4115
+msgid "Modified plugin to add HTML block to all available theme Hooks. Note: Does not require Hybrid Core."
+msgstr ""
+
+#: options.php:4137
+msgid "Hybrid Post Format Filters"
+msgstr ""
+
+#: options.php:4138
+msgid "Activate extra Post Formats Filters (note: full effects untested.)"
+msgstr ""
+
+#: options.php:4150
+msgid "Hybrid Extensions"
+msgstr ""
+
+#: options.php:4159
+msgid "Get the Image Extension"
+msgstr ""
+
+#: options.php:4160
+msgid "Recommended! Activate Thumbnail/Image Script Extension."
+msgstr ""
+
+#: options.php:4170
+msgid "Breadcrumb Trail Extension"
+msgstr ""
+
+#: options.php:4171
+msgid "Activate Breadcrumb Trail Extension (required for Breadcrumb display)"
+msgstr ""
+
+#: options.php:4181
+msgid "Cleaner Gallery Extension"
+msgstr ""
+
+#: options.php:4182
+msgid "Activate Cleaner Gallery Extension."
+msgstr ""
+
+#: options.php:4255
+msgid "Foundation"
+msgstr ""
+
+#: options.php:4271
+msgid "Foundation Version"
+msgstr ""
+
+#: options.php:4272
+msgid "What major release version of Foundation to use."
+msgstr ""
+
+#: options.php:4284
+msgid "Foundation Stylesheet"
+msgstr ""
+
+#: options.php:4285
+msgid "Whether to Enqueue the Foundation Stylesheet (~145kb, or ~55kb if using essentials below.)"
+msgstr ""
+
+#: options.php:4297
+msgid "Load Essentials"
+msgstr ""
+
+#: options.php:4298
+msgid "Selective Load"
+msgstr ""
+
+#: options.php:4299
+msgid "Kitchen Sink (Everything)"
+msgstr ""
+
+#: options.php:4302
+msgid "Load Foundation Javascript"
+msgstr ""
+
+#: options.php:4303
+msgid "Whether to load Foundation or not, essentials (~20kb), selectively (see below) or the kitchen sink (everything ~180kb)"
+msgstr ""
+
+#: options.php:4317
+msgid "Abide"
+msgstr ""
+
+#: options.php:4318
+msgid "Accordion"
+msgstr ""
+
+#: options.php:4319
+msgid "Alert"
+msgstr ""
+
+#: options.php:4320
+msgid "Clearing"
+msgstr ""
+
+#: options.php:4321
+msgid "Dropdown"
+msgstr ""
+
+#: options.php:4322
+msgid "Equalizer"
+msgstr ""
+
+#: options.php:4323
+msgid "Interchange"
+msgstr ""
+
+#: options.php:4324
+msgid "Joyride"
+msgstr ""
+
+#: options.php:4325
+msgid "Magellan"
+msgstr ""
+
+#: options.php:4326
+msgid "Off Canvas"
+msgstr ""
+
+#: options.php:4327
+msgid "Orbit"
+msgstr ""
+
+#: options.php:4328
+msgid "Reveal"
+msgstr ""
+
+#: options.php:4329
+msgid "Slider"
+msgstr ""
+
+#: options.php:4330
+msgid "Tab"
+msgstr ""
+
+#: options.php:4331
+msgid "Tooltip"
+msgstr ""
+
+#: options.php:4332
+msgid "Top Bar"
+msgstr ""
+
+#: options.php:4336
 msgid "Selective Foundation Javascript"
 msgstr ""
 
-#: options.php:3852
+#: options.php:4337
 msgid "Which Foundation Javascripts to load if using selective load option. Combined javascript file is built upon saving Theme Options. See the Foundation "
 msgstr ""
 
-#: options.php:3852
+#: options.php:4337
 msgid "Kitchen Sink"
 msgstr ""
 
-#: options.php:3852
+#: options.php:4337
 msgid " page to decide what you want."
 msgstr ""
 
-#: options.php:3868
+#: options.php:4357
 msgid "Layer Tab"
 msgstr ""
 
-#: options.php:3869
+#: options.php:4358
 msgid "Reserved for Saving current display Layer tab."
 msgstr ""
 
-#: options.php:3878
+#: options.php:4369
 msgid "Options Tab"
 msgstr ""
 
-#: options.php:3879
+#: options.php:4370
 msgid "Reserved for Saving current display Options tab."
 msgstr ""
 
-#: options.php:3889
+#: options.php:4382
 msgid "Save Time"
 msgstr ""
 
-#: options.php:3890
+#: options.php:4383
 msgid "Reserved for preserving options save timestamp."
 msgstr ""
 
-#: options.php:3899
+#: options.php:4394
 msgid "Backup Time"
 msgstr ""
 
-#: options.php:3900
+#: options.php:4395
 msgid "Reserved for preserving user backup timestamp."
 msgstr ""
 
-#: options.php:3910
+#: options.php:4407
 msgid "Restore Time"
 msgstr ""
 
-#: options.php:3911
+#: options.php:4408
 msgid "Reserved for preserving user restore timestamp."
 msgstr ""
 
-#: options.php:3920
+#: options.php:4419
 msgid "Import Time"
 msgstr ""
 
-#: options.php:3921
+#: options.php:4420
 msgid "Reserved for preserving user import timestamp."
 msgstr ""
 
-#: options.php:3930
+#: options.php:4431
 msgid "Export Time"
 msgstr ""
 
-#: options.php:3931
+#: options.php:4432
 msgid "Reserved for preserving user export timestamp."
 msgstr ""
 
-#: skeleton.php:1140
+#: skeleton.php:565
+msgid "Show Menu"
+msgstr ""
+
+#: skeleton.php:566
+msgid "Hide Menu"
+msgstr ""
+
+#: skeleton.php:874
+msgid "Show Sidebar"
+msgstr ""
+
+#: skeleton.php:875
+msgid "Hide Sidebar"
+msgstr ""
+
+#: skeleton.php:1497
+msgid "Download this Attachment"
+msgstr ""
+
+#: skeleton.php:1519
 msgid "Text Info"
 msgstr ""
 
-#: skeleton.php:1141
+#: skeleton.php:1520
 msgid "Attachment Info"
 msgstr ""
 
-#: skeleton.php:1657
+#: skeleton.php:2143
 msgid "About %s"
 msgstr ""
 
-#: skeleton.php:1687 skeleton.php:2034 skull.php:2311
+#: skeleton.php:2144
+msgid "About the Author"
+msgstr ""
+
+#: skeleton.php:2201 skeleton.php:2589 skull.php:2913
 msgid "Pages"
 msgstr ""
 
-#: skeleton.php:1688 skull.php:2312
+#: skeleton.php:2202 skull.php:2914
 msgid "Posts"
 msgstr ""
 
-#: skeleton.php:1701 skull.php:2318
+#: skeleton.php:2208
+msgid "Writings"
+msgstr ""
+
+#: skeleton.php:2221 skull.php:2922
 msgid "View all"
 msgstr ""
 
-#: skeleton.php:1701 skeleton.php:1766 skeleton.php:2221 skull.php:2318
+#: skeleton.php:2221 skeleton.php:2303 skeleton.php:2813 skull.php:2922
 msgid "by"
 msgstr ""
 
-#: skeleton.php:1763
+#: skeleton.php:2300
 msgid "Comment is awaiting moderation"
 msgstr ""
 
-#: skeleton.php:1767
+#: skeleton.php:2304
 msgid "on"
 msgstr ""
 
-#: skeleton.php:1767
+#: skeleton.php:2304
 msgid "at"
 msgstr ""
 
-#: skeleton.php:1773
+#: skeleton.php:2310
 msgid "Reply"
 msgstr ""
 
-#: skeleton.php:1773
+#: skeleton.php:2310
 msgid "Login to Comment"
 msgstr ""
 
-#: skeleton.php:1969 templates/theme-my-login/ms-signup-user-form.php:49
+#: skeleton.php:2518 templates/theme-my-login/ms-signup-user-form.php:49
 msgid "Next"
 msgstr ""
 
-#: skeleton.php:1970
+#: skeleton.php:2519
 msgid "Previous"
 msgstr ""
 
-#: skeleton.php:1990
+#: skeleton.php:2542
 msgid "Newer"
 msgstr ""
 
-#: skeleton.php:1991
+#: skeleton.php:2543
 msgid "Older"
 msgstr ""
 
-#: skeleton.php:2220
+#: skeleton.php:2810
+msgid "Theme for"
+msgstr ""
+
+#: skeleton.php:2812
 msgid "Responsive Wordpress Theme Framework"
 msgstr ""
 
-#: skull.php:51
+#: skull.php:187
 msgid "Primary Navigation"
 msgstr ""
 
-#: skull.php:63
+#: skull.php:199
 msgid "Secondary Navigation"
 msgstr ""
 
-#: skull.php:73
+#: skull.php:209
 msgid "Header Navigation"
 msgstr ""
 
-#: skull.php:83
+#: skull.php:220
 msgid "Footer Navigation"
 msgstr ""
 
-#: skull.php:125
-msgid "Note: Inactive Theme Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars tab"
+#: skull.php:269
+msgid "Note"
 msgstr ""
 
-#: skull.php:161
+#: skull.php:270
+msgid "Inactive Theme Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars tab"
+msgstr ""
+
+#: skull.php:322
 msgid "Shown only on FrontPage"
 msgstr ""
 
-#: skull.php:165
+#: skull.php:327
 msgid "Shown only on Home (Blog) Page"
 msgstr ""
 
-#: skull.php:168
+#: skull.php:331
 msgid "Archive Sidebar"
 msgstr ""
 
-#: skull.php:170
+#: skull.php:333
 msgid "Shown only on Archive Pages"
 msgstr ""
 
-#: skull.php:172
+#: skull.php:335
 msgid "Category Archives Sidebar"
 msgstr ""
 
-#: skull.php:173
+#: skull.php:336
 msgid "Category Archives SubSidebar"
 msgstr ""
 
-#: skull.php:174
+#: skull.php:337
 msgid "Shown only on Category Archives"
 msgstr ""
 
-#: skull.php:176
+#: skull.php:339
 msgid "Taxonomy Archives Sidebar"
 msgstr ""
 
-#: skull.php:177
+#: skull.php:340
 msgid "Taxonomy Archives SubSidebar"
 msgstr ""
 
-#: skull.php:178
+#: skull.php:341
 msgid "Shown only on Taxonomy Archives"
 msgstr ""
 
-#: skull.php:180
+#: skull.php:343
 msgid "Tag Archives Sidebar"
 msgstr ""
 
-#: skull.php:181
+#: skull.php:344
 msgid "Tag Archives SubSidebar"
 msgstr ""
 
-#: skull.php:182
+#: skull.php:345
 msgid "Shown only on Tag Archives"
 msgstr ""
 
-#: skull.php:184
+#: skull.php:347
 msgid "Author Archives Sidebar"
 msgstr ""
 
-#: skull.php:185
+#: skull.php:348
 msgid "Author Archives SubSidebar"
 msgstr ""
 
-#: skull.php:186
+#: skull.php:349
 msgid "Shown only on Author Archives"
 msgstr ""
 
-#: skull.php:188
+#: skull.php:351
 msgid "Date Archives Sidebar"
 msgstr ""
 
-#: skull.php:189
+#: skull.php:352
 msgid "Date Archives SubSidebar"
 msgstr ""
 
-#: skull.php:190
+#: skull.php:353
 msgid "Shown only on Date Archives"
 msgstr ""
 
-#: skull.php:192
+#: skull.php:356
 msgid "Search Page Sidebar"
 msgstr ""
 
-#: skull.php:193
+#: skull.php:357
 msgid "Search Page SubSidebar"
 msgstr ""
 
-#: skull.php:194
+#: skull.php:358
 msgid "Shown only on Search Pages"
 msgstr ""
 
-#: skull.php:196
+#: skull.php:361
 msgid "404 Page Sidebar"
 msgstr ""
 
-#: skull.php:197
+#: skull.php:362
 msgid "404 Page SubSidebar"
 msgstr ""
 
-#: skull.php:198
+#: skull.php:363
 msgid "Shown only on 404 Not Found Pages"
 msgstr ""
 
-#: skull.php:201
+#: skull.php:366
 msgid "Post/Page Sidebar"
 msgstr ""
 
-#: skull.php:202 skull.php:211
+#: skull.php:367 skull.php:376
 msgid "Shown for both Pages and Posts"
 msgstr ""
 
-#: skull.php:204
+#: skull.php:369
 msgid "Posts Sidebar"
 msgstr ""
 
-#: skull.php:205
+#: skull.php:370
 msgid "Shown only for Posts"
 msgstr ""
 
-#: skull.php:207
+#: skull.php:372
 msgid "Pages Sidebar"
 msgstr ""
 
-#: skull.php:208
+#: skull.php:373
 msgid "Shown only for Pages"
 msgstr ""
 
-#: skull.php:210
+#: skull.php:375
 msgid "Post/Page SubSidebar"
 msgstr ""
 
-#: skull.php:213
+#: skull.php:378
 msgid "Posts SubSidebar"
 msgstr ""
 
-#: skull.php:214
+#: skull.php:379
 msgid "Subsidiary Sidebar for Posts only"
 msgstr ""
 
-#: skull.php:216
+#: skull.php:381
 msgid "Pages SubSidebar"
 msgstr ""
 
-#: skull.php:217
+#: skull.php:382
 msgid "Subsidiary Sidebar for Pages only"
 msgstr ""
 
-#: skull.php:222
+#: skull.php:387
 msgid "First Footer Widget Area"
 msgstr ""
 
-#: skull.php:223
+#: skull.php:388
 msgid "The first footer widget area"
 msgstr ""
 
-#: skull.php:224
+#: skull.php:389
 msgid "Second Footer Widget Area"
 msgstr ""
 
-#: skull.php:225
+#: skull.php:390
 msgid "The second footer widget area"
 msgstr ""
 
-#: skull.php:226
+#: skull.php:391
 msgid "Third Footer Widget Area"
 msgstr ""
 
-#: skull.php:227
+#: skull.php:392
 msgid "The third footer widget area"
 msgstr ""
 
-#: skull.php:228
+#: skull.php:393
 msgid "Fourth Footer Widget Area"
 msgstr ""
 
-#: skull.php:229
+#: skull.php:394
 msgid "The fourth footer widget area"
 msgstr ""
 
-#: skull.php:1408
+#: skull.php:1681
 msgid "Page %s"
 msgstr ""
 
-#: skull.php:1858
+#: skull.php:2289
 msgid "Comments are Closed."
 msgstr ""
 
-#: skull.php:2176
+#: skull.php:2590
+msgid "Edit this"
+msgstr ""
+
+#: skull.php:2726
+msgid "Category: "
+msgstr ""
+
+#: skull.php:2727
 msgid "Categories: "
 msgstr ""
 
-#: skull.php:2200
+#: skull.php:2757
 msgid "Parent Category: "
 msgstr ""
 
-#: skull.php:2204 skull.php:2206
+#: skull.php:2760 skull.php:2762
 msgid "Parent Categories: "
 msgstr ""
 
-#: skull.php:2255
+#: skull.php:2834
 msgid "Tagged: "
 msgstr ""
 
-#: skull.php:2267 skull.php:2269 skull.php:2287 skull.php:2289
+#: skull.php:2835
+msgid "Tags: "
+msgstr ""
+
+#: skull.php:2850 skull.php:2852 skull.php:2883 skull.php:2885
 msgid "comments"
 msgstr ""
 
-#: skull.php:2268 skull.php:2288
+#: skull.php:2851 skull.php:2884
 msgid "comment"
 msgstr ""
 
-#: skull.php:3009
-msgid "Templates"
-msgstr ""
-
-#: skull.php:3012
-msgid "Ordered list of included templates for this page."
-msgstr ""
-
 #: templates/theme-my-login/login-form.php:18
+#: templates/theme-my-login/login-form.php:19
 #: templates/theme-my-login/profile-form.php:33
 #: templates/theme-my-login/register-form.php:18
 msgid "Username"
+msgstr ""
+
+#: templates/theme-my-login/login-form.php:21
+msgid "Email/Username"
 msgstr ""
 
 #: templates/theme-my-login/login-form.php:25
@@ -4908,6 +5320,10 @@ msgstr ""
 
 #: templates/theme-my-login/login-form.php:33
 msgid "Remember Me"
+msgstr ""
+
+#: templates/theme-my-login/login-form.php:38
+msgid "Log In"
 msgstr ""
 
 #: templates/theme-my-login/lostpassword-form.php:12
@@ -5067,8 +5483,7 @@ msgid "Contact Info"
 msgstr ""
 
 #: templates/theme-my-login/profile-form.php:93
-#: templates/theme-my-login/register-form.php:23
-msgid "E-mail"
+msgid "Email"
 msgstr ""
 
 #: templates/theme-my-login/profile-form.php:114
@@ -5105,8 +5520,20 @@ msgstr ""
 msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ &amp; )."
 msgstr ""
 
+#: templates/theme-my-login/profile-form.php:147
+msgid "Update Profile"
+msgstr ""
+
+#: templates/theme-my-login/register-form.php:23
+msgid "E-mail"
+msgstr ""
+
 #: templates/theme-my-login/register-form.php:29
 msgid "A password will be e-mailed to you."
+msgstr ""
+
+#: templates/theme-my-login/register-form.php:34
+msgid "Register"
 msgstr ""
 
 #: templates/theme-my-login/resetpass-form.php:12

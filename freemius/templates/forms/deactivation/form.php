@@ -28,10 +28,10 @@
 		} else {
 			$reason_internal_message = '';
 		}
-		
+
 		$reason_input_type = ( ! empty( $reason['input_type'] ) ? $reason['input_type'] : '' );
         $reason_input_placeholder = ( ! empty( $reason['input_placeholder'] ) ? $reason['input_placeholder'] : '' );
-			
+
 		$reason_list_item_html = <<< HTML
 			<li class="{$list_item_classes}"
 			 	data-input-type="{$reason_input_type}"
@@ -113,7 +113,7 @@ HTML;
 		 *
 		 * @author Leo Fajardo (@leorw)
 		 * @since 1.2.2
-		 *        
+		 *
 		 * @since 1.2.2.7 Don't trigger the deactivation feedback form if activating the premium version of the theme.
 		 */
 		} else { ?>
