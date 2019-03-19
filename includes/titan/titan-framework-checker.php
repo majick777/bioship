@@ -69,20 +69,20 @@ if ( ! class_exists( 'TitanFrameworkChecker' ) ) {
 			// If the plugin does not exist, throw admin notice to install.
 			if ( ! $this->plugin_exists() ) {
 				echo "<div class='error'><p><strong>"
-					. esc_html( apply_filters( 'titan_checker_installation_notice', __( 'Titan Framework needs to be installed.', 'default' ) ) )
+					. esc_html( apply_filters( 'titan_checker_installation_notice', __( 'Titan Framework needs to be installed.', 'bioship' ) ) )
 					. sprintf( " <a href='%s'>%s</a>",
 						esc_url( admin_url( 'plugin-install.php?tab=search&type=term&s=titan+framework' ) ),
-						esc_html( apply_filters( 'titan_checker_search_plugin_notice', __( 'Click here to search for the plugin.', 'default' ) ) )
+						esc_html( apply_filters( 'titan_checker_search_plugin_notice', __( 'Click here to search for the plugin.', 'bioship' ) ) )
 					)
 					. '</strong></p></div>';
 
 				// If the class doesn't exist, the plugin is inactive. Throw admin notice to activate plugin.
 			} else if ( ! class_exists( apply_filters( 'tf_framework_checker_titan_class', self::TITAN_CLASS ) ) ) {
 				echo "<div class='error'><p><strong>"
-					. esc_html( apply_filters( 'titan_checker_activation_notice', __( 'Titan Framework needs to be activated.', 'default' ) ) )
+					. esc_html( apply_filters( 'titan_checker_activation_notice', __( 'Titan Framework needs to be activated.', 'bioship' ) ) )
 					. sprintf( " <a href='%s'>%s</a>",
 						esc_url( admin_url( 'plugins.php' ) ),
-						esc_html( apply_filters( 'titan_checker_activate_plugin_notice', __( 'Click here to go to the plugins page and activate it.', 'default' ) ) )
+						esc_html( apply_filters( 'titan_checker_activate_plugin_notice', __( 'Click here to go to the plugins page and activate it.', 'bioship' ) ) )
 					)
 					. '</strong></p></div>';
 			}

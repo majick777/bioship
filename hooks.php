@@ -22,7 +22,7 @@
 // the default action hooks and priorities it uses are noted in this reference also.
 
 // TODO: add Page Elements for a Styling Reference
-// TODO: add information array for Content Sidebars
+// TODO: add information array for Content Sidebars plugin
 
 
 							// ======================================== \\
@@ -61,6 +61,7 @@ $c = array();	// page action contexts (s=single, a=archive)
 // 2.0.9: added missing labels for open and close wrap functions
 // 2.0.9: fix labels for content, media, breadcrumbs, pagenav, footer banner, home, frontpage
 // 2.0.9: added content area, design style elements and notes array definitions
+// 2.1.1: added bioship_front_page_bottom and bioship_home_page_bottom hooks
 
 /* see header.php */
 // <HTML>
@@ -154,9 +155,9 @@ $k = 'bioship_after_subsidebar';				$s[$i][$j++] = $k;	$l[$k] = __('After Subsid
 $k = 'bioship_before_content';					$s[$i][$j++] = $k;	$l[$k] = __('Before Content Area','bioship');
 ##		* Content Sidebar *  		 			$p[$k][$f] = 5;		## 'Before Content Sidebar' default position
  $f = 'bioship_skeleton_content_open';			$p[$k][$f] = 10;	$l[$f] = __('Content Area Wrap Open','bioship');
-$k = 'bioship_front_page_top';					$s[$i][$j++] = $k;	$l[$k] = __('Frontpage Only Top','bioship');
+$k = 'bioship_front_page_top'; $c[$k] = 'f';	$s[$i][$j++] = $k;	$l[$k] = __('Frontpage Only Top','bioship');
  $f = 'bioship_skeleton_front_page_content';	$p[$k][$f] = 5;		$l[$f] = __('Frontpage Only Content','bioship');
-$k = 'bioship_home_page_top';					$s[$i][$j++] = $k;	$l[$k] = __('Home (Blog) Only Top','bioship');
+$k = 'bioship_home_page_top'; $c[$k] = 'h';		$s[$i][$j++] = $k;	$l[$k] = __('Home (Blog) Only Top','bioship');
  $f = 'bioship_skeleton_home_page_content'; 	$p[$k][$f] = 5;		$l[$f] = __('Home (Blog) Only Content','bioship');
 $k = 'bioship_before_loop';						$s[$i][$j++] = $k;	$l[$k] = __('Before Any Loop','bioship');
  $f = 'bioship_skeleton_breadcrumbs';			$p[$k][$f] = 5;		$l[$f] = __('Navigation Breadcrumbs','bioship');
@@ -176,7 +177,7 @@ $k = 'bioship_before_entry'; 					$s[$i][$j++] = $k;  $l[$k] = __('Before Entry'
 $k = 'bioship_media_handler'; 					$s[$i][$j++] = $k;	$l[$k] = __('Media Handler Action','bioship');
  $f = 'bioship_skeleton_media_handler';			$p[$k][$f] = 5;		$l[$f] = __('Attachment Media Handler','bioship');
 
-// Entry Header
+// --- Entry Header ---
 $k = 'bioship_entry_header';					$s[$i][$j++] = $k;	$l[$k] = __('Entry Header Hook','bioship');
  $f = 'bioship_skeleton_entry_header_open';	 	$p[$k][$f] = 0;		$l[$f] = __('Entry Header Wrap Open','bioship');
  $f = 'bioship_skeleton_entry_header_title';	$p[$k][$f] = 2;		$l[$f] = __('Post/Page Title','bioship');
@@ -184,7 +185,7 @@ $k = 'bioship_entry_header';					$s[$i][$j++] = $k;	$l[$k] = __('Entry Header Ho
  $f = 'bioship_skeleton_entry_header_meta';	 	$p[$k][$f] = 6;		$l[$f] = __('Entry Meta Top','bioship');
  $f = 'bioship_skeleton_entry_header_close'; 	$p[$k][$f] = 10;	$l[$f] = __('Entry Header Wrap Close','bioship');
 
-// Thumbnail
+// --- Thumbnail ---
 $k = 'bioship_thumbnail';						$s[$i][$j++] = $k;  $l[$k] = __('Thumbnail or Featured Image','bioship');
  $f = 'bioship_skeleton_echo_thumbnail';		$p[$k][$f] = 5;		$l[$f] = __('Echo Thumbnail','bioship');
 $k = 'bioship_before_thumbnail';				$s[$i][$j++] = $k;	$l[$k] = __('Before Thumbnail','bioship').' *';
@@ -220,7 +221,7 @@ $k = 'bioship_entry_footer'; 					$s[$i][$j++] = $k;	$l[$k] = __('Entry Footer',
 $k = 'bioship_before_singular'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('Before Singular Content','bioship');
  $f = 'bioship_skeleton_breadcrumbs';			$p[$k][$f] = 5;		$l[$k] = __('Breadcrumbs','bioship');
 
-// Author Bio (top)
+// --- Author Bio (top) ---
 $k = 'bioship_author_bio_top'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Top Position','bioship');
  $k = 'bioship_before_author_bio'; $c[$k]='s';	$s[$i][$j++] = $k;	$l[$k] = __('Before Author Bio','bioship').' *';
 //    	*** Author Bio Box ***										// before/after hooks only fired if Bio content //
@@ -228,7 +229,7 @@ $k = 'bioship_author_bio_top'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('Aut
  	$t[$k] = 'content/author-bio.php';
  $k = 'bioship_after_author_bio'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('After Author Bio','bioship').' *';
 
-// MAIN CONTENT
+// === MAIN CONTENT ===
 $k = 'bioship_before_the_content'; $c[$k]='s';	$s[$i][$j++] = $k;	$l[$k] = __('Before the Content','bioship'); // (no default)
 $k = 'bioship_the_content'; $c[$k] = 's';		$s[$i][$j++] = $k; 	$l[$k] = __('Main Content','bioship');
  $f = 'bioship_skeleton_echo_the_content';		$p[$k][$f] = 5;		$l[$f] = __('Echo Main Content','bioship');
@@ -239,7 +240,7 @@ $k = 'bioship_after_the_content'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('
 
 // Entry Footer (exact duplicate of excerpt entry footer above)
 
-// Author Bio (bottom)
+// --- Author Bio (bottom) ---
 $k = 'bioship_author_bio_bottom'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('Author Bio Bottom Position','bioship');
 // $k =	'bioship_before_author_bio';								// no need to redeclare (duplicate hook) //
 // 	  	 *** Author Bio Box ***										// before/after hooks only fired if Bio content //
@@ -247,7 +248,7 @@ $k = 'bioship_author_bio_bottom'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('
 
 $k = 'bioship_after_singular'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('After Singular Content','bioship');
 
-// Comments
+// --- Comments ---
 /* content/comments.php */
 // $k = 'bioship_comments';											// see bioship_comments in skeleton.php
 $k = 'bioship_before_comments'; $c[$k] = 's';	$s[$i][$j++] = $k;	$l[$k] = __('Before Comments','bioship');
@@ -275,6 +276,12 @@ $k = 'bioship_after_taxonomy'; $c[$k] = 'a';	$s[$i][$j++] = $k;	$l[$k] = __('Aft
 $k = 'bioship_after_category'; $c[$k] = 'a';	$s[$i][$j++] = $k;	$l[$k] = __('After Category Archive Loop','bioship');
 $k = 'bioship_after_archive'; $c[$k] = 'a';		$s[$i][$j++] = $k;	$l[$k] = __('After Any Archive Loop','bioship');
 $k = 'bioship_after_loop'; $c[$k] = 'a';		$s[$i][$j++] = $k;	$l[$k] = __('After Any Loop','bioship');		// (no default)
+
+$k = 'bioship_front_page_bottom'; $c[$k] = 'f';	$s[$i][$j++] = $k;	$l[$k] = __('Frontpage Only Top','bioship');
+ $f = 'bioship_skeleton_front_page_bottom';		$p[$k][$f] = 5;		$l[$f] = __('Frontpage Only Content','bioship');
+$k = 'bioship_home_page_bottom'; $c[$k] = 'h';	$s[$i][$j++] = $k;	$l[$k] = __('Home (Blog) Only Top','bioship');
+ $f = 'bioship_skeleton_home_page_bottom';		$p[$k][$f] = 5;		$l[$f] = __('Home (Blog) Only Content','bioship');
+
 $k = 'bioship_after_content'; $c[$k] = 'a';		$s[$i][$j++] = $k;	$l[$k] = __('After Content','bioship');			// (no default)
  $f = 'bioship_skeleton_content_close';			$p[$k][$f] = 0;		$l[$f] = __('Content Wrap Close','bioship');
  $f = 'bioship_skeleton_echo_clear_div';		$p[$k][$f] = 2;
@@ -317,56 +324,73 @@ $k = 'bioship_after_container';					$s[$i][$j++] = $k; 	$l[$k] = __('After Wrap 
 // </BODY>
 // </HTML>
 
+// --- set global vthemehooks array ---
 // 1.8.5: give back long names to our short variables
 // 1.9.0: store all values in a single array
+// 2.0.9: added template file and page elements
 global $vthemehooks;
 if (!isset($vthemehooks)) {$vthemehooks = array();}
 $vthemehooks['sections'] = $s; unset($s);
 $vthemehooks['functions'] = $p; unset($p);
 $vthemehooks['labels'] = $l; unset($l);
 $vthemehooks['remove'] = array();
-// 2.0.9: added template file and page elements
 $vthemehooks['templates'] = $t; unset($t);
 $vthemehooks['elements'] = $e; unset($e);
-// 2.0.9: adde action contexts (single / archive)
+
+// --- single / archive contexts ---
+// 2.0.9: add action contexts (single / archive)
 foreach ($c as $k => $v) {
 	if ($v == 'a') {$v = 'archive';}
 	elseif ($v = 's') {$v = 'single';}
+	elseif ($v = 'f') {$v = 'front';}
+	elseif ($v = 'h') {$v = 'home';}
 	$vthemehooks['contexts'][$k] = $v;
 }
 unset($c);
 
-// 2.0.9: add global hooks array filter
-$vthemehooks = apply_filters('skeleton_theme_hooks', $vthemehooks);
+// --- filter theme hooks array ---
+// 2.0.9: added global hooks array filter
+// 2.1.1: added function_exists check (for docs.php loading)
+if (function_exists('apply_filters')) {
+	$vthemehooks = apply_filters('skeleton_theme_hooks', $vthemehooks);
+}
 
+// --- create all hook arrays ---
 // 1.8.5: loop sections to create hook arrays
-$vhooks = array(); $vthemehybridhooks = array(); $vi = 0;
-foreach ($vthemehooks['sections'] as $vlayoutsection) {
-	foreach ($vlayoutsection as $vhook) {
-		// simplified hook list array
-		$vthemehooks['hooks'][$vi] = $vhook;
+$hooks = array(); $i = 0;
+foreach ($vthemehooks['sections'] as $layoutsection) {
+	foreach ($layoutsection as $hook) {
 
-		// Hybrid Hook Support
-		// -------------------
-		// create hook array by stripping skeleton_ prefix (added back by Hybrid Hook filter)
+		// --- create simplified hook list ---
+		$vthemehooks['hooks'][$i] = $hook;
+
+		// --- create Hybrid Hooks array ---
+		// created by stripping skeleton_ prefix (added back by Hybrid Hook filter)
 		// 2.0.5: strip bioship_ prefix not skeleton_ prefix
-		$vthemehooks['hybrid'][$vi] = substr($vhook, strlen('bioship_'), strlen($vhook));
-		$vi++;
+		$vthemehooks['hybrid'][$i] = substr($hook, strlen('bioship_'), strlen($hook));
+		$i++;
 	}
 }
 
+// ------------
 // Special Info
 // ------------
 // TODO: define further info for layout manager?
 // - Element Style References
 // - Content Sidebars Information
 
-
+// ---------------------
 // Beaver Themer Support
 // ---------------------
-// 2.0.9: add basic beaver themer support
-// add_action('after_setup_theme', 'bioship_beaver_builder_support');
+// 2.0.9: added basic Beaver Themer support
 if (!function_exists('bioship_beaver_builder_support')) {
+
+ // 2.1.1: moved add_action internally for consistency
+ // 2.1.1: added function_exists check (for docs.php loading)
+ if (function_exists('add_action')) {
+	add_action('after_setup_theme', 'bioship_beaver_builder_support');
+ }
+
  function bioship_beaver_builder_support() {
 	add_theme_support('fl-theme-builder-headers');
 	add_theme_support('fl-theme-builder-footers');
@@ -374,104 +398,142 @@ if (!function_exists('bioship_beaver_builder_support')) {
  }
 }
 
+// --------------------------
 // Beaver Themer Parts Filter
 // --------------------------
 // (creates a hook array in Beaver Themer format)
-add_filter('fl_theme_builder_part_hooks', 'bioship_beaver_themer_register_parts');
 if (!function_exists('bioship_beaver_themer_register_parts')) {
+
+ // 2.1.1: moved add_action internally for consistency
+ // 2.1.1: added function_exists check (for docs.php loading)
+ if (function_exists('add_filter')) {
+	add_filter('fl_theme_builder_part_hooks', 'bioship_beaver_themer_register_parts');
+ }
+
  function bioship_beaver_themer_register_parts() {
 	global $vthemehooks;
-	$vbeaverdata = array();
-	foreach ($vthemehooks['sections'] as $vsection => $vhooks) {
-		if (count($vhooks) > 0) {
-			$vactionhooks = array();
-			foreach ($vhooks as $vhook) {
-				$vactionhooks[$vhook] = $vthemehooks['labels'][$vhook];
+	$beaverdata = array();
+	foreach ($vthemehooks['sections'] as $section => $hooks) {
+		if (count($hooks) > 0) {
+			$actionhooks = array();
+			foreach ($hooks as $hook) {
+				$actionhooks[$hook] = $vthemehooks['labels'][$hook];
 			}
-			$vbeaverdata[] = array(
-				'label' => $vthemehooks['labels'][$vsection],
-				'hooks' => $vactionhooks
+			$beaverdata[] = array(
+				'label' => $vthemehooks['labels'][$section],
+				'hooks' => $actionhooks
 			);
 		}
 	}
-	return $vbeaverdata;
+	return $beaverdata;
  }
 }
 
+// -------------------------------------------
 // Beaver Themer Header and Footer Integration
 // -------------------------------------------
-add_action('wp', 'bioship_beaver_themer_headers_footers');
 if (!function_exists('bioship_beaver_themer_headers_footers')) {
+
+ // 2.1.1: moved add_action internally for consistency
+ // 2.1.1: added function_exists check (for docs.php loading)
+ if (function_exists('add_action')) {
+	add_action('wp', 'bioship_beaver_themer_headers_footers');
+ }
+
  function bioship_beaver_themer_headers_footers() {
+
  	if (!class_exists('FLThemeBuilderLayoutData')) {return;}
-	$vheaderids = FLThemeBuilderLayoutData::get_current_page_header_ids();
-	if (!empty($vheaderids)) {
+
+	// --- Beaver Themer header ---
+	$headerids = FLThemeBuilderLayoutData::get_current_page_header_ids();
+	if (!empty($headerids)) {
+
 		// to use Beaver Themer header, remove all actions hooked on bioship_header
-		foreach ($vthemehooks['functions']['bioship_header'] as $vfunction => $vpriority) {
-			// test to remove open and close wrapper functions
-			if ( (substr($vfunction, -5, 5) != '_open') && (substr($vfunction, -6, 6) != '_close') ) {
-				remove_action('bioship_header', $vfunction, $vpriority);
+		foreach ($vthemehooks['functions']['bioship_header'] as $function => $priority) {
+			// --- remove open and close wrapper functions ---
+			if ( (substr($function, -5, 5) != '_open') && (substr($function, -6, 6) != '_close') ) {
+				remove_action('bioship_header', $function, $priority);
 			}
 		}
+
+		// --- add header rendering ---
 		add_action('bioship_header', 'FLThemeBuilderLayoutRenderer::render_header', 5);
 	}
-	$vfooterids = FLThemeBuilderLayoutData::get_current_page_footer_ids();
-	if (!empty($vfooterids)) {
+
+	// --- Beaver Themer footer ---
+	$footerids = FLThemeBuilderLayoutData::get_current_page_footer_ids();
+	if (!empty($footerids)) {
+
 		// to use Beaver Themer footer, remove all actions hooked on bioship_footer
-		foreach ($vthemehooks['functions']['bioship_footer'] as $vfunction => $vpriority) {
-			// test to remove open and close wrapper functions
-			if ( (substr($vfunction, -5, 5) != '_open') && (substr($vfunction, -6, 6) != '_close') ) {
-				remove_action('bioship_footer', $vfunction, $vpriority);
+		foreach ($vthemehooks['functions']['bioship_footer'] as $function => $priority) {
+			// --- remove open and close wrapper functions ---
+			if ( (substr($function, -5, 5) != '_open') && (substr($function, -6, 6) != '_close') ) {
+				remove_action('bioship_footer', $function, $priority);
 			}
 		}
+
+		// --- add footer rendering ---
 		add_action('bioship_header', 'FLThemeBuilderLayoutRenderer::render_footer', 5);
 	}
  }
 }
 
-// Debug Output
-// ------------
+// ----------------------
+// Debug Output for Hooks
+// ----------------------
 // 2.0.9: use cleaner debugging function
-bioship_debug("Layout Sections", $vthemehooks['sections']);
-bioship_debug("Layout Hooks", $vthemehooks['hooks']);
-bioship_debug("Hooked Functions", $vthemehooks['functions']);
-bioship_debug("Section / Hook Labels", $vthemehooks['labels']);
-bioship_debug("Template Files", $vthemehooks['templates']);
-bioship_debug("Page Elements", $vthemehooks['elements']);
-bioship_debug("Page Contexts", $vthemehooks['contexts']);
-bioship_debug("Hybrid Hooks", $vthemehooks['hybrid']);
-// 2.0.9: add debug line for Beaver Themer hooks
-if (defined('THEMEDEBUG') && THEMEDEBUG) {
-	$vbeaverthemerhooks = bioship_beaver_themer_register_parts();
-	bioship_debug("Beaver Themer Hooks", $vbeaverthemerhooks);
+// 2.1.1: added function_exists check (for docs.php loading)
+if (function_exists('bioship_debug')) {
+	bioship_debug("Layout Sections", $vthemehooks['sections']);
+	bioship_debug("Layout Hooks", $vthemehooks['hooks']);
+	bioship_debug("Hooked Functions", $vthemehooks['functions']);
+	bioship_debug("Section / Hook Labels", $vthemehooks['labels']);
+	bioship_debug("Template Files", $vthemehooks['templates']);
+	bioship_debug("Page Elements", $vthemehooks['elements']);
+	bioship_debug("Page Contexts", $vthemehooks['contexts']);
+	bioship_debug("Hybrid Hooks", $vthemehooks['hybrid']);
+
+	// 2.0.9: add debug line for Beaver Themer hooks
+	if (defined('THEMEDEBUG') && THEMEDEBUG) {
+		$beaverthemerhooks = bioship_beaver_themer_register_parts();
+		bioship_debug("Beaver Themer Hooks", $beaverthemerhooks);
+	}
 }
 
-// /==============================
+
+// -------------------------------
 // === Layout Position Filters ===
-// ==============================/
+// -------------------------------
+
+// Change Layout Positions
+// -----------------------
 // 1.5.0: you can easily change assigned positions by filtering these values
 // eg. swap the subtitle and title on pages to use subtitle as "lead-in" text...
 # add_filter('bioship_skeleton_entry_header_title_position', 'custom_title_position');
 # add_filter('bioship_skeleton_entry_header_subtitle_position', 'custom_subtitle_position');
-# function custom_title_position($vposition) {
-#	if (is_page()) {return 4;} else {return $vposition;}
+# function custom_title_position($position) {
+#	if (is_page()) {return 4;} else {return $position;}
 # }
-# function custom_subtitle_position($vposition) {
-#	if (is_page()) {return 2;} else {return $vposition;}
+# function custom_subtitle_position($position) {
+#	if (is_page()) {return 2;} else {return $position;}
 # }
 
-
+// Remove Hooked Layout Section
+// ----------------------------
 // 1.6.0: allowed to remove a section entirely by setting position filter to -1
 // note: this is for advanced usage only and may produce erratic results
 // (if removing open and close wrappers, remove both not just one or the other)
 // eg. to remove header widgets from pages just return -1
-# add_filter('bioship_skeleton_header_nav_position','custom_header_nav_position');
-# function custom_header_nav_position($vposition) {
-#	if (is_page()) {return -1;} else {return $vposition;}
+# add_filter('bioship_skeleton_header_nav_position', 'custom_header_nav_position');
+# function custom_header_nav_position($position) {
+#	if (is_page()) {return -1;} else {return $position;}
 # }
 
-// TODO: add new missing positions (author bio, breadcrumbs, ...?)
 
+// ----------------------------
+// === Layout Position List ===
+// ----------------------------
+// TODO: add any missing positions to list (author bio, breadcrumbs, ... ?)
 
 // /= Wrap Container =/
 // --------------------

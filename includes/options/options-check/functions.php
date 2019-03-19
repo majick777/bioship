@@ -96,8 +96,8 @@ function options_framework_location_override() {
 /*
 
 function optionscheck_options_menu_params( $menu ) {
-	$menu['page_title'] = __( 'Hello Options', 'textdomain');
-	$menu['menu_title'] = __( 'Hello Options', 'textdomain');
+	$menu['page_title'] = __( 'Hello Options', 'bioship');
+	$menu['menu_title'] = __( 'Hello Options', 'bioship');
 	$menu['menu_slug'] = 'hello-options';
 	return $menu;
 }

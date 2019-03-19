@@ -21,7 +21,7 @@ class Kirki_L10n {
 	 * @access private
 	 * @var string
 	 */
-	private $textdomain = 'kirki';
+	private $textdomain = 'bioship';
 
 	/**
 	 * The theme textdomain

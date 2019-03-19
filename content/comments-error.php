@@ -1,12 +1,16 @@
 <?php
 
-	/* Comments Error Template (via Hybrid Base) */
+// ========================================
+// ==== BioShip Comments Error Template ===
+// ========================================
+// (original template via Hybrid Base Theme)
 
-	if (THEMETRACE) {bioship_trace('T',__('Comments Error Template','bioship'),__FILE__);}
+	if (THEMETRACE) {bioship_trace('T',__('Comments Error Template','bioship'),__FILE__,'comments');}
 
 ?>
 
-<?php if ( pings_open() && !comments_open() ) : ?>
+<?php // --- If only pingbacks open ---
+if ( pings_open() && !comments_open() ) : ?>
 	<?php bioship_html_comment('.comments-closed.pings-open'); ?>
 	<p class="comments-closed pings-open">
 		<?php
@@ -16,7 +20,8 @@
 		?>
 	</p><?php bioship_html_comment('/.comments-closed.pings-open'); ?>
 
-<?php elseif ( !comments_open() ) : ?>
+<?php // --- If all comments are closed ---
+elseif ( !comments_open() ) : ?>
 	<?php bioship_html_comment('.comments-closed.pings-closed'); ?>
 	<p class="comments-closed pings-closed"> ?>
 		<?php _e( 'Comments are closed.', 'bioship' ); ?>

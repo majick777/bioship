@@ -748,7 +748,7 @@ a.button:hover, .button a:hover {
 	background: -moz-linear-gradient(top, #156bc6 0%, #156bc6 100%);
 	background: linear-gradient(top bottom, #156bc6 0%, #156bc6 100%);
 	-pie-background: linear-gradient(top, #156bc6, #156bc6); 
-	behavior: url("pie.htc"); /*
+	behavior: url("pie.htc"); */
   
 	background-clip: border-box;
 	position: relative;

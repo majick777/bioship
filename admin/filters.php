@@ -41,7 +41,7 @@
 
 // ====================
 // === Filter Index ===
-// - Theme -
+// - Theme Core -
 // - Options -
 // - Hybrid -
 // - Skull -
@@ -863,12 +863,14 @@ function muscle_thumbnail_override($vhtml) {
 // skeleton_header_classes
 // skeleton_blog_display_name
 // skeleton_blog_description
+// skeleton_site_title_display
+// skeleton_site_title_description
 // skeleton_header_logo_url
 // skeleton_header_logo_override
 // skeleton_logo_resize
 // skeleton_header_menu_settings
 // skeleton_header_html_extras
-// skeleton_navigation_hide
+// skeleton_navigation_remove
 // skeleton_content_classes
 // skeleton_content_columns
 // skeleton_content_columns_override
@@ -879,19 +881,19 @@ function muscle_thumbnail_override($vhtml) {
 // skeleton_footer_html_extras
 // /==============/
 
-// /= HTML Comments =/
-// -------------------
+// /= HTML Comment Wrappers (boolean) =/
+// -------------------------------------
 // 1.8.5: added this filter
-add_filter('skeleton_html_comments','muscle_html_comments');
+add_filter('skeleton_html_comments', 'muscle_html_comments');
 function muscle_html_comments($vhtmlcomments) {
 	// show HTML element comment wrappers on pages only
 	# if (is_page()) {$vhtmlcomments = 1;}
 	return $vhtmlcomments;
 }
 
-// /= Maximum Layout Width =/
-// --------------------------
-add_filter('skeleton_layout_width','muscle_layout_width');
+// /= Maximum Layout Width (integer) =/
+// ------------------------------------
+add_filter('skeleton_layout_width', 'muscle_layout_width');
 function muscle_layout_width($vwidth) {
 	// maximum width to scale up to via media queries
 	// 1.5.0: original layout width maximums were 960, 1140 or 1200
@@ -900,143 +902,177 @@ function muscle_layout_width($vwidth) {
 	return $vwidth;
 }
 
-// /= Grid Columns Override =/
-// ---------------------------
+// /= Grid Columns Override (integer) =/
+// -------------------------------------
 // 1.8.5: added override in grid.php
-add_filter('skeleton_grid_columns','muscle_grid_columns');
-function muscle_grid_columns($vcolumns) {
+add_filter('skeleton_grid_columns', 'muscle_grid_columns');
+function muscle_grid_columns($columns) {
 	// set different total layout grid columns for a page
 	// (you would want to filter sidebar and content columns also)
 	// valid values 12,16,20,24 (word or number)
-	# $vcolumns = '20';
-	return $vcolumns;
+	# $columns = '20';
+	return $columns;
 }
 
-// /= Content Grid Columns Override =/
-// -----------------------------------
+// /= Content Grid Columns Override (integer) =/
+// ---------------------------------------------
 // 1.9.5: added this option and filter
-add_filter('skeleton_content_grid_columns','muscle_content_grid_columns');
-function muscle_content_grid_columns($vcolumns) {
+add_filter('skeleton_content_grid_columns', 'muscle_content_grid_columns');
+function muscle_content_grid_columns($columns) {
 	// set different total content grid columns, eg. for blog page
 	// valid values 12,16,20,24 (word or number)
-	# if (is_home()) ($vcolumns = '20';}
-	return $vcolumns;
+	# if (is_home()) ($columns = '20';}
+	return $columns;
 }
 
-// /= Wrap Container Div Classes =/
-// --------------------------------
-add_filter('skeleton_container_classes','muscle_container_classes');
-function muscle_container_classes($vclasses) {
+// /= Wrap Container Div Classes (array) =/
+// ----------------------------------------
+add_filter('skeleton_container_classes', 'muscle_container_classes');
+function muscle_container_classes($classes) {
 	// default is an array of container classes based on grid
 	// you can add extra classes, eg.
-	# if (is_page()) {$vclasses[] = 'mycontainerclass';}
-	return $vclasses;
+	# if (is_page()) {$classes[] = 'mycontainerclass';}
+	return $classes;
 }
 
-// /= Header Div Classes =/
-// ------------------------
-add_filter('skeleton_header_classes','muscle_header_classes');
-function muscle_header_classes($vclasses) {
+// /= Header Div Classes (array) =/
+// --------------------------------
+add_filter('skeleton_header_classes', 'muscle_header_classes');
+function muscle_header_classes($classes) {
 	// default is an array of header classes based on grid
 	// you can add extra classes, eg.
-	# if (is_page()) {$vclasses[] = 'myheaderclass';}
-	return $vclasses;
+	# if (is_page()) {$classes[] = 'myheaderclass';}
+	return $classes;
 }
 
-// /= Blog Display Name =/
-// -----------------------
+// /= Blog Title Display Name (string) =/
+// --------------------------------------
 // 1.8.5: (currently only applies to header blog title output)
-add_filter('skeleton_blog_display_name','muscle_blog_display_name');
-function muscle_blog_display_name($vname) {
-	// change the blog title display, eg. recapitalize
-	# $vname = "Bio Ship";
-	return $vname;
+add_filter('skeleton_blog_display_name', 'muscle_blog_display_name');
+function muscle_blog_display_name($sitename) {
+	// change the site title display
+	# eg. recapitalize site title
+	# $sitename = "Bio Ship";
+	return $sitename;
 }
 
-// /= Blog Description =/
-// ----------------------
+// /= Blog Description (string) =/
+// -------------------------------
 // 1.8.5: (currently only applies to header description output)
-add_filter('skeleton_blog_description','muscle_blog_description');
-function muscle_blog_description($vdescription) {
-	// change the blog description displayed, eg. split up with line breaks
-	# $vdescription = str_replace(' ','<br>',$vdescription);
-	return $vdescription;
+add_filter('skeleton_blog_description', 'muscle_blog_description');
+function muscle_blog_description($description) {
+	// change the blog description displayed,
+	# eg. split desciption display up with line breaks
+	# $description = str_replace(' ', '<br>', $description);
+	return $description;
 }
 
-// /= Header Logo URL =/
-// ---------------------
-add_filter('skeleton_header_logo_url','muscle_header_logo_url');
-function muscle_header_logo_url($vlogo) {
-	// You could override the logo per page here eg.
-	# if (is_front_page()) {$vlogo = site_url().'/images/frontpagelogo.png';}
-	# if (is_home()) {$vlogo = site_url().'/images/blogpagelogo.png';}
-	return $vlogo;
+// /= Header Site Title Display (boolean) =/
+// -----------------------------------------
+// 2.1.1: added missing site title display filter example
+add_filter('skeleton_site_title_display', 'muscle_site_title_display');
+function muscle_site_title_display($display) {
+	# eg. only display site title in header on front page
+	# if (!is_front_page()) {$display = false;} else {$display = true;}
+	return $display;
 }
 
-// /= Header Logo Override =/
-// --------------------------
-add_filter('skeleton_header_logo_override','muscle_header_logo_override');
-function muscle_header_logo_override($vlogo) {
-	// You could override the entire HTML logo output eg.
-	# if (is_front_page()) {$vlogo = 'http://url.to/frontpagelogo.png';}
-	# if (is_home()) {$vlogo = 'http://url.to/blogpagelogo.png';}
-	return $vlogo;
+// /= Header Site Description Display (boolean) =/
+// -----------------------------------------------
+// 2.1.1: added missing site title description filter example
+add_filter('skeleton_site_description_display', 'muscle_site_description_display');
+function muscle_site_description_display($display) {
+	# eg. do not display site description in header on blog page
+	# if (is_home()) {$display = false;} else {$display = true;}
+	return $display;
 }
 
-// /= Header Logo Resize =/
-// ------------------------
-add_filter('skeleton_logo_resize','muscle_logo_resize_override');
-function muscle_logo_resize_override($vresize) {
-	// You could turn logo resize on/off for specific page eg.
-	# if (is_front_page()) {$vresize = 0;}
-	return $vresize;
+// /= Header Logo URL (url) =/
+// ---------------------------
+add_filter('skeleton_header_logo_url', 'muscle_header_logo_url');
+function muscle_header_logo_url($url) {
+	// to override the logo URL on a per page basis
+	# eg. change the logo URL for the front page or home page
+	# if (is_front_page()) {$url = site_url().'/images/frontpage-logo.png';}
+	# if (is_home()) {$url = site_url().'/images/blogpage-logo.png';}
+	return $url;
 }
 
-// /= Header Menu Settings =/
-// --------------------------
-add_filter('skeleton_header_menu_settings','muscle_header_menu_settings');
-function muscle_header_menu_settings($vsettings) {
-	// change the settings for the header menu display
-	return $vsettings;
-}
-
-// /= Header Extras HTML Override =/
+// /= Header Logo Override (html) =/
 // ---------------------------------
-add_filter('skeleton_header_html_extras','muscle_header_extras');
-function muscle_header_extras($vextras) {
+add_filter('skeleton_header_logo_override', 'muscle_header_logo_override');
+function muscle_header_logo_override($html) {
+	// override the entire HTML logo area output
+	# if (is_front_page()) {$html = my_custom_header_html_function();}
+	return $html;
+}
+
+// /= Header Logo Resize (boolean) =/
+// ----------------------------------
+add_filter('skeleton_logo_resize', 'muscle_logo_resize_override');
+function muscle_logo_resize_override($resize) {
+	// You could turn logo resize on/off for specific page eg.
+	# if (is_front_page()) {$resize = 0;}
+	return $resize;
+}
+
+// /= Header Menu Settings (array) =/
+// ----------------------------------
+add_filter('skeleton_header_menu_settings', 'muscle_header_menu_settings');
+function muscle_header_menu_settings($args) {
+	// change the settings for the header menu display
+	# eg. change the menu container ID
+	# $args['container_id'] = 'header_menu';
+	return $args;
+}
+
+// /= Header Extras Output Override (html) =/
+// ------------------------------------------
+add_filter('skeleton_header_extras', 'muscle_header_extras');
+function muscle_header_extras($html) {
 	// You can set header extra text here as HTML, eg.
-	# $vextras = '<div id="welcome">Welcome!</div>';
+	# $extras = '<div id="welcome">Welcome!</div>';
 	// or maybe add shortcode output, eg.
-	# $vextras .= do_shortcode('[header-html]');
-	return $vextras;
+	# $extras .= do_shortcode('[header-html]');
+	return $extras;
 }
 
-// /= Navigation Hide Override =/
-// ------------------------------
+// /= Navigation Hide Override (boolean) =/
+// ----------------------------------------
 // 1.5.5: allow override of navigation hide
-add_filter('skeleton_navigation_hide','muscle_navigation_hide');
-function muscle_navigation_hide($vhidenav) {
-	// hide main navigation menu for a specific category
-	# if (is_category('articles')) {$vhidenav = '1';}
-	return $vhidenav;
+// TODO: recheck if hide is incorrect name here?
+add_filter('skeleton_navigation_remove', 'muscle_navigation_remove');
+function muscle_navigation_remove($removenav) {
+	// "hide" main navigation menu for a specific category
+	# if (is_category('articles')) {$removenav = true;}
+	return $removenav;
 }
 
-// /= Content Classes =/
-// ---------------------
-add_filter('skeleton_content_classes','muscle_content_classes');
-function muscle_content_classes($vclasses) {
+// /= Navigation Menu (html) =/
+// ----------------------------
+add_filter('skeleton_secondary_menu', 'muscle_secondary_menu');
+function muscle_secondary_menu($html) {
+	// override the secondary navigation output
+	# example
+	return $html;
+}
+
+// /= Content Classes (array) =/
+// -----------------------------
+add_filter('skeleton_content_classes', 'muscle_content_classes');
+function muscle_content_classes($classes) {
 	// add CSS classes to the #content div
-	# if (is_page('home')) {$vclasses = 'contentclass';}
-	return $vclasses;
+	# if (is_page('home')) {$classes = 'contentclass';}
+	return $classes;
 }
 
-// /= Content Columns =/
-// ---------------------
-add_filter('skeleton_content_columns','muscle_content_columns');
+// /= Content Columns (string) =/
+// ------------------------------
+add_filter('skeleton_content_columns', 'muscle_content_columns');
 function muscle_content_columns($vcolumns) {
-	// Modify the content width value (in columns value as a word)
+	// modify the content columns layout width value (in columns value as a word)
 	// (important: differs from $content_width variable! see functions.php)
-	# $vcolumns = 'ten';
+	# $columns = 'ten';
 	return $vcolumns;
 }
 
@@ -1051,50 +1087,50 @@ function muscle_content_columns_override($vcolumns) {
 	return $vcolumns;
 }
 
-// /= Content Width Override =/
-// ----------------------------
-add_filter('skeleton_content_width','muscle_content_width');
-function muscle_content_width($vwidth) {
-	// the actual content width in pixels
-	// default is calculated based on content columns and content padding
-	return $vwidth;
+// /= Content Width Override (integer) =/
+// --------------------------------------
+add_filter('skeleton_content_width', 'muscle_content_width');
+function muscle_content_width($width) {
+	// the actual layout content width in pixels
+	// (default is calculated based on content columns and content padding)
+	return $width;
 }
 
-// /= Content Padding Width Override =/
-// ------------------------------------
-add_filter('skeleton_content_padding_width','muscle_content_padding_width');
-function muscle_content_padding_width($vwidth) {
+// /= Content Padding Width Override (integer) =/
+// ----------------------------------------------
+add_filter('skeleton_content_padding_width', 'muscle_content_padding_width');
+function muscle_content_padding_width($width) {
 	// used to calculate actual content width in pixels
-	// default is calculated from theme options content padding value
-	return $vwidth;
+	// (default is calculated from theme settings content padding value)
+	return $width;
 }
 
-// /= Footer Div Classes =/
-// ------------------------
-add_filter('skeleton_footer_classes','muscle_footer_classes');
-function muscle_footer_classes($vclasses) {
+// /= Footer Div Classes (array) =/
+// --------------------------------
+add_filter('skeleton_footer_classes', 'muscle_footer_classes');
+function muscle_footer_classes($classes) {
 	// default is an array of footer classes based on grid
 	// you can add extra classes, eg.
-	# if (is_page()) {$vclasses[] = 'myfooterclass';}
-	return $vclasses;
+	# if (is_page()) {$classes[] = 'myfooterclass';}
+	return $classes;
 }
 
-// /= Footer Menu Settings =/
-// --------------------------
-add_filter('skeleton_footer_menu_settings','muscle_footer_menu_settings');
-function muscle_footer_menu_settings($vsettings) {
+// /= Footer Menu Settings (array) =/
+// ----------------------------------
+add_filter('skeleton_footer_menu_settings', 'muscle_footer_menu_settings');
+function muscle_footer_menu_settings($settings) {
 	// change the settings for the footer menu display
-	return $vsettings;
+	return $settings;
 }
 
-// /= Footer Extras HTML Override =/
-// --------------------------------
+// /= Footer Extras HTML Override (html) =/
+// ----------------------------------------
 add_filter('skeleton_footer_html_extras','muscle_footer_extras');
-function muscle_footer_extras($vextras) {
+function muscle_footer_extras($extras) {
 	// You can set footer extra text as HTML, eg. copyright year
-	# $vextras = '<div id="copyright">Copyright '.date('Y').'</div>';
+	# $extras = '<div id="copyright">Copyright '.date('Y').'</div>';
 	// or maybe add shortcode output, eg.
-	# $vextras .= do_shortcode('[footer-html]');
+	# $extras .= do_shortcode('[footer-html]');
 	return $vextras;
 }
 
@@ -1228,6 +1264,14 @@ function muscle_sidebar_output($voutputsidebar) {
 	return $voutputsidebar;
 }
 
+// /= Sidebar Display Buttons (html) =/
+// ------------------------------------
+add_filter('skeleton_sidebar_display_buttons', 'muscle_sidebar_display_buttons');
+function muscle_sidebar_display_buttons($html) {
+	// HTML output for sidebar show/hide buttons
+	return $html;
+}
+
 // /= Subsidebar Position =/
 // -------------------------
 // 1.5.0: added this filter
@@ -1290,6 +1334,14 @@ function muscle_subsidebar_output($voutputsubsidebar) {
 	// eg. remove the subsidebar from a specific category
 	# is (is_category('articles')) {$voutputsubsidebar = false;}
 	return $voutputsubsidebar;
+}
+
+// /= SubSidebar Display Buttons (html) =/
+// ---------------------------------------
+add_filter('skeleton_subsidebar_display_buttons', 'muscle_subsidebar_display_buttons');
+function muscle_subsidebar_display_buttons($html) {
+	// HTML output for subsidebar show/hide buttons
+	return $html;
 }
 
 // /= Change the Footer Sidebar Template =/

@@ -1,8 +1,10 @@
 <?php
 
-/* Author Bio Template */
+// ===================================
+// === BioShip Author Bio Template ===
+// ===================================
 
-if (THEMETRACE) {bioship_trace('T',__('Author Bio Template','bioship'),__FILE__);}
+if (THEMETRACE) {bioship_trace('T',__('Author Bio Template','bioship'),__FILE__,'content');}
 
 ?>
 
