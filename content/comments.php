@@ -66,8 +66,9 @@ if ( have_comments() ) : ?>
 					'<label for="email">'.__('Your Email', 'bioship').'</label><br />'.
 					'<input id="email" name="email" type="text" value="'.esc_attr($commenter['comment_author_email']).'" size="30"'.$aria_req.' /></p>',
 				'url' =>
+					// 2.1.1: use esc_url instead of esc_attr for comment author URL
 					'<p class="comment-form-url"><label for="url">'.__('Website', 'bioship').':</label><br />'.
-					'<input id="url" name="url" type="text" value="'.esc_attr( $commenter['comment_author_url']).'" size="30" /></p>' )
+					'<input id="url" name="url" type="text" value="'.esc_url( $commenter['comment_author_url']).'" size="30" /></p>' )
 			),
 			'comment_field' => '<p class="comment-form-comment">'.
 				'<label for="comment"><span class="required">*</span>'.__('Comment', 'bioship').':</label><br />' .

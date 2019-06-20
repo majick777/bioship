@@ -10,7 +10,8 @@ if (THEMETRACE) {bioship_trace('T',__('Loop Meta Template','bioship'),__FILE__,'
 // ---- open archive header div ---
 // 1.9.8: switch from .loop-meta to .archive-header
 bioship_html_comment('.archive-header');
-echo "<div "; hybrid_attr('archive-header'); echo ">";
+$attributes = hybrid_get_attr('archive-header');
+echo "<div ".$attributes.">";
 
 
 	// --- Loop Title ---
@@ -19,7 +20,8 @@ echo "<div "; hybrid_attr('archive-header'); echo ">";
 	if ($looptitle) {
 		// 1.9.8: switch from .loop-title to .archive-title
 		bioship_html_comment('.archive-title');
-		echo "<h2 "; hybrid_attr('archive-title'); echo ">".$looptitle."</h2>";
+		$attributes = hybrid_get_attr('archive-title');
+		echo "<h2 ".$attributes.">".esc_attr($looptitle)."</h2>";
 		bioship_html_comment('/.archive-title');
 	}
 
@@ -31,7 +33,8 @@ echo "<div "; hybrid_attr('archive-header'); echo ">";
 		if ($description) {
 			// 1.9.8: switch from .loop-description to .archive-description
 			bioship_html_comment('.archive-description');
-			echo "<div "; hybrid_attr('archive-description'); echo ">".$description."</div>";
+			$attributes = hybrid_get_attr('archive-description');
+			echo "<div ".$attributes.">".esc_attr($description)."</div>";
 			bioship_html_comment('/.archive-description');
 		}
 	}

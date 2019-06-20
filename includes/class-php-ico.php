@@ -50,7 +50,8 @@ class PHP_ICO {
 
 		foreach ( $required_functions as $function ) {
 			if ( ! function_exists( $function ) ) {
-				trigger_error( "The PHP_ICO class was unable to find the $function function, which is part of the GD library. Ensure that the system has the GD library installed and that PHP has access to it through a PHP interface, such as PHP's GD module. Since this function was not found, the library will be unable to create ICO files." );
+				$message = "The PHP_ICO class was unable to find the $function function, which is part of the GD library. Ensure that the system has the GD library installed and that PHP has access to it through a PHP interface, such as PHP's GD module. Since this function was not found, the library will be unable to create ICO files.";
+				trigger_error( $message );
 				return;
 			}
 		}

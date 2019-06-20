@@ -1,8 +1,8 @@
 <?php
 
-// =============================
-// === Main Content Template ===
-// =============================
+// =====================================
+// === BioShip Main Content Template ===
+// =====================================
 
 if (THEMETRACE) {bioship_trace('T','Content Template',__FILE__,'content');}
 
@@ -11,7 +11,7 @@ if (THEMETRACE) {bioship_trace('T','Content Template',__FILE__,'content');}
 
 // --- get post type(s) ---
 $posttypes = bioship_get_post_types();
-if (THEMEDEBUG) {echo "<!-- Post Types: "; print_r($posttypes); echo " -->";}
+if (THEMEDEBUG) {echo "<!-- Post Types: ".esc_attr(print_r($posttypes,true))." -->";}
 if (is_string($posttypes)) {$posttype = $posttypes;} else {$posttype = '';}
 
 // --- clear div ---
@@ -38,7 +38,7 @@ echo '<article '.$attributes.'>';
 	if (THEMEDEBUG || (isset($_GET['debugquery']) && ($_GET['debugquery'] == 'yes')) ) :
 		// 1.9.5: allow for separate query-only debugging
 		global $wp_query; $debugquery = $wp_query;
-		echo "<pre style='display:none;'><!-- WP Query: ";	print_r($debugquery); echo " --></pre>";
+		echo "<pre style='display:none;'><!-- WP Query: ".esc_attr(print_r($debugquery,true))." --></pre>";
 	endif;
 
 	// Excerpt Display
@@ -50,12 +50,13 @@ echo '<article '.$attributes.'>';
 
 			// --- Entry Excerpt Content ---
 			bioship_html_comment('.entry-summary');
-			echo '<div '.hybrid_get_attr('entry-summary').'>';
+			$attributes = hybrid_get_attr('entry-summary');
+			echo '<div '.$attributes.'>';
 
 				// --- the_excerpt() ---
 				bioship_do_action('bioship_the_excerpt');
 
-			// --- close entry summary div
+			// --- close entry summary div ---
 			echo '</div>';
 			bioship_html_comment('/.entry-summary');
 
@@ -81,7 +82,8 @@ echo '<article '.$attributes.'>';
 
 					// --- Full Entry Content ---
 					bioship_html_comment('.entry-content');
-					echo '<div '.hybrid_get_attr('entry-content').'>';
+					$attributes = hybrid_get_attr('entry-content');
+					echo '<div '.$attributes.'>';
 
 							// --- the_content ---
 							bioship_do_action('bioship_the_content');

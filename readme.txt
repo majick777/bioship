@@ -1,3 +1,61 @@
+=== BioShip ===
+Contributors: majick
+Tags: one-column, two-columns, three-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
+License: GPLv2 or later
+License URI: http://www.opensource.org/licenses/gpl-license.php
+Requires at least: 3.4
+Tested up to: 5.2
+
+BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
+
+== Description ==
+
+BioShip aims to be a flexible and performant child theme framework capable of adapting to ANY design and development requirements.
+
+Firstly it is a "blank canvas" or "skeleton" theme that focusses on including ALL the basic theme necessities - and getting them right - making it very easy to skin quickly for end users and designers.
+
+At the same time, it includes extensively tested code under the hood to make it highly flexible for developers, with extended file and template hierarchies, layout position hooks and custom theme value filters.
+
+Other baked in features include one-click child theme creation, responsive grid system, flexible multiple sidebar options, Schema.org markup, cross-browser friendliness, theme setting import/export, custom post type support, integrations and much more.
+
+It is the stable end result of years of coding, experimentation, improvements, testing, streamlining, refactoring and retesting on a wide variety of different live sites.
+
+Plus it is now fully documented (with source code commented) for your reference, so you can confidently create the site that you want.
+
+
+== Frequently Asked Questions ==
+
+= So how do I...? =
+
+Please see the full documentation at http://bioship.space/documentation/
+Or click the Docs link on your Theme Options page to view them in your WordPress Admin area.
+
+== Changelog ==
+
+= 2.1.2 =
+- Added: readme.txt for wordpress.org theme repository (merged changelog.txt)
+- Added: call new wp_body_open hook in header.php (with backwards compatibility)
+- Added: basic Elementor Locations support (header/footer/archive/single)
+- Added: missing menu override output filters (primary/header/footer)
+- Added: missing output echo escapes in overall theme files
+- Added: phpcs:ignore comment flags when echoing already escaped variables
+- Added: some missing button text translation wrappers
+- Updated: TGM Plugin Activation v2.6.1 (pre-configured for wordpress.org)
+- Fixed: re-added Titan web safe font filter (removed from Titan Framework)
+- Fixed: use of duplicate variable for typography in skin loader
+- Fixed: Inline Styles Setting output exiting early bug
+- Fixed: incorrect directory variable for Titan Framework checker
+- Fixed: added dummy func_get_args for backwards compatibility for PHP < 5.3
+- Fixed: replaced round half down with standalone function for PHP < 5.3
+- Fixed: added check for edit theme permissions to Admin Bar Theme Options item
+- Fixed: removed incompatible Hybrid term list usage from taxonomy meta display 
+- Fixed: Titan options CSS quicksave settings message display and fadeout
+- Fixed: removed breaking double quotes around inherit font value output
+- Improved: changes .site-desc span to div to allow text width wrapping
+- Improved: active widget counting in footer sidebar template (sidebar/footer.php)
+- Removed: misplaced custom.js custom menu script (from BioShip theme site)
+- Removed: file changelog.txt (merged with readme.txt)
+
 = 2.1.1 =
 - Updated: Full Code Review of all core theme files!
 - Updated: Documentation to match previous version changes
@@ -495,7 +553,6 @@
 
 = 0.1.0 =
 - * Minor Update and Fix List *
-- MetaBox QuickSave for Display / Override Options
 - Retest Widget Transfers on Activation/Deactivation
 - Retest Pagination Display for Post/Archive Types
 - Recheck Editor Styles against core Theme Styles
@@ -509,7 +566,6 @@
 -- Test Hybrid Post Format Filter extension
 - Test Import/Export while Theme Test Driving
 - Check Translation Support (for WMPL)
-- Pass Wordpress.org Theme Check
 
 = 0.0.3 =
 - ** Customizer List **
@@ -522,7 +578,7 @@
 - ** Planned Option List **
 - Select CPTs to Display Theme Options Metabox on
 - Author Bio Display Position on Author Archives
-- Options Framework: rgba colour picker control?
+- Options Framework: rgba colour picker control ?
 - ? Set Image Quality Filter wp_editor_set_quality
 - ? Disable Hybrid Schema.Org Attribute Markup 
 - ? Separate Admin Style CSS Loading Mode

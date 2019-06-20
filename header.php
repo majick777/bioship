@@ -22,7 +22,7 @@ $language_attributes = get_language_attributes();
 <?php wp_head(); ?>
 </head><?php bioship_html_comment('/head'); ?>
 
-<?php bioship_html_comment('body'); ?><body <?php hybrid_attr('body'); ?>>
+<?php bioship_html_comment('body'); ?><body <?php hybrid_attr('body'); ?>><?php wp_body_open(); ?>
 <?php bioship_html_comment('#bodycontent.inner'); ?><div id="bodycontent" class="inner">
 
 <?php
@@ -35,11 +35,15 @@ $language_attributes = get_language_attributes();
 
 	// --- Header ---
 	bioship_do_action('bioship_before_header');
-	bioship_do_action('bioship_header');
+
+		// --- Elementor Header Location Support -
+		// 2.1.2: allow possible replacing of bioship_header action
+		if (function_exists('elementor_theme_do_location')) {$doneheader = elementor_theme_do_location('header');}
+		if (!isset($doneheader) || !$doneheader) {bioship_do_action('bioship_header');}
+
 	bioship_do_action('bioship_after_header');
 
 	// --- Navigation Menu ---
 	bioship_do_action('bioship_before_navbar');
 	bioship_do_action('bioship_navbar');
 	bioship_do_action('bioship_after_navbar');
-
