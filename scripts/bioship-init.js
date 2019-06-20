@@ -193,6 +193,7 @@ jQuery(document).ready(function($) {
 	resizeheaderlogo();
 
 	// 2.0.9: maybe resize site title text
+	// 2.1.2: replace site-desc span with div
 	var calculatedratios = false; var titleratio; var descratio; var titlelratio; var desclratio;
 	function resizetitletexts() {
 		if (typeof sitetextresize !== 'undefined') {
@@ -203,9 +204,9 @@ jQuery(document).ready(function($) {
 					$('#header').css('width', maxwidth+'px !important');
 					$('#header').css('padding','0px !important').css('margin','0px !important');
 					titlesize = $('#site-title-text a').css('font-size').replace('px', '');
-					descsize = $('#site-description span').css('font-size').replace('px', '');
+					descsize = $('#site-description div').css('font-size').replace('px', '');
 					titlelh = $('#site-title-text a').css('line-height').replace('px','');
-					desclh = $('#site-description span').css('line-height').replace('px','');
+					desclh = $('#site-description div').css('line-height').replace('px','');
 					$('#header').css('width', '').css('padding', '').css('margin', '');
 
 					titleratio = titlesize / maxwidth;
@@ -228,7 +229,7 @@ jQuery(document).ready(function($) {
 				if (newdesclh > desclh) {newdesclh = desclh;}
 				newtitlesize += 'px'; newtitlelh += 'px'; newdescsize += 'px'; newdesclh += 'px';
 				$('#site-title-text a').css('font-size', newtitlesize).css('line-height', newtitlelh);
-				$('#site-description span').css('font-size', newdescsize).css('line-height', newdesclh);
+				$('#site-description div').css('font-size', newdescsize).css('line-height', newdesclh);
 				// console.log('New Title Size: '+newtitlesize+' New Title Line Height: '+newtitlelh);
 				// console.log('New Desc Size: '+newdescsize+' New Desc Line Height: '+newdesclh);
 			}

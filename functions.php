@@ -224,6 +224,14 @@ $vthemedirs['includes'] = array('includes');
 // === Helper Functions ===
 // ------------------------
 
+// -----------------
+// Get Function Args
+// -----------------
+// 2.1.2: added backwards compatible function for WP < 5.3
+if (!function_exists('func_get_args')) {
+	function func_get_args() {return '';}
+}
+
 // ----------------------
 // Negative return Helper
 // ----------------------
@@ -259,6 +267,22 @@ if (!function_exists('bioship_timer_time')) {
  }
 }
 
+// ---------------
+// Round Half Down
+// ---------------
+// 2.1.2: added this helper function
+// (since PHP 5.2 does not have PHP_ROUND_HALF_DOWN mode)
+// ref: https://stackoverflow.com/questions/7103233/round-mode-round-half-down-with-php-5-2-17
+if (!function_exists('bioship_round_half_down')) {
+ function bioship_round_half_down($v, $precision = 3) {
+	$v = explode('.', $v);
+	$v = implode('.', $v);
+	$v = $v * pow(10, $precision) - 0.5;
+	$a = ceil($v) * pow(10, -$precision);
+	return number_format( $a, 2, '.', '' );
+ }
+}
+
 // ---------------------
 // Get Remote IP Address
 // ---------------------
@@ -280,7 +304,7 @@ if (!function_exists('bioship_get_remote_ip')) {
 // ------------------
 // 2.0.9: added separate debug output/logging function
 if (!function_exists('bioship_debug')) {
- function bioship_debug($prefix, $data=NULL, $forceoutput = null, $forcelog = null) {
+ function bioship_debug($prefix, $data=null, $forceoutput=null, $forcelog=null) {
  	if (!defined('THEMEDEBUG') || !THEMEDEBUG) {return;}
 
  	// --- maybe display debug output ---
@@ -396,9 +420,9 @@ if (!function_exists('bioship_file_get_contents')) {
 	if ($contents) {return $contents;}
 	else {
 		// --- fallback to using file() to read the file ---
+		// 2.1.1: do not re-add line break when using file() function
 		$filearray = @file($filepath);
 		if (!$filearray) {return '';}
-		// 2.1.1: do not re-add lines for file function
 		$contents = implode("", $filearray);
 		return $contents;
 	}
@@ -776,7 +800,7 @@ if (!function_exists('bioship_get_option')) {
 // (added for edge cases, ie. the search for /sidebar/page.php should *not* find /page.php)
 // 2.0.9: added theme_file_search filter to return results?
 if (!function_exists('bioship_file_hierarchy')) {
- function bioship_file_hierarchy($type, $filename, $dirs = array(), $searchroots = array('stylesheet','template')) {
+ function bioship_file_hierarchy($returntype, $filename, $dirs = array(), $searchroots = array('stylesheet','template')) {
 
  	// 1.6.0: check if THEMETRACE constant is defined (in this function only!)
 	if (defined('THEMETRACE') && THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
@@ -796,7 +820,7 @@ if (!function_exists('bioship_file_hierarchy')) {
 
 	// --- debug hierarchy call and search directories ---
 	if (defined('THEMEDEBUG')) {
-		bioship_debug("File Hierarchy Call for ".$type, $filename);
+		bioship_debug("File Hierarchy Call for ".$returntype, $filename);
 		if (count($dirs) > 0) {bioship_debug("Search Directories", implode(',', $dirs));}
 	}
 
@@ -836,9 +860,9 @@ if (!function_exists('bioship_file_hierarchy')) {
 
 				// 2.1.1: moved repeated logic out from if statements
 				if ($file && file_exists($file)) {
-					if ($type == 'file') {$value = $file;}
-					elseif ($type == 'url') {$value = $url;}
-					elseif ($type == 'both') {$value = array('file' => $file, 'url' => $url);}
+					if ($returntype == 'file') {$value = $file;}
+					elseif ($returntype == 'url') {$value = $url;}
+					elseif ($returntype == 'both') {$value = array('file' => $file, 'url' => $url);}
 				}
 			}
 		}
@@ -849,9 +873,9 @@ if (!function_exists('bioship_file_hierarchy')) {
 		$file = $vthemestyledir.$filename;
 		$url = $vthemestyleurl.$filename;
 		if (file_exists($file)) {
-			if ($type == 'file') {$value = $file;}
-			elseif ($type == 'url') {$value = $url;}
-			elseif ($type == 'both') {$value = array('file' => $file, 'url' => $url);}
+			if ($returntype == 'file') {$value = $file;}
+			elseif ($returntype == 'url') {$value = $url;}
+			elseif ($returntype == 'both') {$value = array('file' => $file, 'url' => $url);}
 		}
 	}
 
@@ -878,9 +902,9 @@ if (!function_exists('bioship_file_hierarchy')) {
 
 					// 2.1.1: moved repeated logic out of if statements
 					if ($file && file_exists($file)) {
-						if ($type == 'file') {$value = $file;}
-						elseif ($type == 'url') {$value = $url;}
-						elseif ($type == 'both') {$value = array('file' => $file, 'url' => $url);}
+						if ($returntype == 'file') {$value = $file;}
+						elseif ($returntype == 'url') {$value = $url;}
+						elseif ($returntype == 'both') {$value = array('file' => $file, 'url' => $url);}
 					}
 				}
 			}
@@ -893,9 +917,9 @@ if (!function_exists('bioship_file_hierarchy')) {
 		$file = $vthemetemplatedir.$filename;
 		$url = $vthemetemplateurl.$filename;
 		if (file_exists($file)) {
-			if ($type == 'file') {$value = $file;}
-			elseif ($type == 'url') {$value = $url;}
-			elseif ($type == 'both') {$value = array('file' => $file, 'url' => $url);}
+			if ($returntype == 'file') {$value = $file;}
+			elseif ($returntype == 'url') {$value = $url;}
+			elseif ($returntype == 'both') {$value = array('file' => $file, 'url' => $url);}
 		}
 	}
 
@@ -903,7 +927,7 @@ if (!function_exists('bioship_file_hierarchy')) {
 	// 2.1.0: fix to incorrect filter variable name
 	// 2.1.1: compressed extra filter values to args array
 	bioship_debug($filename." Search File Return Value", $value);
-	$args = array('type' => $type, 'filename' => $filename, 'dirs' => $dirs, 'searchroots' => $searchroots);
+	$args = array('type' => $returntype, 'filename' => $filename, 'dirs' => $dirs, 'searchroots' => $searchroots);
 	$filtered = bioship_apply_filters('theme_file_search', $value, $args);
 	if ($filtered != $value) {
 		bioship_debug("Filtered Filepath Search Value", $filtered);
@@ -1353,7 +1377,7 @@ if (!function_exists('bioship_customizer_convert_posted')) {
 
 			// --- set variable for ID and type ---
 			$id = $optionvalue['id'];
-			$type = $optionvalue['type'];
+			$optiontype = $optionvalue['type'];
 			$previewkey = str_replace('_options', '_customize', THEMEKEY.'['.$optionvalue['id'].']');
 
 			if (array_key_exists($previewkey, $postedvalues)) {
@@ -1378,11 +1402,11 @@ if (!function_exists('bioship_customizer_convert_posted')) {
 						// bioship_debug("Preview Value for '".$id."'", $previewvalue, false);
 					} else {
 						// TODO: maybe do something else for subarray values ?
-						// bioship_debug("Option Type", $type, false);
+						// bioship_debug("Option Type", $optiontype, false);
 
 						// --- Customizer Multicheck values ---
 						// 1.8.5: fix for customizer multicheck arrays
-						if ($type == 'multicheck') {
+						if ($optiontype == 'multicheck') {
 							foreach ($optionvalue['options'] as $key => $value) {
 								if (in_array($key, $previewvalue)) {$valuearray[$key] = '1';}
 								else {$valuearray[$key] = '0';}
@@ -1697,7 +1721,8 @@ if (!function_exists('bioship_admin_theme_settings_save')) {
 	// --- get posted multicheck settings ---
 	// 2.0.9: for auto-fixing of multicheck theme option saving
 	// 2.1.1: fix undefined variable warning for postedmulticheck
-	$multicheckkeys = $postedmulticheck = array();
+	// 2.1.1: fix undefined variable warning for oldmulticheck
+	$multicheckkeys = $postedmulticheck = $oldmulticheck = array();
 	$multicheckoptions = get_option($vthemename.'_multicheck_options');
 	$multicheckkeys = array_keys($multicheckoptions);
 	foreach ($multicheckkeys as $key) {
@@ -1861,8 +1886,9 @@ if (!$optionsload) {
 			// 2.0.9: changed Titan checker setting to required=false for wordpress.org version
 			// 2.0.9: moved Theme Tools submenu loading to admin.php
 			// 2.1.1: allow for alternative includes directory
+			// 2.1.2: fix to incorrect directory variable (dirs)
 			$titandirs = array_merge($vthemedirs['includes'], $titandirs);
-			$titanchecker = bioship_file_hierarchy('file', 'titan-framework-checker.php', $dirs);
+			$titanchecker = bioship_file_hierarchy('file', 'titan-framework-checker.php', $titandirs);
 			if ($titanchecker) {require_once($titanchecker);}
 			else {bioship_debug("Warning! Titan Framework Checker not found.");}
 		}
@@ -2546,10 +2572,15 @@ if (in_array($loadhybrid, $valid)) {
 	require_once($templategeneral);
 
 	// --- load media template ---
-	// 1.8.5: Load the media template so that attachments are not fatal
+	// 1.8.5: load the media template so that attachments are not fatal
 	// (or we could strip media functions from hybrid3-attr.php?)
 	$templatemedia = bioship_file_hierarchy('file', 'hybrid3-template-media.php', $vthemedirs['includes']);
 	require_once($templatemedia);
+
+	// --- load media classes ---
+	// 2.1.2: load the media classes to prevent crashing
+	$mediaclasses = bioship_file_hierarchy('file', 'hybrid3-media-classes.php', $vthemedirs['includes']);
+	require_once($mediaclasses);
 
 	// --- load utility functions ---
 	// (fix for possible undefined hybrid_get_menu_location_name)

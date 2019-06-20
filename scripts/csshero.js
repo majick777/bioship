@@ -211,7 +211,7 @@ function csshero_theme_declarations() {
 	csshero_declare_item('#header #site-logo img','[Header] Logo Image');
 	csshero_declare_item('#header h1#site-title-text','[Header] Site Title Text');
 	csshero_declare_item('#header h1#site-title-text a','[Header] Site Title Text Link');
-	csshero_declare_item('#header #site-description span.site-desc','[Header] Site Tagline');
+	csshero_declare_item('#header #site-description .site-desc','[Header] Site Tagline');
 	csshero_declare_item('#header .header-menu','[Header] Menu');
 	csshero_declare_item('#header #header-extras','[Header] Extra HTML');
 	csshero_config_sub_sidebar('#header #sidebar-header','.widget-container','[Header] Widget Area:');

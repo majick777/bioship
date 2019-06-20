@@ -268,7 +268,7 @@ if (!function_exists('bioship_widget_page_message')) {
  	// 2.1.1: add bold markup to note
 	$message = "<b>".__('Note', 'bioship')."</b>: ";
 	$message .= __('Inactive Theme Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars tab', 'bioship');
-	echo "<div class='message'>".$message."</div>";
+	echo "<div class='message'>".esc_attr($message)."</div>";
  }
 }
 
@@ -1007,8 +1007,8 @@ if (!function_exists('bioship_set_sidebar_layout')) {
 	}
 
 	if (THEMEDEBUG) {
-		echo "<!-- Sidebar Positions (".$context."/".$subcontext."): ";
-		echo $leftsidebar." - ".$innerleftsidebar." - ".$innerrightsidebar." - ".$rightsidebar;
+		echo "<!-- Sidebar Positions (".esc_attr($context)."/".esc_attr($subcontext)."): ";
+		echo esc_attr($leftsidebar)." - ".esc_attr($innerleftsidebar)." - ".esc_attr($innerrightsidebar)." - ".esc_attr($rightsidebar);
 		echo " -->";
 	}
 
@@ -1020,8 +1020,8 @@ if (!function_exists('bioship_set_sidebar_layout')) {
 	if ( ($overrides != $sidebars) && is_array($overrides) && (count($overrides) == 4) ) {
 		$sidebars = $overrides;
 		if (THEMEDEBUG) {
-			echo "<!-- New Sidebar Positions (".$context."/".$subcontext."): ";
-			echo $sidebars[0]." - ".$sidebars[1]." - ".$sidebars[2]." - ".$sidebars[3]." -->";
+			echo "<!-- New Sidebar Positions (".esc_attr($context)."/".esc_attr($subcontext)."): ";
+			echo esc_attr($sidebars[0])." - ".esc_attr($sidebars[1])." - ".esc_attr($sidebars[2])." - ".esc_attr($sidebars[3])." -->";
 		}
 	}
 
@@ -1154,7 +1154,7 @@ if (!function_exists('bioship_set_sidebar')) {
 	// ----------------------------
 	if ($position == 'left') {
 
-		if (THEMEDEBUG) {echo "<!-- Left Sidebar Templates - Left: ".$leftsidebar." - SubLeft: ".$innerleftsidebar." -->";}
+		if (THEMEDEBUG) {echo "<!-- Left Sidebar Templates - Left: ".esc_attr($leftsidebar)." - SubLeft: ".esc_attr($innerleftsidebar)." -->";}
 
 		// Left Sidebar Position
 		// ---------------------
@@ -1198,7 +1198,7 @@ if (!function_exists('bioship_set_sidebar')) {
 	// -----------------------------
 	if ($position == 'right') {
 
-		if (THEMEDEBUG) {echo "<!-- Right Sidebar Templates - SubRight: ".$innerrightsidebar." - Right: ".$rightsidebar." -->";}
+		if (THEMEDEBUG) {echo "<!-- Right Sidebar Templates - SubRight: ".esc_attr($innerrightsidebar)." - Right: ".esc_attr($rightsidebar)." -->";}
 
 		// Inner Right Sidebar Position
 		// ----------------------------
@@ -1405,7 +1405,7 @@ if (!function_exists('bioship_get_content_width')) {
 
 		// --- calculate actual content width ---
 		$contentwidth = $layoutwidth / $gridcolumns * $columns;
-		if (THEMEDEBUG) {echo "<!-- Layout Max Width: ".$layoutwidth." - Grid Columns: ".$gridcolumns." - Content Columns: ".$columns." -->";}
+		if (THEMEDEBUG) {echo "<!-- Layout Max Width: ".esc_attr($layoutwidth)." - Grid Columns: ".esc_attr($gridcolumns)." - Content Columns: ".esc_attr($columns)." -->";}
 
 		// --- set raw content width ---
 		// 1.9.5: set raw content width value for grid querystring
@@ -1461,8 +1461,11 @@ if (!function_exists('bioship_content_width')) {
 
 		// --- get filtered content column width ---
 		$columns = bioship_apply_filters('skeleton_content_columns', $contentcolumns);
-		// 1.9.5: allow for metabox override
-		if ($vthemeoverride['contentcolumns'] != '') {$columns = $vthemeoverride['contentcolumns'];}
+		// 1.9.5: allow for perpost metabox override
+		// 2.1.2: fix for possible undefined index warning
+		if (isset($vthemeoverride['contentcolumns']) && ($vthemeoverride['contentcolumns'] != '')) {
+			$columns = $vthemeoverride['contentcolumns'];
+		}
 
 		// --- check column values ---
 		// 1.8.5: added filter validation check
@@ -1478,7 +1481,7 @@ if (!function_exists('bioship_content_width')) {
 		$sidebarcolumns = $vthemesidebars['sidebarcolumns'];
 		$subsidebarcolumns = $vthemesidebars['subsidebarcolumns'];
 
-		if (THEMEDEBUG) {echo "<!-- Columns: Content - ".$contentcolumns." - Sidebar - ".$sidebarcolumns." - Subsidebar - ".$subsidebarcolumns." -->";}
+		if (THEMEDEBUG) {echo "<!-- Columns: Content - ".esc_attr($contentcolumns)." - Sidebar - ".esc_attr($sidebarcolumns)." - Subsidebar - ".esc_attr($subsidebarcolumns)." -->";}
 
 		// --- get sidebar columns number ---
 		if ($sidebar) {$sidebarcols = bioship_word_to_number($sidebarcolumns);} else {$sidebarcols = 0;}
@@ -1505,7 +1508,7 @@ if (!function_exists('bioship_content_width')) {
 		// --- set globals and return ---
 		$vthemelayout['contentcolumns'] = $contentcolumns;
 		$vthemelayout['numcontentcolumns'] = $numcontentcols;
-		if (THEMEDEBUG) {echo "<!-- Content Columns: ".$numcontentcols." (".$contentcolumns.") -->";}
+		if (THEMEDEBUG) {echo "<!-- Content Columns: ".esc_attr($numcontentcols)." (".esc_attr($contentcolumns).") -->";}
 		return $contentcolumns;
 	}
 }
@@ -1543,13 +1546,14 @@ if (!function_exists('bioship_get_content_padding_width')) {
 				} elseif (stristr($padding, 'em')) {
 					// 1.5.0: added em support based on 1em ~= 16px
 					// 1.9.5: added font percent to 100 for testing
+					// 2.1.2: use round half down helper function
 					$fontpercent = '100';
 					$paddingvalue = trim(str_ireplace('em', '', $padding));
-					$paddingvalue = round( ($paddingvalue * 16 * $fontpercent / 100), 2, PHP_ROUND_HALF_DOWN);
+					$paddingvalue = bioship_round_half_down(($paddingvalue * 16 * $fontpercent / 100), 2);
 					$paddingarray[$i] = $paddingvalue;
 				} elseif (strstr($padding,'%')) {
 					$padding = intval(trim(str_ireplace('%', '', $padding)));
-					$paddingarray[$i] = round(($contentwidth * $padding), 2, PHP_ROUND_HALF_DOWN);
+					$paddingarray[$i] = bioship_round_half_down(($contentwidth * $padding), 2);
 				} else {$paddingarray[$i] = 0;}
 			}
 
@@ -1612,7 +1616,7 @@ if (!function_exists('bioship_render_title_tag_filtered')) {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
     ob_start(); _wp_render_title_tag(); $titletag = ob_get_contents(); ob_end_clean();
     $titletag = bioship_apply_filters('wp_render_title_tag_filter', $titletag);
-    echo $titletag;
+    echo $titletag.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
  }
 }
 
@@ -1678,7 +1682,8 @@ if (!function_exists('bioship_wp_title'))  {
 
 	// --- maybe add a page number ---
 	if ( ($paged >= 2) || ($page >= 2) ) {
-		$title .= " ".$sep." ".sprintf( __('Page %s','bioship'), max($paged, $page));
+		// translators: replacement number is current page
+		$title .= " ".$sep." ".sprintf( __('Page %d','bioship'), max($paged, $page));
 	}
 
 	// --- apply title filter and return ---
@@ -1994,29 +1999,30 @@ if (!function_exists('bioship_get_sidebar')) {
 	// 1.8.5: rename global sidebaroutput to themesidebars
 	global $vthemelayout, $vthemesidebars;
 
+	// --- check for sidebars ---
 	$sidebar = $vthemesidebars['sidebar'];
 	$subsidebar = $vthemesidebars['subsidebar'];
-	if (!$sidebar && !$subsidebar) {return;}
-
 	if (THEMEDEBUG) {
 		echo "<!-- Final Sidebar States: ";
-		$sidebarstate = $vthemesidebars; unset($sidebarstate['output']); print_r($sidebarstate);
+		$sidebarstate = $vthemesidebars; unset($sidebarstate['output']); echo esc_attr(print_r($sidebarstate,true));
 		if ($sidebar) {echo "Main Sidebar";} else {echo "No Main Sidebar";}
 		if ($subsidebar) {echo " - SubSidebar";} else {echo " - No SubSidebar";}
 		echo " -->";
 	}
+	if (!$sidebar && !$subsidebar) {return;}
 
+	// --- output buffered sidebar HTML ---
 	$output = $vthemesidebars['output'];
 	if ($position == 'left') {
 		$leftoutput = $output[0];
 		$insideleftoutput = $output[1];
-		if ($leftoutput != '') {echo $leftoutput;}
-		if ($insideleftoutput != '') {echo $insideleftoutput;}
+		if ($leftoutput != '') {echo $leftoutput;} // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+		if ($insideleftoutput != '') {echo $insideleftoutput;} // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	} elseif ($position == 'right') {
 		$insiderightoutput = $output[2];
 		$rightoutput = $output[3];
-		if ($insiderightoutput != '') {echo $insiderightoutput;}
-		if ($rightoutput != '') {echo $rightoutput;}
+		if ($insiderightoutput != '') {echo $insiderightoutput;} // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+		if ($rightoutput != '') {echo $rightoutput;} // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
  }
 }
@@ -2087,14 +2093,14 @@ if (!function_exists('bioship_get_sidebar_template_info')) {
 						$posb = strpos($name, '*/');
 						$name = trim(substr($name, 0, $posb));
 
-						if ( (strstr($name, 'Archive')) || (strstr($name, 'Search Results')) ) {$type = 'archive';}
+						if ( (strstr($name, 'Archive')) || (strstr($name, 'Search Results')) ) {$sidebartype = 'archive';}
 						elseif ( (strstr($name, 'Post Type')) || (strstr($name, 'Single'))
-							  || (strstr($name, 'Not Found')) ) {$type = 'single';}
-						else {$type = 'custom';}
+							  || (strstr($name, 'Not Found')) ) {$sidebartype = 'single';}
+						else {$sidebartype = 'custom';}
 
 						// 2.1.1: combined if conditions here
-						if (!isset($sidebars[$key][$type]) || !in_array($file, $sidebars[$key][$type])) {
-							$sidebars[$key][$type][$file] = $name;
+						if (!isset($sidebars[$key][$sidebartype]) || !in_array($file, $sidebars[$key][$sidebartype])) {
+							$sidebars[$key][$sidebartype][$file] = $name;
 						}
 					}
 				}
@@ -2102,8 +2108,8 @@ if (!function_exists('bioship_get_sidebar_template_info')) {
 
 			// --- force custom type to last in array list ---
 			foreach ($sidebars as $key => $sidebarlist) {
-				foreach ($sidebarlist as $type => $files) {
-					if ($type == 'custom') {
+				foreach ($sidebarlist as $sidebartype => $files) {
+					if ($sidebartype == 'custom') {
 						$customsidebars = $sidebars[$key]['custom'];
 						unset($sidebars[$key]['custom']);
 						$sidebars[$key]['custom'] = $customsidebars;
@@ -2286,7 +2292,7 @@ if (!function_exists('bioship_comments_template')) {
 	// 1.5.0: hide the default "Comments are Closed"
 	// if this is *not* done here, it somehow magically re-appears?! :-/
 	if (!have_comments() && !comments_open()) {
-		echo '<p class="nocomments" style="display:none;">'.__('Comments are Closed.','bioship').'</p>';
+		echo '<p class="nocomments" style="display:none;">'.esc_attr(__('Comments are Closed.','bioship')).'</p>';
 		// return so that the comments_template is not called
 		return false;
 	}
@@ -2688,9 +2694,10 @@ if (!function_exists('bioship_get_entry_meta')) {
 				if (count($taxonomies) > 0) {
 					foreach ($taxonomies as $taxonomy) {
 						if ( ($taxonomy != 'post_tag') && ($taxonomy != 'post_format') ) {
-							if (THEMEHYBRID) {$terms = hybrid_get_post_terms(array('taxonomy' => 'category', 'text' => '', 'before' => ''));}
-							else {$terms = get_the_terms($postid, $taxonomy);}
-							$categoryterms = array_merge($terms, $categoryterms);
+							// 2.1.2: fix to hardcoded category taxonomy
+							// 2.1.2: removed use of Hybrid function (returns HTML not an array)
+							$terms = get_the_terms($postid, $taxonomy);
+							if ($terms) {$categoryterms = array_merge($terms, $categoryterms);}
 						}
 					}
 					if (count($categoryterms) > 0) {
@@ -3025,13 +3032,15 @@ if (!function_exists('bioship_setup')) {
 						// $typorules .= "font-size:".$fontsize."; ";
 						// 2.0.9: convert font sizes to em for screen scaling
 						$fontsize = (int)str_replace('px', '', $fontsize);
-						$fontsize = round( ($fontsize / 16), 3, PHP_ROUND_HALF_DOWN);
+						// 2.1.2: use round half down helper function
+						$fontsize = bioship_round_half_down($fontsize / 16);
 						$typorules .= "font-size:".$fontsize."em; ";
 					}
 					if ($typography['face'] != '') {
 						if (strstr($typography['face'], '+')) {$typography['face'] = '"'.str_replace('+',' ',$typography['face']).'"';}
+						// 2.1.2: fix to remove double quotes around inherit value
 						// note: double quotes must be double escaped or changed to single for tinyMCE javascript
-						if (strstr($typography['face'], ',')) {
+						if (strstr($typography['face'], ',') || ($typography['face'] == 'inherit')) {
 							// $typography['face'] = str_replace('"', '\\"', $typography['face']);
 							$typography['face'] = str_replace('"', "'", $typography['face']);
 							$typorules .= "font-family:".$typography['face']."; ";
@@ -3184,7 +3193,7 @@ if (!function_exists('bioship_setup')) {
 	// --- set post thumbnail size ---
 	set_post_thumbnail_size($thumbnailwidth, $thumbnailheight, $crop);
 
-	// Ref: Wordpress Thumbnail Size Defaults
+	// Ref: WordPress Thumbnail Size Defaults
 	// 'thumbnail' 		: Thumbnail (150 x 150 hard cropped)
 	// 'medium'    		: Medium resolution (300 x 300 max height 300px)
 	// 'medium_large' 	: Medium Large (added in WP 4.4) resolution (768 x 0 infinite height)
@@ -3220,7 +3229,7 @@ if (!function_exists('bioship_setup')) {
 			add_image_size($size['name'], $size['width'], $size['height'], $size['crop']);
 		}
 	} elseif (THEMEDEBUG) {
-		echo "<!-- Image Sizes: ".print_r($imagesizes,true)." -->";
+		echo "<!-- Image Sizes: ".esc_attr(print_r($imagesizes,true))." -->";
 	}
 
  }
@@ -3452,16 +3461,17 @@ if (!function_exists('bioship_jquery_fallback')) {
 	$scripttag = str_replace($srctemp, $jquery, $scripttag);
 
 	if (THEMEDEBUG) {
-		echo "<!-- jQuery Handle: ".$jqueryhandle." -->";
-		echo "<!-- WP jQuery Version: ".$wpjqueryversion." -->";
-		echo "<!-- WP jQuery URL: ".$srctemp." -->";
-		echo "<!-- New jQuery URL: ".$jquery." -->";
+		echo "<!-- jQuery Handle: ".esc_attr($jqueryhandle)." -->";
+		echo "<!-- WP jQuery Version: ".esc_attr($wpjqueryversion)." -->";
+		echo "<!-- WP jQuery URL: ".esc_attr($srctemp)." -->";
+		echo "<!-- New jQuery URL: ".esc_attr($jquery)." -->";
 	}
 
 	if (strstr($scripttag, 'jquery.min.js')) {
+		// 2.1.2: fix to cachebust == typo in else condition
 		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {
 			$cachebust = date('ymdHi', filemtime(ABSPATH.WPINC.'/js/jquery/jquery.js'));
-		} else {$cachebust == $vjscachebust;}
+		} else {$cachebust = $vjscachebust;}
 		$jquery = urlencode(site_url().'/wp-includes/js/jquery/jquery.js?ver='.$cachebust);
 		// 2.0.7: fix to undefined variable warning
 		if (THEMEDEBUG) {$consoledebug = "console.log('Loading jQuery from Google CDN failed. Loading jQuery from site.'); ";} else {$consoledebug = '';}
@@ -3525,9 +3535,9 @@ if (!function_exists('bioship_mobile_meta')) {
 		$mobilemeta .= '<meta name="viewport" content="width=device-width, initial-scale=1" />'.PHP_EOL;
 	}
 
-	// --- filter and return ---
+	// --- filter and output mobile meta tags ---
 	$mobilemeta = bioship_apply_filters('skeleton_mobile_metas', $mobilemeta);
-	echo $mobilemeta;
+	echo $mobilemeta; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
  }
 }
 
@@ -3619,10 +3629,10 @@ if (!function_exists('bioship_site_icons')) {
 	$startupimages = bioship_apply_filters('skeleton_startup_images', '');
 	if ($startupimages != '') {$icons .= $startupimages;}
 
-	// --- filter and return icons ---
+	// --- filter and output icon tags ---
 	// 1.8.5: added icon override filter
 	$icons = bioship_apply_filters('skeleton_icons_override', $icons);
-	echo $icons;
+	echo $icons; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
  }
 }
 
@@ -4119,7 +4129,7 @@ if (!function_exists('bioship_skin_enqueue_styles')) {
 
 			 function bioship_grid_url_reference() {
 				global $vthemelayout; $gridurl = $vthemelayout['gridurl'];
-				echo '<a href="'.$gridurl.'" id="grid-url" style="display:none;"></a>';
+				echo '<a href="'.esc_url($gridurl).'" id="grid-url" style="display:none;"></a>';
 			 }
 			}
 		}
@@ -4277,11 +4287,13 @@ if (!function_exists('bioship_skin_enqueue_styles')) {
 		// 1.8.5: set anyway to allow for Multiple Themes/Theme Test Drive override
 		// TODO: check for internal stylesheet override ?
 		$skintheme = get_stylesheet();
-		if (isset($_REQUEST['theme']) && (trim($_REQUEST['theme']) != '')) {
-			$theme = wp_get_theme(trim($_REQUEST['theme']));
-			// 2.0.9: check this is a valid theme before using override
-			if (is_object($theme) && ($theme instanceof WP_Theme) ) {
-				$skintheme = trim($_REQUEST['theme']);
+		if (isset($_REQUEST['theme'])) {
+			// 2.1.2: use sanitize_title on request input
+			$themeslug = sanitize_title(trim($_REQUEST['theme']));
+			if ($themeslug != '') {
+				$theme = wp_get_theme($theme);
+				// 2.0.9: check this is a valid theme before using override
+				if (is_object($theme) && ($theme instanceof WP_Theme) ) {$skintheme = $themeslug;}
 			}
 		}
 		$skinurl = add_query_arg('theme', $skintheme, $skinurl);
@@ -4389,7 +4401,11 @@ if (!function_exists('bioship_skin_enqueue_admin_styles')) {
 
 		// 1.8.5: use add_query_arg here
 		$skintheme = get_stylesheet();
-		if (isset($_REQUEST['theme']) && ($_REQUEST['theme'] != '')) {$skintheme = $_REQUEST['theme'];}
+		if (isset($_REQUEST['theme'])) {
+			// 2.1.2: use sanitize_title on request input
+			$themeslug = sanitize_title(trim($_REQUEST['theme']));
+			if ($themeslug != '') {$skintheme = $themeslug;}
+		}
 		$skinurl = add_query_arg('theme', $skintheme, $skinurl);
 
 		// 1.8.5: wrap in style for inline header/footer printing
@@ -4651,7 +4667,9 @@ if (!function_exists('bioship_skin_dynamic_css')) {
  	global $vthemedirs;
 	$skin = bioship_file_hierarchy('file', 'skin.php', $vthemedirs['core']);
 	if ($skin) {include($skin);}
-	exit;
+
+	// 2.1.2: fix to not exit for inline styles
+	if (defined('DOING_AJAX') && DOING_AJAX) {exit;}
  }
 }
 
@@ -4683,7 +4701,9 @@ if (!function_exists('bioship_grid_dynamic_css')) {
 	global $vthemedirs;
 	$grid = bioship_file_hierarchy('file', 'grid.php', $vthemedirs['core']);
 	if ($grid) {include($grid);}
-	exit;
+
+	// 2.1.2: fix to not exit for inline styles
+	if (defined('DOING_AJAX') && DOING_AJAX) {exit;}
  }
 }
 
@@ -4718,7 +4738,9 @@ if (!function_exists('bioship_skin_dynamic_admin_css')) {
 	// --- load skin output ---
 	$skin = bioship_file_hierarchy('file', 'skin.php', $vthemedirs['core']);
 	if ($skin) {include($skin);}
-	exit;
+
+	// 2.1.2: fix to not exit for inline admin/login styles
+	if (defined('DOING_AJAX') && DOING_AJAX) {exit;}
  }
 }
 

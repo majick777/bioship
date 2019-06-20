@@ -110,6 +110,21 @@ if (!function_exists('bioship_skin_find_require')) {
  }
 }
 
+// ---------------
+// Round Half Down
+// ---------------
+// 2.1.2: added this helper function
+// (since PHP 5.2 does not have PHP_ROUND_HALF_DOWN mode)
+if (!function_exists('bioship_round_half_down')) {
+ function bioship_round_half_down($v, $precision = 3) {
+	$v = explode('.', $v);
+	$v = implode('.', $v);
+	$v = $v * pow(10, $precision) - 0.5;
+	$a = ceil($v) * pow(10, -$precision);
+	return number_format( $a, 2, '.', '' );
+ }
+}
+
 // -----------------------
 // Get Image Size from URL
 // -----------------------
@@ -120,7 +135,7 @@ if (!function_exists('bioship_skin_get_image_size')) {
 
 	global $vthemename, $vthemesettings;
 
-	if (THEMEDEBUG) {echo "/* Image URL: ".$imageurl." */".PHP_EOL;}
+	if (THEMEDEBUG) {echo "/* Image URL: ".esc_url($imageurl)." */".PHP_EOL;}
 	$cachekey = $vthemename.'_'.$cachekey;
 
 	// We really want to set an explicit width and a height for the header background
@@ -132,8 +147,8 @@ if (!function_exists('bioship_skin_get_image_size')) {
 	$imagesize = false;
 	$imagesizedata = get_option($cachekey);
 	if (THEMEDEBUG) {
-		echo "/* Cached Image Key: ".$cachekey." */".PHP_EOL;
-		echo "/* Cached Image Size Data: ".$imagesizedata." */".PHP_EOL;
+		echo "/* Cached Image Key: ".esc_attr($cachekey)." */".PHP_EOL;
+		echo "/* Cached Image Size Data: ".esc_attr($imagesizedata)." */".PHP_EOL;
 	}
 
 	if ( ($imagesizedata != '') && strstr($imagesizedata, '::')) {
@@ -154,34 +169,34 @@ if (!function_exists('bioship_skin_get_image_size')) {
 			if (file_exists($imagepath)) {$imagesize = getimagesize($imagepath);}
 
 			if (THEMEDEBUG) {
-				// TODO: check image path for subdirectory installs?
+				// TODO: maybe check image path for subdirectory installs?
 				// if ( (site_url()) == (home_url()) ) {}
-				echo "/* Site URL: ".site_url()." */".PHP_EOL;
-				echo "/* Home URL: ".home_url()." */".PHP_EOL;
-				echo "/* Image Path: ".$imagepath." */".PHP_EOL;
+				echo "/* Site URL: ".esc_url(site_url())." */".PHP_EOL;
+				echo "/* Home URL: ".esc_url(home_url())." */".PHP_EOL;
+				echo "/* Image Path: ".esc_attr($imagepath)." */".PHP_EOL;
 			}
 		} else {$imagesize = getimagesize($imageurl);}
 
 		if ($imagesize) {
 			// --- maybe adjust for maximum layout width ---
 			if ($imagesize[0] > $vthemesettings['layout']) {
-				if (THEMEDEBUG) {echo "/* Original Size: "; print_r($imagesize); echo " */".PHP_EOL;}
+				if (THEMEDEBUG) {echo "/* Original Size: ".esc_attr(print_r($imagesize,true))." */".PHP_EOL;}
 				$ratio = $imagesize[1] / $imagesize[0];
-				$imagesize[1] = round( ($vthemesettings['layout'] * $ratio), 3, PHP_ROUND_HALF_DOWN );
+				$imagesize[1] = bioship_round_half_down($vthemesettings['layout'] * $ratio);
 				$imagesize[0] = $vthemesettings['layout'];
-				if (THEMEDEBUG) {echo "/* Adjusted Size: "; print_r($imagesize); echo " */".PHP_EOL;}
+				if (THEMEDEBUG) {echo "/* Adjusted Size: ".esc_attr(print_r($imagesize,true))." */".PHP_EOL;}
 			}
 
 			// --- update the image size cache key ---
 			$imagedata = $imagesize[0].'::'.$imagesize[1].'::'.$imageurl;
 			update_option($cachekey, $imagedata);
 
-			if (THEMEDEBUG) {echo "/* Set Cached Key: ".$cachekey." - ".$imagedata." */".PHP_EOL;}
+			if (THEMEDEBUG) {echo "/* Set Cached Key: ".esc_attr($cachekey)." - ".esc_attr($imagedata)." */".PHP_EOL;}
 		}
 	}
 
 	if ($imagesize) {
-		if (THEMEDEBUG) {echo "/* Image Size: "; print_r($imagesize); echo " */".PHP_EOL;}
+		if (THEMEDEBUG) {echo "/* Image Size: ".esc_attr(print_r($imagesize,true))." */".PHP_EOL;}
 		return $imagesize;
 	}
 
@@ -222,8 +237,10 @@ if (!function_exists('bioship_skin_css_replace_values')) {
 if (!function_exists('bioship_themedrive_determine_theme')) {
  function bioship_themedrive_determine_theme() {
 
-	if (isset($_REQUEST['theme'])) {$tdtheme = trim($_REQUEST['theme']);}
-	else {
+	if (isset($_REQUEST['theme'])) {
+		// 2.1.2: added sanitize_title to request input
+		$tdtheme = sanitize_title(trim($_REQUEST['theme']));
+	} else {
 
 		// --- check for plugin ---
 		// 1.8.5: added a check for if theme test drive is active!
@@ -265,7 +282,7 @@ function bioship_skin_fix_serialized($string) {
 
     // --- security ---
     if (!preg_match('/^[aOs]:/', $string)) {return $string;}
-    if (@unserialize($string) !== false) {return $string;}
+    if (unserialize($string) !== false) {return $string;}
     $string = preg_replace("%\n%", "", $string);
 
     // --- doublequote exploding ---
@@ -383,6 +400,9 @@ if (strstr($_SERVER['REQUEST_URI'], 'skin.php')) {
 	}
 }
 
+// 2.1.2: added esc_attr fallback function
+if (!function_exists('esc_attr')) {function esc_attr($v) {return $v;} }
+
 
 // -----------------------
 // === Set Theme Paths ===
@@ -396,6 +416,7 @@ $vthemestyledir = get_stylesheet_directory();
 $vthemestyleurl = get_stylesheet_directory_uri();
 $vthemetemplatedir = get_template_directory();
 $vthemetemplateurl = get_template_directory_uri();
+
 // --- apply trailing slashes ---
 // 1.8.0: added trailing slash fix
 // 2.0.9: update to trailingslash fix
@@ -406,7 +427,7 @@ if (function_exists('trailingslashit')) {
 	if (substr($vthemestyleurl, -1, 1) != '/') {$vthemestyleurl .= '/';}
 	if (substr($vthemetemplateurl, -1, 1) != '/') {$vthemetemplateurl .= '/';}
 }
-// 1.8.0: force SSL fix
+// 1.8.0: added force SSL fix
 if (is_ssl()) {
 	$vthemestyleurl = str_replace('http://', 'https://', $vthemestyleurl);
 	$vthemetemplateurl = str_replace('http://', 'https://', $vthemetemplateurl);
@@ -449,20 +470,20 @@ if (!$includedskin) {
 }
 if (THEMEDEBUG) {echo "/* Theme Debug Mode ON */".PHP_EOL;}
 // manual debug only (eg. for private theme object)
-// echo "/*".PHP_EOL; echo "Theme: "; print_r($vtheme); echo "*/".PHP_EOL.PHP_EOL;
+// echo "/*".PHP_EOL; echo "Theme: ".esc_attr(print_r($vtheme,true))."*/".PHP_EOL.PHP_EOL;
 
 // ------------------
 // Get Theme Settings
 // ------------------
 $vthemename = $vtheme['Name'];
 $vthemename = preg_replace("/\W/", "-", strtolower($vthemename));
-// echo "/* Theme: ".$vtheme['Name']." - Name Slug: ".$vthemename." */".PHP_EOL;
+// echo "/* Theme: ".esc_attr($vtheme['Name'])." - Name Slug: ".esc_attr($vthemename)." */".PHP_EOL;
 
 // --- check Framework switch ---
 // (note: only present if Titan is turned off)
 $vthemeframework = get_option($vthemename.'_framework');
 if (THEMEDEBUG && $vthemeframework) {
-	echo "/* ".$vthemename.'_framework : '.$vthemeframework." */";
+	echo "/* ".esc_attr($vthemename).'_framework : '.esc_attr($vthemeframework)." */";
 }
 
 if ($vthemeframework == 'options') {
@@ -488,14 +509,14 @@ if ($vthemeframework == 'options') {
 
 		if (file_exists($savedfile)) {
 
-			echo "/* Using Saved Theme Settings: ".$savedfile." */";
+			echo "/* Using Saved Theme Settings: ".esc_attr($savedfile)." */";
 
 			// 2.0.8: fix for undefined function (depending on method)
 			if (function_exists('bioship_file_get_contents')) {
 				$saveddata = bioship_file_get_contents($savedfile);
 			} else {
 				// 2.1.1: do not re-add line breaks for file function
-				$filearray = @file($savedfile);
+				$filearray = file($savedfile);
 				$saveddata = implode("", $filearray);
 			}
 			if ((strlen($saveddata) > 0) && is_serialized($saveddata)) {
@@ -567,7 +588,7 @@ if (is_array($multicheck) && (count($multicheck) > 0)) {
 if (THEMEDEBUG) {
 	// echo "/*".PHP_EOL; echo "Checkbox Options: "; print_r($checkboxes); echo "*/".PHP_EOL.PHP_EOL;
 	echo "/*".PHP_EOL; echo "Multicheck Options: "; print_r($multicheck); echo "*/".PHP_EOL.PHP_EOL;
-	echo "/*".PHP_EOL; echo "Theme Options (".$vthemename."): "; print_r($vts); echo "*/".PHP_EOL.PHP_EOL;
+	echo "/*".PHP_EOL; echo "Theme Options (".esc_attr($vthemename)."): "; print_r($vts); echo "*/".PHP_EOL.PHP_EOL;
 }
 
 // ---------------------------------
@@ -607,9 +628,10 @@ $typographies = array('body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hea
 	'navmenu', 'navsubmenu', 'sidebar', 'subsidebar', 'content', 'footer', 'button');
 $typographyrules = '';
 
-foreach ($typographies as $type) {
+// 2.1.2: fix to use of duplicate variable (typography)
+foreach ($typographies as $key) {
 
-	$typekey = $type.'_typography';
+	$typekey = $key.'_typography';
 	if (isset($vts[$typekey])) {
 
 		$typography = maybe_unserialize($vts[$typekey]);
@@ -617,18 +639,18 @@ foreach ($typographies as $type) {
 
 		// 1.8.0: fix for font-sizes, target inside divs, fix content column inners
 		// 2.0.9: fix to navigation targeting for em font-size scaling
-		if ($type == 'body') {$selector  = "#content #maincontent";}
-		elseif ($type == 'headline') {$selector  = "#header h1#site-title-text a";}
-		elseif ($type == 'tagline') {$selector  = "#header #site-description .site-desc";}
-		elseif ($type == 'header') {$selector  = "#header .inner";}
-		elseif ($type == 'navmenu') {$selector  = "#navigation #mainmenu ul li a";}
-		elseif ($type == 'navsubmenu') {$selector  = "#navigation #mainmenu ul ul li a";}
-		elseif ($type == 'sidebar') {$selector  = "#sidebar .sidebar";}
-		elseif ($type == 'subsidebar') {$selector  = "#subsidebar .sidebar";}
-		elseif ($type == 'content') {$selector  = "#content .entry-content, #content .column .inner, #content .columns .inner";}
-		elseif ($type == 'footer') {$selector  = "#footer #mainfooter";}
-		elseif ($type == 'button') {$selector  = "body button, body input[type='reset'], body input[type='submit'], body input[type='button'], body a.button, body button a, body .button ";}
-		else {$selector  = $type;} // for h1, h2, h3, h4, h5, h6
+		if ($key == 'body') {$selector  = "#content #maincontent";}
+		elseif ($key == 'headline') {$selector = "#header h1#site-title-text a";}
+		elseif ($key == 'tagline') {$selector = "#header #site-description .site-desc";}
+		elseif ($key == 'header') {$selector = "#header .inner";}
+		elseif ($key == 'navmenu') {$selector = "#navigation #mainmenu ul li a";}
+		elseif ($key == 'navsubmenu') {$selector = "#navigation #mainmenu ul ul li a";}
+		elseif ($key == 'sidebar') {$selector = "#sidebar .sidebar";}
+		elseif ($key == 'subsidebar') {$selector = "#subsidebar .sidebar";}
+		elseif ($key == 'content') {$selector = "#content .entry-content, #content .column .inner, #content .columns .inner";}
+		elseif ($key == 'footer') {$selector = "#footer #mainfooter";}
+		elseif ($key == 'button') {$selector = "body button, body input[type='reset'], body input[type='submit'], body input[type='button'], body a.button, body button a, body .button ";}
+		else {$selector  = $key;} // for h1, h2, h3, h4, h5, h6
 
 		if (isset($typography)) {
 
@@ -639,7 +661,8 @@ foreach ($typographies as $type) {
 			if (isset($typography['font-style'])) {$typography['style'] = $typography['font-style'];}
 
 			// --- rule wrappers ---
-			if ($type != 'button') {$typorules = $selector ." {";} else {$typorules = '';}
+			// 2.1.2: change to key for fix to use of duplicate variable typography
+			if ($key != 'button') {$typorules = $selector ." {";} else {$typorules = '';}
 
 			// --- font colour ---
 			if ($typography['color'] != '') {$typorules .= "color:".$typography['color']."; ";}
@@ -649,7 +672,7 @@ foreach ($typographies as $type) {
 
 				$fontsize = $typography['size'];
 				// 2.0.9: convert font sizes to em for better screen scaling
-				if ( ($type == 'headline') || ($type == 'tagline') ) {
+				if ( ($key == 'headline') || ($key == 'tagline') ) {
 					// not for title/description so they can be autoscaled correctly
 					$typorules .= "font-size:".$fontsize."; ";
 				} elseif ( ($fontsize == 'inherit') || ($fontsize == 'initial') ) {
@@ -658,17 +681,20 @@ foreach ($typographies as $type) {
 					$typorules .= "font-size:".$fontsize."; ";
 				} else {
 					$fontsize = (int)str_replace('px', '', $fontsize);
-					$fontsize = round( ($fontsize / 16), 3, PHP_ROUND_HALF_DOWN);
+					$fontsize = bioship_round_half_down($fontsize / 16);
 					$typorules .= "font-size:".$fontsize."em; ";
 				}
 			}
 
 			// --- font face ---
 			if ($typography['face'] != '') {
+				if ($typography['face'] == '"inherit"') {$typography['face'] = 'inherit';}
 				if (strstr($typography['face'], '+')) {$typography['face'] = '"'.str_replace('+', ' ', $typography['face']).'"';}
 				// 1.8.0: detect font stacks vs. singular fonts to add maybe quotes
-				if (strstr($typography['face'], ',')) {$typorules .= "font-family:".$typography['face']."; ";}
-				else {$typorules .= "font-family:\"".$typography['face']."\"; ";}
+				// 2.1.2: fix to remove double quotes around inherit value
+				if (strstr($typography['face'], ',') || ($typography['face'] == 'inherit')) {
+					$typorules .= "font-family:".$typography['face']."; ";
+				} else {$typorules .= "font-family:\"".$typography['face']."\"; ";}
 			}
 
 			// --- font style to bold fix ---
@@ -698,7 +724,7 @@ foreach ($typographies as $type) {
 			// [text-shadow-opacity] => 1
 
 			// 1.8.5: store button font rules to use for button selectors
-			if ($type == 'button') {$buttonfontrules = $typorules;}
+			if ($key == 'button') {$buttonfontrules = $typorules;}
 			else {
 				$typorules .= "}".PHP_EOL;
 				$typographyrules .= $typorules;
@@ -736,7 +762,8 @@ if ( ($vts['button_bgcolor_bottom'] == '') || ($vts['button_bgcolor_bottom'] == 
 	$buttonrules .= "	behavior: url('".$vpieurl."');".PHP_EOL;
 }
 // 1.8.5: added button font rules here directly instead
-$buttonrules .= '	'.$buttonfontrules.PHP_EOL;
+// 2.1.2: added check if button font rules are set
+if (isset($buttonfontrules)) {$buttonrules .= '	'.$buttonfontrules.PHP_EOL;}
 
 // --- add WooCommerce button selectors ---
 // 1.8.5: added woocommerce button selector option
@@ -873,12 +900,12 @@ if ($vts['background_attachment'] != '') {$body .= " background-attachment: ".$v
 if ($adminstyles) {
 
 	// --- output matching button styles ---
-	echo $buttons.PHP_EOL;
+	echo $buttons.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 	// --- Theme Settings admin styles ---
 	$admincss = bioship_skin_css_replace_values($vts['dynamicadmincss']);
 	if (function_exists('apply_filters')) {$admincss = apply_filters('skin_dynamic_admin_css', $admincss);}
-	echo $admincss.PHP_EOL;
+	echo $admincss.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 	// --- admin bar Theme Options icon ---
 	// 1.5.0: set Theme Options default icon
@@ -904,8 +931,8 @@ if ($adminstyles) {
 	.sidebar-on {background-color:#F0F0FF;} .sidebar-on h2 {font-size: 13pt;}
 	.sidebar-off {background-color:#F3F3FF;} .sidebar-off h2 {font-weight: normal; font-size: 10pt;}".PHP_EOL.PHP_EOL;
 
-	// TODO: filter admin styles ?
-	echo $styles;
+	// TODO: maybe filter admin styles ?
+	echo $styles; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 	// 2.1.1: return here if no login styles
 	if (!$loginstyles) {return;}
@@ -991,7 +1018,9 @@ if ($adminstyles && $loginstyles) {
 					// 1.8.5: fix to old header_image usage
 					if ($vts['loginlogo'] == 'custom') {$logo .= $vts['header_logo'];}
 					elseif ($vts['loginlogo'] == 'upload') {$logo .= $vts['loginlogourl'];}
+
 				$logo .= ' ") !important;'.PHP_EOL;
+
 				// --- no repeat ---
 				$logo .= ' background-repeat: no-repeat !important;'.PHP_EOL;
 
@@ -1020,7 +1049,8 @@ if ($adminstyles && $loginstyles) {
 
 	// --- output login styles ---
 	// 1.9.6: use return not exit here
-	echo $login; return;
+	echo $login; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+	return;
 }
 
 
@@ -1040,7 +1070,7 @@ $styles .= PHP_EOL;
 // ---------------------
 // 1.8.5: added maximum layout width wrapper rule
 if (THEMEDEBUG) {$styles .= "/* Raw Max Width: ".$vts['layout']."px */".PHP_EOL;}
-$maximumwidth = round( (abs(intval($vts['layout'])) / 16), 3, PHP_ROUND_HALF_DOWN);
+$maximumwidth = bioship_round_half_down(abs(intval($vts['layout'])) / 16);
 if (THEMEDEBUG) {$styles .= "/* Sanitized Max Width: ".$maximumwidth."em */".PHP_EOL;}
 if ($maximumwidth > 320) {$styles .= "#wrap {max-width: ".$maximumwidth."em;}".PHP_EOL;}
 
@@ -1083,15 +1113,16 @@ if ($headerimage != '') {
 		// 1.9.5: only set the height in em if not using repeat or repeat-y
 		if ( ($vts['header_background_repeat'] != 'repeat') && ($vts['header_background_repeat'] != 'repeat-y') ) {
 			$fontpercent = 100;
-			$height = round( ($imagesize[1] / 16 * $fontpercent / 100), 3, PHP_ROUND_HALF_DOWN);
+			$height = bioship_round_half_down($imagesize[1] / 16 * $fontpercent / 100);
 			$header .= " height: ".$height."em;";
 		}
-	} else {
+	}
+	// else {
 		// hmmmm... no allow_url_fopen and no filepath found
 		// (and all our lovely automated code has failed)
 		// - you will just have to set it manually friend!
-		// 2.0.8: removed unused (unusable) filter
-	}
+		// 2.0.8: removed unused (and unusable) filter
+	// }
 }
 
 if ($vts['header_background_size'] != '') {$header .= " background-size: ".$vts['header_background_size'].";";}
@@ -1145,7 +1176,7 @@ if (isset($vts['navmenuautospace']) && ($vts['navmenuautospace'] == '1')) {
 		// note: this is checked and set in skull.php with superfish.js check
 		$menumainitems = get_option($vthemename.'_menumainitems');
 		if ( ($menumainitems != '') && ($menumainitems > 0) ) {
-			$itempercent = round( (99 / $menumainitems), 3, PHP_ROUND_HALF_DOWN);
+			$itempercent = bioship_round_half_down(99 / $menumainitems);
 			$navmenurules .= "#navigation #mainmenu ul li {width: ".$itempercent."%; min-width:6em;}".PHP_EOL;
 			$navmenurules .= "#navigation #mainmenu ul ul li {width: 100%;}".PHP_EOL;
 		}
@@ -1249,10 +1280,10 @@ $styles .= PHP_EOL;
 // === Output Styles ===
 // ---------------------
 // 2.1.1: compile styles, filter and output
-if (function_exists('apply_filters')) {
-	$styles = apply_filters('skin_settings_css', $styles);
-}
-echo $styles;
+// 2.1.2: check for bioship_apply_filters function also, add prefix to apply_filters hook
+if (function_exists('bioship_apply_filters')) {$styles = apply_filters('skin_settings_css', $styles);}
+elseif (function_exists('apply_filters')) {$styles = apply_filters('bioship_skin_settings_css', $styles);}
+echo $styles.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 // ---------------------------------
 // === Browser and Mobile Styles ===
@@ -1316,8 +1347,11 @@ if (count($classes) > 0) {
 		if (isset($vts['browser_'.$class])) {$thisbrowserstyles = $vts['browser_'.$class];}
 
 		// 2.0.9: conditionally call apply_filters to be safe
-		if (function_exists('apply_filters')) {
-			$browserstyles .= apply_filters('muscle_browser_styles_custom'.$class, $thisbrowserstyles);
+		// 2.1.2: added check for bioship_apply_filters function
+		if (function_exists('bioship_apply_filters')) {
+			$browserstyles .= bioship_apply_filters('muscle_browser_styles_custom_'.$class, $thisbrowserstyles);
+		} elseif (function_exists('apply_filters')) {
+			$browserstyles .= apply_filters('bioship_muscle_browser_styles_custom_'.$class, $thisbrowserstyles);
 		} else {$browserstyles .= $thisbrowserstyles;}
 	}
 }
@@ -1325,7 +1359,7 @@ if (count($classes) > 0) {
 // --- output browser styles ---
 if ($browserstyles != '') {
 	echo PHP_EOL."/* Styles for Detected Browser/Device  */".PHP_EOL.PHP_EOL;
-	echo $browserstyles.PHP_EOL;
+	echo esc_attr($browserstyles).PHP_EOL;
 }
 
 
@@ -1339,14 +1373,18 @@ if (isset($_REQUEST['livepreview']) && ($_REQUEST['livepreview'] == 'yes')) {$li
 if (!$livepreview) {
 	$customcss = $vts['dynamiccustomcss'];
 	$customcss = bioship_skin_css_replace_values($customcss);
-	if (function_exists('apply_filters')) {
-		$customcss = apply_filters('skin_dynamic_css', $customcss);
+
+	// 2.1.2: added check for bioship_apply_filters function
+	if (function_exists('bioship_apply_filters')) {
+		$customcss = bioship_apply_filters('skin_dynamic_css', $customcss);
+	} elseif (function_exists('apply_filters')) {
+		$customcss = apply_filters('bioship_skin_dynamic_css', $customcss);
 	}
 
 	if ($customcss != '') {
 		echo PHP_EOL."/* Dynamic Custom CSS */".PHP_EOL.PHP_EOL;
 		// 1.8.0: added stripslashes to fix single quotes for Titan
-		echo stripslashes($customcss).PHP_EOL;
+		echo stripslashes($customcss).PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -1355,6 +1393,6 @@ if (!$livepreview) {
 // ----------------
 $endtime = microtime(true);
 $difference = $endtime - $vthemetimestart;
-echo PHP_EOL."/* Load Time: ".$difference." */".PHP_EOL;
+echo PHP_EOL."/* Load Time: ".esc_attr($difference)." */".PHP_EOL;
 
 exit;

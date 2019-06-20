@@ -55,6 +55,14 @@ if (!function_exists('add_action')) {exit;}
 // - add position hook trigger for paged navigation ?
 // - use bioship_add_action for bioship_skeleton_footer ?
 
+// ------------
+// WP Body Open
+// ------------
+// 2.1.2: added for backwards compatibility for WordPress < 5.2.0
+if (!function_exists( 'wp_body_open')) {
+    function wp_body_open() {do_action('wp_body_open');}
+}
+
 
 // ---------------
 // === Wrapper ===
@@ -91,7 +99,7 @@ if (!function_exists('bioship_skeleton_wrapper_open')) {
 
 		// --- output wrap container open --
 		bioship_html_comment('#wrap.container');
-		echo '<div id="wrap" class="'.$classstring.'">'.PHP_EOL;
+		echo '<div id="wrap" class="'.esc_attr($classstring).'">'.PHP_EOL;
 		bioship_html_comment('#wrappadding.inner');
 		echo '	<div id="wrappadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
@@ -199,10 +207,10 @@ if (!function_exists('bioship_skeleton_header_open')) {
 		// --- output header wrap open ---
 		bioship_html_comment('#header');
 		$attributes = hybrid_get_attr('header');
-		echo '<div id="header" class="'.$classstring.'">'.PHP_EOL;
+		echo '<div id="header" class="'.esc_attr($classstring).'">'.PHP_EOL;
 		bioship_html_comment('#headerpadding.inner');
 		echo '	<div id="headerpadding" class="inner">'.PHP_EOL;
-		echo '		<header '.$attributes.'>'.PHP_EOL;
+		echo '		<header '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 	}
 }
 
@@ -250,7 +258,7 @@ if (!function_exists('bioship_skeleton_header_nav')) {
 			'container'       => 'div',
 			'container_id'    => 'headermenu',
 			'menu_class'      => 'menu',
-			'echo'            => true,
+			'echo'            => false,
 			'fallback_cb'     => false,
 			'after'           => '',
 			'depth'           => 1
@@ -263,13 +271,19 @@ if (!function_exists('bioship_skeleton_header_nav')) {
 
 		// --- output header menu ---
 		// note: can use Hybrid attribute filter to add column classes
-		bioship_html_comment('.header-menu');
 		$attributes = hybrid_get_attr('menu', 'header');
-		echo '<div '.$attributes.'>'.PHP_EOL;
-		echo '	'; wp_nav_menu($menuargs);
-		echo '</div>'.PHP_EOL;
-		bioship_html_comment('/.header-menu');
-		echo PHP_EOL;
+		$menu = bioship_html_comment('.header-menu', false);
+		$menu .= '<div '.$attributes.'>'.PHP_EOL;
+		$menu .= '	'.wp_nav_menu($menuargs).PHP_EOL;
+		$menu .= '</div>'.PHP_EOL;
+		$menu .= bioship_html_comment('/.header-menu', false);
+		$menu .= PHP_EOL;
+
+		// --- filter and output ---
+		// 2.1.2: added missing header menu filter
+		// TODO: add filter to doc filter list
+		$menu = bioship_apply_filters('skeleton_header_menu', $menu);
+		echo $menu; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -353,25 +367,26 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 		// 1.9.6: added logo-image ID not just class
 		// 2.0.6: display inline-block for site-logo-text (for combined display)
 		// 2.0.7: move inline block to style.css for easier overriding
-		// 2.1.1: moved esc_url usage inline
+		// 2.1.1: moved esc_url and esc_attr usage inline
+		// 2.1.2: changed site-desc span to div to allow text width wrapping
 		$output = '';
 		$output .= bioship_html_comment('#site-logo', false);
-		$output .= '<div id="site-logo" class="'.$logoclasses.'">'.PHP_EOL;
+		$output .= '<div id="site-logo" class="'.esc_attr($logoclasses).'">'.PHP_EOL;
 		$output .= '	<div class="inner">'.PHP_EOL;
 		$output .= ' 		<div class="site-logo-image"'.$logoimagedisplay.'>'.PHP_EOL;
-		$output .= '			<a class="logotype-img" href="'.esc_url($logolinkurl).'" title="'.$linktitle.'" rel="home">'.PHP_EOL;
+		$output .= '			<a class="logotype-img" href="'.esc_url($logolinkurl).'" title="'.esc_attr($linktitle).'" rel="home">'.PHP_EOL;
 		$output .= '				<h1 id="site-title">'.PHP_EOL;
-		$output .= '					<img id="logo-image" class="logo-image" src="'.$logourl.'" alt="'.$blogname.'" border="0">'.PHP_EOL;
+		$output .= '					<img id="logo-image" class="logo-image" src="'.esc_url($logourl).'" alt="'.esc_attr($blogname).'" border="0">'.PHP_EOL;
 		$output .= '					<div class="alt-logo" style="display:none;"></div>'.PHP_EOL;
 		$output .= '				</h1>'.PHP_EOL;
 		$output .= '			</a>'.PHP_EOL;
 		$output .= ' 	 	</div>'.PHP_EOL;
 		$output .= ' 	 	<div class="site-logo-text">'.PHP_EOL;
-		$output .= '			<h1 id="site-title-text" '.hybrid_get_attr('site-title').$titledisplay.'>'.PHP_EOL;
-		$output .= '				<a class="text" href="'.esc_url($homeurl).'" title="'.$linktitle.'" rel="home">'.$blogname.'</a>'.PHP_EOL;
+		$output .= '			<h1 id="site-title-text" '.hybrid_get_attr('site-title').esc_attr($titledisplay).'>'.PHP_EOL;
+		$output .= '				<a class="text" href="'.esc_url($homeurl).'" title="'.esc_attr($linktitle).'" rel="home">'.esc_attr($blogname).'</a>'.PHP_EOL;
 		$output .= '			</h1>'.PHP_EOL;
 		$output .= '			<div id="site-description"'.$descriptiondisplay.'>'.PHP_EOL;
-		$output .= '				<span class="site-desc" '.hybrid_get_attr('site-description').'>'.$blogdescription.'</span>'.PHP_EOL;
+		$output .= '				<div class="site-desc" '.hybrid_get_attr('site-description').'>'.esc_attr($blogdescription).'</div>'.PHP_EOL;
 		$output .= '			</div>'.PHP_EOL;
 		$output .= ' 		</div>'.PHP_EOL;
 		$output .= '	</div>'.PHP_EOL;
@@ -381,7 +396,7 @@ if (!function_exists('bioship_skeleton_header_logo')) {
 
 		// --- filter HTML and output ---
 		$output = bioship_apply_filters('skeleton_header_logo_override', $output);
-		echo $output;
+		echo $output; // phpcs:ignore WordPress.Security.OutputNotEscaped, WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -419,7 +434,7 @@ if (!function_exists('bioship_skeleton_header_extras')) {
 		// --- get header extras ---
 		// 2.0.0: allow for use of shorter header extras filter name
 		$headerextras = bioship_apply_filters('skeleton_header_extras', '');
-		// TODO: make this a backwards compatible filter and deprecate
+		// TODO: make this a backwards compatible filter and deprecate?
 		$headerextras = bioship_apply_filters('skeleton_header_html_extras', $headerextras);
 
 		if ($headerextras != '') {
@@ -435,9 +450,9 @@ if (!function_exists('bioship_skeleton_header_extras')) {
 
 			// --- output header extras HTML ---
 			bioship_html_comment('#header-extras');
-			echo '<div id="header-extras" class="'.$classes.'">'.PHP_EOL;
+			echo '<div id="header-extras" class="'.esc_attr($classes).'">'.PHP_EOL;
 			echo '	<div class="inner">'.PHP_EOL;
-			echo '		'.$headerextras.PHP_EOL;
+			echo '		'.$headerextras.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 			echo '	</div>'.PHP_EOL;
 			echo '</div>';
 			bioship_html_comment('/#header-extras');
@@ -471,7 +486,7 @@ if (!function_exists('bioship_skeleton_main_menu_open')) {
 		// note: can filter classes using Hybrid attribute filter
 		bioship_html_comment('#navigation');
 		$attributes = hybrid_get_attr('menu', 'primary');
-		echo '<div id="navigation" '.$attributes.'>'.PHP_EOL;
+		echo '<div id="navigation" '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped, WordPress.Security
 	}
 }
 
@@ -504,12 +519,28 @@ if (!function_exists('bioship_skeleton_main_menu')) {
 		$menuargs = array(
 			'container_id'		=> 'mainmenu',
 			'container_class'	=> 'menu-header',
-			'theme_location'	=> 'primary'
+			'theme_location'	=> 'primary',
+			'echo'				=> false
 		);
 		$menuargs = bioship_apply_filters('skeleton_primary_menu_settings', $menuargs);
 
 		// --- output main menu ---
-		wp_nav_menu($menuargs);
+		// 2.1.2: added wrapper to main menu for consistency
+		$attributes = hybrid_get_attr('menu', 'primary');
+		$menu = bioship_html_comment('#primarymenu', false);
+		$menu .= '<div id="secondarymenu" '.$attributes.'>'.PHP_EOL;
+		$menu .= '	<div class="inner">'.PHP_EOL;
+		$menu .= '		'.wp_nav_menu($menuargs).PHP_EOL;
+		$menu .= '	</div>'.PHP_EOL;
+		$menu .= '</div>'.PHP_EOL;
+		$menu .= bioship_html_comment('/#primarymenu', false);
+
+		// --- filter and output primary menu ---
+		// 2.1.2: added missing primary menu filter override
+		// TODO: add filter to doc filter list
+		$menu = bioship_apply_filters('skeleton_primary_menu', $menu);
+		echo $menu; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+
 	}
 }
 
@@ -565,14 +596,16 @@ if (!function_exists('bioship_skeleton_main_menu_button')) {
 		$showmenutext = __('Show Menu', 'bioship');
 		$hidemenutext = __('Hide Menu', 'bioship');
 
-		// --- output main menu button ---
+		// --- set menu buttons ---
 		$buttons = '<div id="mainmenubutton" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="mainmenushow" href="javascript:void(0);" onclick="showmainmenu();">'.$showmenutext.'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="mainmenuhide" href="javascript:void(0);" onclick="hidemainmenu();" style="display:none;">'.$hidemenutext.'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="mainmenushow" href="javascript:void(0);" onclick="showmainmenu();">'.esc_attr($showmenutext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="mainmenuhide" href="javascript:void(0);" onclick="hidemainmenu();" style="display:none;">'.esc_attr($hidemenutext).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
+
+		// --- filter and output menu buttons ---
 		// 2.1.1: added mobile menu buttons filter
-		$buttons = apply_filters('skeleton_mobile_menu_buttons', $buttons);
-		echo $buttons;
+		$buttons = bioship_apply_filters('skeleton_mobile_menu_buttons', $buttons);
+		echo $buttons; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -612,10 +645,10 @@ if (!function_exists('bioship_skeleton_secondary_menu')) {
 		// --- output secondary menu ---
 		// 2.0.5: moved has_nav_menu check to register_nav_menus
 		$attributes = hybrid_get_attr('menu', 'secondary');
-		$menu .= bioship_html_comment('#secondarymenu', false);
+		$menu = bioship_html_comment('#secondarymenu', false);
 		$menu .= '<div id="secondarymenu" '.$attributes.'>'.PHP_EOL;
 		$menu .= '	<div class="inner">'.PHP_EOL;
-		$menu .= '		'.wp_nav_menu($menuargs);
+		$menu .= '		'.wp_nav_menu($menuargs).PHP_EOL;
 		$menu .= '	</div>'.PHP_EOL;
 		$menu .= '</div>'.PHP_EOL;
 		$menu .= bioship_html_comment('/#secondarymenu', false);
@@ -623,7 +656,7 @@ if (!function_exists('bioship_skeleton_secondary_menu')) {
 
 		// --- filter and output secondary menu ---
 		$menu = bioship_apply_filters('skeleton_secondary_menu', $menu);
-		echo $menu;
+		echo $menu; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -659,8 +692,8 @@ if (!function_exists('bioship_skeleton_banner_abstract')) {
  		$bannerurl = get_post_meta($postid, 'banner_url'.$position, true);
  		$bannerlink = get_post_meta($postid, 'banner_link_'.$position, true);
  		if ($bannerurl && $bannerlink && ($trim(bannerurl) != '') && (trim($bannerlink) != '')) {
- 			$banner = '<a href="'.$bannerlink.'" target=_blank>'.PHP_EOL;
- 			$banner .= '	<img src="'.$bannerurl.'" border="0">'.PHP_EOL;
+ 			$banner = '<a href="'.esc_url($bannerlink).'" target=_blank>'.PHP_EOL;
+ 			$banner .= '	<img src="'.esc_url($bannerurl).'" border="0">'.PHP_EOL;
  			$banner .= '</a>'.PHP_EOL;
  		}
  	}
@@ -676,18 +709,18 @@ if (!function_exists('bioship_skeleton_banner_abstract')) {
  		if ($class != $position) {$class = ' class="'.$class.'"';}
 
  		// --- banner output ---
-	 	$output = bioship_html_comment('#'.$position.'banner', false);
-	 	$output .= '<div id="'.$position.'banner"'.$class.'>'.PHP_EOL;
-	 	$output .= '	<div class="inner">'.PHP_EOL;
- 		$output .= $banner.PHP_EOL;
- 		$output .= '	</div>'.PHP_EOL;
- 		$output .= '</div>'.PHP_EOL;
- 		$output .= bioship_html_comment('/#'.$position.'banner', false);
- 		$output .= PHP_EOL;
+	 	$banner = bioship_html_comment('#'.$position.'banner', false);
+	 	$banner .= '<div id="'.esc_attr($position).'banner"'.$class.'>'.PHP_EOL;
+	 	$banner .= '	<div class="inner">'.PHP_EOL;
+ 		$banner .= '		'.$banner.PHP_EOL;
+ 		$banner .= '	</div>'.PHP_EOL;
+ 		$banner .= '</div>'.PHP_EOL;
+ 		$banner .= bioship_html_comment('/#'.$position.'banner', false);
+ 		$banner .= PHP_EOL;
 
  		// --- filter and output banner ---
- 		$output = bioship_apply_filters('skeleton_banner_override_'.$position, $output);
- 		echo $output;
+ 		$banner = bioship_apply_filters('skeleton_banner_override_'.$position, $banner);
+ 		echo $banner; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
  }
 }
@@ -878,22 +911,23 @@ if (!function_exists('bioship_skeleton_sidebar_button')) {
 		// --- create sidebar buttons output ---
 		$buttons = bioship_html_comment('#sidebarbutton', false);
 		$buttons .= '<div id="sidebarbutton" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarshow" href="javascript:void(0);" onclick="showsidebar();">'.$showsidebar.'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarhide" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">'.$hidesidebar.'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarshow" href="javascript:void(0);" onclick="showsidebar();">'.esc_attr($showsidebar).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarhide" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">'.esc_attr($hidesidebar).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= '<div id="sidebarbuttonsmall" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarshowsmall" href="javascript:void(0);" onclick="showsidebar();">[+] '.$sidebartext.'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarhidesmall" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">[-] '.$sidebartext.'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarshowsmall" href="javascript:void(0);" onclick="showsidebar();">[+] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarhidesmall" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">[-] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= bioship_html_comment('/#sidebarbutton', false);
 		$buttons .= PHP_EOL;
 
 		// --- filter and echo sidebar buttons ---
 		$buttons = bioship_apply_filters('skeleton_sidebar_display_buttons', $buttons);
-		echo $buttons;
+		echo $buttons; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
+// -----------------
 // Sidebar Wrap Open
 // -----------------
 // 1.5.0: skeleton_sidebar_wrap to skeleton_sidebar_open
@@ -944,7 +978,7 @@ if (!function_exists('bioship_skeleton_sidebar_open'))  {
 
 		// --- output sidebar wrap open ---
 		bioship_html_comment('#sidebar');
-		echo '<div id="sidebar" class="'.$classstring.'" role="complementary">'.PHP_EOL;
+		echo '<div id="sidebar" class="'.esc_attr($classstring).'" role="complementary">'.PHP_EOL;
 		bioship_html_comment('#sidebarpadding.inner');
 		echo '	<div id="sidebarpadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
@@ -1022,22 +1056,28 @@ if (!function_exists('bioship_skeleton_subsidebar_button')) {
 		global $vthemesidebars;
 		if (!$vthemesidebars['subsidebar']) {return;}
 
+		// --- button text translations ---
+		// 2.1.2: added button anchor text translations
+		$showsidebar = __('Show SubBar','bioship');
+		$hidesidebar = __('Hide SubBar','bioship');
+		$sidebartext = __('SubBar','bioship');
+
 		// --- set subsidebar display button output ---
 		$buttons = bioship_html_comment('#subsidebarbutton', false);
 		$buttons .= '<div id="subsidebarbutton" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarshow" href="javascript:void(0);" onclick="showsubsidebar();">Show SubBar</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarhide" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">Hide SubBar</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarshow" href="javascript:void(0);" onclick="showsubsidebar();">'.esc_attr($showsidebar).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarhide" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">'.esc_attr($hidesidebar).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= '<div id="subsidebarbuttonsmall" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarshowsmall" href="javascript:void(0);" onclick="showsubsidebar();">[+] SubBar</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarhidesmall" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">[-] SubBar</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarshowsmall" href="javascript:void(0);" onclick="showsubsidebar();">[+] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarhidesmall" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">[-] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= bioship_html_comment('/#subsidebarbutton', false);
 		$buttons .= PHP_EOL;
 
 		// --- filter and output subsidebar button ---
 		$buttons = bioship_apply_filters('skeleton_subsidebar_display_buttons', $buttons);
-		echo $buttons;
+		echo $buttons; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -1090,7 +1130,7 @@ if (!function_exists('bioship_skeleton_subsidebar_open')) {
 
 		// --- output subsidebar wrap open ---
 		bioship_html_comment('#subsidebar');
-		echo '<div id="subsidebar" class="'.$classstring.'" role="complementary">'.PHP_EOL;
+		echo '<div id="subsidebar" class="'.esc_attr($classstring).'" role="complementary">'.PHP_EOL;
 		bioship_html_comment('#subsidebarpadding.inner');
 		echo '	<div id="subsidebarpadding" class="inner">'.PHP_EOL;
 	}
@@ -1199,7 +1239,7 @@ if (!function_exists('bioship_skeleton_content_open')) {
 
 		// --- output content wrap open ---
 		bioship_html_comment('#content');
-		echo '<div id="content" class="'.$classstring.'">'.PHP_EOL;
+		echo '<div id="content" class="'.esc_attr($classstring).'">'.PHP_EOL;
 		bioship_html_comment('#contentpadding.inner');
 		echo '	<div id="contentpadding" class="inner">'.PHP_EOL.PHP_EOL;
 	}
@@ -1263,7 +1303,7 @@ if (!function_exists('bioship_skeleton_home_page_content')) {
 		if ($title) {
 			// 2.1.1: changed ID from blogpagetitle to blogpage-title
 			bioship_html_comment('#blogpage-title');
-				echo '<h2 id="blogpage-title">'.$title.'</h2>'.PHP_EOL;
+				echo '<h2 id="blogpage-title">'.esc_attr($title).'</h2>'.PHP_EOL;
 			bioship_html_comment('/#blogpage-title');
 			echo PHP_EOL;
 		}
@@ -1276,7 +1316,7 @@ if (!function_exists('bioship_skeleton_home_page_content')) {
 			// 2.1.1: changed ID from blogpagecontent to blogpage-content
 			bioship_html_comment('#blogpage-content');
 			echo '<div id="blogpage-content">'.PHP_EOL;
-				echo $content.PHP_EOL;
+			echo '	'.$content.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/#blogpage-content');
 		}
@@ -1300,7 +1340,7 @@ if (!function_exists('bioship_skeleton_home_page_footnote')) {
 		if ($content) {
 			bioship_html_comment('#blogpage-footnote');
 			echo '<div id="blogpage-content">'.PHP_EOL;
-				echo $content.PHP_EOL;
+			echo '	'.$content.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/#blogpage-footnote');
 		}
@@ -1341,7 +1381,7 @@ if (!function_exists('bioship_skeleton_front_page_content')) {
 		$title = bioship_apply_filters('skeleton_front_page_title', $title);
 		if ($title) {
 			bioship_html_comment('#frontpage-title');
-				echo '<h2 id="frontpage-title">'.$title.'</h2>'.PHP_EOL;
+				echo '<h2 id="frontpage-title">'.esc_attr($title).'</h2>'.PHP_EOL;
 			bioship_html_comment('/#frontpage-title');
 			echo PHP_EOL;
 		}
@@ -1351,7 +1391,7 @@ if (!function_exists('bioship_skeleton_front_page_content')) {
 		if ($content) {
 			bioship_html_comment('#frontpagecontent');
 			echo '<div id="frontpage-content">'.PHP_EOL;
-				echo $content.PHP_EOL;
+			echo '	'.$content.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/#frontpage-content');
 		}
@@ -1375,7 +1415,7 @@ if (!function_exists('bioship_skeleton_home_page_footnote')) {
 		if ($content) {
 			bioship_html_comment('#frontpagecontent');
 			echo '<div id="frontpage-footnote">'.PHP_EOL;
-				echo $content.PHP_EOL;
+			echo '	'.$content.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/#frontpage-footnote');
 		}
@@ -1495,12 +1535,12 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 				$fileurl = trailingslashit($uploaddir['baseurl']).$attachment['file'];
 				// 2.1.1: added missing translation wrapper
 				$downloadtext = __('Download this Attachment','bioship');
-				echo '<center><a href="'.$fileurl.'">'.$downloadtext.'</a></center><br>'.PHP_EOL;
+				echo '<center><a href="'.esc_url($fileurl).'">'.esc_attr($downloadtext).'</a></center><br>'.PHP_EOL;
 			}
 			if ($type == 'text') {
 				$filepath = trailingslashit($uploaddir['basedir']).$attachment['file'];
 				echo '<div id="attachment-text"><textarea style="width:100%; height:500px;">'.PHP_EOL;
-				echo bioship_file_get_contents($filepath);
+					echo esc_html(bioship_file_get_contents($filepath));
 				echo '</textarea></div><br>'.PHP_EOL;
 			}
 			echo PHP_EOL.'</div>'.PHP_EOL;
@@ -1511,13 +1551,13 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 			// ---------------
 			bioship_html_comment('.attachment-meta');
 			echo '<div class="attachment-meta">'.PHP_EOL;
-			echo '	<div class="media-info '.$type.'-info">'.PHP_EOL;
+			echo '	<div class="media-info '.esc_attr($type).'-info">'.PHP_EOL;
 			echo '		<h4 class="attachment-meta-title">';
-				if ($type == 'audio') {echo __('Audio Info','bioship');}
-				elseif ($type == 'video') {echo __('Video Info','bioship');}
-				elseif ($type == 'image') {echo __('Image Info','bioship');}
-				elseif ($type == 'text') {echo __('Text Info','bioship');}
-				elseif ($type == 'application') {echo __('Attachment Info','bioship');}
+				if ($type == 'audio') {echo esc_attr(__('Audio Info','bioship'));}
+				elseif ($type == 'video') {echo esc_attr(__('Video Info','bioship'));}
+				elseif ($type == 'image') {echo esc_attr(__('Image Info','bioship'));}
+				elseif ($type == 'text') {echo esc_attr(__('Text Info','bioship'));}
+				elseif ($type == 'application') {echo esc_attr(__('Attachment Info','bioship'));}
 			echo '</h4>'.PHP_EOL;
 			hybrid_media_meta();
 			echo PHP_EOL.'	</div>'.PHP_EOL;
@@ -1542,7 +1582,11 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 		if ( ($vthemesettings['postformats']['audio'] == '1') && has_post_format('audio')) {
 			if (!THEMEHYBRID && !function_exists('hybrid_media_grabber')) {bioship_load_hybrid_media();}
 			$audio = hybrid_media_grabber(array('type' => 'audio', 'split_media' => true));
-			if ($audio) {echo '<div id="post-format-media" class="post-format-audio">'.$audio.'</div>';}
+			if ($audio) {
+				echo '<div id="post-format-media" class="post-format-audio">'.PHP_EOL;
+				echo '	'.$audio.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+				echo '</div>'.PHP_EOL;
+			}
 		}
 
 		// Video Grabber
@@ -1550,7 +1594,11 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 		if ( ($vthemesettings['postformats']['video'] == '1') && has_post_format('video')) {
 			if (!THEMEHYBRID && !function_exists('hybrid_media_grabber')) {bioship_load_hybrid_media();}
 			$video = hybrid_media_grabber(array('type' => 'video', 'split_media' => true));
-			if ($video) {echo '<div id="post-format-media" class="post-format-video">'.$video.'</div>';}
+			if ($video) {
+				echo '<div id="post-format-media" class="post-format-video">'.PHP_EOL;
+				echo '	'.$video.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+				echo '</div>'.PHP_EOL;
+			}
 		}
 
 		// Image Grabber
@@ -1559,7 +1607,9 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 			if (!THEMEHYBRID && !function_exists('hybrid_media_grabber')) {bioship_load_hybrid_media();}
 			$image = get_the_image(array( 'echo' => false, 'size' => 'full', 'split_content' => true, 'scan_raw' => true, 'scan' => true, 'order' => array( 'scan_raw', 'scan', 'featured', 'attachment' ) ) );
 			if ($image) {
-				echo '<div id="post-format-media" class="post-format-image">'.$image.'</div>';
+				echo '<div id="post-format-media" class="post-format-image">';
+					echo '	'.$image.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+				echo '</div>';
 
 				// TODO: maybe display image sizes for image media handler ?
 				// echo '<div class="entry-byline"><span class="image-sizes">';
@@ -1572,7 +1622,7 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 		// Gallery
 		// -------
 		// TODO: gallery post format display media handler ?
-		if ( ($vthemesettings['postformats']['gallery'] == '1') && (has_post_format('gallery')) ) {
+		// if ( ($vthemesettings['postformats']['gallery'] == '1') && (has_post_format('gallery')) ) {
 			// $gallery = gallery_shortcode( array( 'columns' => 4, 'numberposts' => 8, 'orderby' => 'rand', 'id' => get_queried_object()->post_parent, 'exclude' => get_the_ID() ) );
 			// if ( !empty( $gallery ) ) {
 			// 	echo '<div class="image-gallery">';
@@ -1580,7 +1630,7 @@ if (!function_exists('bioship_skeleton_media_handler')) {
 			// 	echo $gallery;
 			// 	echo '</div>';
 			// }
-		}
+		// }
 
 		// Status
 		// ------
@@ -1623,7 +1673,7 @@ if (!function_exists('bioship_skeleton_entry_header_open')) {
 		// --- entry header wrap open ---
 		bioship_html_comment('.entry-header');
 		$attributes = hybrid_get_attr('entry-header');
-		echo '<header '.$attributes.'>'.PHP_EOL;
+		echo '<header '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 	}
 }
 
@@ -1667,11 +1717,13 @@ if (!function_exists('bioship_skeleton_entry_header_title')) {
 		$permalink = get_the_permalink($postid);
 		bioship_html_comment('.entry-title');
 		$attributes = hybrid_get_attr('entry-title');
-		echo '<'.$hsize.' '.$attributes.'>'.PHP_EOL;
-		echo '	<a href="'.$permalink.'" rel="bookmark" itemprop="url" title="';
-			printf(esc_attr__('Permalink to %s','bioship'), the_title_attribute('echo=0'));
+		echo '<'.$hsize.' '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// TODO: optimize this tag output ?
+		echo '	<a href="'.esc_url($permalink).'" rel="bookmark" itemprop="url" title="';
+			// translaters: replacement string is the post title
+			printf(esc_attr(__('Permalink to %s','bioship')), the_title_attribute('echo=0'));
 		echo '">'.get_the_title($postid).'</a>'.PHP_EOL;
-		echo '</'.$hsize.'>'.PHP_EOL;
+		echo '</'.$hsize.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 		bioship_html_comment('/.entry-title');
 		echo PHP_EOL;
 	}
@@ -1712,7 +1764,9 @@ if (!function_exists('bioship_skeleton_entry_header_subtitle')) {
 			// note: there are no default hybrid attributes for entry-subtitle
 			bioship_html_comment('.entry-subtitle');
 			$attributes = hybrid_get_attr('entry-subtitle');
-			echo '<'.$hsize.' '.$attributes.'>'.$subtitle.'</'.$hsize.'>'.PHP_EOL;
+			echo '<'.$hsize.' '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+			echo '	'.esc_attr($subtitle).PHP_EOL;
+			echo '</'.$hsize.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 			bioship_html_comment('/.entry-subtitle');
 			echo PHP_EOL;
 		}
@@ -1738,7 +1792,7 @@ if (!function_exists('bioship_skeleton_entry_header_meta')) {
 		if ($meta != '') {
 			bioship_html_comment('.entry-meta');
 			echo '<div class="entry-meta entry-byline">'.PHP_EOL;
-				echo $meta.PHP_EOL;
+			echo '	'.$meta.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/.entry-meta');
 			echo PHP_EOL;
@@ -1769,7 +1823,7 @@ if (!function_exists('bioship_skeleton_entry_footer_open')) {
 		// --- output entry footer wrap open ---
 		bioship_html_comment('.entry-footer');
 		$attributes = hybrid_get_attr('entry-footer');
-		echo '<footer '.$attributes.'>'.PHP_EOL;
+		echo '<footer '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 	}
 }
 
@@ -1810,8 +1864,8 @@ if (!function_exists('bioship_skeleton_entry_footer_meta')) {
 		if ($meta != '') {
 			$attributes = hybrid_get_attr('entry-utility');
 			bioship_html_comment('.entry-utility');
-			echo '<div '.$attributes.'>'.PHP_EOL;
-				echo $meta.PHP_EOL;
+			echo '<div '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+			echo '	'.$meta.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/.entry-utility');
 			echo PHP_EOL;
@@ -1857,7 +1911,7 @@ if (!function_exists('bioship_skeleton_echo_thumbnail')) {
 		// --- output thumbnail content ---
 		if ($thumbnail != '') {
 			bioship_do_action('bioship_before_thumbnail');
-				echo $thumbnail;
+				echo $thumbnail; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 			bioship_do_action('bioship_after_thumbnail');
 		}
 	}
@@ -1874,7 +1928,7 @@ if (!function_exists('bioship_skeleton_get_thumbnail')) {
 		global $vthemesettings;
 
 		// --- set default values ---
-		$thumbnail = ''; $method = '';
+		$thumbnail = $method = '';
 		$wrapperclasses = 'thumbnail thumbnail-'.$postnumber;
 
 		// --- check for thumbnail image and get sizes ---
@@ -1960,7 +2014,7 @@ if (!function_exists('bioship_skeleton_get_thumbnail')) {
 
 			// --- output thumbnail ---
 			$thumbnail = bioship_html_comment('.thumbnail'.$postnumber, false);
-			$thumbnail .= '<div id="postimage-'.$postid.'" class="'.$wrapperclasses.'">'.PHP_EOL;
+			$thumbnail .= '<div id="postimage-'.esc_attr($postid).'" class="'.esc_attr($wrapperclasses).'">'.PHP_EOL;
 			// use Hybrid get_the_image extension with fallback to skeleton_thumbnailer
 			if (THEMEHYBRID && ($vthemesettings['hybridthumbnails'] == '1')) {
 				$args = array('post_id' => $postid, 'size' => $thumbsize, 'image_class' => $thumbclasses, 'echo' => false);
@@ -2140,6 +2194,7 @@ if (!function_exists('bioship_skeleton_about_author_title')) {
 		if (is_singular()) {
 			global $post;
 			$authordisplay = bioship_get_author_display_by_post($post->ID);
+			// translators: replacement string is author name
 			$boxtitle = esc_attr(sprintf( __('About %s', 'bioship'), $authordisplay));
 		} else {$boxtitle = __('About the Author','bioship');}
 
@@ -2226,7 +2281,7 @@ if (!function_exists('bioship_skeleton_author_posts_link')) {
 		// 1.8.5: class attribute override fix
 		$attributes = hybrid_get_attr('entry-author', '', array('class' => 'author vcard entry-author'));
 		$authorlink = '<span '.$attributes.'>'.PHP_EOL;
-		$authorlink .= '	<a class="url fn n" href="'.$authorurl.'">'.$anchor.'</a>'.PHP_EOL;
+		$authorlink .= '	<a class="url fn n" href="'.esc_url($authorurl).'">'.$anchor.'</a>'.PHP_EOL;
 		$authorlink .= '</span>'.PHP_EOL;
 
 		// --- filter and return ---
@@ -2258,9 +2313,11 @@ if (!function_exists('bioship_skeleton_echo_comments')) {
 		if (have_comments() || comments_open()) {comments_template('/comments.php', true);}
 		else {
 			// note: default to NOT say (irrelevently) that "comments are closed"
-			$commentsclosedtext = bioship_apply_filters('skeleton_comments_closed_text', '');
+			$commentsclosed = bioship_apply_filters('skeleton_comments_closed_text', '');
 			bioship_html_comment('.commentclosed');
-			echo '<p class="commentsclosed">'.PHP_EOL.$commentsclosedtext.PHP_EOL.'</p>'.PHP_EOL;
+			echo '<p class="commentsclosed">'.PHP_EOL;
+				echo $commentsclosed.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+			echo '</p>'.PHP_EOL;
 			bioship_html_comment('/.commentsclosed');
 		}
 	}
@@ -2297,16 +2354,16 @@ if (!function_exists('bioship_skeleton_comments')) {
 			echo '<div class="comment-author vcard">'.get_avatar($comment, $avatarsize).'</div>';
 			echo '<div class="comment-meta commentmetadata">';
 				if ($comment->comment_approved == '0') {
-					echo '<em>'.__('Comment is awaiting moderation','bioship').'</em> <br />';
+					echo '<em>'.esc_attr(__('Comment is awaiting moderation','bioship')).'</em> <br />';
 				}
 				// 1.8.5: added 'on' and 'at' to string
-				echo '<span class="comment-author-meta">'.__('by','bioship').' '.get_comment_author_link().'</span>';
-				echo '<br><span class="comment-time">'.__('on','bioship').' '.get_comment_date().'  '.__('at','bioship').' '.get_comment_time().'</span>';
+				echo '<span class="comment-author-meta">'.esc_attr(__('by','bioship')).' '.get_comment_author_link().'</span>';
+				echo '<br><span class="comment-time">'.esc_attr(__('on','bioship')).' '.get_comment_date().'  '.__('at','bioship').' '.get_comment_time().'</span>';
 			echo '</div>';
-			echo '<div class="comment-edit'.$commentbuttons.'">';
-				edit_comment_link(__('Edit','bioship'),' ',' ');
+			echo '<div class="comment-edit'.esc_attr($commentbuttons).'">';
+				edit_comment_link(esc_attr(__('Edit','bioship')),' ',' ');
 			echo '</div>';
-			echo '<div class="comment-reply'.$commentbuttons.'">';
+			echo '<div class="comment-reply'.esc_attr($commentbuttons).'">';
 				comment_reply_link(array_merge( $args, array('reply_text' => __('Reply','bioship'),'login_text' => __('Login to Comment','bioship'), 'depth' => $depth, 'max_depth' => $args['max_depth'])));
 			echo '</div>';
 			echo '<div class="clear"></div>';
@@ -2408,8 +2465,8 @@ if (!function_exists('bioship_skeleton_breadcrumbs')) {
 		$breadcrumbs = bioship_apply_filters('skeleton_breadcrumb_override', $breadcrumbs);
 		if ($breadcrumbs != '') {
 			bioship_html_comment('#breadcrumb');
-			echo '<div id="breadcrumb" class="'.$posttype.'-breadcrumb">'.PHP_EOL;
-			echo '	'.$breadcrumbs.PHP_EOL;
+			echo '<div id="breadcrumb" class="'.esc_attr($posttype).'-breadcrumb">'.PHP_EOL;
+			echo '	'.$breadcrumbs.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/#breadcrumb');
 			echo PHP_EOL;
@@ -2561,10 +2618,11 @@ if (!function_exists('bioship_skeleton_page_navigation')) {
 			if ($pagenav != '') {
 				bioship_html_comment('#nav-below');
 				echo '<div id="nav-below" class="navigation">'.PHP_EOL;
-				echo '	'.$pagenav.PHP_EOL;
+				echo '	'.$pagenav.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 				echo '</div>'.PHP_EOL;
 				bioship_html_comment('/#nav-below');
 				echo PHP_EOL;
+				// TODO: add clear div via action hook ?
 				echo '<div class="clear"></div>'.PHP_EOL;
 			}
 		}
@@ -2595,7 +2653,7 @@ if (!function_exists('bioship_skeleton_paged_navi')) {
 
 	// --- filter and output ---
 	$pagednav = bioship_apply_filters('skeleton_paged_navi_override', $pagednav);
-	echo $pagednav;
+	echo $pagednav; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
  }
 }
 
@@ -2603,14 +2661,16 @@ if (!function_exists('bioship_skeleton_paged_navi')) {
 // --------------
 // === Footer ===
 // --------------
-// note: skeleton_footer is hooked on wp_footer and footer functions are hooked on bioship_footer
+// note: footer functions are hooked on bioship_footer
+
 // 2.0.5: added missing function_exists wrapper
-if (!function_exists('bioship_skeleton_footer')) {
- function bioship_skeleton_footer() {bioship_do_action('bioship_footer');}
- $position = bioship_apply_filters('skeleton_footer_position', 0);
- // TODO: use bioship_add_action for bioship_skeleton_footer ?
- add_action('wp_footer', 'bioship_skeleton_footer', $position);
-}
+// 2.1.1: [deprecated] bioship_footer action now called directly in footer.php
+// (skeleton_footer was previously hooked on wp_footer with this function)
+// if (!function_exists('bioship_skeleton_footer')) {
+//	function bioship_skeleton_footer() {bioship_do_action('bioship_footer');}
+//	$position = bioship_apply_filters('skeleton_footer_position', 0);
+//	bioship_add_action('wp_footer', 'bioship_skeleton_footer', $position);
+// }
 
 // Footer Hook Order
 // -----------------
@@ -2642,9 +2702,9 @@ if (!function_exists('bioship_skeleton_footer_open')) {
 		// --- output footer wrap open ---
 		bioship_html_comment('#footer');
 		$attributes = hybrid_get_attr('footer');
-		echo '<div id="footer" class="'.$footerclasses.'">'.PHP_EOL;
+		echo '<div id="footer" class="'.esc_attr($footerclasses).'">'.PHP_EOL;
 		echo '	<div id="footerpadding" class="inner">'.PHP_EOL;
-		echo '		<footer '.$attributes.'>'.PHP_EOL;
+		echo '		<footer '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -2692,7 +2752,7 @@ if (!function_exists('bioship_skeleton_footer_extras')) {
 			bioship_html_comment('#footer-extras');
 			echo '<div id="footer-extras" class="footer-extras">'.PHP_EOL;
 			echo '	<div class="inner">'.PHP_EOL;
-			echo '		'.$footerextras.PHP_EOL;
+			echo '		'.$footerextras.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 			echo '	</div>'.PHP_EOL;
 			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/#footer-extras');
@@ -2743,7 +2803,7 @@ if (!function_exists('bioship_skeleton_footer_nav')) {
 			'container'       => 'div',
 			'container_id' 	  => 'footermenu',
 			'menu_class'      => 'menu',
-			'echo'            => true,
+			'echo'            => false,
 			'fallback_cb'     => false,
 			'after'           => '',
 			'depth'           => 1
@@ -2754,13 +2814,19 @@ if (!function_exists('bioship_skeleton_footer_nav')) {
 		$menuargs = bioship_apply_filters('skeleton_footer_menu_settings', $menuargs);
 
 		// --- output footer menu ---
-		bioship_html_comment('.footer-menu');
 		$attributes = hybrid_get_attr('menu', 'footer');
-		echo '<div class="footer-menu" '.$attributes.'>'.PHP_EOL;
-		echo '	'; wp_nav_menu($menuargs);
-		echo PHP_EOL.'</div>'.PHP_EOL;
-		bioship_html_comment('/.footer-menu');
-		echo PHP_EOL;
+		$menu = bioship_html_comment('.footer-menu', false);
+		$menu = '<div class="footer-menu" '.$attributes.'>'.PHP_EOL;
+		$menu .= '	'.wp_nav_menu($menuargs).PHP_EOL;
+		$menu .= '</div>'.PHP_EOL;
+		$menu .= bioship_html_comment('/.footer-menu', false);
+		$menu .= PHP_EOL;
+
+		// --- filter and output ---
+		// 2.1.2: added missing footer menu filter
+		// TODO: add filter to doc filter list
+		$menu = bioship_apply_filters('skeleton_footer_menu', $menu);
+		echo $menu; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	}
 }
 
@@ -2783,7 +2849,9 @@ if (!function_exists('bioship_skeleton_footer_credits')) {
 		// --- output site credits ---
 		if ($credits) {
 			bioship_html_comment('#footercredits');
-			echo '<div id="footercredits">'.PHP_EOL.$credits.PHP_EOL.'</div>'.PHP_EOL;
+			echo '<div id="footercredits">'.PHP_EOL;
+			echo '	'.$credits.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+			echo '</div>'.PHP_EOL;
 			bioship_html_comment('/#footercredits');
 			echo PHP_EOL;
 		}
@@ -2807,10 +2875,10 @@ if (!function_exists('bioship_skeleton_credit_link')) {
 		} else {
 			// --- set default site credits ---
 			$sitecredits = '<div id="themecredits">';
-			if (THEMECHILD) {$sitecredits .= THEMEDISPLAYNAME.' '.__('Theme for','bioship').' '; $anchor = 'BioShip';}
-			else {$anchor = 'BioShip Framework';}
-			$sitecredits .= '<a href="'.THEMEHOMEURL.'" title="BioShip '.__('Responsive Wordpress Theme Framework','bioship').'" target=_blank>'.$anchor.'</a>';
-			if (THEMEPARENT) {$sitecredits .= ' '.__('by','bioship').' <a href="'.THEMESUPPORT.'" title="WordQuest Alliance" target=_blank>WordQuest</a>';}
+				$anchor = 'BioShip Framework';
+				if (THEMECHILD) {$sitecredits .= esc_attr(THEMEDISPLAYNAME).' '.esc_attr(__('Theme for','bioship')).' '; $anchor = 'BioShip';}
+				$sitecredits .= '<a href="'.esc_url(THEMEHOMEURL).'" title="BioShip '.esc_attr(__('Responsive WordPress Theme Framework','bioship')).'" target=_blank>'.esc_attr($anchor).'</a>';
+				if (THEMEPARENT) {$sitecredits .= ' '.esc_attr(__('by','bioship')).' <a href="'.esc_url(THEMESUPPORT).'" title="WordQuest Alliance" target=_blank>WordQuest</a>';}
 			$sitecredits .= '</div>'.PHP_EOL;
 			return $sitecredits;
 		}

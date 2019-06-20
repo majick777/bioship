@@ -171,7 +171,7 @@ if (!function_exists('bioship_trace')) {
 		if ( ($vthemetracer['trace'] == 'templates') || ($vthemetracer['trace'] == 'all') ) {
 			$vthemetrace['templates'][] = $name;
 			$tracecount = '['.count($vthemetrace['templates']).']';
-			if ($vthemetracer['output']) {echo '<!-- traced template: '.$name.' ('.$filepath.') -->';}
+			if ($vthemetracer['output']) {echo '<!-- traced template: '.esc_attr($name).' ('.esc_attr($filepath).') -->';}
 			// 2.1.1: set current template filepath for action filepath tracing
 			$vthemetrace['currentfile'] = $filepath; return;
 		} else {return;}
@@ -182,13 +182,13 @@ if (!function_exists('bioship_trace')) {
 			$tracecount = '+'.count($vthemetrace['actions']).'+';
 			// 2.1.1: override filepath with current template filepath
 			if (isset($vthemetrace['currentfile'])) {$filepath = $vthemetrace['currentfile'];}
-			if ($vthemetracer['output']) {echo '<!-- traced action: '.$name.' -->';}
+			if ($vthemetracer['output']) {echo '<!-- traced action: '.esc_attr($name).' -->';}
 		} else {return;}
 	} elseif ($type == 'filter') {
 		if ( ($vthemetracer['trace'] == 'filters') || ($vthemetracer['trace'] == 'all') ) {
 			$vthemetrace['filters'][] = $name;
 			$tracecount = '<'.count($themetrace['filters']).'>';
-			if ($vthemetracer['output']) {echo '<!-- traced filter: '.$name.' -->';}
+			if ($vthemetracer['output']) {echo '<!-- traced filter: '.esc_attr($name).' -->';}
 		} else {return;}
 	}
 
@@ -199,7 +199,7 @@ if (!function_exists('bioship_trace')) {
 	$loadtime = bioship_timer_time();
 	$tracerline = $tracecount.'::'.$type.'::'.$name.'::'.$memoryusage.'::'.$loadtime.'::'.$filepath;
 	$vthemetrace['lines'][] = $tracerline;
-	// if ($vthemetracer['output']) {echo '<!-- tracer line: '.$tracerline.'-->';}
+	// if ($vthemetracer['output']) {echo '<!-- tracer line: '.esc_attr($tracerline).'-->';}
 
 	// --- write argument trace debug log ---
 	// 1.9.8: full trace logging of function/filter arguments passed
@@ -210,7 +210,7 @@ if (!function_exists('bioship_trace')) {
 			$traceline = '';
 			if ($type == 'function') {
 				ob_start(); var_dump($args); $dump = ob_get_contents(); ob_end_clean();
-				if ($vthemetracer['output']) {echo '<!-- function arguments: '.$dump.' -->';}
+				if ($vthemetracer['output']) {echo '<!-- function arguments: '.esc_attr($dump).' -->';}
 				$traceline = $type.': '.$name.PHP_EOL.$dump.PHP_EOL;
 			} elseif ($type == 'filter') {
 				ob_start(); var_dump($args['in']); $in = ob_get_contents(); ob_end_clean();
@@ -324,12 +324,12 @@ if (!function_exists('bioship_trace_processor')) {
 
 		// --- main trace results ---
 		echo "<!-- Trace Processor Finished -->";
-		echo "<!-- Results: ".print_r($vthemetrace,true)." -->";
+		echo "<!-- Results: ".esc_attr(print_r($vthemetrace,true))." -->";
 
 		// --- occurrences results ---
 		if (isset($occurdata)) {
 			$occurdata = str_replace('::', ' : ', $occurdata);
-			echo "<!-- Trace Occurrences: ".PHP_EOL.$occurdata." -->";
+			echo "<!-- Trace Occurrences: ".PHP_EOL.esc_attr($occurdata)." -->";
 		}
 	}
 
@@ -354,7 +354,7 @@ if (!function_exists('bioship_all_actions_filters')) {
 	$filter = current_filter();
 	if (substr($filter, 0, strlen(THEMEPREFIX.'_')) == THEMEPREFIX.'_') {
 		if (substr($filter, -9, 9) != '_position') {
-			echo "<!-- [Processing Filter] "; print_r($filter);
+			echo "<!-- [Processing Filter] ".esc_attr($filter);
 				if (!has_filter($filter)) {echo " [n/a]";}
 			echo " -->".PHP_EOL;
 		}
@@ -404,6 +404,7 @@ if (!function_exists('bioship_get_theme_includes')) {
 	// --- normalize theme paths for matching ---
 	$vstyledirectory = str_replace("\\", "/", get_stylesheet_directory());
 	$vtemplatedirectory = str_replace("\\", "/", get_template_directory());
+	$vplugindir = str_replace("\\", "/", WP_PLUGIN_DIR);
 
 	// --- loop included files ---
 	foreach ($includedfiles as $i => $includedfile) {
@@ -417,7 +418,10 @@ if (!function_exists('bioship_get_theme_includes')) {
 			// --- strip stylesheet dir from include path ---
 			// 2.0.1: re-add full filepath to pathinfo array
 			// 2.1.1: just index via full file path
+			// 2.1.2: add type key to pathinfo
 			$pathinfo = pathinfo(str_replace($vstyledirectory, '', $includedfile));
+			$pathinfo['type'] = 'child';
+
 			$vthemeincludes[$includedfile] = $pathinfo;
 
 		} else {
@@ -429,7 +433,9 @@ if (!function_exists('bioship_get_theme_includes')) {
 					// --- strip template directory from include path ---
 					// 2.0.7: fix to variable name (pathinfo)
 					// 2.1.1: just index via full file path
+					// 2.1.2: add type key to pathinfo
 					$pathinfo = pathinfo(str_replace($vtemplatedirectory, '', $includedfile));
+					$pathinfo['type'] = 'parent';
 					$vthemeincludes[$includedfile] = $pathinfo;
 
 			} else {
@@ -437,6 +443,11 @@ if (!function_exists('bioship_get_theme_includes')) {
 				// --- possibly a plugin template file ---
 				// 2.1.1: handle other included files
 				$pathinfo = pathinfo($includedfile);
+
+				// 2.1.2: added type key to pathinfo (plugin/other)
+				if (strpos($includedfile, $vplugindir) === 0) {$pathinfo['type'] = 'plugin';}
+				else {$pathinfo['type'] = 'other';}
+
 				$vthemeincludes[$includedfile] = $pathinfo;
 				// unset($includedfiles[$i]);
 			}
@@ -547,35 +558,74 @@ if (!function_exists('bioship_admin_template_dropdown')) {
 	// --- add menu to admin bar ---
 	$wp_admin_bar->add_menu($menu);
 
+	// --- normalize paths for matching ---
+	$plugindir = str_replace("\\", "/", WP_PLUGIN_DIR);
+	$abspath = str_replace("\\", "/", ABSPATH);
+
 	// --- loop templates and add to menu ---
 	$i = 0;
 	foreach ($vthemetemplates as $filepath => $pathinfo) {
 
-		// --- get relative file path ---
-		// 2.1.1: fix for change to use full path index
-		$relfilepath = str_replace($vthemename, '', $pathinfo['dirname']);
-		$relfilepath = str_replace("\\", "/", $relfilepath);
-		while (substr($relfilepath, 0, 1) == '/') {
-			$relfilepath = substr($relfilepath, 1, strlen($relfilepath));
-		}
-		if (strlen($relfilepath) > 0) {$relfilepath = urlencode($relfilepath.'/'.$pathinfo['basename']);}
-		else {$relfilepath = urlencode($pathinfo['basename']);}
+		// --- handle template types ---
+		// 2.1.2: added check to pathinfo type key
+		$type = $pathinfo['type'];
+		if ( ($type == 'child') || ($type == 'parent') ) {
 
-		// --- create edit link ---
-		// 2.0.8: fix to duplicate theme parameter
-		// TODO: could make this a thickbox view link instead ?
-		$editlink = admin_url('theme-editor.php');
-		$editlink = add_query_arg('theme', $vthemename, $editlink);
-		$editlink = add_query_arg('file', $relfilepath, $editlink);
+			// --- get relative file path ---
+			// 2.1.1: fix for change to use full path index
+			$relfilepath = str_replace($vthemename, '', $pathinfo['dirname']);
+			$relfilepath = str_replace("\\", "/", $relfilepath);
+			while (substr($relfilepath, 0, 1) == '/') {
+				$relfilepath = substr($relfilepath, 1, strlen($relfilepath));
+			}
+			if (strlen($relfilepath) > 0) {$relfilepath = urlencode($relfilepath.'/'.$pathinfo['basename']);}
+			else {$relfilepath = urlencode($pathinfo['basename']);}
+
+			// --- create theme editor link ---
+			// 2.0.8: fix to duplicate theme parameter
+			// TODO: make this view link if editing is disabled ?
+			$editlink = admin_url('theme-editor.php');
+			$editlink = add_query_arg('theme', $vthemename, $editlink);
+			$editlink = add_query_arg('file', $relfilepath, $editlink);
+
+			// --- set display for parent or child theme template ---
+			if (!THEMECHILD) {$displayfile = '[Theme] ';}
+			elseif ($type == 'child') {$displayfile = '[Child] ';}
+			elseif ($type == 'parent') {$displayfile = '[Parent] ';}
+			$displayfile .= substr($pathinfo['dirname'], 1, strlen($pathinfo['dirname'])).'/'.$pathinfo['basename'];
+
+		} elseif ($type == 'plugin') {
+
+			// --- get relative file path ---
+			$relfilepath = str_replace($plugindir, '', $pathinfo['dirname']).'/'.$pathinfo['basename'];
+			while (substr($relfilepath, 0, 1) == '/') {
+				$relfilepath = substr($relfilepath, 1, strlen($relfilepath));
+			}
+
+			// --- create plugin editor link ---
+			// TODO: make this view link if editing is disabled ?
+			$editlink = admin_url('plugin-editor.php');
+			$editlink = add_query_arg('file', $relfilepath, $editlink);
+
+			// --- set display for plugin template ---
+			$displayfile = '[Plugin] '.$relfilepath;
+
+		} elseif ($type == 'other') {
+
+			// --- just strip WordPress load path ---
+			$displayfile = '[?] '.str_replace($abspath, '', $filepath);
+			$editlink = 'javascript:void(0);';
+
+		}
 
 		// --- set node arguments  ---
-		$displayfile = substr($pathinfo['dirname'], 1, strlen($pathinfo['dirname'])).'/'.$pathinfo['basename'];
+
 		$args = array(
-			'id' => 'template-'.$i,
-			'title' => $displayfile,
-			'parent' => 'page-templates',
-			'href' => $editlink,
-			'meta' => array(
+			'id'		=> 'template-'.$i,
+			'title'		=> $displayfile,
+			'parent'	=> 'page-templates',
+			'href'		=> $editlink,
+			'meta'		=> array(
 				'title' => $filepath,
 				'class' => 'page-template'
 			)

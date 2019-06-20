@@ -478,6 +478,45 @@ if (!function_exists('bioship_beaver_themer_headers_footers')) {
  }
 }
 
+// ----------------------------
+// Register Elementor Locations
+// ----------------------------
+// 2.1.2: added prototype code for Elementor locations
+// ref: https://developers.elementor.com/theme-locations-api/
+if (!function_exists('bioship_register_elementor_locations')) {
+
+ add_action('elementor/theme/register_locations', 'bioship_register_elementor_locations');
+
+ function bioship_register_elementor_locations($elementor_theme_manager) {
+
+	// --- register standard locations ---
+	$elementor_theme_manager->register_location('header');
+	$elementor_theme_manager->register_location('footer');
+	$elementor_theme_manager->register_location('single');
+	$elementor_theme_manager->register_location('archive');
+
+	// --- register sidebar locations ---
+	// $elementor_theme_manager->register_location(
+	//	'sidebar',
+	//	array (
+	//		'label' => __('Sidebar', 'bioship'),
+	//		'multiple' => true,
+	//		'edit_in_content' => false,
+	//	)
+	// );
+	// $elementor_theme_manager->register_location(
+	//	'subsidebar',
+	//	array (
+	//		'label' => __('Subsidebar', 'bioship'),
+	//		'multiple' => true,
+	//		'edit_in_content' => false,
+	//	)
+	// );
+
+ }
+}
+
+
 // ----------------------
 // Debug Output for Hooks
 // ----------------------

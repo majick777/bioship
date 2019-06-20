@@ -96,7 +96,9 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 	 function bioship_titan_websafe_fonts($fonts) {
 		// 1.9.8: use global value to avoid multiple calls
 		global $vthemewebfontstacks;
-		if (!isset($vthemewebfontstacks)) {$vthemewebfontstacks = bioship_options_web_font_stacks(array());}
+		if (!isset($vthemewebfontstacks)) {
+			$vthemewebfontstacks = bioship_options_web_font_stacks(array());
+		}
 		return $vthemewebfontstacks;
 	 }
 	}
@@ -222,7 +224,7 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 				if ( ($prevclass != '') && ($class != $prevclass) ) {$menu .= '</div><div class="menu-block">';}
 				// $class = ! empty( $value['id'] ) ? $value['id'] : $value['name'];
 				// $class = preg_replace( '/[^a-zA-Z0-9._\-]/', '', strtolower($class) ) . '-tab';
-				$menu .= '<a id="options-group-'.$counter.'-tab" class="nav-tab '.$class .'" title="'.esc_attr($value['name']).'" href="'.esc_attr('#options-group-'.$counter).'">'.esc_html($value['name']).'</a>';
+				$menu .= '<a id="options-group-'.esc_attr($counter).'-tab" class="nav-tab '.esc_attr($class).'" title="'.esc_attr($value['name']).'" href="'.esc_attr('#options-group-'.$counter).'">'.esc_html($value['name']).'</a>';
 				$prevclass = $class;
 			}
 		}
@@ -347,7 +349,7 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 	 	$refreshurl = add_query_arg('action', 'bioship_theme_options_refresh_titan_nonce', $adminajax);
 	 	echo "<script>jQuery(document).ready(function() {
 	 		setInterval(function() {
-	 			document.getElementById('titan-nonce-refresh').src = '".$refreshurl."';
+	 			document.getElementById('titan-nonce-refresh').src = '".esc_url($refreshurl)."';
 	 		}, 300000);
 	 	});</script>".PHP_EOL;
 	 	echo "<iframe id='titan-nonce-refresh' src='javascript:void(0)'></iframe>".PHP_EOL;
@@ -479,6 +481,7 @@ if (!function_exists('bioship_options_enqueue_stickykit')) {
 // -----------------------
 // ref: http://www.onedesigns.com/tutorials/font-families-for-cross-compatible-typography
 // ref: https://wiki.bath.ac.uk/display/webservices/Fonts+-+readable,+cross-platform+typography
+// 2.1.2: add some from extra options from Titan framework fonts (Trebuchet, Aial Black)
 if (!function_exists('bioship_options_web_font_stacks')) {
 
  // --- add the font filter for Options Framework ---
@@ -492,11 +495,13 @@ if (!function_exists('bioship_options_web_font_stacks')) {
 	$fonts = array(
 		'"Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif' => 'Raleway, HelveticaNeue, Helvetica Neue, Helvetica, Arial, sans-serif',
 		'helvetica, arial, "Nimbus Sans L", sans-serif' => 'Helvetica, Arial, Nimbus Sans L, sans-serif',
+		'"Arial Black", Gadget, sans-serif' => 'Arial Black, Gadget, sans-serif',
 		'tahoma, helvetica, arial, "Nimbus Sans L", sans-serif' => 'Tahoma, Helvetica, Arial, Nimbus Sans L, sans-serif',
 		'verdana, "DejaVu Sans", sans-serif' => 'Verdana, DejaVu Sans, sans-serif',
 
 		'"Lucida Sans", "Lucida Grande", "Bitstream Vera Sans", Garuda, sans-serif' => 'Lucida Sans, Lucida Grande, Bitstream Vera Sans, Garuda, sans-serif',
 		'"Century Gothic", CenturyGothic, AppleGothic, helvetica, sans-serif' => 'Century Gothic, CenturyGothic, AppleGothic, helvetica, sans-serif',
+		'"Trebuchet MS", URW Grotesk T, helvetica, sans-serif' => 'Trebuchet MS, URW Grotesk T, helvetics, sans-serif',
 		'Impact, Charcoal, Haettenschweiler, "Arial Narrow Bold", sans-serif' => 'Impact, Charcoal, Haettenschweiler, Arial Narrow Bold, sans-serif',
 
 		'georgia, garamond, "URW Bookman L", serif' => 'Georgia, Garamond, URW Bookman L, serif',
@@ -511,7 +516,6 @@ if (!function_exists('bioship_options_web_font_stacks')) {
 	return bioship_apply_filters('options_font_stacks', $fonts);
 
 	// Some notable alternatives... (see ref URLS for details)
-	// (sans-serif) Trebuchet MS, URW Grotesk T
 	// (serif) Bitstream Vera Serif, Century Schoolbook, Utopia Std
 	// (monospace) Bitstream Vera Sans Mono, Andale Mono
  }
@@ -610,7 +614,7 @@ if (!function_exists('bioship_options_title_font_display')) {
 			$fontface = trim($fontface);
 			if ( ($fontface != 'Sans-Serif') && ($fontface != 'Serif') ) {
 				if (strstr($fontface,'+')) {$fontface = str_replace('+',' ',$fontface);}
-				$loadfonts .= "<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=".$fontface."' type='text/css' media='all' />";
+				$loadfonts .= "<"."link rel='stylesheet' href='http://fonts.googleapis.com/css?family=".$fontface."' type='text/css' media='all' "."/>";
 				$table .= "<tr><td class='displayname'>".$display."</td><td width='15'></td>";
 				$table .= "<td class='displayfont'><font style='font-family:\"".$fontface."\";'>The quick brown fox jumped over the lazy dog.</font></td></tr>";
 			}
@@ -652,7 +656,7 @@ if (!function_exists('bioship_options_body_font_display')) {
 					if (strstr($fontface, '+')) {$fontface = str_replace('+', ' ', $fontface);}
 					if (strstr($fontface, '"')) {$fontface = str_replace('"', '', $fontface);}
 					if (!in_array($fontface, $queried)) {
-						$loadfonts .= "<link rel='stylesheet' id='skeleton-body-fonts-css'  href='http://fonts.googleapis.com/css?family=".$fontface."' type='text/css' media='all' />";
+						$loadfonts .= "<"."link rel='stylesheet' id='skeleton-body-fonts-css'  href='http://fonts.googleapis.com/css?family=".$fontface."' type='text/css' media='all' "."/>";
 						$queried[] = $fontface;
 					}
 					$table .= "<tr><td class='displayname'>".$fontface."</td><td width='15'></td>";
@@ -800,7 +804,7 @@ if (!function_exists('bioship_options')) {
 	// -----------
 	$options[] = array(
 		'name' => __('Dynamic Custom CSS', 'bioship'),
-		'desc' => __('', 'bioship'),
+		'desc' => '',
 		'id' => 'dynamiccustomcss',
 		'std' => '',
 		'class' => 'skin',
@@ -1208,7 +1212,7 @@ if (!function_exists('bioship_options')) {
 			 'color' => '#999999', 'font-family' => 'Open Sans'),
 		'show_websafe_fonts' => false,
 		'enqueue' => false,
-		// 'css' => '#header span.site-desc {value;}',
+		// 'css' => '#header div.site-desc {value;}',
 		'csselement' => '#site-description .site-desc',
 		'cssproperty' => 'typography',
 		'class' => 'skin',
@@ -1623,7 +1627,7 @@ if (!function_exists('bioship_options')) {
 	// --------------
 	$options[] = array(
 		'name' => __('Section Typography', 'bioship'),
-		'desc' => __('', 'bioship'),
+		'desc' => '',
 		'class' => 'skin',
 		'type' => 'info',
 		'page' => 'basic');
@@ -1867,7 +1871,7 @@ if (!function_exists('bioship_options')) {
 	// ------------
 	$options[] = array(
 		'name' => __('Link Styles', 'bioship'),
-		'desc' => __('', 'bioship'),
+		'desc' => '',
 		'class' => 'skin',
 		'type' => 'info',
 		'page' => 'basic');
@@ -2868,7 +2872,7 @@ if (!function_exists('bioship_options')) {
 	// ----------
 	$options[] = array(
 		'name' => __('Author Bio', 'bioship'),
-		'desc' => __('', 'bioship'),
+		'desc' => '',
 		'class' => 'muscle',
 		'type' => 'info',
 		'page' => 'advanced');
@@ -3409,7 +3413,7 @@ if (!function_exists('bioship_options')) {
 	// [Old] Warning: By changing sidebar modes or disabling sidebars their associated widgets will be found in an "Inactive Sidebar" on the Widgets page. Best to take note of your existing widgets before changing these!
 	// (Sidebars are registered so you can add widgets to them and display them in other ways.)
 	$options[] = array(
-		'name' => __('', 'bioship'),
+		'name' => '',
 		'desc' => __('All sidebars are registered regardless of their active state so the you can add widgets while inactive. Note: You can save/restore widget layouts with','bioship').' <a href="https://wordpress.org/plugins/widget-saver/" target=_blank>Widget Saver</a>, '.__('or import/export widgets with ','bioship').'<a href="https://wordpress.org/plugins/widget-settings-importexport/" target=_blank>Widget Import/Export</a>',
 		'class' => 'skeleton',
 		'type' => 'info',
@@ -4148,7 +4152,7 @@ if (!function_exists('bioship_options')) {
 
 	$options[] = array(
 		'name' => __('Hybrid Extensions', 'bioship'),
-		'desc' => __('', 'bioship'),
+		'desc' => '',
 		'class' => 'skeleton',
 		'type' => 'info',
 		'page' => 'advanced');
