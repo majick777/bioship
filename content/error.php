@@ -19,7 +19,7 @@ echo "<article "; hybrid_attr('post'); echo ">".PHP_EOL;
 			// 1.8.5: added no content title filter
 			$nocontenttitle = __( 'Nothing Found', 'bioship' );
 			$nocontenttitle = bioship_apply_filters('skeleton_no_content_title', $nocontenttitle);
-			echo $nocontenttitle;
+			echo esc_attr($nocontenttitle);
 
 		echo '</h1>'.PHP_EOL;
 	echo '</header>'.PHP_EOL;
@@ -27,17 +27,18 @@ echo "<article "; hybrid_attr('post'); echo ">".PHP_EOL;
 
 	// --- entry content ---
 	bioship_html_comment('.entry-content');
-	echo "<div "; hybrid_attr('entry-content'); echo ">".PHP_EOL;
+	$attributes = hybrid_get_attr('entry-content');
+	echo "<div ".$attributes.">".PHP_EOL;
 
 			// --- no content message ---
 			// 1.8.5: added no content message filter
 			$nocontent = wpautop( __( 'Apologies, but no entries were found.', 'bioship' ) );
 			$nocontent = bioship_apply_filters('skeleton_no_content_message', $nocontent);
-			echo $nocontent;
+			echo esc_attr($nocontent);
 
 	echo "</div>".PHP_EOL;
 	bioship_html_comment('/.entry-content');
 
-	if (THEMEDEBUG) {global $wp_query; echo "<!-- Full Query: "; print_r($wp_query); echo "-->";}
+	if (THEMEDEBUG) {global $wp_query; echo "<!-- Full Query: ".esc_attr(print_r($wp_query,true))." -->";}
 
 echo "</article>";

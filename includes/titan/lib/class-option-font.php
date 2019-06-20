@@ -99,6 +99,10 @@ class TitanFrameworkOptionFont extends TitanFrameworkOption {
 		if ( $this->settings['enqueue'] ) {
 			self::$optionsToEnqueue[] = $this;
 		}
+
+		# BIOSHIP 2.1.2 MODIFIED - re-add removed webfont filter! :-!
+		self::$webSafeFonts = apply_filters('titan_websafefonts', self::$webSafeFonts);
+
 	}
 
 

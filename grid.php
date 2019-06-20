@@ -57,6 +57,21 @@ if (!function_exists('bioship_grid_number_to_word')) {
  }
 }
 
+// ---------------
+// Round Half Down
+// ---------------
+// 2.1.2: added this helper function
+// (since PHP 5.2 does not have PHP_ROUND_HALF_DOWN mode)
+if (!function_exists('bioship_round_half_down')) {
+ function bioship_round_half_down($v, $precision = 3) {
+	$v = explode('.', $v);
+	$v = implode('.', $v);
+	$v = $v * pow(10, $precision) - 0.5;
+	$a = ceil($v) * pow(10, -$precision);
+	return number_format( $a, 2, '.', '' );
+ }
+}
+
 // -----------------------
 // === Set Grid Values ===
 // -----------------------
@@ -117,7 +132,7 @@ if (isset($_REQUEST['contentpadding']) && (abs(intval($_REQUEST['contentpadding'
 if (THEMEDEBUG) {echo "/* Content Padding: ".$contentpadding." */".PHP_EOL;}
 // 1.9.5: recalculate padding separately for each content width
 // 2.0.5: calculate content percentage (minus padding) once only
-$contentpercent = round( (($contentwidth - $contentpadding) / $maxwidth), 3, PHP_ROUND_HALF_DOWN);
+$contentpercent = bioship_round_half_down(($contentwidth - $contentpadding) / $maxwidth);
 if (THEMEDEBUG) {echo "/* Content Percentage: ".$contentpercent." */".PHP_EOL;}
 
 // -------------
@@ -133,7 +148,7 @@ if (isset($_REQUEST['fontpercent'])) {
 	$fontpercentage = abs(intval($_REQUEST['fontpercent']));
 	if ( ($fontpercentage > 0) && ($fontpercentage < 101) ) {$fontpercent = $fontpercentage;}
 }
-$empixels = round( (16 * ($fontpercent / 100)), 3, PHP_ROUND_HALF_DOWN);
+$empixels = bioship_round_half_down(16 * ($fontpercent / 100));
 if (THEMEDEBUG) {
 	echo "/* Font Percent: ".$fontpercent." */".PHP_EOL;
 	echo "/* EM Pixels: ".$empixels." */".PHP_EOL;
@@ -321,7 +336,7 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 		for ($i = 1; $i < ($c+1); $i++) {
 
 			$word = bioship_grid_number_to_word($i);
-			$percent = round( (99 * ($i / $c)), 3, PHP_ROUND_HALF_DOWN);
+			$percent = bioship_round_half_down(99 * ($i / $c));
 
 			if ($i == 1) {
 				if ($contentcolumns == $c) {$contentrules .= "#content .container .one.column, ";}
@@ -460,44 +475,44 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 	// ------------------------
 
 	// --- margins ---
-	$leftmarginem = round(($gridspacing['left'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
-	$rightmarginem = round(($gridspacing['right'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
-	$halfleftmarginem = round(($leftmarginem / 2), 3, PHP_ROUND_HALF_DOWN);
-	$halfrightmarginem = round(($rightmarginem / 2), 3, PHP_ROUND_HALF_DOWN);
+	$leftmarginem = bioship_round_half_down($gridspacing['left'] / $empixels);
+	$rightmarginem = bioship_round_half_down($gridspacing['right'] / $empixels);
+	$halfleftmarginem = bioship_round_half_down($leftmarginem / 2);
+	$halfrightmarginem = bioship_round_half_down($rightmarginem / 2);
 	// 1.8.5: added separate content margin values
-	$contentleftmarginem = round(($contentspacing['left'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
-	$contentrightmarginem = round(($contentspacing['right'] / $empixels), 3, PHP_ROUND_HALF_DOWN);
+	$contentleftmarginem = bioship_round_half_down($contentspacing['left'] / $empixels);
+	$contentrightmarginem = bioship_round_half_down($contentspacing['right'] / $empixels);
 
 	// --- total width ---
-	$totalwidthem = round(($totalwidth / $empixels), 3, PHP_ROUND_HALF_DOWN);
-	$almostfullwidth = round((($totalwidth - $gridspacing['left'] - $gridspacing['right']) / $empixels), 3, PHP_ROUND_HALF_DOWN);
+	$totalwidthem = bioship_round_half_down($totalwidth / $empixels);
+	$almostfullwidth = bioship_round_half_down(($totalwidth - $gridspacing['left'] - $gridspacing['right']) / $empixels);
 	// $totalwidthem = $totalwidthem - $halfleftmarginem - $halfrightmarginem;
 
 	// --- layout columns ---
 	// 1.8.0: removed outer margins for replacement by inner padding
 	// $totalwidth = $totalwidth - (($gridspacing['left'] + $gridspacing['right']) / 2);
 	$columnwidth = $totalwidth / $gridcolumns;
-	$columnwidthem  = round( ($columnwidth / $empixels), 3, PHP_ROUND_HALF_DOWN);
+	$columnwidthem  = bioship_round_half_down($columnwidth / $empixels);
 	// 1.8.0: add half, third and quarter columns for spacing
-	$halfcolumnwidthem  = round( (($columnwidth / 2) / $empixels), 3, PHP_ROUND_HALF_DOWN);
-	$thirdcolumnwidthem = round( (($columnwidth / 3) / $empixels), 3, PHP_ROUND_HALF_DOWN);
-	$quartercolumnwidthem = round( (($columnwidth / 4) / $empixels), 3, PHP_ROUND_HALF_DOWN);
+	$halfcolumnwidthem  = bioship_round_half_down(($columnwidth / 2) / $empixels);
+	$thirdcolumnwidthem = bioship_round_half_down(($columnwidth / 3) / $empixels);
+	$quartercolumnwidthem = bioship_round_half_down(($columnwidth / 4) / $empixels);
 
 	// --- content columns ---
 	// 1.8.0: work out content column widths (via actual content width passed in querystring)
-	$thiscontentwidth = round( ($totalwidth * $contentpercent), 3, PHP_ROUND_HALF_DOWN);
+	$thiscontentwidth = bioship_round_half_down($totalwidth * $contentpercent);
 	// 1.9.5: for mobile sizes, use layout width rules for full width content columns
 	if ($mobile) {$thiscontentwidth = $totalwidth;}
-	$thiscontentwidthem = round(($thiscontentwidth / $empixels), 3, PHP_ROUND_HALF_DOWN);
+	$thiscontentwidthem = bioship_round_half_down($thiscontentwidth / $empixels);
 	// 1.9.5: use separate content columns value at 98% content width
 	// $contentcolumnwidth = $thiscontentwidth / $gridcolumns;
 	$contentcolumnwidth = $thiscontentwidth / $contentcolumns;
-	$contentcolumnsem = round((0.98 * $contentcolumnwidth / $empixels), 3, PHP_ROUND_HALF_DOWN);
+	$contentcolumnsem = bioship_round_half_down((0.98 * $contentcolumnwidth) / $empixels);
 	// $contentcolumnsem = $contentcolumnsem - (($halfleftmarginem + halfrightmarginem) / 2);
 	// 1.8.0: add half, third and quarter columns for spacing
-	$halfcontentcolumnsem = round(($contentcolumnsem / 2), 3, PHP_ROUND_HALF_DOWN);
-	$thirdcontentcolumnwidthem = round(($contentcolumnsem / 3), 3, PHP_ROUND_HALF_DOWN);
-	$quartercontentcolumnsem = round(($contentcolumnsem / 4), 3, PHP_ROUND_HALF_DOWN);
+	$halfcontentcolumnsem = bioship_round_half_down($contentcolumnsem / 2);
+	$thirdcontentcolumnwidthem = bioship_round_half_down($contentcolumnsem / 3);
+	$quartercontentcolumnsem = bioship_round_half_down($contentcolumnsem / 4);
 
 	// --- Header for this Media Width Size ---
 	$rules = PHP_EOL.'	/* Column Width Rules based on '.$totalwidth.'px ('.$totalwidthem.'em) */'.PHP_EOL.PHP_EOL;
@@ -511,8 +526,8 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 
 	// 1.9.5: set content column widths separately
 	for ($i = 1; $i < ($contentcolumns+1); $i++) {
-		$contentcolumn[$i] = round(($contentcolumnsem * $i), 3, PHP_ROUND_HALF_DOWN);
-		$halfcontentcolumn[$i] = round(($halfcontentcolumnsem * $i), 3, PHP_ROUND_HALF_DOWN);
+		$contentcolumn[$i] = bioship_round_half_down($contentcolumnsem * $i);
+		$halfcontentcolumn[$i] = bioship_round_half_down($halfcontentcolumnsem * $i);
 	}
 
 	// --- Skeleton Boilerplate ---
@@ -857,7 +872,7 @@ if ($numbreakpoints > 0) {
 		if ($breakpoint < $maxwidth) {
 
 			$usebreakpoint = $breakpoint - 1;
-			$usebreakpoint = round(($usebreakpoint/$empixels), 3, PHP_ROUND_HALF_DOWN);
+			$usebreakpoint = bioship_round_half_down($usebreakpoint / $empixels);
 
 			if ($i == 1) {$mediaqueries .= '/* '.$breakpoint.' and under */'.PHP_EOL;}
 			elseif ($i < $numbreakpoints) {$mediaqueries .= '/* '.$previousbreakpoint.' to '.$breakpoint.' */'.PHP_EOL;}
@@ -865,7 +880,7 @@ if ($numbreakpoints > 0) {
 
 			if ($breakpoint > 320) {
 				$lastbreakpoint = $previousbreakpoint;
-				$lastbreakpoint = round(($lastbreakpoint/$empixels), 3, PHP_ROUND_HALF_DOWN);
+				$lastbreakpoint = bioship_round_half_down($lastbreakpoint / $empixels);
 				if ($lastbreakpoint == $usedbreakpoint) {$lastbreakpoint = $lastbreakpoint + 0.001;}
 			}
 
@@ -897,7 +912,7 @@ if ($numbreakpoints > 0) {
 				$mediaqueries .= '}'.PHP_EOL;
 			}
 			if ($i == $numbreakpoints) { 		// largest width (default 1200)
-				$usebreakpoint = round(($breakpoint/$empixels), 3, PHP_ROUND_HALF_DOWN);
+				$usebreakpoint = bioship_round_half_down($breakpoint / $empixels);
 				if ($usebreakpoint == $usedbreakpoint) {$usebreakpoint = $usebreakpoint + 0.001;}
 				$mediaqueries .= '@media only screen and (min-width: '.$usebreakpoint.'em) {'.PHP_EOL;
 				$mediaqueries .= bioship_grid_css_rules($breakpoint, false, 'full');

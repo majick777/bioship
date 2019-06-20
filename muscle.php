@@ -7,7 +7,7 @@
  * @author DreamJester - DreamJester.Net
  *
  * === MUSCLE  FUNCTIONS ===
- * ...Extending Wordpress...
+ * ...Extending WordPress...
  *
 **/
 
@@ -321,7 +321,9 @@ if (!function_exists('bioship_muscle_perpage_override_styles')) {
 	if ($customstyles && ($customstyles != '')) {$styles .= $customstyles.PHP_EOL;}
 
 	// --- output styles ---
-	if ($styles != '') {echo '<style>'.$styles.'</style>';}
+	if ($styles != '') {
+		echo '<style>'.$styles.'</style>'; // phpcs:ignore WordPress.Security.OutputNotEscaped
+	}
  }
 }
 
@@ -464,12 +466,13 @@ if (!class_exists('WP_Widget_Classic_Text') && !THEMEWPORG) {
 		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title'], $instance, $this->id_base);
 		$widget_text = !empty($instance['text']) ? $instance['text'] : '';
 		$text = apply_filters('widget_text', $widget_text, $instance, $this);
-		echo $args['before_widget'];
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
 		if (!empty($title)) {echo $args['before_title'].$title.$args['after_title'];}
 		echo '<div class="textwidget">';
-		echo !empty($instance['filter']) ? wpautop($text) : $text;
+			if (!empty($instance['filter'])) {$text = wpautop($text);}
+			echo $text; // // phpcs:ignore WordPress.Security.OutputNotEscapedShortEcho
 		echo '</div>';
-		echo $args['after_widget'];
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
 	}
 
 	public function update($new_instance, $old_instance) {
@@ -485,12 +488,12 @@ if (!class_exists('WP_Widget_Classic_Text') && !THEMEWPORG) {
 		$instance = wp_parse_args( (array) $instance, array('title' => '', 'text' => '' ));
 		$filter = isset($instance['filter']) ? $instance['filter'] : 0;
 		$title = sanitize_text_field($instance['title']);
-		echo '<p><label for="'.$this->get_field_id('title').'">'.__('Title:','bioship').'</label>';
+		echo '<p><label for="'.$this->get_field_id('title').'">'.esc_attr(__('Title:','bioship')).'</label>';
 		echo '<input class="widefat" id="'.$this->get_field_id('title').'" name="'.$this->get_field_name('title').'" type="text" value="'.esc_attr($title).'" /></p>';
-		echo '<p><label for="'.$this->get_field_id('text').'">'.__('Content:','bioship').'</label>';
+		echo '<p><label for="'.$this->get_field_id('text').'">'.esc_attr(__('Content:','bioship')).'</label>';
 		echo '<textarea class="widefat" rows="16" cols="20" id="'.$this->get_field_id('text').'" name="'.$this->get_field_name('text').'">'.esc_textarea($instance['text']).'</textarea></p>';
 		echo '<p><input id="'.$this->get_field_id('filter').'" name="'.$this->get_field_name('filter').'" type="checkbox"'.checked($filter).' />&nbsp;';
-		echo '<label for="'.$this->get_field_id('filter').'">'.__('Automatically add paragraphs','bioship').'</label></p>';
+		echo '<label for="'.$this->get_field_id('filter').'">'.esc_attr(__('Automatically add paragraphs','bioship')).'</label></p>';
 	}
  }
 }
@@ -525,13 +528,16 @@ if (!function_exists('bioship_muscle_discreet_text_widget')) {
 			$text = bioship_apply_filters('widget_text', $instance['text']);
 			if (empty($text)) {return;}
 
-			echo $args['before_widget'];
+			echo $args['before_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
 				$title = bioship_apply_filters('widget_title', $instance['title']);
-				if (!empty($title)) {echo $args['before_title'].$title.$args['after_title'];}
+				if (!empty($title)) {
+					echo $args['before_title'].esc_attr($title).$args['after_title']; // phpcs:ignore WordPress.Security.OutputNotEscaped
+				}
 				echo '<div class="textwidget">';
-					if ($instance['filter']) {echo wpautop($text);} else {echo $text;}
+					if ($instance['filter']) {$text = wpautop($text);}
+					echo $text; // phpcs:ignore WordPress.Security.OutputNotEscapedShortEcho
 				echo '</div>';
-			echo $args['after_widget'];
+			echo $args['after_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
 		}
 	 }
 	 return register_widget("DiscreetTextWidget");
@@ -580,8 +586,8 @@ if (!function_exists('bioship_muscle_video_background')) {
 		$maybe = array(); preg_match( "/[a-zA-Z0-9]+//", $videoid, $maybe);
 		if ( ($videoid != '') && ($videoid == $maybe[0]) ) {
 			echo '<div id="backgroundvideowrapper">';
-			echo '<input type="hidden" id="videobackgroundoid" value="'.$videoid.'">';
-			echo '<input type="hidden" id="videobackgrounddelay" value="'.$videodelay.'">';
+			echo '<input type="hidden" id="videobackgroundoid" value="'.esc_attr($videoid).'">';
+			echo '<input type="hidden" id="videobackgrounddelay" value="'.esc_attr($videodelay).'">';
 			echo '<div id="backgroundvideo"></div></div>';
 		}
 	}
@@ -627,7 +633,7 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 		if (is_array($selectivizr)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($selectivizr['file']));} else {$cachebust = $vjscachebust;}
-			echo '<!--[if (gte IE 6)&(lte IE 8)]><script src="'.$selectivizr['url'].'?ver='.$cachebust.'"></script><![endif]-->';
+			echo '<!--[if (gte IE 6)&(lte IE 8)]><script src="'.esc_url($selectivizr['url']).'?ver='.esc_attr($cachebust).'"></script><![endif]-->';
 		}
 	}
 
@@ -641,7 +647,7 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 		if (is_array($html5)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($html5['file']));} else {$cachebust = $vjscachebust;}
-			echo '<!--[if lt IE 9]><script src="'.$html5['url'].'?ver='.$cachebust.'"></script><![endif]-->';
+			echo '<!--[if lt IE 9]><script src="'.esc_url($html5['url']).'?ver='.esc_attr($cachebust).'"></script><![endif]-->';
 		}
 	}
 
@@ -655,7 +661,7 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 		if (is_array($supersleight)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($supersleight['file']));} else {$cachebust = $vjscachebust;}
-			echo '<!--[if lte IE 6]><script src="'.$supersleight['url'].'?ver='.$cachebust.'"></script><![endif]-->';
+			echo '<!--[if lte IE 6]><script src="'.esc_url($supersleight['url']).'?ver='.esc_attr($cachebust).'"></script><![endif]-->';
 		}
 	}
 
@@ -670,7 +676,7 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 		if (is_array($ie8)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($ie8['file']));} else {$cachebust = $vjscachebust;}
-			echo '<!--[if IE 8]><script src="'.$ie8['url'].'?ver='.$cachebust.'"></script><![endif]-->';
+			echo '<!--[if IE 8]><script src="'.esc_url($ie8['url']).'?ver='.esc_attr($cachebust).'"></script><![endif]-->';
 		}
 	}
 
@@ -684,7 +690,7 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 		$flexibility = bioship_file_hierarchy('both', 'flexibility.js', $vthemedirs['script']);
 		if (is_array($flexibility)) {
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($flexibility['file']));} else {$cachebust = $vjscachebust;}
-			echo '<!--[if (IE 8)|(IE 9)]><script src="'.$flexibility['url'].'?ver='.$cachebust.'"></script><![endif]-->';
+			echo '<!--[if (IE 8)|(IE 9)]><script src="'.esc_url($flexibility['url']).'?ver='.esc_attr($cachebust).'"></script><![endif]-->';
 		}
 	}
 
@@ -712,6 +718,7 @@ if (!function_exists('bioship_muscle_load_prefixfree')) {
 	// --- load PrefixFree ---
 	$prefixfree = bioship_file_hierarchy('both', 'prefixfree.js', $vthemedirs['script']);
 	if (is_array($prefixfree)) {
+
 		// 2.1.1: fix to cachebusting conditions
 		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$cachebust = date('ymdHi', filemtime($prefixfree['file']));}
 		else {$cachebust = $vjscachebust;}
@@ -724,27 +731,32 @@ if (!function_exists('bioship_muscle_load_prefixfree')) {
 		// ref: https://github.com/LeaVerou/prefixfree/pull/39
 		if (!function_exists('muscle_fonte_no_prefix_attribute')) {
 
-		 add_filter('style_loader_tag','bioship_muscle_fonts_noprefix_attribute', 10, 2);
+		 add_filter('style_loader_tag', 'bioship_muscle_fonts_noprefix_attribute', 10, 2);
 
-		 function bioship_muscle_fonts_noprefix_attribute($link, $handle) {
+		 function bioship_muscle_fonts_noprefix_attribute($tag, $handle) {
 		 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-			$linka = $link;
+			$original = $tag;
+
 			// note: Google fonts style handles are 'heading-font-'x or 'custom-font-'x
 			// 2.0.9: stricter checking for handle at start of string
 			if ( (strpos($handle, 'heading-font-') === 0)  || (strpos($handle, 'custom-font-') === 0) ) {
-				$link = str_replace( '/>', 'data-noprefix />', $link);
+				$tag = str_replace('/>', 'data-noprefix />', $tag);
 			} else {
 				// ...and a basic check for if the link is external to the site
 				// as this problem could occur for other external sheets like this
-				if (!stristr($link, $_SERVER['HTTP_HOST'])) {
+				if (!stristr($tag, $_SERVER['HTTP_HOST'])) {
 					// 2.0.9: use stricter checking for http at start of string
-					if ( (stripos($link, 'http://') === 0) || (stripos($link, 'https://') === 0) ) {
-						$link = str_replace('/>', 'data-noprefix />', $link);
+					// 2.1.2: fix this check at this is a full tag not just an URL
+					$pos = strpos($tag, 'href=');
+					if ( (substr($tag, $pos + 6, strlen('http://'))  == 'http://')
+						|| (substr($tag, $pos + 6, strlen('https://')) == 'https://')
+						|| (substr($tag, $pos + 6, strlen('//')) == '//') ) {
+						$tag = str_replace('/>', 'data-noprefix />', $tag);
 					}
 				}
 			}
-			if ($linka != $link) {bioship_debug("No PrefixFree for Style", $handle);}
-			return $link;
+			if ($original != $tag) {bioship_debug("No PrefixFree for Style", $handle);}
+			return $tag;
 		 }
 		}
 	}
@@ -835,7 +847,7 @@ if (!function_exists('bioship_muscle_media_queries_script')) {
 		if (is_array($respond)) {
 			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$cachebust = date('ymdHi', filemtime($respond['file']));}
 			else {$cachebust = $vjscachebust;}
-			echo '<script src="'.$respond['url'].'?ver='.$cachebust.'"></script>';
+			echo '<script src="'.esc_url($respond['url']).'?ver='.esc_attr($cachebust).'"></script>';
 		}
 	} elseif ($vthemesettings['mediaqueries'] == 'mediaqueries') {
 		$mediaqueries = bioship_file_hierarchy('both', 'css3-mediaqueries.js', $vthemedirs['script']);
@@ -843,7 +855,7 @@ if (!function_exists('bioship_muscle_media_queries_script')) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$cachebust = date('ymdHi', filemtime($mediaqueries['file']));}
 			else {$cachebust = $vjscachebust;}
-			echo '<script src="'.$mediaqueries['url'].'?ver='.$cachebust.'"></script>';
+			echo '<script src="'.esc_url($mediaqueries['url']).'?ver='.esc_attr($cachebust).'"></script>';
 		}
 	}
  }
@@ -1289,7 +1301,9 @@ if (!function_exists('bioship_muscle_output_script_vars')) {
 
  	// --- output theme script variables ---
  	echo "<script>";
- 	 	foreach ($scriptvars as $scriptvar) {echo $scriptvar.PHP_EOL;}
+ 	 	foreach ($scriptvars as $scriptvar) {
+ 	 		echo $scriptvar.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+ 	 	}
  	echo "</script>";
  }
 }
@@ -1339,7 +1353,7 @@ if (!function_exists('bioship_muscle_thumbnail_size_custom')) {
 	// rather funny way of doing it but seems to work fine
 	// as this is for the admin post/page editing screen
 	if (isset($_REQUEST['post_id'])) {
-		$postid = $_REQUEST['post_id'];
+		$postid = absint($_REQUEST['post_id']);
 		$posttype = get_post_type($postid);
 	} else {
 		// CHECKME: what to do for new (draft) posts (ie. with no saved post ID yet)?
@@ -1407,7 +1421,7 @@ if (!function_exists('bioship_muscle_fading_thumbnails')) {
 		$fadingthumbs = $vthemelayout['fadingthumbnails'];
 
 		// TODO: allow for multiple CPTs/classes?
-		echo "<script>var thumbnailclass = 'img.thumbtype-".$fadingthumbs."';
+		echo "<script>var thumbnailclass = 'img.thumbtype-".esc_attr($fadingthumbs)."';
 		function fadeoutthumbnails() {jQuery(thumbnailclass).fadeOut(3000, fadeinthumbnails);}
 		function fadeinthumbnails() {jQuery(thumbnailclass).fadeIn(3000, fadeoutthumbnails);}
 		jQuery(document).ready(function() {fadeoutthumbnails();});
@@ -2000,6 +2014,7 @@ if (!function_exists('bioship_muscle_add_bioship_dashboard_feed_widget')) {
 // -----------------------------
 // BioShip Dashboard Feed Widget
 // -----------------------------
+// TODO: move this to admin.php
 // 1.9.5: added displayupdates argument
 // 2.0.0: added displaylinks argument
 if (!function_exists('bioship_muscle_bioship_dashboard_feed_widget')) {
@@ -2014,7 +2029,9 @@ if (!function_exists('bioship_muscle_bioship_dashboard_feed_widget')) {
 		$admin = bioship_file_hierarchy('file', 'admin.php', $vthemedirs['admin']);
 		include_once($admin);
 	}
-	if ($displayupdates) {echo admin_theme_updates_available();}
+	if ($displayupdates) {
+		echo admin_theme_updates_available(); // phpcs:ignore WordPress.Security.OutputNotEscaped
+	}
 
 	// Load the Update News Feed
 	// -------------------------
@@ -2042,17 +2059,17 @@ if (!function_exists('bioship_muscle_bioship_dashboard_feed_widget')) {
 	// --- maybe display links ---
 	// 2.0.0: add documentation, development and extensions links
 	if ($displaylinks) {
-		echo "<center><b><a href='".THEMEHOMEURL."/documentation/' class='themefeedlink' target=_blank>".__('Documentation','bioship')."</a></b> | ";
-		echo "<b><a href='".THEMEHOMEURL."/development/' class='themefeedlink' target=_blank>".__('Development','bioship')."</a></b> | ";
-		echo "<b><a href='".THEMEHOMEURL."/extensions/' class='themefeedlink' target=_blank>".__('Extensions','bioship')."</a></b></center><br>";
+		echo "<center><b><a href='".esc_url(THEMEHOMEURL.'/documentation/')."' class='themefeedlink' target=_blank>".esc_attr(__('Documentation','bioship'))."</a></b> | ";
+		echo "<b><a href='".esc_url(THEMEHOMEURL.'/development/')."' class='themefeedlink' target=_blank>".esc_attr(__('Development','bioship'))."</a></b> | ";
+		echo "<b><a href='".esc_url(THEMEHOMEURL.'/extensions/')."' class='themefeedlink' target=_blank>".esc_attr(__('Extensions','bioship'))."</a></b></center><br>";
 	}
 
 	// --- output feed ---
 	// 1.8.5: fix to typo on close div ruining admin page
 	// 2.0.0: re-arrange display output and styles
 	echo "<div id='bioshipfeed'>";
-	echo "<div style='float:right;'>&rarr;<a href='".$baseurl."/category/news/' class='themefeedlink' target=_blank> ".__('More','bioship')."...</a></div>";
-	if ($feed != '') {echo $feed;} else {echo __('Feed currently unavailable.','bioship'); delete_transient('bioship_feed');}
+	echo "<div style='float:right;'>&rarr;<a href='".esc_url($baseurl.'/category/news/')."' class='themefeedlink' target=_blank> ".esc_attr(__('More','bioship'))."...</a></div>";
+	if ($feed != '') {echo $feed;} else {echo esc_attr(__('Feed currently unavailable.','bioship')); delete_transient('bioship_feed');}
 	echo "</div>";
 
  }
@@ -2099,7 +2116,7 @@ if (!function_exists('bioship_muscle_process_rss_feed')) {
 // 2.0.5: check setting internally to allow filtering
 if (!function_exists('bioship_muscle_admin_post_thumbnail_column')) {
 
- add_filter('manage_posts_columns', 'bioship_muscle_admin_post_thumbnail_column', 5);
+ // add_filter('manage_posts_columns', 'bioship_muscle_admin_post_thumbnail_column', 5);
 
  function bioship_muscle_admin_post_thumbnail_column($cols){
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
@@ -2124,7 +2141,9 @@ if (!function_exists('bioship_muscle_admin_post_thumbnail_column')) {
 // -------------------------------
 if (!function_exists('bioship_muscle_display_post_thumbnail_column')) {
  function bioship_muscle_display_post_thumbnail_column($col, $id) {
-	if ($col == 'post_thumb') {echo the_post_thumbnail('admin-list-thumb');}
+	if ($col == 'post_thumb') {
+		echo the_post_thumbnail('admin-list-thumb'); // phpcs:ignore WordPress.Security.OutputNotEscaped
+	}
  }
 }
 
@@ -2185,7 +2204,7 @@ if (!function_exists('bioship_muscle_remove_update_notice')) {
 	if ($remove != '1') {return;}
 
 	// --- permission checks ---
-	// 2.1.1: change from update_plugins to update_core
+	// 2.1.1: changed from update_plugins to update_core
 	if (!current_user_can('update_core')) {
 		// 2.0.1: simplify to remove version check action here
 		remove_action('init', 'wp_version_check');
@@ -2291,6 +2310,7 @@ if (!function_exists('bioship_muscle_cleaner_adminbar')) {
 // -----------------------------------------
 // Include CPTs in the Dashboard 'Right Now'
 // -----------------------------------------
+// TODO: move to admin.php ?
 // 2.0.1: check themesettings internally to allow filtering
 if (!function_exists('bioship_muscle_right_now_content_table_end')) {
 
@@ -2321,11 +2341,11 @@ if (!function_exists('bioship_muscle_right_now_content_table_end')) {
 		if ($postcount == 1) {$text = $postcount.' '.$singular;}
 		else {$text = $postcount.' '.$label;}
 		if (current_user_can('edit_posts')) {
-			$num = "<a href='edit.php?post_type=".$posttype->name."'>".$num."</a>";
-			$text = "<a href='edit.php?post_type=".$posttype->name."'>".$text."</a>";
+			$num = "<a href='edit.php?post_type=".esc_attr($posttype->name)."'>".esc_attr($num)."</a>";
+			$text = "<a href='edit.php?post_type=".esc_attr($posttype->name)."'>".esc_attr($text)."</a>";
 		}
-		echo '<tr><td class="first num b b-'.$posttype->name.'">'.$num.'</td>';
-		echo '<td class="text t '.$posttype->name.'">'.$text.'</td></tr>';
+		echo '<tr><td class="first num b b-'.esc_attr($posttype->name).'">'.esc_attr($num).'</td>';
+		echo '<td class="text t '.esc_attr($posttype->name).'">'.esc_attr($text).'</td></tr>';
 	}
 
 	// --- tag terms list ---
@@ -2342,11 +2362,11 @@ if (!function_exists('bioship_muscle_right_now_content_table_end')) {
 		if ($termcount == 1) {$text = $termcount.' '.$singular;}
 		else {$text = $termcount.' '.$label;}
 		if (current_user_can('manage_categories')) {
-			$num = "<a href='edit-tags.php?taxonomy=".$taxonomy->name."'>".$num."</a>";
-			$text = "<a href='edit-tags.php?taxonomy=".$taxonomy->name."'>".$text."</a>";
+			$num = "<a href='edit-tags.php?taxonomy=".esc_attr($taxonomy->name)."'>".esc_attr($num)."</a>";
+			$text = "<a href='edit-tags.php?taxonomy=".esc_attr($taxonomy->name)."'>".esc_attr($text)."</a>";
 		}
-		echo '<tr><td class="first b b-'.$taxonomy->name.'">'.$num.'</td>';
-		echo '<td class="t '.$taxonomy->name.'">'.$text.'</td></tr>';
+		echo '<tr><td class="first b b-'.sec_attr($taxonomy->name).'">'.esc_attr($num).'</td>';
+		echo '<td class="t '.esc_attr($taxonomy->name).'">'.esc_attr($text).'</td></tr>';
 	}
  }
 }
@@ -2760,19 +2780,27 @@ if (!function_exists('bioship_muscle_open_graph_override_image_fields')) {
  function bioship_muscle_open_graph_override_image_fields($image) {
   	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-	// override existing open graph image meta with post custom field meta
-	// (better to set width and height field values but not totally necessary)
-	global $post; $postid = $post->ID;
-	$ogimage[0] = get_post_meta($postid, 'opengraphimagewidth', true);
-	$ogimage[1] = get_post_meta($postid, 'opengraphimageheight', true);
-	$ogimage[2] = get_post_meta($postid, 'opengraphimageurl', true);
+	// 2.1.2: added check for singular but not-404 page
+	if (is_singular() && !is_404()) {
 
-	// --- allow image removal for this page ---
-	// (by setting opengraphimageurl value to 'off'
-	if ($ogimage[2] == 'off') {return array();}
+		// --- override existing open graph image meta with post custom field meta ---
+		// (better to set width and height field values but not totally necessary)
+		global $post; $postid = $post->ID;
+		$ogimage[0] = get_post_meta($postid, 'opengraphimagewidth', true);
+		$ogimage[1] = get_post_meta($postid, 'opengraphimageheight', true);
+		$ogimage[2] = get_post_meta($postid, 'opengraphimageurl', true);
 
-	// --- require the URL to be there ---
-	if ($ogimage[2] != '') {return $ogimage;}
+		// --- allow image removal for this page ---
+		// (by setting opengraphimageurl value to 'off'
+		if ($ogimage[2] == 'off') {return array();}
+
+		// --- require the URL to be there ---
+		if ($ogimage[2] != '') {return $ogimage;}
+
+	}
+	// else {
+		// TODO: handle archive page overrides via archive CPT ?
+	// }
 
 	return $image;
  }
@@ -2829,7 +2857,7 @@ if ($loadhybridhook == '1') {
 			// 1.9.0: hooks now loaded by default in functions.php
 			global $vthemehooks;
 
-			if (THEMEDEBUG) {echo "<!-- Hybrid Hooks: "; print_r($vthemehooks['hybrid']); echo "-->";}
+			if (THEMEDEBUG) {echo "<!-- Hybrid Hooks: ".esc_attr(print_r($vthemehooks['hybrid'],true))." -->";}
 
 			// 1.9.0: handle admin metabox defaults
 			if (is_admin()) {
@@ -2851,7 +2879,7 @@ if ($loadhybridhook == '1') {
 					update_user_option($userid, $optionkey, $closedboxes, true);
 				}
 
-				if (THEMEDEBUG) {echo "<!-- Closed Boxes: "; print_r($closedboxes); echo " -->";}
+				if (THEMEDEBUG) {echo "<!-- Closed Boxes: ".esc_attr(print_r($closedboxes,true))." -->";}
 			}
 
 			return $vthemehooks['hybrid'];
@@ -3168,7 +3196,7 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 		if ( (defined('DOING_AJAX') && DOING_AJAX) || ($pagenow == 'admin-post.php') ) {
 
 			// set the referer path for URL matching
-			$referer = parse_url($_SERVER['HTTP_REFERER'],PHP_URL_PATH);
+			$referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
 
 			// set some globals for the AJAX theme options
 			global $ajax_stylesheet, $ajax_template;
@@ -3241,13 +3269,13 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 
 			// --- maybe output debug info for AJAX/admin test frame ---
 			if ($debug) {
-				echo "<!-- COOKIE DATA: ".$_COOKIE[$themecookie]." -->";
-				echo "<!-- TRANSIENT DATA: ".$transientdebug." -->";
-				echo "<!-- REFERER: ".$referer." -->";
-				echo "<!-- STORED URLS: "; print_r($requesturls); echo " -->";
+				echo "<!-- COOKIE DATA: ".esc_attr($_COOKIE[$themecookie])." -->";
+				echo "<!-- TRANSIENT DATA: ".esc_attr($transientdebug)." -->";
+				echo "<!-- REFERER: ".esc_url($referer)." -->";
+				echo "<!-- STORED URLS: ".esc_attr(print_r($requesturls,true))." -->";
 				if ($matchedurlpath) {echo "<!-- URL MATCH FOUND -->";} else {echo "<!-- NO URL MATCH FOUND -->";}
-				echo "<!-- AJAX Stylesheet: ".get_option('stylesheet')." -->";
-				echo "<!-- AJAX Template: ".get_option('template')." -->";
+				echo "<!-- AJAX Stylesheet: ".esc_attr(get_option('stylesheet'))." -->";
+				echo "<!-- AJAX Template: ".esc_attr(get_option('template'))." -->";
 			}
 
 			return; // done for admin requests so bug out here
@@ -3372,15 +3400,15 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 
 			// --- maybe output debug info ---
 			if (!is_admin() && $debug) {
-				echo "<!-- REQUEST URL: ".$requesturl." -->";
-				echo "<!-- STORED URLS: "; print_r($requesturls); echo " -->";
+				echo "<!-- REQUEST URL: ".esc_url($requesturl)." -->";
+				echo "<!-- STORED URLS: ".esc_attr(print_r($requesturls))." -->";
 			}
 		}
 
 		// --- maybe output hidden ajax debugging frames ---
 		if (!is_admin() && $debug) {
-			echo "<iframe src='".admin_url('admin-ajax.php')."?debug=1' style='display:none;'></iframe>";
-			echo "<iframe src='".admin_url('admin-post.php')."?debug=1' style='display:none;'></iframe>";
+			echo "<iframe src='".esc_url(admin_url('admin-ajax.php'))."?debug=1' style='display:none;'></iframe>";
+			echo "<iframe src='".esc_url(admin_url('admin-post.php'))."?debug=1' style='display:none;'></iframe>";
 		}
 	}
  }

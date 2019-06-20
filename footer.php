@@ -9,7 +9,12 @@ if (THEMETRACE) {bioship_trace('T',__('Footer Template','bioship'),__FILE__,'foo
 	// --- Before Footer ---
 	bioship_do_action('bioship_before_footer');
 
-		// --- Footer ---
+		// --- Elementor Footer Location Support ---
+		// 2.1.2: allow possible replacing of bioship_footer action
+		if (function_exists('elementor_theme_do_location')) {$donefooter = elementor_theme_do_location('footer');}
+		if (!isset($donefooter) || !$donefooter) {bioship_do_action('bioship_footer');}
+
+		// --- WP Footer ---
 		wp_footer();
 
 	// --- After Footer ---

@@ -305,7 +305,7 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 
 	// --- copy any empty subdirectories also ---
 	$subdirs = bioship_admin_get_directory_subdirs($childdir, true);
-	echo "<!-- Creating Subdirs: "; print_r($subdirs); echo " -->";
+	echo "<!-- Creating Subdirs: ".esc_attr(print_r($subdirs,true))." -->";
 	foreach ($subdirs as $subdir) {
 		$destdir = $clonedir.$subdir;
 		if (!is_dir($destdir)) {$wp_filesystem->mkdir($destdir);}
@@ -347,7 +347,7 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 	$message = __('New Child Theme','bioship').' "'.$newclonename.'" '.__('cloned successfully.','bioship').'<br>';
 	$message .= __('Base Directory','bioship').': '.ABSPATH.'<br>';
 	$message .= __('Theme Subdirectory','bioship').': '.str_replace(ABSPATH, '', $clonedir).'<br>';
-	$message .= __('Activate it on your','bioship').' <a href="'.admin_url('themes.php').'">'.__('Themes Page','bioship').'</a>.';
+	$message .= __('Activate it on your','bioship').' <a href="'.esc_url(admin_url('themes.php')).'">'.__('Themes Page','bioship').'</a>.';
 
 	// --- One-Click Activation for New Cloned Theme ---
 	$wpnonce = wp_create_nonce('switch-theme_'.$newcloneslug);
@@ -357,7 +357,7 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 	$activatelink = add_query_arg('_wpnonce', $wpnonce, $activatelink);
 
 	// --- set activation message ---
-	$message .= '... '.__('or just','bioship').' <a href="'.$activatelink.'">'.__('click here to activate it','bioship').'</a>.';
+	$message .= '... '.__('or just','bioship').' <a href="'.esc_url($activatelink).'">'.__('click here to activate it','bioship').'</a>.';
 
 	// --- theme drive integration ---
 	if (function_exists('themedrive_determine_theme')) {
@@ -365,7 +365,7 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 		if (THEMETITAN) {$testdriveurl = add_query_arg('page', THEMEPREFIX.'-options', admin_url('admin.php'));}
 		else {$testdriveurl = add_query_arg('page', 'options-framework', admin_url('themes.php'));}
 		$testdriveurl = add_query_arg('theme', $newcloneslug, $testdriveurl);
-		$message .= '<br>('.__('or','bioship').' <a href="'.$testdriveurl.'">'.__('Theme Test Drive without activating','bioship').'</a>.)';
+		$message .= '<br>('.__('or','bioship').' <a href="'.esc_url($testdriveurl).'">'.__('Theme Test Drive without activating','bioship').'</a>.)';
 	}
 
 	// --- add hidden result indicator ---
@@ -651,20 +651,20 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
 
 	// --- backup button ---
 	echo "<table><tr><td style='vertical-align:middle;'>";
-		echo "<input type='button' class='button-primary' value='".__('Backup','bioship')."' onclick='backupthemesettings();'>";
+		echo "<input type='button' class='button-primary' value='".esc_attr(__('Backup','bioship'))."' onclick='backupthemesettings();'>";
 	// --- restore button ---
 	echo "</td><td width='75'></td><td style='vertical-align:middle;'>";
 		echo "<form action='".$actionurl."' method='post'><input type='hidden' name='restore_theme_settings' value='yes'>";
 		wp_nonce_field('restore_theme_settings_'.$vthemename);
-		echo "<input type='submit' class='button-primary' value='".__('Restore','bioship')."' onclick='return confirmrestore();'></form>";
+		echo "<input type='submit' class='button-primary' value='".esc_attr(__('Restore','bioship'))."' onclick='return confirmrestore();'></form>";
 	// --- export button ---
 	echo "</td><td width='75'></td><td style='vertical-align:middle;'>";
 		echo "<span id='exportform-arrow'>&#9662;</span>";
-		echo "<input type='button' class='button-secondary' value='".__('Export','bioship')."' onclick='togglethemebox(\"exportform\");'>";
+		echo "<input type='button' class='button-secondary' value='".esc_attr(__('Export','bioship'))."' onclick='togglethemebox(\"exportform\");'>";
 	// --- import button ---
 	echo "</td><td width='75'></td><td style='vertical-align:middle;'>";
 		echo "<span id='importform-arrow'>&#9662;</span>";
-		echo "<input type='button' class='button-secondary' value='".__('Import','bioship')."' onclick='togglethemebox(\"importform\");'>";
+		echo "<input type='button' class='button-secondary' value='".esc_attr(__('Import','bioship'))."' onclick='togglethemebox(\"importform\");'>";
 
 	// --- revert button ---
 	if (isset($vthemesettings['importtime'])) {
@@ -672,7 +672,8 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
 			echo "</td><td width='75'></td><td>";
 			echo "<form action='".$actionurl."' target='themetoolsframe' method='post'><input type='hidden' name='revert_theme_settings' value='yes'>";
 			wp_nonce_field('revert_theme_settings_'.$vthemename);
-			echo "<input type='submit' value='Revert' onclick='return confirmrevert();'></form>";
+			// 2.1.2: added missing translation wrapper
+			echo "<input type='submit' value='".esc_attr(__('Revert','bioship'))."' onclick='return confirmrevert();'></form>";
 		}
 	}
 	echo "</center></td></tr>";
@@ -695,8 +696,9 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
 
 		// --- export format selection ---
 		echo "<tr><td><b>".__('Export Format','bioship').":</b></td><td width='20'></td>";
-		echo "<td width='80' align='right'><input type='radio' id='exportserial' name='exportformat' value='ser'> <b>Serial</b></td><td width='40'></td>";
+		echo "<td width='80' align='right'><input type='radio' id='exportserial' name='exportformat' value='ser'> <b>".esc_attr(__('Serialized','bioship'))."</b></td><td width='40'></td>";
 		echo "<td width='80' align='right'><input type='radio' id='exportjson' name='exportformat' value='json'> <b>JSON</b></td><td width='40'></td>";
+		// TEMP: disabled while XML export format not working
 		// echo "<td width='80' align='right'><input type='radio' id='exportxml' name='exportformat' value='xml' checked> <b>XML</b></td><td width='40'></td>";
 
 		// --- export button ---
@@ -711,33 +713,36 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
 
 		// --- start import form ---
 		// 2.0.7: remove form target='themetoolsframe'
-		echo "<form action='".$actionurl."' enctype='multipart/form-data' method='post'>";
+		echo "<form action='".esc_url($actionurl)."' enctype='multipart/form-data' method='post'>";
 		echo "<input type='hidden' name='import_theme_settings' value='yes'>";
 		wp_nonce_field('import_theme_settings_'.$vthemename);
 		// for import debugging switch passthrough
 		if (THEMEDEBUG) {echo "<input type='hidden' name='themedebug' value='2'>";}
+
 		echo "<table><tr height='25'><td> </td></tr><tr>";
 
-		// --- select import method ---
-		echo "<td style='vertical-align:top; line-height:12px;'><b>".__('Import Method','bioship').":<b><br><br>";
-		echo "<input type='radio' id='fileuploadimport' name='importmethod' value='fileupload' onchange='switchimportmethod(\"fileupload\")' checked> <a href='javascript:void(0);' onclick='switchimportmethod(\"fileupload\");' style='text-decoration:none;'>".__('File Upload','bioship')."</a><br><br>";
-		echo "<input type='radio' id='textareaimport' name='importmethod' value='textarea' onchange='switchimportmethod(\"textarea\");'> <a href='javascript:void(0);' onclick='switchimportmethod(\"textarea\");' style='text-decoration:none;'>".__('Text Area','bioship')."</a></td>";
-		echo "<td width='20'></td>";
+			// --- select import method ---
+			echo "<td style='vertical-align:top; line-height:12px;'><b>".__('Import Method','bioship').":<b><br><br>";
+			echo "<input type='radio' id='fileuploadimport' name='importmethod' value='fileupload' onchange='switchimportmethod(\"fileupload\")' checked> <a href='javascript:void(0);' onclick='switchimportmethod(\"fileupload\");' style='text-decoration:none;'>".esc_attr(__('File Upload','bioship'))."</a><br><br>";
+			echo "<input type='radio' id='textareaimport' name='importmethod' value='textarea' onchange='switchimportmethod(\"textarea\");'> <a href='javascript:void(0);' onclick='switchimportmethod(\"textarea\");' style='text-decoration:none;'>".esc_attr(__('Text Area','bioship'))."</a></td>";
+			echo "<td width='20'></td>";
 
-		// --- textarea import fields ---
-		echo "<td align='center' style='vertical-align:middle;'><div id='importtextareas' style='display:none;'>";
-		echo "(".__('XML, JSON or Serialized','bioship')."<br>".__('are auto-recognized.','bioship').")<br>";
-		echo "<textarea name='importtextarea' id='importtextarea' style='width:300px; height:80px;'></textarea>";
-		echo "</div></td>";
+			// --- textarea import fields ---
+			echo "<td align='center' style='vertical-align:middle;'><div id='importtextareas' style='display:none;'>";
+			echo "(".esc_attr(__('XML, JSON or Serialized','bioship'))."<br>".esc_attr(__('are auto-recognized.','bioship')).")<br>";
+			echo "<textarea name='importtextarea' id='importtextarea' style='width:300px; height:80px;'></textarea>";
+			echo "</div></td>";
 
-		// --- file upload import field ---
-		echo "<td align='center' style='vertical-align:middle;'><div id='importfileselect' style='width:300px;'>";
-		echo __('Select Theme Options file to Import','bioship').":<br><br>";
-		echo "<input type='file' name='importthemeoptions' size='30'></div></td>";
+			// --- file upload import field ---
+			echo "<td align='center' style='vertical-align:middle;'><div id='importfileselect' style='width:300px;'>";
+			echo esc_attr(__('Select Theme Options file to Import','bioship')).":<br><br>";
+			echo "<input type='file' name='importthemeoptions' size='30'></div></td>";
 
-		// --- import submit button ---
-		echo "</td><td width='20'></td>";
-		echo "<td style='vertical-align:bottom;'><input type='submit' class='button-primary' value='".__('Import','bioship')."' onclick='return confirmimport();'></td></tr></table></form>";
+			// --- import submit button ---
+			echo "</td><td width='20'></td>";
+			echo "<td style='vertical-align:bottom;'><input type='submit' class='button-primary' value='".esc_attr(__('Import','bioship'))."' onclick='return confirmimport();'></td>";
+
+		echo "</tr></table></form>";
 
 	echo "</div></td></tr></table>";
 
@@ -797,7 +802,7 @@ if (!function_exists('bioship_admin_backup_theme_settings')) {
 	// --- set/alert admin message ---
 	$message = __('Current Theme Settings User Backup has been Created!','bioship');
 	if (defined('DOING_AJAX') && DOING_AJAX) {
-		echo "<script>alert('".$message."');</script>"; exit;
+		echo "<script>alert('".esc_js($message)."');</script>"; exit;
 	} else {
 		global $vadminmessages; $vadminmessages[] = $message;
 		bioship_admin_notices_enqueue();
@@ -988,7 +993,7 @@ if (!function_exists('bioship_admin_import_theme_settings')) {
 		if ((substr($importdata, 0, 1) == '<') && (substr($importdata, -1, 1) == '>') ) {$format = 'xml';}
 		elseif ( (substr($importdata, 0, 1) == '{') && (substr($importdata, -1, 1) == '}') ) {$format = 'json';}
 		elseif (is_serialized($importdata)) {$format = 'serial';}
-		if (THEMEDEBUG) {echo "<!-- Import Data Type: ".$format." -->";}
+		if (THEMEDEBUG) {echo "<!-- Import Data Type: ".esc_attr($format)." -->";}
 
 		// --- convert according to file format ---
 		if ($format == 'json') {
@@ -1016,14 +1021,14 @@ if (!function_exists('bioship_admin_import_theme_settings')) {
 		} else {
 			$format = strtolower($verifyupload['type']);
 			$data = $verifyupload['data'];
-			if (THEMEDEBUG) {echo "<!-- Uploaded File Type: ".$format." -->";}
+			if (THEMEDEBUG) {echo "<!-- Uploaded File Type: ".esc_attr($format)." -->";}
 			if ($format == 'json') {$newthemesettings = json_decode($data, true);}
 			elseif ($format == 'xml') {$newthemesettings = bioship_admin_xml_to_array($data);}
 			elseif (is_serialized($vdata)) {$newthemesettings = unserialize($data);}
 		}
 	}
 
-	if (THEMEDEBUG) {echo "<-- Uploaded Theme Options: "; print_r($vnewthemeoptions); echo " -->";}
+	if (THEMEDEBUG) {echo "<-- Uploaded Theme Options: ".esc_attr(print_r($newthemesettings))." -->";}
 
 	if ($newthemesettings && is_array($newthemesettings)) {
 
@@ -1064,11 +1069,12 @@ if (!function_exists('bioship_admin_import_theme_settings')) {
 	// --- set import result message ---
 	// 1.9.5: add theme admin message
 	global $vadminmessages; $vadminmessages[] = $message;
-	// echo "<script>alert('".$message."');</script>"; exit;
+	// echo "<script>alert('".esc_js($message)."');</script>"; exit;
 
 	// TODO: use bioship_debug function here ?
 	if (THEMEDEBUG) {
-		echo "<!-- New Theme Options: "; print_r(get_option(THEMEKEY)); echo " -->";
+		$newsettings = get_option(THEMEKEY);
+		echo "<!-- New Theme Settings: ".esc_attr(print_r($newsettings))." -->";
 		$debugdata = print_r($newthemesettings, true).PHP_EOL.print_r($vthemesettings, true);
 		bioship_write_debug_file('file-upload-import.txt', $debugdata);
 	}
@@ -1135,8 +1141,7 @@ if (!function_exists('bioship_admin_array_to_xml')) {
         if (is_array($value)) {
             $newobject = $object->addChild($key);
             bioship_admin_array_to_xml($newobject, $value);
-        }
-        else {
+        } else {
         	// --- handle htmlspecialchars ---
             $object->addChild($key, htmlspecialchars($value));
         }
@@ -1218,7 +1223,7 @@ if (!function_exists('bioship_admin_verify_file_upload')) {
 		}
 
 		// --- Check MIME Type ---
-		// note: DO NOT TRUST $_FILES['upfile']['mime'] VALUE ! )
+		// note: DO NOT TRUST $_FILES['upfile']['mime'] VALUE !
 		if (class_exists('finfo')) {
 			// 2.0.8: fix for serialized extension validation
 			$finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -1227,16 +1232,16 @@ if (!function_exists('bioship_admin_verify_file_upload')) {
 				array('xml' => 'text/xml', 'json' => 'text/json', 'ser' => 'text/plain'),
 				true
 			)) {
-				echo "<!-- "; print_r($finfo); echo " -->";
-				// echo "<!-- ".$finfo->file[$_FILES[$inputkey]['tmp_name'])." -->";
+				echo "<!-- File Info: ".print_r($finfo,true)." -->";
+				// echo "<!-- Tmp Name: ".esc_attr($finfo->file[$_FILES[$inputkey]['tmp_name']))." -->";
 				throw new RuntimeException(__('Invalid file format.','bioship'));
 			}
 		} else {
 			if (isset($_FILES[$inputkey]['mime'])) {
-				echo "<!-- File Mime Type: ".$_FILES[$inputkey]['mime']." -->";
+				echo "<!-- File Mime Type: ".esc_attr($_FILES[$inputkey]['mime'])." -->";
 			}
 			$pathinfo = pathinfo($_FILES[$inputkey]['name']);
-			echo "<!-- File Path Info: "; print_r($pathinfo); echo "-->";
+			echo "<!-- File Path Info: ".esc_attr(print_r($pathinfo))."-->";
 			$extension = $pathinfo['extension'];
 			$valid = array('json', 'xml', 'ser');
 			if (!in_array($extension, $valid)) {
@@ -1264,9 +1269,8 @@ if (!function_exists('bioship_admin_verify_file_upload')) {
 
 	} catch (RuntimeException $e) {
 		$error = $e->getMessage();
-		echo "<!-- ERROR: ".$error." -->";
+		echo "<!-- ERROR: ".esc_attr($error)." -->";
 		return new WP_Error('failed', $error);
 	}
  }
 }
-
