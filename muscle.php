@@ -629,7 +629,9 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 	// 2.0.1: added loading filter
 	$load = bioship_apply_filters('muscle_load_selectivizr', true);
 	if ($load) {
-		$selectivizr = bioship_file_hierarchy('both', 'selectivizr.min.js', $vthemedirs['script']);
+		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+		$selectivizr = bioship_file_hierarchy('both', 'selectivizr'.$suffix.'.js', $vthemedirs['script']);
 		if (is_array($selectivizr)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($selectivizr['file']));} else {$cachebust = $vjscachebust;}
@@ -643,7 +645,9 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 	// 2.0.1: added loading filter
 	$load = bioship_apply_filters('muscle_load_html5shiv', true);
 	if ($load) {
-		$html5 = bioship_file_hierarchy('both', 'html5.js', $vthemedirs['script']);
+		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+		$html5 = bioship_file_hierarchy('both', 'html5'.$suffix.'.js', $vthemedirs['script']);
 		if (is_array($html5)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($html5['file']));} else {$cachebust = $vjscachebust;}
@@ -657,6 +661,8 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 	// 2.0.1: added loading filter
 	$load = bioship_apply_filters('muscle_load_supersleight', true);
 	if ($load) {
+		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
 		$supersleight = bioship_file_hierarchy('both', 'supersleight.js', $vthemedirs['script']);
 		if (is_array($supersleight)) {
 			// 2.1.1: fix to cachebusting conditions
@@ -672,7 +678,9 @@ if (!function_exists('bioship_muscle_internet_explorer_scripts')) {
 	// 2.0.1: added loading filter
 	$load = bioship_apply_filters('muscle_load_ie8dom', true);
 	if ($load) {
-		$ie8 = bioship_file_hierarchy('both', 'ie8.js', $vthemedirs['script']);
+		// 2.1.3: renamed ie8.js to ie8.min.js, honour SCRIPT_DEBUG constant
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+		$ie8 = bioship_file_hierarchy('both', 'ie8'.$suffix.'.js', $vthemedirs['script']);
 		if (is_array($ie8)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($ie8['file']));} else {$cachebust = $vjscachebust;}
@@ -716,7 +724,9 @@ if (!function_exists('bioship_muscle_load_prefixfree')) {
 	if (!$load) {return;}
 
 	// --- load PrefixFree ---
-	$prefixfree = bioship_file_hierarchy('both', 'prefixfree.js', $vthemedirs['script']);
+	// 2.1.3: honour SCRIPT_DEBUG constant
+	if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+	$prefixfree = bioship_file_hierarchy('both', 'prefixfree'.$suffix.'.js', $vthemedirs['script']);
 	if (is_array($prefixfree)) {
 
 		// 2.1.1: fix to cachebusting conditions
@@ -939,7 +949,9 @@ if (!function_exists('bioship_muscle_load_csssupports')) {
 	if (!$load) {return;}
 
 	// --- load CSS Supports ---
-	$csssupports = bioship_file_hierarchy('url', 'CSS.supports.js', $vthemedirs['script']);
+	// 2.1.3: honour SCRIPT_DEBUG constant
+	if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+	$csssupports = bioship_file_hierarchy('url', 'CSS.supports'.$suffix.'.js', $vthemedirs['script']);
 	if (is_array($csssupports)) {
 		// 2.1.1: fix to cachebusting conditions
 		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$cachebust = date('ymdHi', filemtime($csssupports['file']));}
@@ -1021,7 +1033,8 @@ if (!function_exists('bioship_muscle_load_modernizr')) {
 		else {$cachebust = $vjscachebust;}
 		wp_enqueue_script('modernizr', $modernizr['url'], array('jquery'), $cachebust, true);
 		// 2.0.9: add javascript variable to global to auto-initialize modernizr
-		$vthemevars[] = "var loadmodernizr = 'yes'; ";
+		// 2.1.3: add to prefixed global settings variable
+		$vthemevars[] = "bioship.loadmodernizr = 'yes'; ";
 	}
  }
 }
@@ -1051,7 +1064,8 @@ if (!function_exists('bioship_muscle_smooth_scrolling')) {
 	// --- add run trigger to footer ---
 	// (detected by bioship-init.js)
 	// 2.0.9: use theme load variables instead of input field
-	$vthemevars[] = "var smoothscrolling = 'yes'; ";
+	// 2.1.3: add to prefixed global settings variable
+	$vthemevars[] = "bioship.smoothscrolling = 'yes'; ";
  }
 }
 
@@ -1073,7 +1087,9 @@ if (!function_exists('bioship_muscle_load_matchheight')) {
 	if (!$load) {return;}
 
 	// --- load MatchHeight ---
-	$matchheight = bioship_file_hierarchy('both', 'jquery.matchHeight.js', $vthemedirs['script']);
+	// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+	if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+	$matchheight = bioship_file_hierarchy('both', 'jquery.matchHeight'.$suffix.'.js', $vthemedirs['script']);
 	if (is_array($matchheight)) {
 		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$cachebust = date('ymdHi', filemtime($matchheight['file']));}
 		else {$cachebust = $vjscachebust;}
@@ -1082,7 +1098,8 @@ if (!function_exists('bioship_muscle_load_matchheight')) {
 		// --- add run trigger to footer ---
 		// (detected by bioship-init.js)
 		// 2.0.9: use theme load variables instead of input field
-		$vthemevars[] = "var loadmatchheights = 'yes'; ";
+		// 2.1.3: add to prefixed global settings variable
+		$vthemevars[] = "bioship.loadmatchheights = 'yes'; ";
 	}
  }
 }
@@ -1092,12 +1109,14 @@ if (!function_exists('bioship_muscle_load_matchheight')) {
 // 1.5.0: Added Sticky Kit Loading
 // 1.8.5: check themesettings internally to allow filtering
 if (!function_exists('bioship_muscle_load_stickykit')) {
+
  add_action('wp_enqueue_scripts', 'bioship_muscle_load_stickykit');
+
  function bioship_muscle_load_stickykit() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
 	// 1.8.5: seems to cause customizer some troubles
-	// 1.9.9: add pagenow check also for same reason
+	// 1.9.9: added pagenow check also for same reason
 	global $pagenow;
 	if ( ($pagenow == 'customizer.php') || (is_customize_preview()) ) {return;}
 
@@ -1110,12 +1129,15 @@ if (!function_exists('bioship_muscle_load_stickykit')) {
 	if (!$load) {return;}
 
 	// --- load Sticky Kit ---
-	$stickykit = bioship_file_hierarchy('both', 'jquery.sticky-kit.min.js', $vthemedirs['script']);
+	// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+	if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+	$stickykit = bioship_file_hierarchy('both', 'jquery.sticky-kit'.$suffix.'.js', $vthemedirs['script']);
 	if (is_array($stickykit)) {
 		// 2.1.1: fix to cachebusting conditions
+		// 2.1.3: moved from footer as was loaded after bioship-init.js
 		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$cachebust = date('ymdHi', filemtime($stickykit['file']));}
 		else {$cachebust = $vjscachebust;}
-		wp_enqueue_script('stickykit', $stickykit['url'], array('jquery'), $cachebust, true);
+		wp_enqueue_script('stickykit', $stickykit['url'], array('jquery'), $cachebust);
 
 		// --- set Sticky Kit elements ---
 		// 2.0.9: set stickykit elements array variable instead of input field
@@ -1125,12 +1147,14 @@ if (!function_exists('bioship_muscle_load_stickykit')) {
 		if (is_string($stickyelements)) {
 			if ($stickyelements == '') {return;}
 			elseif (strstr($stickyelements, ',')) {$stickyelements = explode(',', $stickyelements);}
-			else {$stickyelements[0] = $stickyelements;
+			else {$stickyelements = array($stickyelements);
 		}
 		if (!is_array($stickyelements) || (count($stickyelements) < 1)) {return;}
-		$scriptvar = "var stickyelements = new Array(); ";
+
+		// 2.1.3: add to prefixed global settings variable
+		$scriptvar = "bioship.stickyelements = new Array(); ";
 		foreach ($stickyelements as $i => $element) {
-			$scriptvar .= "stickyelements[".$i."] = '".trim($element)."'; ";
+			$scriptvar .= "bioship.stickyelements[".$i."] = '".trim($element)."'; ";
 		}
 		$vthemevars[] = $scriptvar;
 	}
@@ -1169,12 +1193,15 @@ if (!function_exists('bioship_muscle_load_fitvids')) {
 		if (is_string($fitvidselements)) {
 			if ($fitvidselements == '') {return;}
 			elseif (strstr($fitvidselements, ',')) {$fitvidselements = explode(',', $fitvidselements);}
-			else {$fitvidselements[0] = $fitvidselements;
+			else {$fitvidselements = array($fitvidselements);
 		}
 		if (!is_array($fitvidselements) || (count($fitvidselements) < 1)) {return;}
-		$scriptvar = "var fitvidselements = new Array(); ";
+
+		// --- add to script variables global ---
+		// 2.1.3: add to prefixed global settings variable
+		$scriptvar = "bioship.fitvidselements = new Array(); ";
 		foreach ($fitvidselements as $i => $element) {
-			$scriptvar .= "fitvidselements[".$i."] = '".trim($element)."'; ";
+			$scriptvar .= "bioship.fitvidselements[".$i."] = '".trim($element)."'; ";
 		}
 		$vthemevars[] = $scriptvar;
 	}
@@ -1230,7 +1257,8 @@ if (!function_exists('bioship_muscle_logo_resize')) {
     // --- add run trigger to footer ---
     // (detected by bioship-init.js)
     // 2.0.9: use theme load variables instead of input field
-    $vthemevars[] = "var logoresize = 'yes'; ";
+    // 2.1.3: add to prefixed global settings variable
+    $vthemevars[] = "bioship.logoresize = 'yes'; ";
  }
 }
 
@@ -1254,7 +1282,8 @@ if (!function_exists('bioship_muscle_site_text_resize')) {
     // --- add run trigger to footer ---
     // (detected by bioship-init.js)
     // 2.0.9: use theme script variables instead of input field
-    $vthemevars[] = "var sitetextresize = 'yes'; ";
+    // 2.1.3: add to prefixed global settings variable
+    $vthemevars[] = "bioship.sitetextresize = 'yes'; ";
  }
 }
 
@@ -1278,7 +1307,8 @@ if (!function_exists('bioship_muscle_header_resize')) {
     // --- add run trigger to footer ---
     // (detected by bioship-init.js)
     // 2.0.9: use theme script variables instead of input field
-	$vthemevars[] = "var headerresize = 'yes'; ";}
+    // 2.1.3: add to prefixed global settings variable
+	$vthemevars[] = "bioship.headerresize = 'yes'; ";}
  }
 }
 
@@ -1294,16 +1324,17 @@ if (!function_exists('bioship_muscle_output_script_vars')) {
 
  	// --- set and filter script variables ---
  	// 2.1.1: always output maxwidth at minimum
-	$vthemevars[] = "var maxwidth = '".$vthemelayout['maxwidth']."'; ";
+	$vthemevars[] = "bioship.maxwidth = '".$vthemelayout['maxwidth']."'; ";
 	// 2.1.1: add filter for script variables before output
 	$scriptvars = bioship_apply_filters('muscle_script_vars', $vthemevars);
  	if (!is_array($scriptvars) || (count($scriptvars) < 1) ) {return;}
 
  	// --- output theme script variables ---
- 	echo "<script>";
- 	 	foreach ($scriptvars as $scriptvar) {
- 	 		echo $scriptvar.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
- 	 	}
+ 	// 2.1.3: use global settings object
+ 	echo "<script>var bioship = {}; ";
+	foreach ($scriptvars as $scriptvar) {
+		echo $scriptvar; // phpcs:ignore WordPress.Security.OutputNotEscaped
+	}
  	echo "</script>";
  }
 }
@@ -2136,6 +2167,100 @@ if (!function_exists('bioship_muscle_admin_post_thumbnail_column')) {
  }
 }
 
+// ---------------------------------------
+// Add Theme Options to the Admin Bar menu
+// ---------------------------------------
+// 1.8.5: moved here from muscle.php, option changed to filter
+// 2.1.3: moved back to muscle.php (to work on frontend)
+if (!function_exists('bioship_muscle_adminbar_theme_options')) {
+
+ // 2.0.5: check filter inside function for consistency
+ add_action('wp_before_admin_bar_render', 'bioship_muscle_adminbar_theme_options');
+
+ function bioship_muscle_adminbar_theme_options() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	global $wp_admin_bar, $vthemename, $vthemedirs;
+
+	// 2.1.2: check admin permissions
+	if (!current_user_can('manage_options') && !current_user_can('edit_theme_options')) {return;}
+
+	// --- filter adding of theme options link ---
+	$adminbar = bioship_apply_filters('admin_adminbar_theme_options', true);
+	if (!$adminbar) {return;}
+
+	// --- set theme options link ---
+	if (THEMEOPT || THEMETITAN || class_exists('TitanFramework')) {
+		// 1.8.5: use add_query_arg here
+		$themelink = admin_url('themes.php');
+		if (THEMEOPT) {$themepage = 'options-framework';} else {$themepage = 'bioship-options';}
+		$themelink = add_query_arg('page', $themepage, $themelink);
+	} else {
+		// 1.8.0: link to customize.php if no theme options page exists
+		$themelink = admin_url('customize.php');
+		$themelink = add_query_arg('return', urlencode(wp_unslash($_SERVER['REQUEST_URI'])), $themelink);
+	}
+
+	// --- theme test drive compatibility ---
+	// 1.8.5: maybe append the Theme Test Drive querystring
+	if (isset($_REQUEST['theme']) && ($_REQUEST['theme'] != '')) {
+		$themelink = add_query_arg('theme', $_REQUEST['theme'], $themelink);
+	}
+
+	// --- add theme options link icon ---
+	// 1.5.0: Add an Icon next to the Theme Options menu item
+	// ref: http://wordpress.stackexchange.com/questions/172939/how-do-i-add-an-icon-to-a-new-admin-bar-item
+	// default is set to \f115 Dashicon (an eye in a screen) in skin.php
+	// and can be overridden using admin_adminbar_menu_icon filter
+	$icon = bioship_file_hierarchy('url', 'theme-icon.png', $vthemedirs['image']);
+	$icon = bioship_apply_filters('admin_adminbar_theme_options_icon', $icon);
+	if ($icon) {
+		// 2.0.9: fix for variable name (vthemesettingsicon)
+		$iconspan = '<span class="theme-options-icon" style="
+			float:left; width:22px !important; height:22px !important;
+			margin-left: 5px !important; margin-top: 5px !important;
+			background-image:url(\''.$icon.'\');"></span>';
+	} else {$iconspan = '<span class="ab-icon"></span>';}
+
+	// --- add admin bar link and title ---
+	$title = __('Theme Options','bioship');
+	$title = bioship_apply_filters('admin_adminbar_theme_options_title', $title);
+	$menu = array('id' => 'theme-options', 'title' => $iconspan.$title, 'href' => $themelink);
+	$wp_admin_bar->add_menu($menu);
+ }
+}
+
+// --------------------------------
+// Replace the Welcome in Admin bar
+// --------------------------------
+// 1.8.5: moved here from muscle.php
+// 2.1.3: moved back to muscle.php (to work on frontend)
+if (!function_exists('bioship_muscle_adminbar_replace_howdy')) {
+
+ add_filter('admin_bar_menu', 'bioship_muscle_adminbar_replace_howdy', 25);
+
+ function bioship_muscle_adminbar_replace_howdy($wp_admin_bar) {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+
+	// 2.1.1: filter whether to replace welcome message
+	$replacehowdy = bioship_apply_filters('admin_adminbar_replace_howdy', true);
+	if (!$replacehowdy) {return;}
+
+	// 1.9.8: replaced deprecated function get_currentuserinfo();
+	// 2.0.7: use new prefixed current user function
+	$current_user = bioship_get_current_user();
+	$username = $current_user->user_login;
+	$myaccount = $wp_admin_bar->get_node('my-account');
+
+	// --- filter the new node title ---
+	// 1.5.5: fixed translation for Theme Check
+	$newtitle = __('Logged in as', 'bioship').' '.$username;
+	$newtitle = bioship_apply_filters('admin_adminbar_howdy_title', $newtitle);
+
+	$wp_admin_bar->add_node(array('id' => 'my-account', 'title' => $newtitle));
+ }
+}
+
 // -------------------------------
 // Post Thumbnail Display Callback
 // -------------------------------
@@ -2485,11 +2610,12 @@ if (isset($_GET['csshero_action']) && ($_GET['csshero_action'] == 'edit_page')) 
 			add_filter('stylesheet_directory_uri', 'bioship_csshero_script_url', 10, 3);
 
 			// 2.1.1: added missing function_exists wrapper
+			// 2.1.3: renamed csshero.js to bioship-csshero.js
 			if (!function_exists('bioship_csshero_script_url')) {
 			 function bioship_csshero_script_url($stylesheet_dir_url, $stylesheet, $theme_root_url) {
 				if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 				global $vthemedirs;
-				$csshero = bioship_file_hierarchy('url', 'csshero.js', $vthemedirs['script']);
+				$csshero = bioship_file_hierarchy('url', 'bioship-csshero.js', $vthemedirs['script']);
 				if ($csshero) {$stylesheet_dir_url = dirname($csshero);}
 				remove_filter('stylesheet_directory_url', 'skeleton_css_hero_script_url', 10, 3);
 				return $stylesheet_dir_url;
@@ -2978,7 +3104,8 @@ if (!function_exists('bioship_muscle_load_foundation')) {
 
 		// --- initialize via script variable ---
 		// 2.0.9: use script load variable instead of input
-		$vthemevars[] = "var loadfoundation = 'yes'; ";}
+		// 2.1.3: add to prefixed global settings variable
+		$vthemevars[] = "var bioship.loadfoundation = 'yes'; ";}
 	}
  }
 }

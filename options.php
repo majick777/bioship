@@ -316,21 +316,6 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 		function bioship_titan_admin_page_clean() {ob_end_clean();}
 	}
 
-	// enqueue the Options Framework tab script for Titan use
-	// ------------------------------------------------------
-	// (good to go now that the tabbing has been standardized!)
-	// 1.8.0: use the Options Framework tab script for Titan tabbing
-	// 1.8.5: [deprecated] replaced this with standalone tab clicking in admin.php
-	// if (!function_exists('bioship_options_titan_tab_script')) {
-	// add_action('admin_enqueue_scripts','bioship_options_titan_tab_script');
-	// function bioship_options_titan_tab_script() {
-	// 	if (strstr($_SERVER['REQUEST_URI'], 'admin.php?page='.$vthemename)) {
-	//		$tabscripturl = bioship_file_hierarchy('url', 'options-custom.js', array('scripts', 'includes/options/js'));
-	//		if (tabscripturl) {wp_enqueue_script('options-custom', $tabscripturl, array('jquery'), TF_VERSION);}
-	//	}
-	// }
-	// }
-
 	// ----------------------
 	// Titan Nonce Keep Alive
 	// ----------------------
@@ -435,10 +420,11 @@ if (!function_exists('bioship_optionsframework_resource_url_fix')) {
 		// --- Options Framework script URL fix ---
 		global $wp_scripts;
 		foreach ($wp_scripts->registered as $handle => $script) {
-			if ($handle == 'options-custom') {
-				$script->src = $optionsurlpath.'js/options-custom.js';
-				$wp_scripts->registered[$handle] = $script;
-			}
+			// 2.1.3: removed as deprecated this script usage
+			// if ($handle == 'options-custom') {
+			//	$script->src = $optionsurlpath.'js/options-custom.js';
+			//	$wp_scripts->registered[$handle] = $script;
+			// }
 			if ($handle == 'of-media-uploader') {
 				// 1.8.5: fix to media-uploader.js
 				$script->src = $optionsurlpath.'js/media-uploader.js';
@@ -1313,10 +1299,11 @@ if (!function_exists('bioship_options')) {
 	// Active Menu Item Colour
 	// -----------------------
 	// 1.8.5: added this style option
+	// 2.1.3: changed default active colour from #DDDDDD
 	$options[] = array( 'name' => __('Active Menu Item Text Color','bioship'),
 		'desc' => __('Text Color for Current Page Menu Item.','bioship'),
 		'id' => 'navmenuactivecolor',
-		'std' => '#DDDDDD',
+		'std' => '#555555',
 		// 'css' => '#navigation #mainmenu ul li.active, #navigation #mainmenu ul li.curent-menu-item {color: value;}',
 		'csselement' => '#navigation #mainmenu ul li.active, #navigation #mainmenu ul li.curent-menu-item',
 		'cssproperty' => 'color',

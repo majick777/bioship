@@ -13,15 +13,15 @@ bioship_html_comment('.archive-header');
 $attributes = hybrid_get_attr('archive-header');
 echo "<div ".$attributes.">";
 
-
 	// --- Loop Title ---
 
 	$looptitle = bioship_get_loop_title();
 	if ($looptitle) {
 		// 1.9.8: switch from .loop-title to .archive-title
+		// 2.1.3: removed esc_attr from loop title (breaks HTML)
 		bioship_html_comment('.archive-title');
 		$attributes = hybrid_get_attr('archive-title');
-		echo "<h2 ".$attributes.">".esc_attr($looptitle)."</h2>";
+		echo "<h2 ".$attributes.">".$looptitle."</h2>";
 		bioship_html_comment('/.archive-title');
 	}
 
@@ -32,9 +32,10 @@ echo "<div ".$attributes.">";
 		$description = bioship_get_loop_description();
 		if ($description) {
 			// 1.9.8: switch from .loop-description to .archive-description
+			// 2.1.3: removed esc_attr from loop description (breaks HTML)
 			bioship_html_comment('.archive-description');
 			$attributes = hybrid_get_attr('archive-description');
-			echo "<div ".$attributes.">".esc_attr($description)."</div>";
+			echo "<div ".$attributes.">".$description."</div>";
 			bioship_html_comment('/.archive-description');
 		}
 	}
