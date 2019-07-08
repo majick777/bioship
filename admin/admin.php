@@ -952,98 +952,6 @@ if (!function_exists('bioship_documentation_link_external')) {
  }
 }
 
-// ---------------------------------------
-// Add Theme Options to the Admin bar menu
-// ---------------------------------------
-// 1.8.5: moved here from muscle.php, option changed to filter
-if (!function_exists('bioship_admin_adminbar_theme_options')) {
-
- // 2.0.5: check filter inside function for consistency
- add_action('wp_before_admin_bar_render', 'bioship_admin_adminbar_theme_options');
-
- function bioship_admin_adminbar_theme_options() {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
-	global $wp_admin_bar, $vthemename, $vthemedirs;
-
-	// 2.1.2: check admin permissions
-	if (!current_user_can('manage_options') && !current_user_can('edit_theme_options')) {return;}
-
-	// --- filter adding of theme options link ---
-	$adminbar = bioship_apply_filters('admin_adminbar_theme_options', true);
-	if (!$adminbar) {return;}
-
-	// --- set theme options link ---
-	if (THEMEOPT || THEMETITAN || class_exists('TitanFramework')) {
-		// 1.8.5: use add_query_arg here
-		$themelink = admin_url('themes.php');
-		if (THEMEOPT) {$themepage = 'options-framework';} else {$themepage = 'bioship-options';}
-		$themelink = add_query_arg('page', $themepage, $themelink);
-	} else {
-		// 1.8.0: link to customize.php if no theme options page exists
-		$themelink = admin_url('customize.php');
-		$themelink = add_query_arg('return', urlencode(wp_unslash($_SERVER['REQUEST_URI'])), $themelink);
-	}
-
-	// --- theme test drive compatibility ---
-	// 1.8.5: maybe append the Theme Test Drive querystring
-	if (isset($_REQUEST['theme']) && ($_REQUEST['theme'] != '')) {
-		$themelink = add_query_arg('theme', $_REQUEST['theme'], $themelink);
-	}
-
-	// --- add theme options link icon ---
-	// 1.5.0: Add an Icon next to the Theme Options menu item
-	// ref: http://wordpress.stackexchange.com/questions/172939/how-do-i-add-an-icon-to-a-new-admin-bar-item
-	// default is set to \f115 Dashicon (an eye in a screen) in skin.php
-	// and can be overridden using admin_adminbar_menu_icon filter
-	$icon = bioship_file_hierarchy('url', 'theme-icon.png', $vthemedirs['image']);
-	$icon = bioship_apply_filters('admin_adminbar_theme_options_icon', $icon);
-	if ($icon) {
-		// 2.0.9: fix for variable name (vthemesettingsicon)
-		$iconspan = '<span class="theme-options-icon" style="
-			float:left; width:22px !important; height:22px !important;
-			margin-left: 5px !important; margin-top: 5px !important;
-			background-image:url(\''.$icon.'\');"></span>';
-	} else {$iconspan = '<span class="ab-icon"></span>';}
-
-	// --- add admin bar link and title ---
-	$title = __('Theme Options','bioship');
-	$title = bioship_apply_filters('admin_adminbar_theme_options_title', $title);
-	$menu = array('id' => 'theme-options', 'title' => $iconspan.$title, 'href' => $themelink);
-	$wp_admin_bar->add_menu($menu);
- }
-}
-
-// --------------------------------
-// Replace the Welcome in Admin bar
-// --------------------------------
-// 1.8.5: moved here from muscle.php
-if (!function_exists('bioship_admin_adminbar_replace_howdy')) {
-
- add_filter('admin_bar_menu', 'bioship_admin_adminbar_replace_howdy', 25);
-
- function bioship_admin_adminbar_replace_howdy($wp_admin_bar) {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	// 2.1.1: filter whether to replace welcome message
-	$replacehowdy = bioship_apply_filters('admin_adminbar_replace_howdy', true);
-	if (!$replacehowdy) {return;}
-
-	// 1.9.8: replaced deprecated function get_currentuserinfo();
-	// 2.0.7: use new prefixed current user function
-	$current_user = bioship_get_current_user();
-	$username = $current_user->user_login;
-	$myaccount = $wp_admin_bar->get_node('my-account');
-
-	// --- filter the new node title ---
-	// 1.5.5: fixed translation for Theme Check
-	$newtitle = __('Logged in as', 'bioship').' '.$username;
-	$newtitle = bioship_apply_filters('admin_adminbar_howdy_title', $newtitle);
-
-	$wp_admin_bar->add_node(array('id' => 'my-account', 'title' => $newtitle));
- }
-}
-
 // -------------------
 // Remove Admin Footer
 // -------------------
@@ -1074,6 +982,26 @@ if (!function_exists('bioship_enqueue_media_files')) {
 	wp_enqueue_script('media-models');
 	wp_enqueue_script('media-views');
 	wp_enqueue_media();
+ }
+}
+
+// ------------------------------
+// Sticky Widgets on Widgets Page
+// ------------------------------
+// ref: https://github.com/srikat/admin-sticky-widget-areas
+// 2.1.3: moved here from stylesheet usage
+if (!function_exists('bioship_admin_sticky_widget_areas')) {
+
+ add_action('admin_footer', 'bioship_admin_sticky_widget_areas');
+
+ function bioship_admin_sticky_widget_areas() {
+
+	global $pagenow;
+
+	if ($pagenow == 'widgets.php') {
+		echo "<style>@media only screen and (min-width: 481px) {
+			.widget-liquid-right {position: -webkit-sticky; position: sticky; top: 42px;} }</style>";
+	}
  }
 }
 
@@ -1859,12 +1787,13 @@ if (!function_exists('bioship_theme_options_refresh_titan_nonce')) {
 // --------------------------
 // 2.1.0: add javascript popup alert for session timeout
 // 2.1.1: moved add_action internally for consistency
+// 2.1.3: fix to mismatching add action and function name
 if (!function_exists('bioship_theme_options_timeout_alert')) {
 
  // 2.1.1: fixed wp_ajax_no_priv_ prefix typo to wp_ajax_nopriv_
  add_action('wp_ajax_nopriv_bioship_theme_options_refresh_titan_nonce', 'bioship_theme_options_timeout_alert');
 
- function bioship_theme_options_logged_out_alert() {
+ function bioship_theme_options_timeout_alert() {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 
  	// TODO: maybe trigger interstitial login popup thickbox instead ?
@@ -3340,10 +3269,8 @@ if (!function_exists('bioship_admin_update_metabox_options')) {
 	// 1.9.5: changed _hide prefix to _display_
 	foreach ($displaykeys as $key) {
 		if (!isset($_POST['_display_'.$key])) {$display[$key] = '';}
-		else {
-			if ($_POST['_display_'.$key] == '1') {$display[$key] = '1'; $postdata = true;}
-			else {$display[$key] = '';}
-		}
+		elseif ($_POST['_display_'.$key] == '1') {$display[$key] = '1'; $postdata = true;}
+		else {$display[$key] = '';}
 	}
 	// 1.9.9: check and save only if new post data
 	// 2.1.1: use prefixed metakey for saving

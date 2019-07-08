@@ -154,7 +154,8 @@ if (!function_exists('bioship_skin_get_image_size')) {
 	if ( ($imagesizedata != '') && strstr($imagesizedata, '::')) {
 	 	$imagesize = explode('::', $imagesizedata);
 		// --- match URL and make sure does not exceed maximum layout width ---
-		if ( ($imagesize[2] != $imageurl) || ($imagesize[0] > $themesettings['layout']) ) {
+		// 2.1.3: fix to variable typo (themesettings)
+		if ( ($imagesize[2] != $imageurl) || ($imagesize[0] > $vthemesettings['layout']) ) {
 			delete_option($cachekey); $imagesize = false;
 		}
 	}
@@ -879,7 +880,8 @@ $links .= PHP_EOL;
 // === Body Background ===
 // -----------------------
 // 1.8.5: moved login background image url rule
-$body = '';
+// 2.1.3: set default body font (for fonts set to inherit)
+$body = 'font-family: arial, helvetica;';
 if ($vts['body_bg_color'] != '') {$body .= "background-color: ".$vts['body_bg_color'].";";}
 
 // IDEA: maybe use Customizer background image as override ?
@@ -893,6 +895,17 @@ if ($vts['background_position'] != '') {$body .= " background-position: ".$vts['
 if ($vts['background_repeat'] != '') {$body .= " background-repeat: ".$vts['background_repeat'].";";}
 if ($vts['background_attachment'] != '') {$body .= " background-attachment: ".$vts['background_attachment'].";";}
 
+// --- admin bar Theme Options icon ---
+// 1.5.0: set Theme Options default icon
+// 2.1.3: moved outside admin styles for frontend admin bar
+// (as \ is stripped in Admin CSS Theme Options save)
+// ref: https://developer.wordpress.org/resource/dashicons/
+// and: http://calebserna.com/dashicons-cheatsheet/
+$icon = '\\f115';
+if (function_exists('apply_filters')) {$icon = apply_filters('admin_adminbar_menu_icon', $icon);}
+$baricon = '#wp-admin-bar-theme-options .ab-icon:before {content: "'.$icon.'"; top:2px;}'.PHP_EOL;
+
+$styles = '';
 
 // --------------------
 // === Admin Styles ===
@@ -907,15 +920,6 @@ if ($adminstyles) {
 	if (function_exists('apply_filters')) {$admincss = apply_filters('skin_dynamic_admin_css', $admincss);}
 	echo $admincss.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
-	// --- admin bar Theme Options icon ---
-	// 1.5.0: set Theme Options default icon
-	// (as \ is stripped in Admin CSS Theme Options save)
-	// ref: https://developer.wordpress.org/resource/dashicons/
-	// and: http://calebserna.com/dashicons-cheatsheet/
-	$icon = '\\f115';
-	if (function_exists('apply_filters')) {$icon = apply_filters('admin_adminbar_menu_icon', $icon);}
-	$styles = '#wp-admin-bar-theme-options .ab-icon:before {content: "'.$icon.'"; top:2px;}'.PHP_EOL;
-
 	// --- Hybrid Hook ---
 	// 1.8.5: added simple hybrid hook style fixes
 	if (isset($vts['hybridhook']) && ($vts['hybridhook'] == '1')) {
@@ -924,6 +928,9 @@ if ($adminstyles) {
 		.hook-editor .alignleft {float: none;}
 		".PHP_EOL.PHP_EOL;
 	}
+
+	// --- Admin Bar Theme Icon ---
+	$styles .= $baricon;
 
 	// --- Sidebar Widgets page ---
 	// 1.9.0: admin Widget page sidebar class styles
@@ -1009,8 +1016,9 @@ if ($adminstyles && $loginstyles) {
 			// --- set the Login Logo styles ---
 			if ($imagesize) {
 
+				// 2.1.3: fix to undefined variable warning
 				$width = $imagesize['0']; $height = $imagesize['1'];
-				$logo .= 'body.login h1 a {'.PHP_EOL;
+				$logo = 'body.login h1 a {'.PHP_EOL;
 
 				// --- logo image URL ---
 				$logo .= ' background-image: url("';
@@ -1061,9 +1069,8 @@ if ($adminstyles && $loginstyles) {
 // -----------
 // Body Styles
 // -----------
-$styles = '';
-if ($body != '') {$styles .= "body {".$body."}".PHP_EOL;}
-$styles .= PHP_EOL;
+// 2.1.3: simplified as one body rule is now always set
+$styles = "body {".$body."}".PHP_EOL.PHP_EOL;
 
 // ---------------------
 // Wrap Container Styles
@@ -1275,6 +1282,9 @@ if ($vts['contentpadding'] != '') {
 }
 $styles .= PHP_EOL;
 
+// --- Admin Bar Theme Icon ---
+// 2.1.3: added here for frontend admin bar
+$styles .= $baricon;
 
 // ---------------------
 // === Output Styles ===

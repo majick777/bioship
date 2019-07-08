@@ -9,10 +9,40 @@
 // Support and Features: http://wordquest.org/support/bioship/
 // GitHub Repository: https://github.com/majick777/bioship/
 
-// For more detailed information see BioShip Documentation:
-// Available online at http://bioship.space/documentation/
-// or locally by loading /wp-content/themes/bioship/admin/docs.php
+// -------------------
+// Full Documentation!
+// -------------------
+// To read detailed and complete Documentation for BioShip:
+// a) popup via the Docs link on the BioShip Theme Options page
+// b) read directly by loading /wp-content/themes/bioship/admin/docs.php
+// c) available online at http://bioship.space/documentation/
 
+// -------
+// License
+// -------
+// BioShip Theme Framework, super flexible theme for WordPress
+// Copyright (C) 2019 Tony Hayes
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+// ---------------
+// Reference Links
+// ---------------
+// * See includes/links.txt for complete list of included resources.
+// * See includes/licenses.txt for list of all resource licenses.
+
+// ------------------
 // Mini Theme History
 // ------------------
 // Latest Update News: http://bioship.space/news/
@@ -25,6 +55,7 @@
 // First WordPress.Org Submission Version: WordPress ~4.8
 // Second WordPress.Org Submission Version: WordPress ~4.9
 // Third WordPress.Org Submission Version: ~5.0
+
 
 // -------------------------------
 // === functions.php Structure ===
@@ -47,24 +78,11 @@
 // - Dynamic Grid Loading Functions (for grid.php)
 // - Dynamic Skin Loading Functions (for skin.php)
 
-// Reference Links (see admin/links.txt for all)
-// ---------------------------------------------
-// Child Themes - http://codex.wordpress.org/Child_Themes
-// Skeleton Theme - http://wordpress.org/themes/smpl-skeleton
-// Skeleton Boilerplate - http://getskeleton.com
-// Hybrid Core - http://themehybrid.com/hybrid-core
-// Titan Framework - http://titanframework.net/
-// Options Framework - http://wptheming.com/options-framework-plugin/
-// WShadow Theme Updater - http://w-shadow.com/blog/2011/06/02/automatic-updates-for-commercial-themes/
-// TGM Plugin Activation - https://github.com/thomasgriffin/TGM-Plugin-Activation
-// Foundation - http://foundation.zurb.com/docs
-// Kirki - http://github.com/aristath/kirki
-
 
 // =================
 // Theme Directories
 // =================
-// (see documentation for more details)
+// (see Documentation for more details)
 
 // Assets
 // ------
@@ -95,37 +113,6 @@
 // /includes/hybridX/ 		Hybrid Core Library (2 or 3)
 // /includes/foundationX/ 	Foundation Library (5 or 6)
 // /includes/kirkiX/ 		Kirki Library (2 or 3)
-
-
-// ===============
-// Theme Constants
-// ===============
-// (see documentation for more details)
-
-// THEMEPREFIX		- theme function prefix (bioship)
-// THEMEVERSION 	- current version of BioShip Framework
-
-// THEMESSL			- if the current protocol is SSL
-// THEMEWINDOWS 	- local environment for directory paths
-
-// THEMEHOMEURL		- static URL of the BioShip website
-// THEMESUPPORT		- static URL of Support website (WordQuest)
-
-// THEMESLUG		- lowercase (dashed) current theme name
-// THEMEKEY 		- options key value for theme options
-// THEMECHILD 		- if using a Child Theme
-// THEMEPARENT 		- parent Theme template slug (if any)
-// THEMECHILDVERSION - Child Theme version (or parent if no child)
-
-// THEMETITAN 		- if Titan Framework is loaded
-// THEMEOPT 		- if Options Framework is loaded
-// THEMEDRIVE 		- if a Theme Test Drive is active
-// THEMEHYBRID		- if full Hybrid Core is loaded
-// THEMEKIRKI 		- if Kirki is loaded (customizer.php only)
-
-// THEMEDEBUG 		- output debugging information comments
-// THEMETRACE 		- if performing a theme argument trace
-// THEMECOMMENTS 	- output template element comments
 
 
 // -------------

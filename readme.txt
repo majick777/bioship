@@ -3,8 +3,11 @@ Contributors: majick
 Tags: one-column, two-columns, three-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
 License: GPLv2 or later
 License URI: http://www.opensource.org/licenses/gpl-license.php
+Donate Link: http://wordquest.org/contribute/
 Requires at least: 3.4
+Requires PHP: 5.3
 Tested up to: 5.2
+Stable tag: trunk
 
 BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
 
@@ -30,7 +33,46 @@ Plus it is now fully documented (with source code commented) for your reference,
 Please see the full documentation at http://bioship.space/documentation/
 Or click the Docs link on your Theme Options page to view them in your WordPress Admin area.
 
+
+== Upgrade Notice ==
+
+
+== Screenshots ==
+
+
 == Changelog ==
+
+= 2.1.3 = 
+- Added: license info and copy of GNU Public Licence 3 (license.txt)
+- Added: resources copyright and license list (/includes/licenses.txt)
+- Added: Hover Intent script (jquery.hoverIntent.js) for Superfish
+- Updated: all scripts to include minified and non-minified versions
+- Updated: WordQuest Helper Library to v1.7.4
+- Updated: reset stylesheet (reset.css) to v2
+- Updated: Fastclick script (fastclick.js) to v1.0.6
+- Updated: Scroll to Fixed script (jquery.scrolltofixed.js script to v1.0.7
+- Updated: Match Height script (jquery.matchHeight.js) to v0.7.2
+- Updated: PrefixFree script (prefixfree.js) to v1.0.10
+- Updated: NWMatcher script (NWMatcher.js) to v1.4.4
+- Updated: FitFids (jquery.fitvids.js) to v1.2
+- Updated: Superfish script (superfish.js) to v1.7.10
+- Updated: Normalize style (normalize.css) to v8.0.1
+- Improved: optimized main theme script code (bioship-init.js)
+- Improved: honour SCRIPT_DEBUG constant to use unminified scripts
+- Improved: added default body font (for fonts with inherit rule)
+- Improved: prefix all theme javascript functions (prefix all the things)
+- Renamed: csshero.js to bioship-csshero.js (prefix all the things)
+- Moved: Admin Bar Theme Options Item to muscle.php for frontend
+- Removed: options-custom.js (old Options->Titan tab patch script)
+- Removed: smoothjump.js (single function already incorporated)
+- Removed: sticky-widgets.css file (for sticky admin widgets)
+- Removed: docready.js file (not implemented for anything)
+- Fixed: themesettings variable for get header image size (skin.php)
+- Fixed: moved Sticky Kit load to head (footer load not working)
+- Fixed: Admin Bar Theme Options icon style for frontend 
+- Fixed: mismatching function name for Titan nonce refresh
+- Fixed: removed duplicate output escaping in archive templates
+- Fixed: moved no content paragraph wrapper in error template
 
 = 2.1.2 =
 - Added: readme.txt for wordpress.org theme repository (merged changelog.txt)
@@ -41,6 +83,7 @@ Or click the Docs link on your Theme Options page to view them in your WordPress
 - Added: phpcs:ignore comment flags when echoing already escaped variables
 - Added: some missing button text translation wrappers
 - Updated: TGM Plugin Activation v2.6.1 (pre-configured for wordpress.org)
+- Updated: WordQuest Helper to v1.7.3 (reminder notice capability fix)
 - Fixed: re-added Titan web safe font filter (removed from Titan Framework)
 - Fixed: use of duplicate variable for typography in skin loader
 - Fixed: Inline Styles Setting output exiting early bug
