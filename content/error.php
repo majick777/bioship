@@ -32,9 +32,10 @@ echo "<article "; hybrid_attr('post'); echo ">".PHP_EOL;
 
 			// --- no content message ---
 			// 1.8.5: added no content message filter
-			$nocontent = wpautop( __( 'Apologies, but no entries were found.', 'bioship' ) );
+			// 2.1.3: moved paragraphs outside to prevent tag escaping
+			$nocontent = __( 'Apologies, but no entries were found.', 'bioship');
 			$nocontent = bioship_apply_filters('skeleton_no_content_message', $nocontent);
-			echo esc_attr($nocontent);
+			echo wpautop(esc_attr($nocontent));
 
 	echo "</div>".PHP_EOL;
 	bioship_html_comment('/.entry-content');

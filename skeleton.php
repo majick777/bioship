@@ -597,9 +597,10 @@ if (!function_exists('bioship_skeleton_main_menu_button')) {
 		$hidemenutext = __('Hide Menu', 'bioship');
 
 		// --- set menu buttons ---
+		// 2.1.3: prefix javascript functions
 		$buttons = '<div id="mainmenubutton" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="mainmenushow" href="javascript:void(0);" onclick="showmainmenu();">'.esc_attr($showmenutext).'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="mainmenuhide" href="javascript:void(0);" onclick="hidemainmenu();" style="display:none;">'.esc_attr($hidemenutext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="mainmenushow" href="javascript:void(0);" onclick="bioship_showmainmenu();">'.esc_attr($showmenutext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="mainmenuhide" href="javascript:void(0);" onclick="bioship_hidemainmenu();" style="display:none;">'.esc_attr($hidemenutext).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 
 		// --- filter and output menu buttons ---
@@ -909,14 +910,15 @@ if (!function_exists('bioship_skeleton_sidebar_button')) {
 		$sidebartext = __('Sidebar','bioship');
 
 		// --- create sidebar buttons output ---
+		// 2.1.3: prefix javascript functions
 		$buttons = bioship_html_comment('#sidebarbutton', false);
 		$buttons .= '<div id="sidebarbutton" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarshow" href="javascript:void(0);" onclick="showsidebar();">'.esc_attr($showsidebar).'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarhide" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">'.esc_attr($hidesidebar).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarshow" href="javascript:void(0);" onclick="bioship_showsidebar();">'.esc_attr($showsidebar).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarhide" href="javascript:void(0);" onclick="bioship_hidesidebar();" style="display:none;">'.esc_attr($hidesidebar).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= '<div id="sidebarbuttonsmall" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarshowsmall" href="javascript:void(0);" onclick="showsidebar();">[+] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="sidebarhidesmall" href="javascript:void(0);" onclick="hidesidebar();" style="display:none;">[-] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarshowsmall" href="javascript:void(0);" onclick="bioship_showsidebar();">[+] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="sidebarhidesmall" href="javascript:void(0);" onclick="bioship_hidesidebar();" style="display:none;">[-] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= bioship_html_comment('/#sidebarbutton', false);
 		$buttons .= PHP_EOL;
@@ -1063,14 +1065,15 @@ if (!function_exists('bioship_skeleton_subsidebar_button')) {
 		$sidebartext = __('SubBar','bioship');
 
 		// --- set subsidebar display button output ---
+		// 2.1.3: prefix javascript functions
 		$buttons = bioship_html_comment('#subsidebarbutton', false);
 		$buttons .= '<div id="subsidebarbutton" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarshow" href="javascript:void(0);" onclick="showsubsidebar();">'.esc_attr($showsidebar).'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarhide" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">'.esc_attr($hidesidebar).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarshow" href="javascript:void(0);" onclick="bioship_showsubsidebar();">'.esc_attr($showsidebar).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarhide" href="javascript:void(0);" onclick="bioship_hidesubsidebar();" style="display:none;">'.esc_attr($hidesidebar).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= '<div id="subsidebarbuttonsmall" class="mobilebutton">'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarshowsmall" href="javascript:void(0);" onclick="showsubsidebar();">[+] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
-		$buttons .= '	<a class="button" id="subsidebarhidesmall" href="javascript:void(0);" onclick="hidesubsidebar();" style="display:none;">[-] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarshowsmall" href="javascript:void(0);" onclick="bioship_showsubsidebar();">[+] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
+		$buttons .= '	<a class="button" id="subsidebarhidesmall" href="javascript:void(0);" onclick="bioship_hidesubsidebar();" style="display:none;">[-] '.esc_attr($sidebartext).'</a>'.PHP_EOL;
 		$buttons .= '</div>'.PHP_EOL;
 		$buttons .= bioship_html_comment('/#subsidebarbutton', false);
 		$buttons .= PHP_EOL;

@@ -6,7 +6,8 @@
 // FUNCTION DECLARATIONS
 // ---------------------
 
-function csshero_config_main_menu(scope,ulscope,prefix){
+// Main Menu
+function csshero_config_main_menu(scope, ulscope, prefix) {
 	// if(!ulscope){ulscope='';} if(!prefix) {prefix='Nav';}
 	csshero_declare_item(scope,prefix+' Container');
 	csshero_declare_item(scope+' ul'+ulscope,prefix+' Menu');
@@ -22,7 +23,8 @@ function csshero_config_main_menu(scope,ulscope,prefix){
 	// csshero_declare_item(scope+' ul'+ulscope+' .current-menu-item > a, .main-navigation .current-menu-ancestor > a, .main-navigation .current_page_item > a, .main-navigation .current_page_ancestor > a',prefix+' - Current Menu Ancestor Link');
 }
 
-function csshero_config_main_sidebar(scope,inner_scope,prefix){
+// Main Sidebar
+function csshero_config_main_sidebar(scope, inner_scope, prefix) {
 	// if(!inner_scope){inner_scope='.widget';} if(!prefix){prefix='Sidebar';}
 	// inner_scope=inner_scope+':not(.woocommerce)';
 	csshero_declare_item(scope,prefix);
@@ -46,7 +48,8 @@ function csshero_config_main_sidebar(scope,inner_scope,prefix){
 	// csshero_declare_item(scope+' '+inner_scope+' button',prefix+' Button');
 }
 
-function csshero_config_sub_sidebar(scope,inner_scope,prefix){
+// Subsidiary Sidebar
+function csshero_config_sub_sidebar(scope, inner_scope, prefix) {
 	// if(!inner_scope){inner_scope='.widget';} if(!prefix){prefix='Sidebar';}
 	// inner_scope=inner_scope+':not(.woocommerce)';
 	csshero_declare_item(scope,prefix);
@@ -59,7 +62,8 @@ function csshero_config_sub_sidebar(scope,inner_scope,prefix){
 	csshero_declare_item(scope+' '+inner_scope+' img',prefix+' Image');
 }
 
-function csshero_config_post_type(scope,inner_scope,prefix) {
+// Post Type
+function csshero_config_post_type(scope, inner_scope, prefix) {
 
 	csshero_declare_item(scope,prefix);
 	csshero_declare_item(scope+' .entry-header',prefix+' Header');
@@ -154,7 +158,8 @@ function csshero_config_comments(scope){
 	csshero_declare_item(scope+' .comment-list .comment-content p','Comment Paragraph');
 } */
 
-function new_csshero_config_comment_area(scope,listname,comment_container,prefix){
+// Comments
+function new_csshero_config_comment_area(scope, listname, comment_container, prefix) {
 	if(!scope){scope='#comments'}
 	csshero_declare_item(scope,prefix+' Area');
 	csshero_declare_item(scope+' .comments-title',prefix+' Area Title');
@@ -174,7 +179,8 @@ function new_csshero_config_comment_area(scope,listname,comment_container,prefix
 	csshero_declare_item(scope+' p.nocomments',prefix+' No Comments Text'); // added
 }
 
-function csshero_config_respond_area(scope,innerscope,prefix){
+// Comment Respond Area
+function csshero_config_respond_area(scope, innerscope, prefix) {
 	if(!scope){scope='#comments'} if(!innerscope){innerscope='#respond'}
 	csshero_declare_item(scope+' '+innerscope,prefix+' Area');
 	csshero_declare_item(scope+' '+innerscope+' a',prefix+' Links');

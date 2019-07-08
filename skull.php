@@ -2228,7 +2228,7 @@ if (!function_exists('bioship_get_loop_description')) {
 	// 1.8.0: replace hybrid_get_loop_description (HC3 deprecated)
 	if (function_exists('get_the_archive_description')) {$description = get_the_archive_description();}
 	elseif (function_exists('hybrid_get_loop_description')) {$description = hybrid_get_loop_description();}
-	else {$decription = '';}
+	else {$description = '';}
 
 	// note: get_the_archive_description filter also available
 	$description = bioship_apply_filters('hybrid_loop_description', $description);
@@ -3304,7 +3304,19 @@ if (!function_exists('bioship_scripts')) {
 	$loadsuperfish = bioship_apply_filters('script_load_superfish', $loadsuperfish);
 
 	if ($loadsuperfish) {
-		$superfish = bioship_file_hierarchy('both', 'superfish.js', $vthemedirs['script']);
+
+		// --- load hover intent (for Superfish) ---
+		// 2.1.3: added this script with Superfish update
+		$hoverintent = bioship_file_hierarchy('both', 'jquery.hoverIntent.js', $vthemedirs['script']);
+		if (is_array($hoverintent)) {
+			if ($filemtime) {$cachebust = date('ymdHi', filemtime($hoverintent['file']));} else {$cachebust = $vjscachebust;}
+			wp_enqueue_script('hover-intent', $hoverintent['url'], array('jquery'), $cachebust, true);
+		}
+
+		// --- enqueue superfish script ---
+		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+		$superfish = bioship_file_hierarchy('both', 'superfish'.$suffix.'.js', $vthemedirs['script']);
 		if (is_array($superfish)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($superfish['file']));} else {$cachebust = $vjscachebust;}
@@ -3344,7 +3356,9 @@ if (!function_exists('bioship_scripts')) {
 	if ($vthemesettings['loadformalize']) {$loadformalize = true;} else {$loadformalize = true;}
 	$loadformalize = bioship_apply_filters('script_load_formalize', $loadformalize);
 	if ($loadformalize) {
-		$formalize = bioship_file_hierarchy('both', 'jquery.formalize.min.js', $vthemedirs['script']);
+		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+		$formalize = bioship_file_hierarchy('both', 'jquery.formalize'.$suffix.'.js', $vthemedirs['script']);
 		if (is_array($formalize)) {
 			// 2.1.1: fix to cachebusting conditions
 			if ($filemtime) {$cachebust = date('ymdHi', filemtime($formalize['file']));} else {$cachebust = $vjscachebust;}
@@ -4465,17 +4479,7 @@ if (!function_exists('bioship_skin_enqueue_admin_styles')) {
 	// Sticky Widget Areas
 	// -------------------
 	// 2.0.9: add sticky widgets admin page styles
-	// ref: https://github.com/srikat/admin-sticky-widget-areas
-	if ($hook && ($hook == 'widgets.php')) {
-		$stickywidgets = bioship_file_hierarchy('both', 'sticky-widgets.css', $vthemedirs['style']);
-		// 2.1.1: fix to mismatched check typo (formalize)
-		if (is_array($stickywidgets)) {
-			if ($vthemesettings['stylesheetcachebusting'] == 'filemtime') {
-				$cachebust = date('ymdHi', filemtime($stickywidgets['file']));
-			} else {$cachebust = $vcsscachebust;}
-			wp_enqueue_style('stick-widgets', $stickywidgets['url'], $cachebust);
-		}
-	}
+	// 2.1.3: removed from here to load conditionally via admin.php
 
  }
 }

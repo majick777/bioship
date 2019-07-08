@@ -4,17 +4,18 @@
 // === WORDQUEST PLUGIN HELPER ===
 // ===============================
 
-$wordquestversion = '1.7.3';
+$wordquestversion = '1.7.4';
 
-// Note: Helper Changelog at end of this file
+// === Notes ===
+// - Changelog at end of this file
+// - Requires PHP 5.3 (for anonymous functions)
+// -- (helper library load bypassed if not met)
 
-// Requires PHP 5.3 (for anonymous function usage)
-// (otherwise helper library loads nothing)
-
-// Usage Note: To Adjust WordQuest Admin Menu Position
-// ---------------------------------------------------
-// (example user override for use in Child Theme functions.php or /wp-content/mu-plugins/)
-// note: this filter is called in wordquest plugins - not in this helper
+// WordQuest Admin Menu Position
+// -----------------------------
+// Note: wordquest_menu_position filter is called in wordquest plugins - not in helper
+// Example override (use in Child Theme functions.php or /wp-content/mu-plugins/):
+//
 // if (!has_filter('wordquest_menu_position', 'custom_wordquest_menu_position')) {
 //	add_filter('wordquest_menu_position', 'custom_wordquest_menu_position');
 // }
@@ -24,14 +25,16 @@ $wordquestversion = '1.7.3';
 //	}
 // }
 
-// Development TODOs:
+// Development TODOs
+// -----------------
+// TODO: handle Freemius plugin add-ons ?
 // ? add collapse/expand buttons to righthand sidebar
-//
 
 
-// START CODE - PHP 5.3 MINIMUM REQUIRED FOR ANONYMOUS FUNCTIONS
-// -------------------------------------------------------------
-if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+// -------------------------------------------------
+// Require PHP 5.3 Minimum (for Anonymous Functions)
+// -------------------------------------------------
+if (version_compare(PHP_VERSION, '5.3.0') < 0) {return;}
 
 // ---------------------------------
 // Set this Wordquest Helper version
@@ -63,7 +66,7 @@ global $wqdebug; $wqdebug = false;
 // -----------------------------------------
 // === Version Handling Loader Functions ===
 // -----------------------------------------
-// ...future proofing helper update library...
+// ...future proof helper update library...
 
 // ----------------------------------
 // Add Helper version to global array
@@ -72,6 +75,7 @@ global $wqdebug; $wqdebug = false;
 global $wordquesthelpers, $wqfunctions;
 if (!is_array($wordquesthelpers)) {$wordquesthelpers = array($wqhv);}
 elseif (!in_array($wqhv, $wordquesthelpers)) {$wordquesthelpers[] = $wqhv;}
+
 
 // ------------------------------------------
 // Set Latest Wordquest Version on Admin Load
@@ -87,7 +91,9 @@ if (!function_exists('wqhelper_admin_loader')) {
 	// --- maybe set debug mode ---
 	// 1.6.6: check debug switch here so we can check permissions
 	if (current_user_can('manage_options')) {
-		if (isset($_REQUEST['wqdebug']) && ($_REQUEST['wqdebug'] == 'yes')) {$wqdebug = true;}
+		if (isset($_REQUEST['wqdebug'])) {
+            if (in_array($_REQUEST['wqdebug'], array('1', 'yes'))) {$wqdebug = true;}
+        }
 	}
 
 	// --- maybe remove old action ---
@@ -100,19 +106,23 @@ if (!function_exists('wqhelper_admin_loader')) {
  	// 1.6.0: new globals used for new method
  	global $wordquesthelper, $wordquesthelpers;
  	$wordquesthelper = max($wordquesthelpers);
- 	if ($wqdebug) {echo "<!-- WHQV: ".$wordquesthelper." -->";}
+ 	if ($wqdebug) {
+        echo "<!-- WQ Helper Versions: ".print_r($wordquesthelpers,true)." -->";
+        echo "<!-- Latest Version: ".$wordquesthelper." -->";
+    }
 
 	// --- load callable functions ---
 	// 1.6.0: set the function caller helper
 	global $wqcaller, $wqfunctions;
 	$functionname = 'wqhelper_caller_';
-	$func = $functionname.$wordquesthelper;
+    $func = $functionname.$wordquesthelper;
+    if ($wqdebug) {echo "<!-- Caller Name: ".$func." -->";}
 
 	// --- set callable functions ---
 	if (is_callable($wqfunctions[$func])) {
 		$wqfunctions[$func]($functionname); // $wqcaller = $wqfunctions[$functionname];
 	} elseif (function_exists($func)) {call_user_func($func, $functionname);}
-	if ($wqdebug) {echo "<!-- WQ CALLER: "; print_r($wqcaller); echo " -->";}
+	if ($wqdebug) {echo "<!-- Caller Object: "; var_dump($wqcaller); echo " -->";}
 
 	// --- load admin notices ---
  	// 1.5.0: set up any admin notices via helper version
@@ -135,7 +145,8 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 		if (!is_callable($wqcaller)) {
 			$wqcaller = function($function, $args = null) {
 				global $wordquesthelper, $wqfunctions;
-				$func = $function.'_'.$wordquesthelper;
+                $func = $function.'_'.$wordquesthelper;
+                // echo "<!-- Called Function: ".$func." -->";
 				if (is_callable($wqfunctions[$func])) {return $wqfunctions[$func]($args);}
 				elseif (function_exists($func)) {return call_user_func($func, $args);}
 			};
@@ -209,7 +220,9 @@ if (!function_exists('wqhelper_translate')) {
 // Sidebar Floatbox Caller Functions
 // ---------------------------------
 // 1.7.2: use direct superglobal to shorten functions
+// 1.7.4: added patreon wrapper function
 // - wqhelper_sidebar_floatbox
+// - wqhelper_sidebar_patreon_button
 // - wqhelper_sidebar_paypal_donations
 // - wqhelper_sidebar_testimonial_box
 // - wqhelper_sidebar_floatmenuscript
@@ -218,10 +231,17 @@ if (!function_exists('wqhelper_translate')) {
 // --- sidebar floatbox ---
 if (!function_exists('wqhelper_sidebar_floatbox')) {
  function wqhelper_sidebar_floatbox($args=null) {
-	 return $GLOBALS['wqcaller'](__FUNCTION__, $args);
+	return $GLOBALS['wqcaller'](__FUNCTION__, $args);
  }
 }
-// --- donations box ---
+// --- patreon supporters button ---
+if (!function_exists('wqhelper_sidebar_patreon_button')) {
+ function wqhelper_sidebar_patreon_button($args=null) {
+    echo "<!-- WTF??? ".print_r($args,true)."-->";
+    return $GLOBALS['wqcaller'](__FUNCTION__, $args);
+ }
+}
+// --- paypal donations button ---
 if (!function_exists('wqhelper_sidebar_paypal_donations')) {
  function wqhelper_sidebar_paypal_donations($args=null) {
 	 return $GLOBALS['wqcaller'](__FUNCTION__, $args);
@@ -508,17 +528,17 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 				}
 
 				if ($reminder) {
-						// --- add an admin reminder notice ---
-						global $wqreminder; $wqreminder[$pluginslug] = $wqplugin;
-						$wqreminder[$pluginslug]['days'] = $dayssince;
-						$wqreminder[$pluginslug]['notice'] = $reminder;
-						add_action('admin_notices', 'wqhelper_reminder_notice');
-					}
-				} else {
-					$sidebaroptions['installdate'] = date('Y-m-d');
-					update_option($prefix.'_sidebar_options', $sidebaroptions);
-				}
-			}
+                    // --- add an admin reminder notice ---
+                    global $wqreminder; $wqreminder[$pluginslug] = $wqplugin;
+                    $wqreminder[$pluginslug]['days'] = $dayssince;
+                    $wqreminder[$pluginslug]['notice'] = $reminder;
+                    add_action('admin_notices', 'wqhelper_reminder_notice');
+                }
+            } else {
+                $sidebaroptions['installdate'] = date('Y-m-d');
+                update_option($prefix.'_sidebar_options', $sidebaroptions);
+            }
+        }
   	}
  };
 }
@@ -530,13 +550,15 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 $funcname = 'wqhelper_reminder_notice_'.$wqhv;
 if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 	$wqfunctions[$funcname] = function() {
-		global $wqreminder, $wqurls;
+
+		global $wqreminder, $wqurls, $wordquestplugins;
 
 		// --- loop reminders ---
 		foreach ($wqreminder as $pluginslug => $reminder) {
 
 			// --- reminder wrapper ---
-			echo "<div class='updated notice is-dismissable' id='".$pluginslug."-reminder-notice' style='line-height:20px;margin:0;'>";
+            echo "<div class='updated notice is-dismissable' id='".$pluginslug."-reminder-notice' style='font-size:16px; line-height:24px; margin:0;'>";
+            
 			echo wqhelper_translate("You've been enjoying")." ";
 			echo $wqreminder[$pluginslug]['title']." ".wqhelper_translate("for")." ";
 			echo $wqreminder[$pluginslug]['days']." ".wqhelper_translate("days").". ";
@@ -545,46 +567,80 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 			// Action Links Table
 			// ------------------
 			// 1.6.7: extended link anchor text for clarity
-			echo "<table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>";
-			echo "<ul style='list-style:none;padding:0;margin:0;'>";
+			echo "<table id='wq-reminders' cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>";
+			echo "<ul>";
 
-			// --- Contribute Link ---
-			// TODO: WordQuest or WPMedic Link ?
-			echo "<li style='display:inline-block;'><a href='".$wqurls['wq']."/contribute/?tab=supporterlevels' target=_blank>&rarr; ".wqhelper_translate('Become a Supporter')."</a></li>";
+			// --- Supporter Link ---
+            // 1.7.4: add supporter link heart icon
+            $donatelink = $wordquestplugins[$pluginslug]['donate'];
+            echo "<li style='margin-left:0px;'>";
+                echo "<span style='color:#E00;' class='dashicons dashicons-heart'></span> ";
+                if (strstr($donatelink, 'patreon')) {
+                    // --- Patreon supporter Link ---
+                    echo "<a class='notice-link' href=".$donatelink." target=_blank>&rarr; ".wqhelper_translate('Become a Supporter')."</a>";
+                } else {
+                    // --- WordQuest subscription link ---
+                    echo "<a class='notice-link' href='".$wqurls['wq']."/contribute/?tab=supporterlevels' target=_blank>&rarr; ".wqhelper_translate('Become a Supporter')."</a>";
+                }
+            echo "</li>";
 
-			// --- Donate Link ---
-			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?plugin=".$pluginslug."' target=_blank>&rarr; ".wqhelper_translate('Make a Donation')."</a></li>";
+            // --- Donate Link ---
+            // 1.7.4: removed one-off donation link (just too many links)
+             // echo "<li style='display:inline-block;margin-left:15px;'>";
+            //    echo "<a href='".$wqurls['wq']."/contribute/?plugin=".$pluginslug."' target=_blank>&rarr; ".wqhelper_translate('Make a Donation')."</a>";
+            // echo "</li>";
 
 			// --- Rating Link (for WordPress.org) ---
-			if (isset($wqreminder['wporgslug'])) {
-				echo "<li style='display:inline-block;margin-left:15px;'>";
-				// 1.6.7: different rating action for theme
-				// 1.7.2: removed ?rate=5 from rating URLs (no longer used)
+            // 1.7.2: removed ?rate=5 from rating URLs (no longer used)
+            // 1.7.4: added rating link star icon
+            if (isset($wqreminder['wporgslug'])) {
+				echo "<li>";
+                echo "<span style='color:#FC5;' class='dashicons dashicons-star-filled'></span> ";
+                // 1.6.7: added different rating action for theme
 				if ($pluginslug == 'bioship') {
-					echo "<a href='".$wqurls['wp']."/support/theme/".$pluginslug."/reviews/#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate this Theme')."</a></li>";
-				} else {echo "<a href='".$wqurls['wp']."/support/plugin/".$pluginslug."/reviews/#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate this Plugin')."</a></li>";}
+                    // theme rate link --
+					echo "<a class='notice-link' href='".$wqurls['wp']."/support/theme/".$pluginslug."/reviews/#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate this Theme')."</a>";
+                } else {
+                    // --- plugin rate link ---
+                    echo "<a class='notice-link' href='".$wqurls['wp']."/support/plugin/".$pluginslug."/reviews/#new-post' target=_blank>&rarr; ".wqhelper_translate('Rate this Plugin')."</a>";
+                }
+                echo "</li>";
 			}
 
 			// 1.7.2: removed unused testimonial link
-			// echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?tab=testimonial' target=_blank>&rarr; ".wqhelper_translate('Send a Testimonial')."</a></li>";
+			// echo "<li><a href='".$wqurls['wq']."/contribute/?tab=testimonial' target=_blank>&rarr; ".wqhelper_translate('Send a Testimonial')."</a></li>";
 
-			// --- share link ---
-			// 1.7.2: add share theme / plugin link
+			// --- Share Link ---
+            // 1.7.2: add share theme / plugin link
+            // 1.7.4: added share link icon
+            echo "<li>";
+            echo "<span style='color:#E0E;' class='dashicons dashicons-share'></span> ";
 			if ($pluginslug == 'bioship') {
-				echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['bio']."#share' target=_blank>&rarr; ".wqhelper_translate('Share this Theme')."</a></li>";
-			} else {echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/plugins/".$pluginslug."/#share' target=_blank>&rarr; ".wqhelper_translate('Share this Plugin')."</a></li>";}
+				echo "<a class='notice-link' href='".$wqurls['bio']."#share' target=_blank>&rarr; ".wqhelper_translate('Share this Theme')."</a>";
+			} else {
+                echo "<a class='notice-link' href='".$wqurls['wq']."/plugins/".$pluginslug."/#share' target=_blank>&rarr; ".wqhelper_translate('Share this Plugin')."</a>";
+            }
+            echo "</li>";
 
-			// --- support / feedback ---
-			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/support/".$pluginslug."' target=_blank>&rarr; ".wqhelper_translate('Support and Feedback')."</a></li>";
+            // --- Feedback Link ---
+            // 1.7.4: renamed anchor to simply feedback in this context
+            // 1.7.4: added feedback link (slanted envelope) icon
+            echo "<li>";
+                echo "<span style='color:#00E;' class='dashicons dashicons-email-alt'></span> ";
+                echo "<a class='notice-link' href='".$wqurls['wq']."/support/".$pluginslug."' target=_blank>&rarr; ".wqhelper_translate('Provide Feedback')."</a>";
+            echo "</li>";
 
-			// --- contribute link ---
-			echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?tab=development' target=_blank>&rarr; ".wqhelper_translate('Contribute to Development')."</a></li>";
+            // --- Contribute Link ---
+            // 1.7.4: removed contribute link (just too many links)
+			// echo "<li style='display:inline-block;margin-left:15px;'><a href='".$wqurls['wq']."/contribute/?tab=development' target=_blank>&rarr; ".wqhelper_translate('Contribute to Development')."</a></li>";
 
-			// --- Pro Version plan link (Freemius) ---
-			if ( (isset($wqreminder['hasplans'])) && ($wqreminder['hasplans']) ) {
+            // --- Pro Version plan link (Freemius) ---
+            // TODO: handle Freemius plugin add-ons ?
+			if (isset($wqreminder['hasplans']) && ($wqreminder['hasplans'])) {
 				$upgradeurl = admin_url('admin.php').'?page='.$wqreminder['slug'].'-pricing';
-				echo "<li style='display:inline-block;margin-left:15px;'><a href='".$upgradeurl."'><b>&rarr; ".wqhelper_translate('Go PRO')."</b></a></li>";
-			}
+				echo "<li><a href='".$upgradeurl."'><b>&rarr; ".wqhelper_translate('Go PRO')."</b></a></li>";
+            }
+            
 			echo "</ul></td><td style='text-align:right;'>";
 
 			// --- dismiss notice X link ---
@@ -592,8 +648,17 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 			echo "<a href='".$dismisslink."' target='wqdismissframe' style='text-decoration:none;' title='".wqhelper_translate('Dismiss this Notice')."'>";
 			echo "<div class='dashicons dashicons-dismiss' style='font-size:16px;'></div></a>";
 			echo "</td></tr></table></div>";
-		}
-		echo "<iframe style='display:none;' src='javascript:void(0);' name='wqdismissframe' id='wqdimissframe'></iframe>";
+        }
+        
+        // --- notice styles ---
+        // 1.7.5: added notice styling
+        echo "<style>#wq-reminders ul {list-style:none; padding:0; margin:0;}
+        #wq-reminders ul li {display:inline-block; margin-left:15px;}
+        #wq-reminders span.dashicons {display:inline; font-size:16px; color:#00E; vertical-align:middle;}
+        .notice-link {text-decoration:none;} .notice-link:hover {text-decoration:underline;}</style>";
+
+        // --- notice dismissal iframe ---
+        echo "<iframe style='display:none;' src='javascript:void(0);' name='wqdismissframe' id='wqdimissframe'></iframe>";
 	};
 }
 
@@ -1499,7 +1564,13 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 			$wporgslug = $wordquestplugins[$slug]['wporgslug'];
 		} else {$wporgslug = '';}
 
-		if ($wqdebug) {echo "<!-- Sidebar Plugin Info: "; print_r($wordquestplugins[$slug]); echo "-->";}
+        // --- get donate link ---
+        // 1.7.4: get donate link and set author
+        $donatelink = $wordquestplugins[$slug]['donate'];
+        echo "<!-- Donate Link: ".$donatelink." -->";
+        if (strstr($donatelink, 'wpmedic')) {$author = 'wpmedic';} else {$author = 'wordquest';}
+
+        if ($wqdebug) {echo "<!-- Sidebar Plugin Info: "; print_r($wordquestplugins[$slug]); echo "-->";}
 	}
 
 	// 1.5.0: get/convert to single array of plugin sidebar options
@@ -1608,33 +1679,57 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 
 	// Donation Box
 	// ------------
-	// for Free Version? Or Upgrade Link?
+	// TODO: Go Pro Link if has Pro plans ?
 	$args = array($prefix, $pluginslug);
 	if ($sidebaroptions['donationboxoff'] == 'checked') {$hide = " style='display:none;'>";} else {echo $hide = '';}
 	echo '<div id="donate"'.$hide.'>';
 
 	if ($freepremium == 'free') {
 
-		echo '<div class="stuffbox" style="width:250px;background-color:#ffffff;">';
-		echo '<h3>'.wqhelper_translate('Gifts of Appreciation').'</h3><div class="inside">';
-		wqhelper_sidebar_paypal_donations($args);
+        echo '<div class="stuffbox" style="width:250px;background-color:#ffffff;">';
+        
+        // --- box title ---
+        // 1.7.4: different title for patreon/paypal
+        if (strstr($donatelink, 'patreon')) {$boxtitle = wqhelper_translate('Become a Supporter');}
+        else {$boxtitle = wqhelper_translate('Support Subscription');}
+        echo '<h3>'.$boxtitle.'</h3><div class="inside">';
+        
+        // --- maybe call special top ---
+        if (function_exists($prefix.'_donations_special_top')) {
+            $funcname = $prefix.'_donations_special_top';
+            call_user_func($funcname);
+        }
+
+        // --- patreon support or paypal donations ---
+        // 1.7.4: different title for patreon/paypal
+        if (strstr($donatelink, 'patreon')) {wqhelper_sidebar_patreon_button($args);}
+        else {wqhelper_sidebar_paypal_donations($args);}
+
+        // --- call donations special bottom ---
+        if (function_exists($prefix.'_donations_special_bottom')) {
+            $funcname = $prefix.'_donations_special_bottom';
+            call_user_func($funcname);
+        }
 
 		// 1.7.2: remove testimonial box from sidebar
 		// wqhelper_sidebar_testimonial_box($args);
-		// 1.7.2: remove rate link from sidebar
+		
+		// 1.7.2: remove rate link from sidebar (now in plugin header)
+		// TODO: re-add theme rating when in repository ?
 		// if ($wporgslug != '') {
 			// echo "<a href='".$wqurls['wp']."/plugins/'".$wporgslug."'/reviews/#new-post' target='_blank'>";
 			// echo "&#9733; ".wqhelper_translate('Rate this Plugin on Wordpress.Org')."</a></center>";
 		// } elseif ($pluginslug == 'bioship') {
-			// 1.5.0: add star rating for theme (when in repository)
+			// 1.5.0: add star rating for theme 
 			// echo "<a href='".$wqurls['wp']."/support/theme/bioship/reviews/#new-post' target='_blank'>";
 			// echo "&#9733; ".wqhelper_translate('Rate this Theme on Wordpress.Org')."</a></center>";
 		// }
+
 		echo '</div></div>';
 
 	} elseif ($freepremium == 'premium') {
 
-		// 1.7.3: remove other testimonial box also
+		// 1.7.3: temp: remove other testimonial box also
 		// echo '<div class="stuffbox" style="width:250px;background-color:#ffffff;">';
 		// echo '<h3>'.wqhelper_translate('Testimonials').'</h3><div class="inside">';
 		//	wqhelper_sidebar_testimonial_box($args);
@@ -1659,7 +1754,7 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 		if ($lastname != '') {$username .= ' '.$lastname;}
 
 		// --- set report image URL ---
-		if ($pluginslug == 'bioship') {$reportimage = get_template_directory_uri()."/images/rv-report.jpg";}
+		if ($pluginslug == 'bioship') {$reportimage = get_template_directory_uri().'/images/rv-report.jpg';}
 		else {$reportimage = plugins_url('images/rv-report.jpg', __FILE__);}
 
 		echo '<div id="bonusoffer"';
@@ -1700,33 +1795,81 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 	else {
 
 		// Default Sidebar Plugin Footer
-		// -----------------------------
+        // -----------------------------
+        
+        // 1.7.4: link display depending on author 
+        if ($author == 'wpmedic') {
+            $authordisplay = 'WP Medic';
+            $authorurl = $wqurls['wpm'];
+            $wqanchor = wqhelper_translate('WordQuest Plugins');
+            $pluginurl = $wqurls['wpm'].'/'.$pluginslug."/";
+        } else {
+            $authordisplay = 'WordQuest Alliance';
+            $authorurl = $wqurls['wq'];
+            $wqanchor = wqhelper_translate('More Cool Plugins');
+            $pluginurl = $wqurls['wq'].'/plugins/'.$pluginslug."/";
+        }
 		
 		// --- set values for theme or plugin ---
 		if ($pluginslug == 'bioship') {
-			$iconurl = get_template_directory_uri().'/images/wordquest.png';
+			$iconurl = get_template_directory_uri().'/images/'.$author.'.png';
 			$pluginurl = $wqurls['bio'];
 			$pluginfootertitle = wqhelper_translate('Theme Info');
 		} else {
-			$iconurl = plugins_url("images/wordquest.png", __FILE__);
-			$pluginurl = $wqurls['wq']."/plugins/".$pluginslug."/";
+            $iconurl = plugins_url('images/'.$author.'.png', __FILE__);
 			$pluginfootertitle = wqhelper_translate('Plugin Info');
+            $bioanchor = wqhelper_translate('BioShip Framework');
 		}
 
+        // --- output plugin footer ---
 		echo '<div id="pluginfooter"><div class="stuffbox" style="width:250px;background-color:#ffffff;"><h3>'.$pluginfootertitle.'</h3><div class="inside">';
 		echo "<center><table><tr>";
 		echo "<td><a href='".$wqurls['wq']."/' target='_blank'><img src='".$iconurl."' border=0></a></td></td>";
 		echo "<td width='14'></td>";
 		echo "<td><a href='".$pluginurl."' target='_blank'>".$plugintitle."</a> <i>v".$pluginversion."</i><br>";
-		echo "by <a href='".$wqurls['wq']."/' target='_blank'>WordQuest Alliance</a><br>";
-		echo "<a href='".$wqurls['wq']."/plugins/' target='_blank'><b>&rarr; ".wqhelper_translate('More Cool Plugins')."</b></a><br>";
-		echo "<a href='".$wqurls['prn']."/directory/' target='_blank'>&rarr; ".wqhelper_translate('Plugin Directory')."</a></td>";
+		echo "by <a href='".$authorurl."/' target='_blank'>".$authordisplay."</a><br>";
+        echo "<a href='".$wqurls['wq']."/plugins/' target='_blank'><b>&rarr; ".$wqanchor."</b></a><br>";
+        if ($pluginslug != 'bioship') {
+            echo "<a href='".$wqurls['bio']."' target='_blank'>&rarr; ".$bioanchor."</a></td>";
+        }
+        // echo "<a href='".$wqurls['prn']."/directory/' target='_blank'>&rarr; ".wqhelper_translate('Plugin Directory')."</a></td>";
 		echo "</tr></table></center>";
 		echo '</div></div></div>';
 	}
 
 	// --- close sidebar float div ---
 	echo '</div>'; 
+
+ };
+}
+
+// ------------------------
+// Patreon Supporter Button
+// ------------------------
+// 1.7.4: added Patreon Supporter Button
+$funcname = 'wqhelper_sidebar_patreon_button_'.$wqhv;
+if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
+ $wqfunctions[$funcname] = function($args) {
+
+	global $wordquestplugins;
+	$prefix = $args[0]; $pluginslug = $args[1];
+    $settings = $wordquestplugins[$pluginslug];
+    $donatelink = apply_filters('wqhelper_donate_link', $settings['donate'], $pluginslug);
+    $message = apply_filters('wqhelper_donate_message', $settings['donatetext'], $pluginslug);
+
+    // --- set button image URL ---
+    if ($pluginslug == 'bioship') {$imageurl = get_template_directory_uri().'/images/patreon-button.jpg';}
+    else {$imageurl = plugins_url('images/patreon-button.jpg', __FILE__);}
+    $imageurl = apply_filters('wqhelper_donate_image', $imageurl, $pluginslug);
+    
+    // --- output Patreon button ---
+    echo "<center><div class='supporter-message'>".$message."</div>".PHP_EOL;
+    echo "<a href='".$donatelink."' target=_blank>";
+    echo "<img id='patreon-button' src='".$imageurl."'></a><center>".PHP_EOL;
+
+    // --- image hover styling ---
+    echo "<style>.supporter-message {font-size:15px; margin-bottom:5px;}
+    #patreon-button {opacity: 0.9;} #patreon-button:hover {opacity: 1;}</style>".PHP_EOL;
 
  };
 }
@@ -1741,13 +1884,7 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 	global $wqurls;
 	$prefix = $args[0]; $pluginslug = $args[1];
 
-	// --- maybe call special top ---
-	if (function_exists($prefix.'_donations_special_top')) {
-		$funcname = $prefix.'_donations_special_top';
-		call_user_func($funcname);
-	}
-
-	// --- make display name from the plugin slug ---
+    // --- make display name from the plugin slug ---
 	if (strstr($pluginslug, '-')) {
 		$parts = explode('-', $pluginslug);
 		$i = 0;
@@ -1856,8 +1993,8 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 	// $wqurls['wq'].'/?wp_eStore_subscribe=LEVEL&c_input='.$pluginslug;
 
 	// --- set donate image URL ---
-	if ($pluginslug == 'bioship') {$donateimage = get_template_directory_uri()."/images/pp-donate.jpg";}
-	else {$donateimage = plugins_url("/images/pp-donate.jpg", __FILE__);}
+	if ($pluginslug == 'bioship') {$donateimage = get_template_directory_uri().'/images/pp-donate.jpg';}
+	else {$donateimage = plugins_url('/images/pp-donate.jpg', __FILE__);}
 
 	// --- recurring donation form ---
 	echo '
@@ -1900,18 +2037,14 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
 		<option value="100">$100 - '.wqhelper_translate('Support a Major Bugfix/Update').'</option>
 		<option value="250">$250 - '.wqhelper_translate('Support a Minor Feature').'</option>
 		<option value="500">$500 - '.wqhelper_translate('Support a Major Feature').'</option>
-		<option value="1000">$1000 - '.wqhelper_translate('Support a New Plugin').'</option>
+        <option value="1000">$1000 - '.wqhelper_translate('Support a New Module').'</option>
+        <option value="2000">$1000 - '.wqhelper_translate('Support a New Plugin').'</option>
 		<option value="">'.wqhelper_translate('Be Unique: Enter Custom Amount').'</option>
 		</select>
 		<input type="image" src="'.$donateimage.'" border="0" name="I1">
 		</center></form>
 	';
 
-	// --- call donations special bottom ---
-	if (function_exists($prefix.'_donations_special_bottom')) {
-		$funcname = $prefix.'_donations_special_bottom';
-		call_user_func($funcname);
-	}
  };
 }
 
@@ -2680,18 +2813,22 @@ if (!isset($wqfunctions[$funcname]) || !is_callable($wqfunctions[$funcname])) {
  };
 }
 
-
-// CLOSE VERSION COMPARE WRAPPER FOR PHP 5.3 REQUIRED
-// --------------------------------------------------
-}
-
-// --- manual function debug point ---
-// print_r($wqfunctions);
+// --- manual function list debug point ---
+// add_action('plugins_loaded', function() {
+//  echo "<!-- WQ Helper Functions: ".print_r($wqfunctions,true)." -->;
+// });
 
 
-// ------------------------
-// === Helper Changelog ===
-// ------------------------
+// -----------------
+// === Changelog ===
+// -----------------
+
+// = 1.7.4 =
+// - simplified PHP 5.3 minimum check
+// - added Patreon supporter button for WP Medic plugins
+// - added reminder notice link item icons
+// - updated Supporter URLs in Usage Reminder Notices
+// - replaced sidebar footer links for WP Medic plugins
 
 // = 1.7.3 =
 // - only show reminder notice to users with capabilities

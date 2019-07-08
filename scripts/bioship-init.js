@@ -1,293 +1,365 @@
+/* ======================= */
+/* === BioShip Scripts === */
+/* ======================= */
 
 /* Mobile Button Functions */
+/* ----------------------- */
 // 1.8.0: use jQuery instead of plain javascript
-function showmainmenu() {jQuery(function($) {
+// 2.1.3: prefix show / hide functions
+function bioship_showmainmenu() {jQuery(function($) {
 	$('#mainmenushow').css('display','none'); $('#mainmenuhide').css('display','inline-block'); $('#mainmenu').css('display','block');
 }); }
-function hidemainmenu() {jQuery(function($) {
+function bioship_hidemainmenu() {jQuery(function($) {
 	$('#mainmenuhide').css('display','none'); $('#mainmenushow').css('display','inline-block'); $('#mainmenu').css('display','none');
 }); }
 
-function showsidebar() {jQuery(function($) {
-	if (document.getElementById('subsidebarshow')) {hidesubsidebar();}
+function bioship_showsidebar() {jQuery(function($) {
+	if (document.getElementById('subsidebarshow')) {bioship_hidesubsidebar();}
 	$('#sidebarshow').css('display','none'); $('#sidebarshowsmall').css('display','none');
 	$('#sidebarhide').css('display','block'); $('#sidebarhidesmall').css('display','block');
 	$('#sidebar').css('display','block').css('width','100%');
 }); }
-function hidesidebar() {jQuery(function($) {
+function bioship_hidesidebar() {jQuery(function($) {
 	$('#sidebarhide').css('display','none'); $('#sidebarhidesmall').css('display','none');
 	$('#sidebarshow').css('display','block'); $('#sidebarshowsmall').css('display','block');
 	$('#sidebar').css('display','none').css('width','');
 }); }
 
-function showsubsidebar() {jQuery(function($) {
-	if (document.getElementById('sidebarshow')) {hidesidebar();}
+function bioship_showsubsidebar() {jQuery(function($) {
+	if (document.getElementById('sidebarshow')) {bioship_hidesidebar();}
 	$('#subsidebarshow').css('display','none'); $('#subsidebarshowsmall').css('display','none');
 	$('#subsidebarhide').css('display','block'); $('#subsidebarhidesmall').css('display','block');
 	$('#subsidebar').css('display','block').css('width','100%');
 }); }
-function hidesubsidebar() {jQuery(function($) {
+function bioship_hidesubsidebar() {jQuery(function($) {
 	$('#subsidebarhide').css('display','none'); $('#subsidebarhidesmall').css('display','none');
 	$('#subsidebarshow').css('display','block'); $('#subsidebarshowsmall').css('display','block');
 	$('#subsidebar').css('display','none').css('width','');
 }); }
 
-// 1.8.5: smooth scroll to top method
-function scrolltotop() {jQuery('html,body').animate({scrollTop: 0}, 1000);}
 
+/* Scroll to Top */
+/* ------------- */
+// 1.8.5: smooth scroll to top method
+function bioship_scrolltotop() {jQuery('html,body').animate({scrollTop: 0}, 1000);}
+
+/* Smooth Scrolling */
+/* ---------------- */
+/* http://css-tricks.com/snippets/jquery/smooth-scrolling/ */
+/* 1.8.0: add selector quotes for jquery 1.12 fix (WP 4.5)*/
+function bioship_smoothscrolling() {
+	jQuery('a[href*="#"]:not([href="#"])').click(function() {
+		if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+			var target = jQuery(this.hash);
+			target = target.length ? target : jQuery('[name=' + this.hash.slice(1) +']');
+			if (target.length) {
+				var scrollto = target.offset().top + 150;
+				jQuery('html,body').animate({scrollTop: scrollto}, 1000);
+				return false;
+			}
+		}
+	});
+}
+
+
+/* Sticky Kit Elements */
+/* ------------------- */
+// 1.9.9: revamped sticky kit function
+// 2.0.9: use element array instead of input field
+function bioship_stickyelements(elements) {
+	for (i in elements) {
+		$element = jQuery(elements[i]);
+		if ($element.is(':visible')) {
+			$element.stick_in_parent().on('sticky_kit:stick', function(e) {
+				/* display glitch bypass: trim 1px on stick */
+				parentwidth = jQuery(e.target).parent().width();
+				jQuery(e.target).parent().width(parentwidth-1+'px');
+			});
+		} else {$element.trigger('sticky_kit:detach');}
+	}
+}
+
+/* FitVids Elements */
+/* ---------------- */
+function bioship_fitvids(elements) {
+	for (i in elements) {jQuery(elements[i]).fitVids();}
+}
+
+
+/* ---------------- */
+/* Loader Functions */
+/* ---------------- */
+// 2.1.3: separated from document ready triggers
+function bioship_matchheights() {jQuery('.matchheight').matchHeight();}
+function bioship_modernizr() {jQuery(document).Modernizr();}
+function bioship_foundation() {jQuery(document).foundation();}
+
+
+// var startheaderwidth; var startheaderheight;
+// var logowidth; var logoheight; var calculatedratios;
+// var titleratio; var descratio; var titlelratio; var desclratio;
+
+/* ---------------- */
+/* Resize Functions */
+/* ---------------- */
+
+// --- Logo Resizing ---
+// 1.8.5: maybe resize header logo
+function bioship_resizeheaderlogo() {
+	headerwidth = jQuery('#header').width();
+	ratio = headerwidth / bioship.startheaderwidth;
+	newlogowidth = bioship.logowidth * ratio;
+	newlogoheight = bioship.logoheight * ratio;
+
+	// 1.9.6: smaller screen onload fix
+	if (newlogowidth > headerwidth) {
+		newlogowidth = headerwidth;
+		newlogoheight = newlogowidth / bioship.logowidth * bioship.logoheight;
+		/* console.log('x'+newlogowidth+' y'+newlogoheight); */
+	}
+	if (newlogowidth > bioship.logowidth) {
+		newlogowidth = bioship.logowidth; newlogoheight = bioship.logoheight;
+	}
+
+	jQuery('#site-logo img.logo-image').width(newlogowidth);
+	jQuery('#site-logo img.logo-image').height(newlogoheight);
+}
+
+/* Resize Title Texts */
+/* ------------------ */
+function bioship_resizetitletexts() {
+
+	if (bioship.calculatedratios == false) {
+		console.log('Max Width: '+bioship.maxwidth);
+		jQuery('#header').css('width', bioship.maxwidth+'px !important');
+		jQuery('#header').css('padding','0px !important').css('margin','0px !important');
+		titlesize = jQuery('#site-title-text a').css('font-size').replace('px', '');
+		descsize = jQuery('#site-description div').css('font-size').replace('px', '');
+		titlelh = jQuery('#site-title-text a').css('line-height').replace('px','');
+		desclh = jQuery('#site-description div').css('line-height').replace('px','');
+		jQuery('#header').css('width', '').css('padding', '').css('margin', '');
+
+		bioship.titleratio = titlesize / bioship.maxwidth;
+		bioship.titlelratio = titlelh / bioship.maxwidth;
+		bioship.descratio = descsize / bioship.maxwidth;
+		bioship.desclratio = desclh / bioship.maxwidth;
+		bioship.calculatedratios = true;
+	}
+
+	headerwidth = jQuery('#header').width();
+	resizeratio = headerwidth / bioship.maxwidth;
+	// console.log('Resize Ratio: '+resizeratio);
+	newtitlesize = headerwidth * bioship.titleratio;
+	newtitlelh = headerwidth * bioship.titlelratio;
+	newdescsize = headerwidth * bioship.descratio;
+	newdesclh = headerwidth * bioship.desclratio;
+	if (newtitlesize > titlesize) {newtitlesize = titlesize;}
+	if (newtitlelh > titlelh) {newtitlelh = titlelh;}
+	if (newdescsize > descsize) {newdescsize = descsize;}
+	if (newdesclh > desclh) {newdesclh = desclh;}
+	newtitlesize += 'px'; newtitlelh += 'px'; newdescsize += 'px'; newdesclh += 'px';
+	jQuery('#site-title-text a').css('font-size', newtitlesize).css('line-height', newtitlelh);
+	jQuery('#site-description div').css('font-size', newdescsize).css('line-height', newdesclh);
+	// console.log('New Title Size: '+newtitlesize+' New Title Line Height: '+newtitlelh);
+	// console.log('New Desc Size: '+newdescsize+' New Desc Line Height: '+newdesclh);
+}
+
+// --- Header Resizing ---
+// 2.0.9: maybe resize header height with background
+var headerratio = null;
+function bioship_resizeheader() {
+	if (headerratio == null) {
+		startwidth = $('#header').width();
+		jQuery('#header').css('width', bioship.maxwidth+'px !important');
+		headerheight = $('#header').height();
+		headerratio = headerheight / bioship.maxwidth;
+		console.log('Header Ratio: '+headerratio);
+		jQuery('#header').css('width', startwidth+'px');
+	}
+	headerwidth = jQuery('#header').width();
+	newheaderheight = headerwidth * headerratio;
+	// console.log('New Header Height: '+newheaderheight);
+	jQuery('#header').css('height', newheaderheight);
+}
+
+/* Check Mobile Buttons */
+/* -------------------- */
+// 2.1.3: separate function from trigger
+function bioship_checkmobilebuttons() {
+
+	screenwidth = jQuery(window).width();
+
+	// --- show menu at 480 ---
+	if (document.getElementById('mainmenushow')) {
+		if (document.getElementById('mainmenushow').style.display == 'none') {
+			// hide == restore == show in this case
+			if (screenwidth > 479) {bioship_hidemainmenu();}
+		}
+	}
+
+	// --- show sidebar at 640 ---
+	if (document.getElementById('sidebarshow')) {
+		if (document.getElementById('sidebarshow').style.display == 'none') {
+			// hide == restore == show in this case
+			if (screenwidth > 639) {bioship_hidesidebar();}
+		}
+	}
+
+	// --- show in subsidebar at 768 ---
+	if (document.getElementById('subsidebarshow')) {
+		if (document.getElementById('subsidebarshow').style.display == 'none') {
+			// hide == restore == show in this case
+			if (screenwidth > 767) {bioship_hidesubsidebar();}
+		}
+	}
+}
+
+// --- Debounce Delay Callback ---
+// ref: http://stackoverflow.com/questions/2854407/javascript-jquery-window-resize-how-to-fire-after-the-resize-is-completed
+// 2.1.3: prefix debounce function
+var bioship_resizedebounce = (function () {
+	var timers = {};
+	return function (callback, ms, uniqueId) {
+		if (!uniqueId) {uniqueId = "nonuniqueid";}
+		if (timers[uniqueId]) {clearTimeout (timers[uniqueId]);}
+		timers[uniqueId] = setTimeout(callback, ms);
+	};
+})();
+
+
+/* ------------------- */
 /* Page Load Functions */
+/* ------------------- */
 jQuery(document).ready(function($) {
 
-	// Load Superfish Menu
+	// --- Load Superfish Menu ---
 	// 1.8.5: added check if superfish function exists
 	$(function(){
 		if (typeof superfish === 'function') {
-			$('#navigation ul.menu')
-			.find('li.current_page_item,li.current_page_parent,li.current_page_ancestor,li.current-cat,li.current-cat-parent,li.current-menu-item')
-			.addClass('active').end().superfish({autoArrows: true});
+			activclasses = 'li.current_page_item,li.current_page_parent,li.current_page_ancestor,li.current-cat,li.current-cat-parent,li.current-menu-item';
+			$('#navigation ul.menu').find(activeclasses).addClass('active').end().superfish({autoArrows: true});
 		}
 	});
 
-	// valid XHTML method of target_blank
+	// --- valid XHTML method of target_blank ---
 	$(function(){$('a[rel*="external"]').click( function() {window.open(this.href); return false;}); });
 
-	// Style Tags
+	// --- Style Tags ---
 	$(function(){$('p.tags a').wrap('<span class="st_tag" />');});
 
-	// Focus on search form on 404 pages
+	// --- Focus on search form on 404 pages ---
 	$(function(){$("body.error404 #content #s").focus();});
 
-	// Smooth Hash Link Scrolling
-	/* http://css-tricks.com/snippets/jquery/smooth-scrolling/ */
+	// --- Smooth Hash Link Scrolling ---
 	// 2.0.9: use variable check instead of input check
-	if (typeof smoothscrolling !== 'undefined') {
-		if (smoothscrolling == 'yes') {
-			/* 1.8.0: add selector quotes for jquery 1.12 fix (WP 4.5)*/
-			$('a[href*="#"]:not([href="#"])').click(function() {
-				if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-					var target = $(this.hash);
-					target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-					if (target.length) {
-						var scrollto = target.offset().top + 150;
-						$('html,body').animate({scrollTop: scrollto}, 1000);
-						return false;
-					}
-				}
-			});
-		}
+	if (typeof bioship.smoothscrolling !== 'undefined') {
+		if (bioship.smoothscrolling == 'yes') {bioship_smoothscrolling();}
 	}
 
 	/* Sticky Kit */
+	/* ---------- */
 	// 1.5.0: maybe Trigger Sticky Page Elements
-	// 1.9.9: revamped sticky kit function
-	// 2.0.9: use element array instead of input field
-	function stickyelements() {
-		if (typeof stickyelements !== 'undefined') {
-			for (i in stickyelements) {
-				$element = $(stickyelements[i]);
-				if ($element.is(':visible')) {
-					$element.stick_in_parent().on('sticky_kit:stick', function(e) {
-						/* display glitch bypass: trim 1px on stick */
-						parentwidth = $(e.target).parent().width();
-						$(e.target).parent().width(parentwidth-1+'px');
-					});
-				} else {$(stickyelements[i]).trigger('sticky_kit:detach');}
-			}
-		}
+	// 2.1.3: trigger separately and prefix function
+	if (typeof bioship.stickyelements !== 'undefined') {
+		bioship_stickyelements(bioship.stickyelements);
 	}
-	stickyelements();
 
 	/* FitVids */
+	/* ------- */
 	// 1.5.0: maybe Trigger FitVids Elements
 	// 1.9.9: optimized fitvids array code
 	// 2.0.9: use element array instead of input field
-	if (typeof fitvidselements !== 'undefined') {
-		for (i in fitvidselements) {$(fitvidselements[i]).fitVids();}
+	if (typeof bioship.fitvidselements !== 'undefined') {
+		bioship_fitvids(fitvidselements);
 	}
 
 	/* Modernizr */
+	/* --------- */
 	// 2.0.9: maybe initialize Modernizr
-	if (typeof loadmodernizr !== 'undefined') {
-		if (loadmodernizr == 'yes') {$(document).Modernizr();}
+	if (typeof bioship.loadmodernizr !== 'undefined') {
+		if (bioship.loadmodernizr == 'yes') {bioship_modernizr();}
 	}
 
 	/* Foundation */
-	// maybe initialize Foundation
+	/* ---------- */
 	if (typeof loadfoundation !== 'undefined') {
-		if (loadfoundation == 'yes') {$(document).foundation();}
+		if (bioship.loadfoundation == 'yes') {bioship_foundation();}
 	}
 
 	/* MatchHeight */
+	/* ----------- */
 	// 1.9.9: maybe run jquery matchHeight
-	function matchheights() {
-		if (typeof loadmatchheights !== 'undefined') {
-			if (loadmatchheights == 'yes') {$('.matchheight').matchHeight();}
-		}
+	// 2.1.3: separate and prefix function
+	if (typeof loadmatchheights !== 'undefined') {
+		if (bioship.loadmatchheights == 'yes') {bioship_matchheights();}
 	}
-	matchheights();
 
 	/* Check Mobile Buttons */
-	function checkmobilebuttons() {
-		screenwidth = $(window).width();
-
-		// show menu at 480
-		if (document.getElementById('mainmenushow')) {
-			if (document.getElementById('mainmenushow').style.display == 'none') {
-				// hide actually means restore - show in this case
-				if (screenwidth > 479) {hidemainmenu();}
-			}
-		}
-
-		// show sidebar at 640
-		if (document.getElementById('sidebarshow')) {
-			if (document.getElementById('sidebarshow').style.display == 'none') {
-				// hide actually means (restore) show in this case
-				if (screenwidth > 639) {hidesidebar();}
-			}
-		}
-
-		// show in subsidebar at 768
-		if (document.getElementById('subsidebarshow')) {
-			if (document.getElementById('subsidebarshow').style.display == 'none') {
-				// hide actually means restore - show in this case
-				if (screenwidth > 767) {hidesubsidebar();}
-			}
-		}
-	}
-	checkmobilebuttons();
-
+	/* -------------------- */
+	bioship_checkmobilebuttons();
 
 	/* Dynamic Header Resizing */
+	/* ----------------------- */
 
-	var startheaderwidth = $('#header').width();
-	var startheaderheight = $('#header').height();
+	// --- set start values ---
+	bioship.startheaderwidth = jQuery('#header').width();
+	bioship.startheaderheight = jQuery('#header').height();
+	bioship.logowidth = jQuery('#site-logo img.logo-image').width();
+	bioship.logoheight = jQuery('#site-logo img.logo-image').height();
+	bioship.calculatedratios = false;
 
-	// 1.8.5: maybe resize header logo
-	var logowidth = $('#site-logo img.logo-image').width();
-	var logoheight = $('#site-logo img.logo-image').height();
-	function resizeheaderlogo() {
-		// 1.9.8: fix to check for page element
-		if (typeof logoresize !== 'undefined') {
-			if (logoresize == 'yes') {
-				headerwidth = $('#header').width();
-				ratio = headerwidth / startheaderwidth;
-				newlogowidth = logowidth * ratio;
-				newlogoheight = logoheight * ratio;
-
-				// 1.9.6: smaller screen onload fix
-				if (newlogowidth > headerwidth) {
-					newlogowidth = headerwidth;
-					newlogoheight = newlogowidth / logowidth * logoheight;
-					/* console.log('x'+newlogowidth+' y'+newlogoheight); */
-				}
-				if (newlogowidth > logowidth) {
-					newlogowidth = logowidth; newlogoheight = logoheight;
-				}
-
-				$('#site-logo img.logo-image').width(newlogowidth);
-				$('#site-logo img.logo-image').height(newlogoheight);
-			}
-		}
- 	}
+ 	// --- Logo Resizing ---
  	// 1.9.6: onload resize fix
-	resizeheaderlogo();
+ 	// 2.1.3: separate and prefix function
+	// 1.9.8: fix to check for page element
+	if (typeof logoresize !== 'undefined') {
+		if (logoresize == 'yes') {bioship_resizeheaderlogo();}
+	}
 
+	// --- Title Resizing ---
 	// 2.0.9: maybe resize site title text
 	// 2.1.2: replace site-desc span with div
-	var calculatedratios = false; var titleratio; var descratio; var titlelratio; var desclratio;
-	function resizetitletexts() {
-		if (typeof sitetextresize !== 'undefined') {
-			if (sitetextresize == 'yes') {
-
-				if (calculatedratios == false) {
-					console.log('Max Width: '+maxwidth);
-					$('#header').css('width', maxwidth+'px !important');
-					$('#header').css('padding','0px !important').css('margin','0px !important');
-					titlesize = $('#site-title-text a').css('font-size').replace('px', '');
-					descsize = $('#site-description div').css('font-size').replace('px', '');
-					titlelh = $('#site-title-text a').css('line-height').replace('px','');
-					desclh = $('#site-description div').css('line-height').replace('px','');
-					$('#header').css('width', '').css('padding', '').css('margin', '');
-
-					titleratio = titlesize / maxwidth;
-					titlelratio = titlelh / maxwidth;
-					descratio = descsize / maxwidth;
-					desclratio = desclh / maxwidth;
-					calculatedratios = true;
-				}
-
-				headerwidth = $('#header').width();
-				resizeratio = headerwidth / maxwidth;
-				// console.log('Resize Ratio: '+resizeratio);
-				newtitlesize = headerwidth * titleratio;
-				newtitlelh = headerwidth * titlelratio;
-				newdescsize = headerwidth * descratio;
-				newdesclh = headerwidth * desclratio;
-				if (newtitlesize > titlesize) {newtitlesize = titlesize;}
-				if (newtitlelh > titlelh) {newtitlelh = titlelh;}
-				if (newdescsize > descsize) {newdescsize = descsize;}
-				if (newdesclh > desclh) {newdesclh = desclh;}
-				newtitlesize += 'px'; newtitlelh += 'px'; newdescsize += 'px'; newdesclh += 'px';
-				$('#site-title-text a').css('font-size', newtitlesize).css('line-height', newtitlelh);
-				$('#site-description div').css('font-size', newdescsize).css('line-height', newdesclh);
-				// console.log('New Title Size: '+newtitlesize+' New Title Line Height: '+newtitlelh);
-				// console.log('New Desc Size: '+newdescsize+' New Desc Line Height: '+newdesclh);
-			}
-		}
+	// 2.1.3: separate and prefix function
+	if (typeof sitetextresize !== 'undefined') {
+		if (sitetextresize == 'yes') {bioship_resizetitletexts();}
 	}
-	resizetitletexts();
 
-	// 2.0.9: maybe resize header height with background
-	var headerratio = null;
-	function resizeheader() {
-		if (typeof headerresize !== 'undefined') {
-			if (headerresize == 'yes') {
-				if (headerratio == null) {
-					startwidth = $('#header').width();
-					$('#header').css('width', maxwidth+'px !important');
-					headerheight = $('#header').height();
-					headerratio = headerheight / maxwidth;
-					console.log('Header Ratio: '+headerratio);
-					$('#header').css('width', startwidth+'px');
-				}
-				headerwidth = $('#header').width();
-				newheaderheight = headerwidth * headerratio;
-				console.log('New Header Height: '+newheaderheight);
-				$('#header').css('height', newheaderheight);
-			}
-		}
+	// --- Header Resizing ---
+	// 2.1.3: separate and prefix function
+	if (typeof headerresize !== 'undefined') {
+		if (headerresize == 'yes') {bioship_resizeheader();}
 	}
-	resizeheader();
 
 
-	/* Debounce Delay Callback Function */
-	// ref: http://stackoverflow.com/questions/2854407/javascript-jquery-window-resize-how-to-fire-after-the-resize-is-completed
-	var resizeDebounce = (function () {
-		var timers = {};
-		return function (callback, ms, uniqueId) {
-			if (!uniqueId) {uniqueId = "nonuniqueid";}
-			if (timers[uniqueId]) {clearTimeout (timers[uniqueId]);}
-			timers[uniqueId] = setTimeout(callback, ms);
-		};
-	})();
-
-	/* Trigger Functions on Window Resize (with debounce) */
+	/* On Window Resize */
+	/* ---------------- */
 	$(window).resize(function () {
-		resizeDebounce(function(){
-			// check mobile buttons on resize
-			checkmobilebuttons();
 
-			// maybe resize header logo
-			resizeheaderlogo();
+		// --- with resize debounce ---
+		bioship_resizedebounce(function(){
 
-			// maybe resize site text
-			resizetitletexts();
+			// --- check mobile buttons on resize ---
+			bioship_checkmobilebuttons();
 
+			// --- maybe resize header logo ---
+			bioship_resizeheaderlogo();
+
+			// --- maybe resize site text ---
+			bioship_resizetitletexts();
+
+			// --- retrigger match heights ---
 			// 1.9.9: match heights as may have changed
-			matchheights();
+			// 2.1.3: check if loaded before retrigger
+			if (typeof bioship.loadmatchheights !== 'undefined') {
+				if (bioship.loadmatchheights == 'yes') {bioship_matchheights();}
+			}
 
+			// --- retrigger sticky elements ---
 			// 1.9.9: recheck sticky kit elements
-			stickyelements();
+			// 2.1.3: check and pass elements to function
+			if (typeof bioship.stickyelements !== 'undefined') {
+				bioship_stickyelements(bioship.stickyelements);
+			}
 
 		}, 750, "themejavascript");
 	});

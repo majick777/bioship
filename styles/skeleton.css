@@ -1,8 +1,8 @@
 /*
 
-=======================
-BioShip Skeleton Styles
-=======================
+===============================
+=== BioShip Skeleton Styles ===
+===============================
 
 // 2.0.6: merged some style changes from style.css
 
@@ -350,7 +350,7 @@ small {font-size: 80%;}
 
 /* Blockquotes */
 
-blockquote, blockquote p { font-size: 17px; line-height: 24px; color: #777; font-style: italic; }
+blockquote /*, blockquote p */ { font-size: 17px; line-height: 24px; color: #777; font-style: italic; }
 blockquote { margin: 0 0 20px; padding: 9px 20px 0 19px; border-left: 1px solid #ddd; }
 blockquote cite { display: block; font-size: 12px; color: #555; }
 blockquote cite:before { content: "\2014 \0020"; }
@@ -366,14 +366,14 @@ p a, p a:visited {line-height: inherit;}
 
 
 /* Lists */
-ul, ol {margin-bottom: 20px;}
+ul, ol {margin-bottom: 20px; padding-left:10px;}
 ul {list-style: disc inside;}
 ol {list-style: decimal;}
-ol, ul.square, ul.circle, ul.disc {margin-left: 30px;}
+ol, ul.square, ul.circle, ul.disc {margin-left: 10px;}
 ul.square {list-style: square outside;}
 ul.circle {list-style: circle outside;}
 ul.disc {list-style: disc outside;}
-ul ul, ul ol, ol ol, ol ul {margin: 4px 0 5px 30px;}
+ul ul, ul ol, ol ol, ol ul {margin: 4px 0 5px 0;}
 ul ul li, ul ol li, ol ol li, ol ul li {margin-bottom: 6px;}
 li {margin-bottom: 12px;}
 ul.large li {line-height: 21px;}
@@ -417,7 +417,7 @@ q {font-style: italic;}
 
 img.scale-with-grid, .entry-content img, .entry-summary img, 
 .comment-content img, .widget img, .wp-caption {
-	max-width: 100% !important;
+	max-width: 100%; /* 2.1.3: remove !important */
 	height: auto;
 }
 
