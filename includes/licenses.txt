@@ -1,0 +1,85 @@
+=========================
+BioShip Includes Licenses
+=========================
+
+Note: resources marked with a * are NOT included in WordPress.Org version,
+      but all licenses are noted here for completeness in any case.
+
+-------------------
+Themes / Frameworks 
+-------------------
+SMPL Skeleton Theme (forked) - (c) Simple Themes (GPL 2+)
+Hybrid Core - (c) 2008-2015 Justin Tadlock (GPL 2+)
+Hybrid Hook - (c) 2008-2011 Justin Tadlock (GPL 2+)
+Freemius - (c) 2015 Freemius, Inc (GPL 3+)
+Kirki Library - (c) 2017, Aristeides Stathopoulos (MIT License)
+Foundation - (c) 2011-2019, Zurb (MIT License)
+* Titan Framework - (c) 2017-2018 Benjamin Intal (GPL 2+)
+* Options Framework - (c) 2010-2014 WP Theming (GPL 2+)
+* Customizer Controls - (c) Paul Underwood (unlicensed)
+
+--------
+Includes
+--------
+TGM Plugin Activation - (c) 2011, Thomas Griffin (GPL 2+)
+WordQuest Helper - (c) 2019, Tony Hayes (GPL 3+)
+PHP ICO - (c) 2011-2016 Chris Jean & iThemes (GPL 2+)
+PHP Markdown & Extra - (c) 2004-2009 Michel Fortin (open license in markdown.php)
+* Theme Update Checker - (c) 2012 Janis Elsts (GPL)
+
+-------
+Scripts
+-------
+/scripts/
+bioship-init.js, bioship-csshero.js, video-background.js (BioShip Theme GPL3+)
+CSS.supports.js [0.4] - (c) 2014 Han Lin Yap (MIT license)
+css3-mediaqueries.js [1.0] - (c) 2011, Wouter van der Graaf (MIT License)
+fastclick.js [1.0.6] - (c) 2015, FTLabs (MIT License)
+flexibility.js [2.0.1] - (c) 2018, Jonathon Neal (open license)
+foundation.selected.js [5] - (c) 2014, Zurb (MIT License)
+html5.js [3.7.3] - (c) 2017, Alexander Farkas (Duel MIT and GPL2)
+ie8.js [0.8.1] - (c) 2013-2015, WebReflection (MIT Style License)
+jquery-scrolltofixed.js [1.0.8] - (c) 2011, Joseph Cava-Lynch (MIT License)
+jquery.fitvids.js [1.2] - (c) 2011, Chris Coyier and Dave Rupert (WTFPL License)
+jquery.formalize.js [1.2] - (c) 2012 Nathan Smith (Duel MIT and GPL)
+jquery.hoverIntent.js [1.10.0] - (c) 2007-2019 Brian Cherne (MIT License)
+jquery.matchHeight.js [0.7.2] - (c) 2014 Liam Brummitt (MIT License)
+jquery.sticky-kit.js [1.1.2] - (c) 2015, Leaf Corcoran (WTFPL License)
+matchMedia.js (+matchMedia.addListener.js) [0.3.1] - (c) 2012 Scott Jehl (MIT License)
+modernizr.js [2.8.3] - (c) Faruk Ates, Paul Irish, Alex Sexton (BSD/MIT License)
+mousewheel.js [3.1.13] - (c) jQuery Foundation (MIT Licence)
+nwevents.js [1.2.5] - (c) 2007-2015 Diego Perini (MIT License)
+nwmatcher.js [1.4.4] - (c) 2007-2015 Diego Perini (MIT License)
+prefixfree.js [1.0.10] - (c) Lea Verou (MIT License)
+respond.js [1.4.2] - (c) Scott Jehl (MIT License)
+selectivizr.js [1.0.2] - (c) 2012 Keith Clark (MIT License)
+superfish.js [1.7.10] - (c) 2013, Joel Birch (Duel MIT and GPL)
+supersleight.js [1.0] - (c) 2008 Drew McLellan (open license)
+x.gif - 1x1 transparent gif for supersleight.js
+
+------
+Styles
+------
+/styles/
+/style.css, skeleton.css, mobile.css, editor-style.css, editor-style-rtl.css (BioShip Theme GPL3)
+child-styles.css, core-styles.css, dynamic.css, grid.css (intentionally empty files)
+border-radius.htc - (c) Magno Biét (MIT License)
+font-awesome.css - (c) Fonticons, Inc (Font: SIL OFL 1.1, CSS: MIT License)
+formalize.css [1.2] - (c) 2012 Nathan Smith (Duel MIT and GPL)
+normalize.css [8.0.1] - (c) 2012 Nicolas Gallagher (MIT License)
+pie.htc / pie.php - (c) 2011 Sencha Inc. (Duel Apache 2 and GPL 2)
+reset.css - Eric Meyer (public domain)
+superfish.css - (c) Simple Themes (GPL 2+)
+
+------
+Images
+------
+/screenshot.jpg, /theme-logo.jpg (BioShip Theme GPL 3+)
+/images/
+bioship.png, child-screenshot.jpg, child-theme-logo.png, customizer-loading.png (BioShip Theme GPL 3+)
+csshero.png, csshero-hover.jpg, pp-donate.jpg, rv-report.jpg, space-tile.jpg, wordquest.png (WordQuest GPL 3+)
+arrow_bullet.png, arrow_bullet_hover.png, arrow_bullet_left.png, blank.gif, border_top.png, button.png, 
+comment_author_bg.png, gradient_small_trans.png, infinite-loader.gif, loading.gif (Skeleton Theme GPL 2+)
+
+
+

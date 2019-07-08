@@ -1,0 +1,269 @@
+
+// ===============
+// Reference Links
+// ===============
+
+// Theme Options
+// -------------
+// Options Framework - http://wptheming.com/options-framework-plugin/
+// Titan Framework - http://www.titanframework.net/docs and https://github.com/gambitph/Titan-Framework
+// Kirki - http://kirki.org and https://github.com/aristath/kirki
+// Customize Controls - 
+
+// Frameworks
+// ----------
+// Skeleton Theme - http://wordpress.org/themes/smpl-skeleton
+// Hybrid Core - http://themehybrid.com/hybrid-core
+// Hybrid Core 3 (Dev) - https://github.com/justintadlock/hybrid-core/tree/dev
+// Hybrid Base Theme - http://themehybrid.com/themes/hybrid-base
+
+// Includes
+// --------
+// Hybrid Hook - 
+// PHP ICO - 
+// PHP Markdown & Extra
+// WShadow Theme Updater - http://w-shadow.com/blog/2011/06/02/automatic-updates-for-commercial-themes/
+// TGM Plugin Activation - https://github.com/thomasgriffin/TGM-Plugin-Activation
+
+// Grid Boilerplates
+// -----------------
+// Skeleton Boilerplate - http://getskeleton.com
+// 960 Grid System - http://960.gs
+// Foundation - http://foundation.zurb.com/docs
+// Twitter Bootstrap - http://getbootstrap.com
+// Blueprint - http://www.blueprintcss.org
+//             https://github.com/joshuaclayton/blueprint-css
+// BlueTrip - http://bluetrip.org/
+
+// Muscle Function References
+// --------------------------
+// Best Collection of functions.php Code:
+// http://wordpress.stackexchange.com/questions/1567/best-collection-of-code-for-your-functions-php-file
+// Note: similar page for .htacess file:
+// http://wordpress.stackexchange.com/questions/18968/best-collection-of-code-for-your-htaccess-file
+// WP Missing Functions Plugin - https://wordpress.org/plugins/wp-missing-functions/
+// Advanced Settings Plugin - https://wordpress.org/plugins/advanced-settings/
+// ...some random tweak pages...
+// http://wpfunctions.me
+// http://www.webdesignerdepot.com/2013/05/1-key-wordpress-functions-to-jump-start-theme-development/
+// http://www.instantshift.com/2012/03/06/21-most-useful-wordpress-admin-page-hacks/
+
+// Font and Icon Notes
+// -------------------
+// Google Fonts API - https://developers.google.com/fonts/docs/getting_started
+// Font Stack Typography Notes:
+// http://www.onedesigns.com/tutorials/font-families-for-cross-compatible-typography
+// https://wiki.bath.ac.uk/display/webservices/Fonts+-+readable,+cross-platform+typography
+// Favicon Fallbacks - http://www.jonathantneal.com/blog/understand-the-favicon/
+// Apple Touch Icon Sizes - https://mathiasbynens.be/notes/touch-icons
+
+// Plugin Integration Reference Links
+// ----------------------------------
+// Theme Test Drive - http://wordpress.org/plugins/theme-test-drive/
+//		Docs: http://www.prelovac.com/vladimir/wordpress-plugins/theme-test-drive/
+// WP Subtitle - http://wordpress.org/plugins/wp-subtitle/
+//		Docs: https://github.com/benhuson/wp-subtitle/wiki
+// Theme My Login - https://wordpress.org/plugins/theme-my-login/
+// 		Docs: http://www.jfarthing.com/development/theme-my-login/
+// Open Graph Protocol Framework - http://wordpress.org/plugins/open-graph-protocol-framework/
+// Ajax Load More - https://wordpress.org/plugins/ajax-load-more/
+//		Docs: https://connekthq.com/plugins/ajax-load-more/
+
+// CSS and Javascripts Helpers
+// ---------------------------
+// CSS Reset
+// - normalize.css - 
+// https://necolas.github.io/normalize.css/
+// http://nicolasgallagher.com/about-normalize-css/
+// https://github.com/necolas/normalize.css/
+// - reset.css - http://cssreset.com
+// Form Element Styling
+// - Formalize - http://formalize.me/
+// CSS3 Support
+// - PrefixFree - http://leaverou.github.io/prefixfree/
+// - NWWatcher - http://javascript.nwbox.com/NWMatcher/
+// - NWEvent - http://javascript.nwbox.com/NWEvents/
+// Conditional Testing/Loading
+// - Modernizr - http://modernizr.com
+// HTC Support Files
+// - CSS3PIE - http://css3pie.com
+// - Border Radius HTC - http://htmlremix.com/css/curved-corner-border-radius-cross-browser
+// Media Query Support
+// - Respond - https://github.com/scottjehl/Respond
+// - CSS3 MediaQueries - https://code.google.com/archive/p/css3-mediaqueries-js/
+// Internet Explorer Support
+// - [<IE8] HTML5 Shim - http://html5shim.googlecode.com/svn/trunk/html5.js
+// - [<IE6] SuperSleight - http://allinthehead.com/retro/338/supersleight-jquery-plugin
+// - [IE6,7,8] - Selectivizr - http://selectivizr.com
+// - [IE8] - DOM Fix - https://github.com/WebReflection/ie8
+// - [IE8,9] - Flexibility (Flexbox polyfill) - https://github.com/10up/flexibility
+// jQuery Extensions
+// - Touch UI Fastclick - https://github.com/ftlabs/fastclick
+// - Mousewheel Support - https://github.com/jquery/jquery-mousewheel
+// - Smooth Scrolling - http://css-tricks.com/snippets/jquery/smooth-scrolling/
+// jQuery Extras
+// - FitVids - https://github.com/davatron5000/FitVids.js/
+// - Sticky Kit - http://leafo.net/sticky-kit/
+// - ScrollToFixed - https://github.com/bigspotteddog/ScrollToFixed
+// [Polyfiller] - https://github.com/Polyfiller/polyfiller
+// [Responsive Design Javascript] - http://responsivedesign.js
+// [Polyfills]  http://html5please.com/
+//		http://www.creativebloq.com/html5/10-best-polyfills-2133015
+// 		http://www.creativebloq.com/make-html5-work-today-polyfills-7133889
+// 		https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-browser-Polyfills
+// 		http://html5polyfills.com/
+//		https://github.com/financial-times/polyfill-service
+
+// Other Frameworks and Flexi Themes
+// ---------------------------------
+// Bones - http://themble.com/bones/
+// Buffet Framework - https://wordpress.org/themes/the-buffet-framework/
+// Customizr - https://wordpress.org/themes/customizr/
+// Flagship Compass - https://github.com/wpsitecare/compass
+// Hybrid Base - http://themehybrid.com/themes/hybrid-base
+// JointsWP - http://jointswp.com
+// * Nebula - https://gearside.com/nebula/
+// Reverie - http://themefortress.com/reverie/
+// Sage (Roots) - http://roots.io, https://github.com/roots/sage
+// Thematic - http://themeshaper.com/thematic/
+// Underscores - http://underscores.me
+// Whiteboard - http://whiteboardframework.com
+// ? Cherry Framework - http://www.cherryframework.com/
+// ? Firmasite - http://theme.firmasite.com/
+// ? Gantry Framework - http://gantry.org/
+// ($) Divi - http://www.elegantthemes.com/gallery/divi/
+// ($) Genesis - http://my.studiopress.com/themes/genesis/
+// ($) SEO Design Framework - http://www.seodesignframework.com
+// ($) WP JumpStart - http://wpjumpstart.com
+// ($) Dynamik Website Builder - http://cobaltapps.com/dynamik-website-builder-screenshots/
+// [More Theme Frameworks] http://www.smashingmagazine.com/2009/05/27/wordpress-theme-development-frameworks/
+
+// Other Options/Development Frameworks
+// ------------------------------------
+// [Development Tools and Frameworks] http://wpgear.org
+// My Options Panel - https://en.bainternet.info/my-options-panel/
+// Redux Framework - http://reduxframework.com
+// SCB Framework - https://github.com/scribu/wp-scb-framework/wiki
+// Inifinity - http://infinity.presscrew.com/
+// Flagship Library (for Hybrid) - https://github.com/FlagshipWP/flagship-library
+// http://premium.wpmudev.org/blog/choosing-a-wordpress-theme-framework-the-ultimate-guide/
+
+// ==============================
+// jQuery and Javascript Supports
+// ==============================
+
+// Internet Explorer
+// -----------------
+
+// HTML5 Shiv [3.7.3]
+// https://github.com/aFarkas/html5shiv
+// https://raw.githubusercontent.com/aFarkas/html5shiv/master/dist/html5shiv.js
+// https://raw.githubusercontent.com/aFarkas/html5shiv/master/dist/html5shiv.min.js
+
+// IE8 DOM [0.8.1]
+// https://github.com/WebReflection/ie8
+// https://raw.githubusercontent.com/WebReflection/ie8/master/build/ie8.js
+// https://raw.githubusercontent.com/WebReflection/ie8/master/build/ie8.max.js
+
+// Selectivizr [1.0.2]
+// http://selectivizr.com
+// https://github.com/keithclark/selectivizr
+
+// SuperSleight
+// http://24ways.org/2007/supersleight-transparent-png-in-ie6
+// https://allinthehead.com/retro/338/supersleight-jquery-plugin-for-transparent-pngs-in-ie6
+
+// Flexibility (Flexbox Polyfill) [2.0.1]
+// https://github.com/10up/flexibility
+// https://github.com/jonathantneal/flexibility/blob/master/flexibility.js
+
+
+// Further Supports
+// ----------------
+
+// PrefixFree [1.0.10]
+// http://leaverou.github.io/prefixfree/
+// https://raw.github.com/LeaVerou/prefixfree/gh-pages/prefixfree.min.js
+// https://raw.githubusercontent.com/LeaVerou/prefixfree/gh-pages/plugins/prefixfree.jquery.js
+
+// NWMatcher [1.4.4]
+// http://javascript.nwbox.com/NWMatcher/
+// http://github.com/dperini/nwmatcher/
+// https://raw.githubusercontent.com/dperini/nwmatcher/master/src/nwmatcher.js
+
+// NWEvents [1.2.5]
+// http://javascript.nwbox.com/NWEvents/
+// https://github.com/dperini/nwevents/
+// https://raw.githubusercontent.com/dperini/nwevents/master/src/nwevents.js
+
+// MatchHeight [0.7.2]
+// https://github.com/liabru/jquery-match-height
+// http://brm.io/jquery-match-height/
+
+// MediaQueries [1.0]
+// https://code.google.com/p/css3-mediaqueries-js/
+// https://raw.githubusercontent.com/livingston/css3-mediaqueries-js/master/css3-mediaqueries.js
+// https://raw.githubusercontent.com/heathcliff/css3-mediaqueries-js/master/css3-mediaqueries.min.js
+
+// Respond [1.4.2]
+// https://github.com/scottjehl/Respond
+// https://raw.githubusercontent.com/scottjehl/Respond/master/src/respond.js
+
+// Fastclick [1.0.6]
+// https://github.com/ftlabs/fastclick
+// https://raw.githubusercontent.com/ftlabs/fastclick/master/lib/fastclick.js
+
+// Hover Intent [1.10.0]
+// https://github.com/briancherne/jquery-hoverIntent
+// https://raw.githubusercontent.com/briancherne/jquery-hoverIntent/master/jquery.hoverIntent.js
+// https://raw.githubusercontent.com/briancherne/jquery-hoverIntent/master/jquery.hoverIntent.min.js
+
+// Mousewheel [3.1.3]
+// https://github.com/jquery/jquery-mousewheel
+// https://raw.githubusercontent.com/jquery/jquery-mousewheel/master/jquery.mousewheel.js
+// https://raw.githubusercontent.com/jquery/jquery-mousewheel/master/jquery.mousewheel.min.js
+
+// Modernizr [2.8.3] (for Foundation 5)
+// http://modernizr.com
+
+// CSS.Supports [0.4]
+// https://github.com/termi/CSS.supports
+// https://raw.githubusercontent.com/termi/CSS.supports/master/__COMPILED/CSS.supports.js
+// https://raw.githubusercontent.com/termi/CSS.supports/master/__SRC/CSS.supports.js
+// https://gist.github.com/amilajack/23d694676b7879fdc72478a35a88b7e4
+// http://caniuse.com/#feat=css-featurequeries
+
+// MatchMedia [0.3.1]
+// https://github.com/paulirish/matchMedia.js/
+
+// Adapt [not implemented]
+// https://github.com/nathansmith/adapt
+// https://raw.githubusercontent.com/nathansmith/adapt/master/assets/js/adapt.js
+
+
+// ============================
+// jQuery and Javascript Extras
+// ============================
+
+// Sticky Kit [1.1.2]
+// http://leafo.net/sticky-kit/
+// https://github.com/leafo/sticky-kit
+
+// FitVids [1.2]
+// https://wordpress.org/plugins/fitvids-for-wordpress/
+// http://fitvidsjs.com/
+// https://github.com/davatron5000/FitVids.js/
+// https://raw.githubusercontent.com/davatron5000/FitVids.js/master/jquery.fitvids.js
+
+// Scroll To Fixed [1.0.8]
+// https://github.com/bigspotteddog/ScrollToFixed
+// https://raw.githubusercontent.com/bigspotteddog/ScrollToFixed/master/jquery-scrolltofixed.js
+// https://raw.githubusercontent.com/bigspotteddog/ScrollToFixed/master/jquery-scrolltofixed-min.js
+
+// Superfish [1.7.10]
+// https://superfish.joelbirch.design/
+// https://github.com/joeldbirch/superfish
+
+
+
+
