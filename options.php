@@ -1,28 +1,28 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * === BioShip Theme Options ===
- *  ... for Titan Framework ...
- *  .. and Options Framework ..
- *  . and WordPress Customizer .
- *
-**/
+// =============================
+// === BioShip Theme Options ===
+// ==== for Titan Framework ====
+// === and Options Framework ===
+// == and WordPress Customizer =
+// =============================
 
-if (!function_exists('add_action')) {exit;}
-
-// =============================
-// === options.php structure ===
-// =============================
-// --- Titan Framework Integration
-// --- Options Framework Integration
-// --- Font Options
-// --- All Theme Options
-// =============================
+// -----------------------------
+// === options.php Structure ===
+// -----------------------------
+// === Titan Framework Integration ===
+// - Convert Options Framework to Titan
+// === Options Framework Integration ===
+// - Options Framework Option Name
+// - Options Framework Resource URL Fix
+// - Admin Stickykit Enqueue
+// === Font Options ===
+// - Default Web Font Stacks
+// - Default Google Title Fonts
+// - Title Font Display
+// - Display Body Fonts
+// === Set All Theme Options ===
+// -----------------------------
 
 // 1.8.0: moved all UI / admin pages to admin.php
 // (Framework specific integrations remain here)
@@ -32,9 +32,9 @@ if (!function_exists('add_action')) {exit;}
 // === Titan Framework Integration ===
 // -----------------------------------
 
-// ----------------------------------------------------
-// Convert Options Framework to Titan Framework Options
-// ----------------------------------------------------
+// ----------------------------------
+// Convert Options Framework to Titan
+// ----------------------------------
 // note: do not change, used for checking in functions.php
 if (!function_exists('bioship_optionsframework_to_titan')) {
  function bioship_optionsframework_to_titan() {
@@ -64,7 +64,7 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 
 	// 2.0.9: fix to use updated Titan color picker alpha script
 	// ref: https://github.com/kallookoo/wp-color-picker-alpha-plugin
-	// TODO: recheck if this fix is still needed after Titan update
+	// TODO: recheck if this fix is still needed after Titan update ?
 	if (!function_exists('bioship_titan_color_picker_alpha_fix')) {
 
 	 // 2.1.1: move add_filter internally for consistency
@@ -224,11 +224,11 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 				if ( ($prevclass != '') && ($class != $prevclass) ) {$menu .= '</div><div class="menu-block">';}
 				// $class = ! empty( $value['id'] ) ? $value['id'] : $value['name'];
 				// $class = preg_replace( '/[^a-zA-Z0-9._\-]/', '', strtolower($class) ) . '-tab';
-				$menu .= '<a id="options-group-'.esc_attr($counter).'-tab" class="nav-tab '.esc_attr($class).'" title="'.esc_attr($value['name']).'" href="'.esc_attr('#options-group-'.$counter).'">'.esc_html($value['name']).'</a>';
+				$menu .= '<a id="options-group-'.esc_attr($counter).'-tab" class="nav-tab '.esc_attr($class).'" title="'.esc_attr($value['name']).'" href="'.esc_attr('#options-group-'.$counter).'">'.esc_attr($value['name']).'</a>';
 				$prevclass = $class;
 			}
 		}
-		echo $menu.'</div></h2>';
+		echo $menu.'</div></h2>'; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	 }
 	}
 
@@ -297,7 +297,7 @@ if (!function_exists('bioship_optionsframework_to_titan')) {
 			}
 
 			// --- clear the buffer and output option ---
-			ob_end_clean(); echo $optionoutput;
+			ob_end_clean(); echo $optionoutput; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 		}
 		// --- start output buffer to catch default display ---
 		ob_start();
@@ -440,7 +440,7 @@ if (!function_exists('bioship_optionsframework_resource_url_fix')) {
 }
 
 // -----------------------
-// Admin Stickykit Enqueue
+// Admin StickyKit Enqueue
 // -----------------------
 if (!function_exists('bioship_options_enqueue_stickykit')) {
  function bioship_options_enqueue_stickykit() {
@@ -608,9 +608,9 @@ if (!function_exists('bioship_options_title_font_display')) {
 	}
 	$table .= "</table></center>";
 
-	echo "<head>".$loadfonts."</head>";
+	echo "<head>".$loadfonts."</head>"; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	echo "<style>.displayname {font-family:helvetica,arial;font-size:14pt;} .displayfont {font-size:24pt;}</style>";
-	echo "<body>".$table."</body>";
+	echo "<body>".$table."</body>"; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	exit;
  }
 }
@@ -654,11 +654,11 @@ if (!function_exists('bioship_options_body_font_display')) {
 	}
 	$table .= "</table></center>";
 
-	echo "<head>".$loadfonts."</head>";
+	echo "<head>".$loadfonts."</head>"; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	echo "<style>.displayname {font-family:helvetica,arial;font-size:12pt;} .displayfont {font-size:16pt;}</style>";
 	echo "<body>Web Safe Font Stacks <i>as displayed in your current browser and operating system</i>...<br>";
 	echo "(If a font looks like <span style='font-family:\"Times New Roman\";'>Times New Roman</span>, it is because you do not have it installed.)<br><br>";
-	echo $table."</body>";
+	echo $table."</body>"; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 	exit;
  }
 }
@@ -750,7 +750,7 @@ if (!function_exists('bioship_options')) {
 	// ----------------------
 	$cpts[0] = 'page'; $cpts[1] = 'post';
 	$args = array('public' => true, '_builtin' => false);
-	$thumbcpt_options['page'] = 'Page';
+	$thumbcpt_options['page'] = __('Page','bioship');
 
 	if ($internal) {
 		$cptlist = get_post_types($args, 'names', 'and');
@@ -1329,12 +1329,13 @@ if (!function_exists('bioship_options')) {
 	// ----------------------
 	// 1.8.5: added this style option
 	// 2.0.9: fix to label name (removed background)
+	// 2.1.4: fix CSS selector to include a link
 	$options[] = array( 'name' => __('Hover Menu Item Text Color','bioship'),
 		'desc' => __('Text Color for Page Menu Item Hover.','bioship'),
 		'id' => 'navmenuhovercolor',
 		'std' => '',
 		// 'css' => '#navigation #mainmenu ul li:hover {color: value;}',
-		'csselement' => '#navigation #mainmenu ul li:hover',
+		'csselement' => '#navigation #mainmenu ul li:hover, #navigation #mainmenu ul li:hover a',
 		'cssproperty' => 'color',
 		'class' => 'skin',
 		'type' => 'color',
@@ -3187,14 +3188,18 @@ if (!function_exists('bioship_options')) {
 	//	// 'transport' => 'refresh', // no admin bar on customizer pages
 	//	'type' => 'checkbox');
 
-	// TODO: check matching muscle function and fix or remove
-	// $options[] = array(
-	//	'name' => __('Show Thumbnail Column in Admin Post List', 'bioship'),
-	//	'desc' => __('Adds a thumbnail display column to the post list screen.', 'bioship'),
-	// 	'id' => 'adminthumbnailcolumn',
-	//	'class' => 'muscle',
-	//	'std' => '1',
-	//	'type' => 'checkbox');
+	// Admin Thumbnail Column
+	// ----------------------
+	// 2.1.4: allow for multiple CPT selection
+	$options[] = array(
+		'name' => __('Show Thumbnail Column in Admin Post Lists', 'bioship'),
+		'desc' => __('Adds thumbnail display column to selected custom post types list screens.', 'bioship'),
+	 	'id' => 'adminthumbnailcols',
+		'class' => 'muscle',
+		'std' => array('post' => '1'),
+		'options' => $cpt_options,
+		'type' => 'multicheck',
+		'page' => 'advanced');
 
 	// CPTs in Dashboard
 	// -----------------
@@ -3808,8 +3813,8 @@ if (!function_exists('bioship_options')) {
 				if ( (isset($_wp_additional_image_sizes[$size_name]['width'])) && (isset($_wp_additional_image_sizes[$size_name]['height'])) ) {
 					$thumb_array[$size_name] = $size_name.' ('.$_wp_additional_image_sizes[$size_name]['width'].' x '.$_wp_additional_image_sizes[$size_name]['height'].')';
 				} else {
-					// CHECKME: why this warning was really even happening here?
-					// echo "<!--"; print_r($_wp_additional_image_sizes[$size_name]); echo " -->";
+					// TOODO: check why this warning was really even happening here ?
+					// echo "<!-- ".print_r($_wp_additional_image_sizes[$size_name],true).echo " -->";
 				}
 			}
 		}

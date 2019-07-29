@@ -1,29 +1,64 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * === THEME TRACER ===
- *
-**/
+// ============================
+// === BioShip Theme Tracer ===
+// ============================
 
-if (!function_exists('add_action')) {exit;}
+// --- no direct load ---
+if (!defined('ABSPATH')) {exit;}
 
-// === tracer.php ===
+// ----------------------------
+// === tracer.php Structure ===
+// ----------------------------
+// - Debug Queries on Shutdown
+// === Setup Theme Tracer ===
 // - Tracer Querystring Usage
-// - Setup Theme Tracer
 // - Tracer Function
 // - Trace Processor
-// - Trace Included Templates
+// - Filter Processing Debug
+// === Trace Included Templates ===
+// - Check Templates Loader
+// - Get All Included Theme Files
+// - Check Theme Included Files
+// - Get Included Template List
 // - Admin Bar Template Dropdown
-// ===================
+// ----------------------------
 
-// --------------------------------
-// === Tracer Querystring Usage ===
-// --------------------------------
+
+// Development TODOs
+// -----------------
+// - fix template view links for when editing is disabled ?
+
+
+// -------------------------
+// Debug Queries on Shutdown
+// -------------------------
+// 2.1.4: moved here from functions.php
+if (THEMEDEBUG) {
+	// 2.0.5: also use save queries constant for debugging output
+	if (!defined('SAVEQUERIES')) {define('SAVEQUERIES', true);}
+	if (SAVEQUERIES) {
+		if (!function_exists('bioship_debug_saved_queries')) {
+
+		 // 2.1.1: moved add_action internally for consistency
+		 add_action('shutdown', 'bioship_debug_saved_queries');
+
+		 function bioship_debug_saved_queries() {
+			global $wpdb; $queries = $wpdb->queries;
+			bioship_debug("Saved Queries", $queries);
+		 }
+		}
+	}
+}
+
+
+// --------------------------
+// === Setup Theme Tracer ===
+// --------------------------
+
+// ------------------------
+// Tracer Querystring Usage
+// ------------------------
 // note: performating a trace requires manage_options capability
 // ?themetrace=1 		- to do a theme trace
 // &trace={resource} 	- templates, functions, filters, actions		- default: all
@@ -35,11 +70,6 @@ if (!function_exists('add_action')) {exit;}
 // Note: of course for heavy lifting you can always use:
 // add_action('shutdown', function() {echo "<!-- ".var_dump(debug_backtrace())." -->";});
 // ...but this is a much leaner and more targeted approach!
-
-
-// --------------------------
-// === Setup Theme Tracer ===
-// --------------------------
 
 // --- set Theme Tracer values ---
 // 2.1.1: moved THEMETRACE definition to functions.php
@@ -161,7 +191,7 @@ if (!function_exists('bioship_trace')) {
 	if ($type == 'function') {
 		if ( ($vthemetracer['trace'] == 'functions') || ($vthemetracer['trace'] == 'all') ) {
 			if (!in_array($name, $vthemetrace['functions'])) {$vthemetrace['functions'][] = $name;}
-			if ($vthemetracer['output']) {echo '<!-- traced function: '.$name.' ('.$filepath.') -->';}
+			if ($vthemetracer['output']) {echo '<!-- traced function: '.esc_attr($name).' ('.esc_attr($filepath).') -->';}
 
 			// --- keeps track of all function calls ---
 			$vthemetrace['calls'][] = $name;
@@ -278,7 +308,7 @@ if (!function_exists('bioship_trace_processor')) {
 		if ($traceloadsfile != '') {
 			// 2.0.7: replace direct with file system debug writing
 			bioship_write_debug_file($traceloadsfile, $tracercontents);
-			if ($vthemetrace['output']) {echo "<!-- Trace Written to: ".$traceloadsfile." -->";}
+			if ($vthemetrace['output']) {echo "<!-- Trace Written to: ".esc_attr($traceloadsfile)." -->";}
 		}
 	}
 
@@ -499,19 +529,19 @@ if (!function_exists('bioship_check_theme_templates')) {
 			unset($vthemetemplates[$filepath]);
 		}
 	}
-	// echo "<!-- Template Includes: ".print_r($vthemetemplates,true)." -->";
+	// echo "<!-- Template Includes: ".esc_attr(print_r($vthemetemplates,true))." -->";
 	bioship_debug("Included Template Files", $vthemetemplates);
 
 	// IDEA: output a template array for use by jQuery/AJAX loading?
-	// ...what would it be the use case for it though?
+	// ...what would it be the use case for it though ?
 	// echo "<script>var templatenames = new Array(); var templatepaths = new Array(); ";
 	// $i = 0;
 	// foreach ($vthemetemplates as $template => $pathinfo) {
 	//  // optionally strip the .php extension
 	//  $template = str_replace('.php', '', $template);
 	//  // output the template array key/value
-	//  echo "templatenames[".$i."] = '".$pathinfo['filename']."'; ";
-	//  echo "templatepaths[".$i."] = '".$pathinfo['dirname']."'; ";
+	//  echo "templatenames[".$i."] = '".esc_js($pathinfo['filename'])."'; ";
+	//  echo "templatepaths[".$i."] = '".esc_js($pathinfo['dirname'])."'; ";
 	//  $i++;
 	// }
 	// echo "</script>";
@@ -548,10 +578,10 @@ if (!function_exists('bioship_admin_template_dropdown')) {
 	// --- set menu settings ---
 	$menu = array(
 		'id' => 'page-templates',
-		'title' => '<span class="ab-icon"></span>'.__('Templates','bioship'),
+		'title' => '<span class="ab-icon"></span>'.esc_attr(__('Templates','bioship')),
 		'href' => 'javascript:void(0);',
 		'meta' => array(
-			'title' => __('Ordered list of included templates for this pageload.','bioship')
+			'title' => esc_attr(__('Ordered list of included templates for this pageload.','bioship'))
 		)
 	);
 
@@ -583,7 +613,7 @@ if (!function_exists('bioship_admin_template_dropdown')) {
 
 			// --- create theme editor link ---
 			// 2.0.8: fix to duplicate theme parameter
-			// TODO: make this view link if editing is disabled ?
+			// TODO: make this a view link if editing is disabled ?
 			$editlink = admin_url('theme-editor.php');
 			$editlink = add_query_arg('theme', $vthemename, $editlink);
 			$editlink = add_query_arg('file', $relfilepath, $editlink);
@@ -603,7 +633,7 @@ if (!function_exists('bioship_admin_template_dropdown')) {
 			}
 
 			// --- create plugin editor link ---
-			// TODO: make this view link if editing is disabled ?
+			// TODO: make this a view link if editing is disabled ?
 			$editlink = admin_url('plugin-editor.php');
 			$editlink = add_query_arg('file', $relfilepath, $editlink);
 

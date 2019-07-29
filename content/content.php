@@ -11,7 +11,7 @@ if (THEMETRACE) {bioship_trace('T','Content Template',__FILE__,'content');}
 
 // --- get post type(s) ---
 $posttypes = bioship_get_post_types();
-if (THEMEDEBUG) {echo "<!-- Post Types: ".esc_attr(print_r($posttypes,true))." -->";}
+if (THEMEDEBUG) {bioship_debug("Post Types", $posttypes);}
 if (is_string($posttypes)) {$posttype = $posttypes;} else {$posttype = '';}
 
 // --- clear div ---
@@ -20,7 +20,7 @@ echo '<div class="clear"></div>';
 // --- article tag open ---
 bioship_html_comment('article.entry');
 $attributes = hybrid_get_attr('post');
-echo '<article '.$attributes.'>';
+echo '<article '.$attributes.'>'; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 	// --- Before Entry ---
 	bioship_do_action('bioship_before_entry');
@@ -35,11 +35,10 @@ echo '<article '.$attributes.'>';
 	bioship_do_action('bioship_thumbnail');
 
 	// --- debug WP Query ---
-	if (THEMEDEBUG || (isset($_GET['debugquery']) && ($_GET['debugquery'] == 'yes')) ) :
+	if (THEMEDEBUG || (isset($_GET['debugquery']) && ($_GET['debugquery'] == 'yes')) ) {
 		// 1.9.5: allow for separate query-only debugging
-		global $wp_query; $debugquery = $wp_query;
-		echo "<pre style='display:none;'><!-- WP Query: ".esc_attr(print_r($debugquery,true))." --></pre>";
-	endif;
+		global $wp_query; echo "<pre style='display:none;'><!-- WP Query: ".esc_attr(print_r($wp_query,true))." --></pre>";
+	}
 
 	// Excerpt Display
 	// ---------------
@@ -51,7 +50,7 @@ echo '<article '.$attributes.'>';
 			// --- Entry Excerpt Content ---
 			bioship_html_comment('.entry-summary');
 			$attributes = hybrid_get_attr('entry-summary');
-			echo '<div '.$attributes.'>';
+			echo '<div '.$attributes.'>'; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 				// --- the_excerpt() ---
 				bioship_do_action('bioship_the_excerpt');
@@ -83,7 +82,7 @@ echo '<article '.$attributes.'>';
 					// --- Full Entry Content ---
 					bioship_html_comment('.entry-content');
 					$attributes = hybrid_get_attr('entry-content');
-					echo '<div '.$attributes.'>';
+					echo '<div '.$attributes.'>'; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 							// --- the_content ---
 							bioship_do_action('bioship_the_content');
