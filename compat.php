@@ -1,10 +1,28 @@
 <?php
 
-// =============================================
-// === BioShip Theme Backwards Compatibility ===
-// =============================================
+// ===========================
+// ===== BioShip Compat ======
+// = Backwards Compatibility =
+// ===========================
 
-// TODO: back compat for skeleton_header_html_extras, skeleton_footer_html_extras
+// --- no direct load ---
+if (!defined('ABSPATH')) {exit;}
+
+// ----------------------------
+// === compat.php Structure ===
+// ----------------------------
+// - Pre WP 3.4 Compatibility Fix
+// === Actions ===
+// - Set Old Skeleton Hooks
+// - Remove Matching Old Actions
+// - Convert Old Action/Filter Prefixes
+// === Functions ===
+// - Old Function Wrappers
+// ----------------------------
+
+// Development TODOs
+// -----------------
+// - back compat for skeleton_header_html_extras, skeleton_footer_html_extras
 
 // 1.8.5: added this file so name changed functions/filters should end up here
 // to keep pluggable functions and filters still overrideable and working later...
@@ -13,6 +31,7 @@
 // 2.0.5: check and remove matching bioship removed skeleton actions
 
 
+// ----------------------------
 // Pre WP 3.4 Compatibility Fix
 // ----------------------------
 global $wp_version;
@@ -27,9 +46,13 @@ if (!function_exists('wp_get_theme') && version_compare($wp_version, '3.4', '<')
 }
 
 
-// --------------------------
-// === Old Skeleton Hooks ===
-// --------------------------
+// ---------------
+// === Actions ===
+// ---------------
+
+// ----------------------
+// Set Old Skeleton Hooks
+// ----------------------
 $s = array();
 $s['skeleton_before_container'] = array();
 $s['skeleton_container_open']['skeleton_main_wrapper_open'] = 5;
@@ -135,11 +158,6 @@ foreach ($s as $hook => $functions) {
 }
 global $vthemehooks; $vthemehooks['skeleton'] = $s; unset($s);
 
-
-// ---------------
-// === Actions ===
-// ---------------
-
 // ---------------------------
 // Remove Matching Old Actions
 // ---------------------------
@@ -162,8 +180,7 @@ if (!function_exists('bioship_compat_hooks')) {
 					$thisfunction = str_replace('skeleton_', THEMEPREFIX.'_', $function);
 					$thispriority = apply_filters($thisfunction, $priority);
 					if (THEMEDEBUG) {
-						echo "<!-- Removing Function: ".$function." ";
-						echo "from Hook: ".$thishook." (priority ".$thispriority.") -->";
+						bioship_debug("Removing Function ".$function." from Hook ".$thishook." with Priority ".$thispriority);
 					}
 					remove_action($thishook, $thisfunction, $thispriority);
 				}
@@ -191,17 +208,14 @@ if (!function_exists('bioship_compat_actions')) {
 		$oldprefix = 'skeleton_';
 		if (isset($wp_filter[$oldhook])) {
 			if (strpos($oldhook, $oldprefix) === 0) {
-				if (THEMEDEBUG) {echo "<!-- Transferring Hook: ".$oldhook." for Theme Prefix Compatibility -->";}
+				if (THEMEDEBUG) {bioship_debug("Transferring Hook for Theme Compat", $oldhook);}
 				$newhook = THEMEPREFIX.'_'.substr($oldhook, strlen($oldprefix), strlen($oldhook));
 				// 2.0.8: add extra check before property_exists check
 				if (!isset($wp_filter[$newhook])  || !property_exists($wp_filter[$newhook], 'callbacks')) {
 					$wp_filter[$newhook] = $wp_filter[$oldhook];
 					unset($wp_filter[$oldhook]);
 				} else {
-					if (THEMEDEBUG) {
-						echo "<!-- Old Skeleton Actions for Hook ".$oldhook.": ";
-						print_r($wp_filter[$oldhook]); echo " -->";
-					}
+					if (THEMEDEBUG) {bioship_debug("Old Skeleton Actions for Hook ".$oldhook, $wp_filter[$oldhook]);}
 					$callbacks = $wp_filter[$newhook]->callbacks;
 					if (property_exists($wp_filter[$oldhook], 'callbacks')) {
 						$oldcallbacks = $wp_filter[$oldhook]->callbacks;
@@ -216,10 +230,7 @@ if (!function_exists('bioship_compat_actions')) {
 					}
 					// $wp_filter[$newhook]->callbacks = $callbacks;
 					unset($wp_filter[$oldhook]);
-					if (THEMEDEBUG) {
-						echo "<!-- New BioShip Actions for Hook ".$newhook.": ";
-						print_r($wp_filter[$newhook]); echo " -->";
-					}
+					if (THEMEDEBUG) {bioship_debug("New BioShip Actions for Hook ".$newhook, $wp_filter[$newhook]);}
 				}
 			}
 		}
@@ -416,7 +427,7 @@ if (function_exists('skeleton_credit_link')) {function bioship_skeleton_credit_l
 if (function_exists('muscle_get_display_overrides')) {function bioship_muscle_get_display_overrides($a) {return muscle_get_display_overrides($a);} }
 if (function_exists('muscle_get_templating_overrides')) {function bioship_muscle_get_templating_overrides($a) {return muscle_get_templating_overrides($a);} }
 if (function_exists('muscle_perpage_override_styles')) {function bioship_muscle_perpage_override_styles() {return muscle_perpage_override_styles();} }
-if (function_exists('muscle_thumbnail_size_perpost')) {function bioship_muscle_thumbnail_size_perpost($a) {return muscle_thumbnail_size_perpost($a);} }
+if (function_exists('muscle_thumbnail_size_perpost')) {function bioship_muscle_thumbnail_size_perpost($a,$b=null) {return muscle_thumbnail_size_perpost($a,$b);} }
 if (function_exists('muscle_get_content_filter_overrides')) {function bioship_muscle_get_content_filter_overrides($a) {return muscle_get_content_filter_overrides($a);} }
 if (function_exists('muscle_remove_content_filters')) {function bioship_muscle_remove_content_filters($a) {return muscle_remove_content_filters($a);} }
 if (function_exists('muscle_default_gravatar')) {function bioship_muscle_default_gravatar($a) {return muscle_default_gravatar($a);} }

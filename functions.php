@@ -2,6 +2,7 @@
 
 // =========================
 // ======== BIOSHIP ========
+// =========================
 // ==== Theme Framework ====
 // =========================
 
@@ -21,7 +22,7 @@
 // License
 // -------
 // BioShip Theme Framework, super flexible theme for WordPress
-// Copyright (C) 2019 Tony Hayes
+// Copyright (C) 2016-2019 Tony Hayes
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -60,72 +61,82 @@
 // -------------------------------
 // === functions.php Structure ===
 // -------------------------------
-// - [optional] pre-load of Child Theme functions (child functions.php)
-// - setup Theme Values and load Freemius SDK
-// - load Helper and Debugging Functions
-// - maybe backwards compatibility (compat.php)
-// - load Theme Data (and maybe Theme Test Drive)
-// - maybe load Child Theme Value Filters (filters.php)
-// - set Debug Mode and maybe load Theme Tracer (tracer.php)
-// - load Titan/Options Framework and Theme Settings
-
-// - maybe load Admin-only functions (admin.php)
-// - [optional] load Hybrid Core Framework (hybrid.php)
+// [optional] WordPress auto-loads Child Theme functions.php
+// === Theme Setup ===
+// - AutoSet Framework Version
+// - Set WordQuest Theme 'Plugin' Info
+// - Set Framework URLs
+// - Set Global Theme Directories and URLs
+// - Set Windows Path Constant
+// - Set Global Resource Paths
+// - Comprehensive File Hierarchy
+// - Load Helper Functions (helpers.php)
+// === Load Theme ===
+// - Load Theme Backwards Compatiblity (compat.php)
+// - Load Current Theme Data
+// - Determine Theme for Test Drive Plugin
+// - Theme Test Drive Compatibility
+// - Load Theme Value Filters (filters.php)
+// - Set Site Icon Constant
+// - Filter Resource Directories
+// - Set Global Theme Name and Parent/Child
+// - Set Child Theme Version
+// === Debugging ===
+// - Set Theme Debug Mode Switch
+// - Start Theme Debug Output/Log
+// - Set Debug Directory
+// - Load Theme Tracer (tracer.php)
+// === Theme Settings ===
+// - Convert Posted Customizer Preview Options
+// - Get Theme Settings Filter - with Fallbacks!
+// - Check/Fix Updated Theme Settings (PreSave)
+// - Debug Updated Theme Settings
+// - On/Off File Switch for Titan Framework
+// - Check Options Framework to Load
+// -- Titan Framework Load
+// -- Options Framework Load
+// - Set Framework Flag Constants
+// - Map Titan Option values to Theme Settings
+// - Load Theme Options and Settings
+// - Load Theme Admin Functions (admin/admin.php)
+// - Set HTML Comments Constant
+// - Set Script Cachebusting
+// - Set Stylesheet Cachebusting
+// - Declare WooCommerce Support
+// - Set Post Format Theme Supports
+// - Output Theme Settings Debug Info
+// === Customizer ===
+// - Customizer Loader (admin/customizer.php)
+// - Load Customizer Controls
+// - Customizer Preview Window
+// - Customizer Loading Image
+// === Hybrid Core ===
+// - Load Hybrid Core
+// - Non Hybrid Fallback Loading
+// - Fix to Main Element IDs
+// === Skull, Skeleton, and Muscle ===
 // - Require Head and Template Setup (skull.php)
 // - Require Layout Hooks Definitions (hooks.php)
 // - Require Skeleton Templating Functions (skeleton.php)
 // - Include Muscle Extended Functions (muscle.php)
-// - Dynamic Grid Loading Functions (for grid.php)
-// - Dynamic Skin Loading Functions (for skin.php)
+// - Grid and Skin Loading Functions (moved to skull.php)
 
 
-// =================
-// Theme Directories
-// =================
-// (see Documentation for more details)
-
-// Assets
-// ------
-// /styles/					Theme Stylesheets
-// /scripts/ 				Theme Scripts
-// /images/					Theme Images
-// /languages/				Theme Languages
-
-// Admin
-// -----
-// /admin/					Theme Admin Functions
-// /debug/					Theme Debug Writing
-// /child/					Child Theme Sources
-
-// Templates
-// ---------
-// /content/ 				Content Templates
-// /content/format/			Post Format Templates
-// /sidebar/ 				Sidebar Templates
-// /templates/				Third Party Templates
-// /archive/				(optional) Archive Templates
-
-// Libraries
-// ---------
-// /includes/		 		Third Party Includes
-// /includes/options/ 		Options Framework
-// /includes/titan/ 		Titan Framework
-// /includes/hybridX/ 		Hybrid Core Library (2 or 3)
-// /includes/foundationX/ 	Foundation Library (5 or 6)
-// /includes/kirkiX/ 		Kirki Library (2 or 3)
+// --- no direct load ---
+if (!defined('ABSPATH')) {exit;}
 
 
-// -------------
-// === SETUP ===
-// -------------
+// -------------------
+// === Theme Setup ===
+// -------------------
 
 // ------------------------------------
-// Define DIRECTORY_SEPARATOR pseudonym
+// Define DIRECTORY_SEPARATOR Pseudonym
 // ------------------------------------
 if (!defined('DIRSEP')) {define('DIRSEP', DIRECTORY_SEPARATOR);}
 
 // ---------------------
-// Set Framework Version
+// AutoSet Framework Version
 // ---------------------
 // 2.0.1: get theme version direct from style.css
 // 2.0.5: set theme prefix constant
@@ -177,9 +188,9 @@ if (THEMESSL) {
 	$vthemetemplateurl = str_replace('http://', 'https://', $vthemetemplateurl);
 }
 
-// ------------------------------
-// Set Constant for Windows Paths
-// ------------------------------
+// -------------------------
+// Set Windows Path Constant
+// -------------------------
 // (may help paths on some local dev Windows IIS environments)
 // 2.0.9: use operating system check for Windows paths
 if (!defined('THEMEWINDOWS')) {
@@ -206,577 +217,6 @@ $vthemedirs['script'] = array('scripts', 'javascripts', 'js', 'assets/js');
 $vthemedirs['image'] = array('images', 'img', 'icons', 'assets/img');
 $vthemedirs['includes'] = array('includes');
 
-
-// ------------------------
-// === Helper Functions ===
-// ------------------------
-
-// -----------------
-// Get Function Args
-// -----------------
-// 2.1.2: added backwards compatible function for WP < 5.3
-if (!function_exists('func_get_args')) {
-	function func_get_args() {return '';}
-}
-
-// ----------------------
-// Negative return Helper
-// ----------------------
-// 2.0.7: added this little helper function
-if (!function_exists('bioship_return_negative')) {
- function bioship_return_negative() {return -1;}
-}
-
-// ---------------------
-// Dummy Function Helper
-// ---------------------
-// 2.0.9: added this little helper function
-if (!function_exists('bioship_dummy_function')) {
- function bioship_dummy_function() {}
-}
-
-// ----------------
-// Start Load Timer
-// ----------------
-if (!function_exists('bioship_timer_start')) {
- function bioship_timer_start() {
- 	global $vthemetimestart; $vthemetimestart = microtime(true); return $vthemetimestart;
- }
- $vthemetimestart = bioship_timer_start();
-}
-
-// ---------------------
-// Get Current Load Time
-// ---------------------
-if (!function_exists('bioship_timer_time')) {
- function bioship_timer_time() {
- 	global $vthemetimestart; $themetimer = microtime(true); return ($themetimer - $vthemetimestart);
- }
-}
-
-// ---------------
-// Round Half Down
-// ---------------
-// 2.1.2: added this helper function
-// (since PHP 5.2 does not have PHP_ROUND_HALF_DOWN mode)
-// ref: https://stackoverflow.com/questions/7103233/round-mode-round-half-down-with-php-5-2-17
-if (!function_exists('bioship_round_half_down')) {
- function bioship_round_half_down($v, $precision = 3) {
-	$v = explode('.', $v);
-	$v = implode('.', $v);
-	$v = $v * pow(10, $precision) - 0.5;
-	$a = ceil($v) * pow(10, -$precision);
-	return number_format( $a, 2, '.', '' );
- }
-}
-
-// ---------------------
-// Get Remote IP Address
-// ---------------------
-if (!function_exists('bioship_get_remote_ip')) {
- function bioship_get_remote_ip() {
- 	if (THEMETRACE) {bioship_debug('F',__FUNCTION__,__FILE__);}
-
- 	// TODO: replace with more accurate IP detection ?
- 	// note: this is only used by the theme in debug log lines
-	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {$ip = $_SERVER['HTTP_CLIENT_IP'];}
-	elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];}
-	else {$ip = $_SERVER['REMOTE_ADDR'];}
-	return $ip;
- }
-}
-
-// ------------------
-// Theme Debug Output
-// ------------------
-// 2.0.9: added separate debug output/logging function
-if (!function_exists('bioship_debug')) {
- function bioship_debug($prefix, $data=null, $forceoutput=null, $forcelog=null) {
- 	if (!defined('THEMEDEBUG') || !THEMEDEBUG) {return;}
-
- 	// --- maybe display debug output ---
- 	$output = true;
- 	if (defined('THEMEDEBUGOUTPUT') && !THEMEDEBUGOUTPUT) {$output = false;}
- 	if (!is_null($forceoutput)) {$output = $forceoutput;}
-
-	// --- maybe output debug data ---
-	if ($output) {
- 		echo "<!-- [Theme Debug] ".$prefix;
- 		if (!is_null($data)) {
- 			echo ": ";
-			if (is_array($data) || is_object($data)) {PHP_EOL.print_r($data);}
-			elseif (is_string($data)) {echo $data;}
-	 	}
- 		echo " -->".PHP_EOL;
- 	}
-
-	// --- check for debug instance ---
-	// 2.0.9: check querystring for setting of debug instance
-	if (!defined('THEMEDEBUGINSTANCE') && isset($_REQUEST['instance'])) {
- 		define('THEMEDEBUGINSTANCE', $_REQUEST['instance']);
-	}
-
- 	// --- maybe log debug output ---
- 	// 2.1.1: added missing single quotes in define check
- 	$log = false;
- 	if (defined('THEMEDEBUGLOG') && THEMEDEBUGLOG) {$log = true;}
- 	if (!is_null($forcelog)) {$log = $forcelog;}
-
-	// 2.1.1: bug out here if not logging
-	if (!$log) {return;}
-
-	$logline = '';
-
-	// --- theme debug log info constant ---
-	// (define for once only logging)
-	if (!defined('THEMEDEBUGLOGINFO')) {
-		$logline = PHP_EOL."Theme Debug Output";
-		if (defined('THEMEDEBUGINSTANCE') && THEMEDEBUGINSTANCE) {
-			$logline .= " Instance '".THEMEDEBUGINSTANCE."'";
-		}
-		$logline .= PHP_EOL.'['.date('j m Y H:i:s', time()).'] ';
-
-		// --- user IP address ---
-		// 2.0.9: add IP address to theme debug info log line
-		$logline .= '[IP '.bioship_get_remote_ip().'] ';
-		define('THEMEDEBUGLOGINFO', true);
-	}
-
-	// --- set log line data ---
-	$logline .= $prefix;
-	if (!is_null($data)) {
-		if (is_string($data)) {$logline .= ": ".$data;}
-		elseif (is_array($data) || is_object($data)) {
-			// 2.0.9: removed unneeded output buffering
-			$logline .= ": ".PHP_EOL.print_r($data, true);
-		}
-	}
-	$logline .= PHP_EOL;
-
-	if ($logline != '') {
-
-		// --- set debug log filename ---
-		// 2.1.1: check/set THEMEDEBUGFILE constant
-		if (defined('THEMEDEBUGFILE')) {$filename = THEMEDEBUGFILE;}
-		else {
-			$filename = 'theme_debug.log';
-			// 2.0.9: allow setting of alternative filename for single debug instance
-			if (defined('THEMEDEBUGINSTANCE') && THEMEDEBUGINSTANCE) {
-				$instance = THEMEDEBUGINSTANCE;
-				$filename = $instance.'_'.$filename;
-			} else {$instance = false;}
-
-			// --- filter debug log filename ---
-			// 2.1.1: added instance as extra filter value
-			$filename = bioship_apply_filters('debug_filename', $filename, $instance);
-			define('THEMEDEBUGFILE', $filename);
-		}
-
-		// --- write log line to debug file ---
-		bioship_write_debug_file($filename, $logline);
-	}
-
- }
-}
-
-// -----------------
-// Get File Contents
-// -----------------
-// 2.0.7: added file_get_contents alternative wrapper (for Theme Check)
-if (!function_exists('bioship_file_get_contents')) {
- function bioship_file_get_contents($filepath) {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
- 	if (!file_exists($filepath)) {return '';}
-
-	// --- attempt to use WP filesystem ---
-	global $wp_filesystem;
-
-	if (empty($wp_filesystem)) {
-		// --- maybe require filesystem ---
-		if (!function_exists('WP_Filesytem')) {
-			$filesystem = ABSPATH.DIRSEP.'wp-admin'.DIRSEP.'includes'.DIRSEP.'file.php';
-			require_once($filesystem);
-		}
-
-		// --- initialize WP Filesystem ---
-		WP_Filesystem();
-	}
-
-	// --- get file contents ---
-	$contents = $wp_filesystem->get_contents($filepath);
-	if ($contents) {return $contents;}
-	else {
-		// --- fallback to using file() to read the file ---
-		// 2.1.1: do not re-add line break when using file() function
-		$filearray = @file($filepath);
-		if (!$filearray) {return '';}
-		$contents = implode("", $filearray);
-		return $contents;
-	}
- }
-}
-
-// ------------------
-// Direct File Writer
-// ------------------
-// 1.8.0: added this for direct file writing
-// 2.0.9: added append method since WP Filesystem does not have one
-if (!function_exists('bioship_write_to_file')) {
- function bioship_write_to_file($filepath, $data, $append=false) {
-
- 	// 2.1.1: fix for early use of this function (where tracer not loaded yet)
- 	// if (defined('THEMETRACE') && THEMETRACE && function_exists('bioship_trace')) {
- 	// 	bioship_trace('F',__FUNCTION__,__FILE__);
- 	// }
-
-	// --- force direct-only write method using WP Filesystem ---
-	global $wp_filesystem;
-	if (empty($wp_filesystem)) {
-		// --- maybe require filesystem ---
-		if (!function_exists('WP_Filesytem')) {
-			// 2.0.9: fix to double trailing slash on WP filesystem path
-			$filesystem = ABSPATH.'wp-admin'.DIRSEP.'includes'.DIRSEP.'file.php';
-			require_once($filesystem);
-		}
-		// --- initialize WP Filesystem ---
-		WP_Filesystem();
-	}
-	$filedir = dirname($filepath);
-
-	// --- get filesystem credentials ---
-	$credentials = request_filesystem_credentials('', 'direct', false, $filedir, null);
-	if ($credentials === false) {
-		// --- bug out since we cannot do direct writing ---
-		bioship_debug("WP Filesystem Direct Write Method Failed. Check Owner/Group Permissions.");
-		return false;
-	}
-
-	// --- append method ---
-	// note: used in debug line writing
-	// 2.0.9: added as bizarrely WP Filesystem has no append method??
-	// 2.1.1: double check file exists before getting content
-	if ($append && file_exists($filepath)) {
-		$contents = $wp_filesystem->get_contents($filepath);
-		$data = $contents.PHP_EOL.$data;
-	}
-
-	// --- write to file --
-	// 2.1.1: return write result
-	$result = $wp_filesystem->put_contents($filepath, $data, FS_CHMOD_FILE);
-	return $result;
- }
-}
-
-// -----------------
-// Debug File Writer
-// -----------------
-// 1.8.0: added this for tricky debugging output
-// 1.9.8: use debug directory global here
-// 2.1.1: added optional append argument
-if (!function_exists('bioship_write_debug_file')) {
- function bioship_write_debug_file($filename, $data, $append=true) {
- 	// if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
- 	// -- check/create debug directory --
- 	global $vthemedebugdir;
-	$vthemedebugdir = bioship_check_create_debug_dir();
-
-	// --- write debug file ---
-	$debugfile = $vthemedebugdir.DIRSEP.$filename;
-	// 2.0.9: use new append writing method for debug data
-	$writedebug = bioship_write_to_file($debugfile, $data, $append);
-
-	// --- error log writing fallback ---
-	// 2.0.9: fallback using error_log if WP Filesystem direct method failed
-	if (!$writedebug) {error_log($data, 3, $debugfile);}
- }
-}
-
-// ----------------------------
-// Check/Create Debug Directory
-// ----------------------------
-// 2.0.9: moved to standalone function from bioship_write_debug_file
-if (!function_exists('bioship_check_create_debug_dir')) {
- function bioship_check_create_debug_dir() {
- 	// if (defined('THEMETRACE') && THEMETRACE && function_exists('bioship_trace')) {
- 	// bioship_trace('F',__FUNCTION__,__FILE__);
- 	// }
-
- 	// --- maybe create debug directory ---
- 	global $vthemedebugdir, $vthemestyledir,  $vthemetemplatedir;
- 	if (!isset($vthemedebugdir)) {
-		if (is_child_theme()) {$vthemedebugdir = $vthemestyledir.'debug';}
-		else {$vthemedebugdir = $vthemetemplatedir.'debug';}
-		$vthemedebugdir = bioship_apply_filters('skeleton_debug_dirpath', $vthemedebugdir);
-		if (!is_dir($vthemedebugdir)) {
-			// TODO: maybe use WP Filesystem to create debug directory ?
-			wp_mkdir_p($vthemedebugdir);
-		}
-	}
-
-	// --- write htaccess file ---
-	// 2.0.7: check and write .htaccess file for debug directory
-	$htacontents = "order deny,allow".PHP_EOL."deny from all";
-	$htafile = $vthemedebugdir.DIRSEP.'.htaccess';
-	if (!file_exists($htafile)) {$writehta = bioship_write_to_file($htafile, $htacontents);}
-	return $vthemedebugdir;
- }
-}
-
-// ------------------------
-// Get Current User Wrapper
-// ------------------------
-// 2.0.7: extracted all calls to standalone function
-if (!function_exists('bioship_get_current_user')) {
- function bioship_get_current_user() {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-	if (function_exists('wp_get_current_user')) {return wp_get_current_user();}
-	else {
-		global $current_user;
-		// 2.0.9: streamlined copy of _wp_get_current_user (backwards compatible)
-		// (as using get_currentuserinfo() does not pass theme check)
-		if (!empty($current_user)) {
-			if ($current_user instanceof WP_User) {return $current_user;}
-
-			// 2.1.1: removed setting of $current_user to null, fixed isset check
-			$current_user_id = 0;
-			if (is_object($current_user) && property_exists($current_user, 'ID')) {
-				$current_user_id = $current_user->ID;
-			}
-			wp_set_current_user($current_user_id);
-		}
-		return $current_user;
-	}
-	return false;
- }
-}
-
-// ---------------------------------
-// Apply Filters (with Value Tracer)
-// ---------------------------------
-// 2.1.1: added extra value argument
-// note: extravalue set to an arbitrary string as a null value may be valid!
-if (!function_exists('bioship_apply_filters')) {
- function bioship_apply_filters($filter, $value, $extravalue = 'valuenotsupplied', $caller = false) {
-
-	// --- standard filter ---
- 	// 2.0.5: also trace applied filter levels
- 	// 2.1.1: check for extra filtering value
- 	$values['in'] = $value;
- 	if ($extravalue == 'valuenotsupplied') {$filtered = apply_filters($filter, $value);}
- 	else {$filtered = apply_filters($filter, $value, $extravalue);}
-	if ($value != $filtered) {$value = $values['filter'] = $filtered;}
-
-	// --- theme prefixed filter ----
-	// 2.0.5: process theme prefixed filter as well
-	// 2.1.1: check for extra filtering value
-	if (substr($filter, 0, strlen(THEMEPREFIX.'_')) != THEMEPREFIX.'_') {
-		if ($extravalue == 'valuenotsupplied') {$filtered = apply_filters(THEMEPREFIX.'_'.$filter, $value);}
-		else {$filtered = apply_filters(THEMEPREFIX.'_'.$filter, $value, $extravalue);}
-		if ($filtered != $value) {$value = $values['theme'] = $filtered;}
-	}
-
-	// --- child theme prefixed filter ---
-	// 2.0.5: maybe process child theme specific filter (for multiple theme compatibilty)
-	// 2.1.1: check for extra filtering value
-	if (defined('THEMECHILD') && THEMECHILD) {
-		if (substr($filter, 0, strlen(THEMESLUG.'_')) != THEMESLUG.'_') {
-			if ($extravalue == 'valuenotsupplied') {$filtered = apply_filters(THEMESLUG.'_'.$filter, $value);}
-			else {$filtered = apply_filters(THEMESLUG.'_'.$filter, $value, $extravalue);}
-			if ($filtered != $value) {$value = $values['child'] = $filtered;}
-		}
-	}
-
-	// --- trace value only if changed ---
-	if (defined('THEMETRACE') && THEMETRACE) {
-		$values['out'] = $value;
-		bioship_trace('V', $filter, $caller, $values);
-	}
-
-	return $value;
- }
-}
-
-// -----------------------
-// Do Action (with Tracer)
-// -----------------------
-// 2.0.5: added prefixed do_action wrapper for action load debugging/tracing
-if (!function_exists('bioship_do_action')) {
- function bioship_do_action($action) {
-
- 	// --- action tracer ---
- 	// 2.1.1: removed useless third argument value
- 	// (as will always be functions.php, current template filepath used instead)
- 	if (THEMETRACE) {bioship_trace('A',$action,'');}
-
-	// --- action hook debugging ---
- 	if (THEMEDEBUG) {
- 		$list = '';
-	 	if (has_action($action)) {
-	 		global $wp_filter;
-	 		$callbacks = $wp_filter[$action]->callbacks;
-	 		if (count($callbacks) > 0) {
-				foreach ($callbacks as $priority => $callback) {
-					foreach ($callback as $key => $function) {
-						$list .= $function['function'].' ('.$priority.')'.PHP_EOL;
-					}
-				}
-			}
-	 	}
-
-		// --- debug the hooked action list ---
-	 	// 2.0.9: use bioship_debug function
-	 	if ($list == '') {bioship_debug("Doing Empty Action '".$action."'");}
-	 	else {bioship_debug("Doing Action '".$action."' with Hooked Functions", $list);}
-	}
-
-	// --- just do it already ---
- 	do_action($action);
- }
-}
-
-// --------------------------------
-// Add to Action Hook with Priority
-// --------------------------------
-// 1.9.8: added abstract to use theme hooks array
-if (!function_exists('bioship_add_action')) {
- function bioship_add_action($hook, $function, $defaultposition) {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	global $vthemehooks;
-
-	// --- add theme prefix ---
-	// 2.0.5: maybe auto-prefix hooks and functions
-	$prefix = THEMEPREFIX.'_';
-	if (substr($hook, 0, strlen($prefix)) != $prefix) {$hook = $prefix.$hook;}
-	if (substr($function, 0, strlen($prefix)) != $prefix) {$function = $prefix.$function;}
-
-	// --- check theme hooks array ---
-	if (isset($vthemehooks['functions'][$hook][$function])) {
-		$position = $vthemehooks['functions'][$hook][$function];
-	} else {
-		$position = $defaultposition;
-		bioship_debug("Warning: Missing Template Position for Hook ".$hook, $function);
-	}
-
-	// --- apply old filter names ---
-	// 2.0.5: for old position filters eg. skeleton_wrapper_open_position
-	$oldfunction = substr($function, strlen(THEMEPREFIX.'_'), strlen($function));
-	$position = apply_filters($oldfunction.'_position', $position);
-
-	// --- apply position filters ---
-	if (function_exists('bioship_apply_filters')) {
-		// eg. bioship_wrapper_open_position
-		$position = bioship_apply_filters($function.'_position', $position);
-		// eg. bioship_container_open_bioship_wrapper_open_position
-		$position = bioship_apply_filters($hook.'_'.$function.'_position', $position);
-	} else {
-		$position = apply_filters($function.'_position', $position);
-		$position = apply_filters($hook.'_'.$function.'_position', $position);
-	}
-
-	// --- add action to hook with priority ---
-	if ($position > -1) {
-		bioship_debug("Added to Hook ".$hook." with Priority ".$position, $function, true);
-		add_action($hook, $function, $position);
-	} else {
-		bioship_debug("Invalid Position for Hook ".$hook." at ".$position, $function, true);
-	}
-
- }
-}
-
-// ------------------------
-// Register Removed Actions
-// ------------------------
-// helper to remove template action from hook without needing to know priority position
-// 2.0.5: added this remove_action helper wrapper
-if (!function_exists('bioship_remove_action')) {
- function bioship_remove_action($hook, $function, $position=false) {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	global $vthemehooks;
-
-	// --- auto-add theme prefix ---
-	$prefix = THEMEPREFIX.'_';
-	if (substr($hook, 0, strlen($prefix)) != $prefix) {$hook = $prefix.$hook;}
-	if (substr($function, 0, strlen($prefix)) != $prefix) {$function = $prefix.$function;}
-
-	// --- find action hook position ---
- 	if (!$position) {
-		if (!isset($vthemehooks['functions'][$hook][$function])) {
-			$position = $vthemehooks['functions'][$hook][$function];
-		}
-
-		// --- apply position filters ---
-		// note: position filters intentionally reversed as removing not adding!
-		if (function_exists('bioship_apply_filters')) {
-			$position = bioship_apply_filters($hook.'_'.$function.'_position', $position);
-			$position = bioship_apply_filters($function.'_position', $position);
-		} else {
-			$position = apply_filters($hook.'_'.$function.'_position', $position);
-			$position = apply_filters($function.'_position', $position);
-		}
- 	}
-
- 	// --- add to list of actions to remove later ---
- 	// 2.1.1: added recheck of position false for edge cases
- 	if ($position && ($position > -1)) {
- 		// remove_action($hook, $function, $position);
-		$vthemehooks['remove'][$hook][$function] = $position;
- 	}
- }
-}
-
-// ----------------------
-// Delayed Remove Actions
-// ----------------------
-if (!function_exists('bioship_remove_actions')) {
-
- // --- delay until init so actions added then removed ---
- // 2.0.9: increase priority for better child theme support
- add_action('init', 'bioship_remove_actions', 11);
-
- function bioship_remove_actions() {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemehooks;
-	$remove = $vthemehooks['remove'];
-	if (count($remove) > 0) {
-		foreach ($remove as $hook) {
-			foreach ($hook as $function => $position) {
-				remove_action($hook, $function, $position);
-				bioship_debug("Action Removed from Hook ".$hook." Position ".$position, $function);
-			}
-		}
-	}
- }
-}
-
-// -----------------
-// Get Single Option
-// -----------------
-// note: for internal theme use, does not honour pre_option_ or default_option filters!
-// 1.9.5: added to get an option direct from database (to bypass any cached values)
-// 2.0.9: add default (not yet used) and filter arguments
-if (!function_exists('bioship_get_option')) {
- function bioship_get_option($optionkey, $default=false, $filter=true) {
- 	if (defined('THEMETRACE') && THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
- 	// --- get value direct from database ---
- 	global $wpdb;
- 	$query = "SELECT option_value FROM ".$wpdb->prefix."options WHERE option_name = '".$optionkey."'";
-
- 	// --- maybe unserialize option value
- 	// 2.0.9: always do a maybe_unserialize on option value
-	$optionvalue = maybe_unserialize($wpdb->get_var($query));
-
-	// --- apply filter to value ---
-	// 2.0.9: maybe apply the related option filter
-	if ($filter) {$optionvalue = apply_filters('option_'.$optionkey, $optionvalue, $optionkey);}
- 	return $optionvalue;
- }
-}
-
 // ----------------------------
 // Comprehensive File Hierarchy
 // ----------------------------
@@ -786,6 +226,7 @@ if (!function_exists('bioship_get_option')) {
 // 1.8.0: added optional search roots override argument
 // (added for edge cases, ie. the search for /sidebar/page.php should *not* find /page.php)
 // 2.0.9: added theme_file_search filter to return results?
+// 2.1.4: added function_exists wrappers to bioship_debug calls
 if (!function_exists('bioship_file_hierarchy')) {
  function bioship_file_hierarchy($returntype, $filename, $dirs = array(), $searchroots = array('stylesheet','template')) {
 
@@ -807,8 +248,10 @@ if (!function_exists('bioship_file_hierarchy')) {
 
 	// --- debug hierarchy call and search directories ---
 	if (defined('THEMEDEBUG')) {
-		bioship_debug("File Hierarchy Call for ".$returntype, $filename);
-		if (count($dirs) > 0) {bioship_debug("Search Directories", implode(',', $dirs));}
+		if (function_exists('bioship_debug')) {
+			bioship_debug("File Hierarchy Call for ".$returntype, $filename);
+			if (count($dirs) > 0) {bioship_debug("Search Directories", implode(',', $dirs));}
+		}
 	}
 
 	// --- set value flags ---
@@ -913,14 +356,16 @@ if (!function_exists('bioship_file_hierarchy')) {
 	// --- filter the found file path value ---
 	// 2.1.0: fix to incorrect filter variable name
 	// 2.1.1: compressed extra filter values to args array
-	bioship_debug($filename." Search File Return Value", $value);
+	// 2.1.4: added function_exists check for bioship_apply_filters
+	if (function_exists('bioship_debug')) {bioship_debug($filename." Search File Return Value", $value);}
 	$args = array('type' => $returntype, 'filename' => $filename, 'dirs' => $dirs, 'searchroots' => $searchroots);
-	$filtered = bioship_apply_filters('theme_file_search', $value, $args);
+	if (function_exists('bioship_apply_filters')) {$filtered = bioship_apply_filters('theme_file_search', $value, $args);}
+	else {$filtered = apply_filters('bioship_theme_file_search', $value, $args);}
 	if ($filtered != $value) {
-		bioship_debug("Filtered Filepath Search Value", $filtered);
+		if (function_exists('bioship_debug')) {bioship_debug("Filtered Filepath Search Value", $filtered);}
 		// 2.1.1: added file exists check for filtered value
 		if (file_exists($filtered)) {$value = $filtered;}
-		else {bioship_debug("Warning! Filtered Filepath Not Found");}
+		elseif (function_exists('bioship_debug')) {bioship_debug("Warning! Filtered Filepath Not Found");}
 	}
 
 	// --- return found file path ---
@@ -928,121 +373,17 @@ if (!function_exists('bioship_file_hierarchy')) {
  }
 }
 
-// -----------------------------
-// WordPress.Org Version Checker
-// -----------------------------
-// note: checks presence of /includes/theme-update-checker.php
-// this indicates a version downloaded from Bioship.Space - not from WordPress.org
-// 2.0.8: moved this check from admin.php so as to define earlier
-// 2.0.9: allow for existing user override for this constant
-// 2.1.1: allow for alternative include directory
-if (!defined('THEMEWPORG')) {
-	$themeupdater = bioship_file_hierarchy('file', 'theme-update-checker.php', $vthemedirs['includes']);
-	// 2.1.0: fix to fallback definition value true for WordPress.Org version
-	if ($themeupdater) {define('THEMEWPORG', false);}
-	else {define('THEMEWPORG', true);}
-
-	// 2.1.1: set wporg key value on wordquestplugins array
-	$wordquestplugins[THEMEPREFIX]['wporg'] = THEMEWPORG;
-}
-
-// -----------------------
-// Get Post Type(s) Helper
-// -----------------------
-// 1.8.5: added this helper
-// 2.0.5: moved here from skull.php
-if (!function_exists('bioship_get_post_types')) {
- function bioship_get_post_types($queryobject = null) {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	// --- if a numeric value passed, assume it is a post ID ---
-	if ($queryobject && is_numeric($queryobject)) {$queryobject = get_post($queryobject);}
-
-	// --- if an object is passed, assume a post object ---
-	if ($queryobject && is_object($queryobject)) {
-		bioship_debug("Queried Object", $queryobject);
-		return get_post_type($queryobject);
-	}
-
-	// --- standard single post type checks ---
-	if (is_404()) {return '';} // no post type for a 404
-	// 1.9.5: removed is_single check - incorrect usage!
- 	// if (is_single()) {return 'post';}
- 	if (is_page()) {return 'page';}
-	if (is_attachment()) {return 'attachment';}
-	// 1.9.5: added is_archive check for rare cases
-	if (is_singular() && !is_archive()) {return get_post_type();}
-
-    // --- if a custom query object was not passed, use $wp_query global ---
-    if (!$queryobject || !is_object($queryobject)) {
-    	global $wp_query; $queryobject = $wp_query;
-    }
-    if (!is_object($queryobject)) {return '';}
-
-	// --- if the post_type query var has been explicitly set ---
-	// (or implicitly set on the cpt via a has_archive redirect)
-	// ie. this is true for is_post_type_archive at least
-	// $queriedposttype = get_query_var('post_type'); // works for $wp_query only
-	if (property_exists($queryobject, 'query_vars')) {
-	    $queriedposttype = $queryobject->query_vars['post_type'];
-		if ($queriedposttype) {return $queriedposttype;}
-	}
-
-    // --- handle all other cases by looping posts in query object ---
-    $posttypes = array();
-	if ($queryobject->found_posts > 0) {
-		$queriedposts = $queryobject->posts;
-		foreach ($queriedposts as $queriedpost) {
-		    $posttype = $queriedpost->post_type;
-		    if (!in_array($posttype, $posttypes)) {$posttypes[] = $posttype;}
-		}
-		if (count($posttypes == 1)) {return $posttypes[0];}
-		else {return $posttypes;}
-	}
-
-    return '';
- }
-}
-
 // ---------------------
-// Word to Number Helper
+// Load Helper Functions
 // ---------------------
-if (!function_exists('bioship_word_to_number')) {
- function bioship_word_to_number($word) {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+// 2.1.4: moved helper functions to separate file
+$helpers = bioship_file_hierarchy('file', 'helpers.php');
+require($helpers);
 
-	$wordnumbers = array(
-		'zero' => '0', 'one' => '1', 'two' => '2', 'three' => '3', 'four' => '4', 'five' => '5', 'six' => '6',
-		'seven' => '7', 'eight' => '8', 'nine' => '9', 'ten' => '10', 'eleven' => '11', 'twelve' => '12',
-		'thirteen' => '13',	'fourteen' => '14', 'fifteen' => '15', 'sixteen' => '16',
-		'seventeen' => '17', 'eighteen' => '18', 'nineteen' => '19', 'twenty' => '20',
-		'twentyone' => '21', 'twentytwo' => '22', 'twentythree' => '23', 'twentyfour' => '24',
-	);
 
-	// 1.8.5: added check and return false for validation
-	if (array_key_exists($word, $wordnumbers)) {return $wordnumbers[$word];}
-	return false;
- }
-}
-
-// ---------------------
-// Number to Word Helper
-// ---------------------
-if (!function_exists('bioship_number_to_word')) {
- function bioship_number_to_word($number) {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	$numberwords = array(
-		'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
-		'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
-		'seventeen', 'eighteen', 'nineteen', 'twenty', 'twentyone', 'twentytwo', 'twentythree', 'twentyfour'
-	);
-
-	// 1.8.5: added check and return false for validation
-	if (array_key_exists($number, $numberwords)) {return $numberwords[$number];}
-	return false;
- }
-}
+// ------------------
+// === Load Theme ===
+// ------------------
 
 // ---------------------------------
 // Load Theme Backwards Compatiblity
@@ -1054,11 +395,6 @@ if (!function_exists('bioship_number_to_word')) {
 $compat = bioship_file_hierarchy('file', 'compat.php');
 $compatoff = bioship_file_hierarchy('file', 'compat.off');
 if ($compat && !$compatoff) {include_once($compat);}
-
-
-// ------------------
-// === Load Theme ===
-// ------------------
 
 // ----------------------
 // Get Current Theme Data
@@ -1170,9 +506,9 @@ if ( ($pagenow != 'theme-editor.php') && ($pagenow != 'customize.php') ) {
 	}
 }
 
-// ------------------------------
-// Maybe Load Theme Value Filters
-// ------------------------------
+// ------------------------
+// Load Theme Value Filters
+// ------------------------
 // check for possible customized filters.php in parent/child theme
 // note: *loaded early* as filters are used immediately if present
 // 2.0.9: run core directory filter in case override already exists
@@ -1180,9 +516,9 @@ $vthemedirs['core'] = bioship_apply_filters('theme_core_dirs', $vthemedirs['core
 $filters = bioship_file_hierarchy('file', 'filters.php', $vthemedirs['core']);
 if ($filters) {include_once($filters);}
 
-// ---------------
-// Site Icon Check
-// ---------------
+// ----------------------
+// Set Site Icon Constant
+// ----------------------
 // 2.0.8: added this to check for global site icon once only
 // 2.0.9: make sure function exists and simplify logic (for backwards compatibility)
 // 2.1.1: moved down so that any value filters can be loaded and applied
@@ -1216,13 +552,16 @@ define('THEMESLUG', $vthemename);
 if (!is_child_theme()) {define('THEMECHILD', false); define('THEMEPARENT', false);}
 else {define('THEMECHILD', true); define('THEMEPARENT', (string)$vtheme['Template']);}
 
-// -----------------------
-// Set Child Theme Version
-// -----------------------
+// --- Set Child Theme Version ---
 // 2.0.1: simplify to set child theme version constant
 // 2.0.5: cleaner code logic here
 if (!THEMECHILD) {define('THEMECHILDVERSION', THEMEVERSION);}
 else {define('THEMECHILDVERSION', $vtheme['Version']);}
+
+
+// -----------------
+// === Debugging ===
+// -----------------
 
 // ---------------------------
 // Set Theme Debug Mode Switch
@@ -1275,29 +614,6 @@ if (!defined('THEMEDEBUG')) {
 	define('THEMEDEBUG', $themedebug);
 }
 
-// ----------------------------
-// Maybe Start Debug Output/Log
-// ----------------------------
-// TODO: maybe move this to tracer.php ?
-if (THEMEDEBUG) {
-	global $pagenow; bioship_debug("PageNow", $pagenow);
-
-	// 2.0.5: also use save queries constant for debugging output
-	if (!defined('SAVEQUERIES')) {define('SAVEQUERIES', true);}
-	if (SAVEQUERIES) {
-		if (!function_exists('bioship_debug_saved_queries')) {
-
-		 // 2.1.1: moved add_action internally for consistency
-		 add_action('shutdown', 'bioship_debug_saved_queries');
-
-		 function bioship_debug_saved_queries() {
-			global $wpdb; $queries = $wpdb->queries;
-			bioship_debug("Saved Queries", $queries);
-		 }
-		}
-	}
-}
-
 // -------------------
 // Set Debug Directory
 // -------------------
@@ -1332,7 +648,7 @@ if (!defined('THEMETRACE')) {
 
 }
 
-// --- Load Theme Tracer ---
+// --- include theme tracer (tracer.php) ---
 // 1.9.8: change fixed directory to admin dir global
 $tracer = bioship_file_hierarchy('file', 'tracer.php', $vthemedirs['admin']);
 // 2.1.1: moved THEMETRACE definition here from tracer.php (must be below above line!)
@@ -1341,12 +657,16 @@ if (!defined('THEMETRACE')) {
 }
 if ($tracer) {include($tracer);}
 
-
 // --- maybe define dummy function ---
 // (dummy function to avoid potential fatal errors in edge cases)
 if (THEMETRACE && !function_exists('bioship_trace')) {
 	function bioship_trace($arg1=null, $arg2=null, $arg3=null, $arg4=null) {return;}
 }
+
+
+// ----------------------
+// === Theme Settings ===
+// ----------------------
 
 // -----------------------------------------
 // Convert Posted Customizer Preview Options
@@ -1374,7 +694,7 @@ if (!function_exists('bioship_customizer_convert_posted')) {
 				// note: the third argument above could be a Customizer setting object ?
 				$previewvalue = bioship_apply_filters('customize_sanitize_'.$previewkey, $postedvalues[$previewkey], array());
 
-				// !! WARNING: echoing debug ouput in Customizer prevents saving  !!
+				// !! WARNING: echoing debug output in Customizer prevents saving  !!
 				// (bioship_debug lines are commented out below just in case)
 
 				// --- set option value ---
@@ -1529,8 +849,8 @@ if (!function_exists('bioship_get_theme_settings')) {
 					 add_action('theme_admin_notices', 'bioship_forced_settings_restored');
 
 					 function bioship_forced_settings_restored() {
-						echo "<div class='message'><b>".__('Warning','bioship').":</b> ";
-						echo __('Theme Settings from Force Update Used and Restored!','bioship')."</div>";
+						echo "<div class='message'><b>".esc_attr(__('Warning','bioship')).":</b> ";
+						echo esc_attr(__('Theme Settings from Force Update Used and Restored!','bioship'))."</div>";
 					 }
 					}
 
@@ -1579,8 +899,8 @@ if (!function_exists('bioship_get_theme_settings')) {
 					add_action('theme_admin_notices','skeleton_file_settings_restored');
 					if (!function_exists('bioship_file_settings_restored')) {
 					 function bioship_file_settings_restored() {
-						echo "<div class='message'><b>".__('Warning','bioship').":</b> ";
-						echo __('Theme Settings from File Settings Used and Restored!','bioship')."</div>";
+						echo "<div class='message'><b>".esc_attr(__('Warning','bioship')).":</b> ";
+						echo esc_attr(__('Theme Settings from File Settings Used and Restored!','bioship'))."</div>";
 					 }
 					}
 
@@ -1629,8 +949,8 @@ if (!function_exists('bioship_get_theme_settings')) {
 						 add_action('theme_admin_notices','skeleton_backup_settings_restored');
 
 						 function bioship_backup_settings_restored() {
-							echo "<div class='message'><b>".__('Error','bioship').":</b> ";
-							echo __('Theme Settings Empty! Existing Settings AutoBackup Restored.','bioship')."</div>";
+							echo "<div class='message'><b>".esc_attr(__('Error','bioship')).":</b> ";
+							echo esc_attr(__('Theme Settings Empty! Existing Settings AutoBackup Restored.','bioship'))."</div>";
 						 }
 						}
 					}
@@ -1645,46 +965,9 @@ if (!function_exists('bioship_get_theme_settings')) {
  }
 }
 
-// ---------------------
-// Serialized Data Fixer
-// ---------------------
-if (!function_exists('bioship_fix_serialized')) {
- function bioship_fix_serialized($string) {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
-    // --- security ---
-    if (!preg_match('/^[aOs]:/', $string)) {return $string;}
-    if (@unserialize($string) !== false) {return $string;}
-    $string = preg_replace("%\n%", "", $string);
-
-    // --- doublequote exploding ---
-    $data = preg_replace('%";%', "µµµ", $string);
-    $tab = explode("µµµ", $data);
-    $newdata = '';
-    foreach ($tab as $line) {
-        $newdata .= preg_replace_callback('%\bs:(\d+):"(.*)%', 'bioship_fix_str_length', $line);
-    }
-    return $newdata;
- }
-}
-
-// ------------------------------
-// Fix Serialized String Callback
-// ------------------------------
-if (!function_exists('bioship_fix_str_length')) {
- function bioship_fix_str_length($matches) {
-    $string = $matches[2];
-    // yes, strlen even for UTF-8 characters
-    // PHP wants the mem size, not the char count
-    $rightlength = strlen($string);
-    $corrected = 's:'.$rightlength.':"'.$string.'";';
-    return $corrected;
- }
-}
-
-// --------------------------------------------
-// Check / Fix Updated Theme Settings (PreSave)
-// --------------------------------------------
+// ------------------------------------------
+// Check/Fix Updated Theme Settings (PreSave)
+// ------------------------------------------
 // 2.1.0: use pre-filtering of option value instead of do_action hook
 if (!function_exists('bioship_admin_theme_settings_save')) {
 
@@ -1764,7 +1047,6 @@ if (!function_exists('bioship_admin_theme_settings_save')) {
 	$debugdata .= '<!-- Old Multicheck Settings -->'.print_r($oldmulticheck, true).PHP_EOL;
 	$debugdata .= '<!-- New Multicheck Settings -->'.print_r($newmulticheck, true).PHP_EOL;
 	$debugdata .= '<!-- Fixed Updated Settings -->'.print_r($settings, true).PHP_EOL;
-	// echo $debugdata;
 
 	// --- maybe write debug data ---
 	if (THEMEDEBUG) {
@@ -1802,9 +1084,9 @@ if (!function_exists('bioship_check_updated_option')) {
  add_action('updated_option', 'bioship_check_updated_option', 10, 3);
  function bioship_check_updated_option($option, $oldvalue, $value) {
 	if ($option == THEMEKEY) {
-		echo "<!-- Updated Value for ".THEMEKEY.": ".print_r($value,true)." -->";
+		if (THEMEDEBUG) {bioship_debug("Updated Value for ".THEMEKEY, $value);}
 		$settings = get_option(THEMEKEY);
-		echo "<!-- Saved Option for ".THEMEKEY.": ".print_r($settings,true)." -->";
+		if (THEMEDEBUG) {bioship_debug("Saved Value for ".THEMEKEY, $settings);}
 	}
  }
 }
@@ -1915,7 +1197,7 @@ if (!$optionsload) {
 	// 1.8.5: fix - load the theme options array here!
 	$optionsframework = bioship_file_hierarchy('file', 'options.php');
 	if ($optionsframework) {include($optionsframework);}
-	else {wp_die(__('Uh oh, the required Theme Option definitions are missing! Reinstall?!','bioship'));}
+	else {wp_die(esc_attr(__('Uh oh, the required Theme Option definitions are missing! Reinstall?!','bioship')));}
 
 	// --- get all Theme Options ---
 	global $vthemeoptions;
@@ -2084,7 +1366,7 @@ if (!THEMEOPT) {
 	// --- load the theme options array ---
 	$options = bioship_file_hierarchy('file', 'options.php');
 	if ($options) {include($options);}
-	else {wp_die(__('Uh oh, the required Theme Option definitions are missing! Reinstall?!','bioship'));}
+	else {wp_die(esc_attr(__('Uh oh, the required Theme Option definitions are missing! Reinstall?!','bioship')));}
 
 	// 1.9.5: fix for when transferred options manually ?
 	// if (!function_exists('bioship_titan_no_options_fix')) {
@@ -2168,25 +1450,9 @@ if (!defined('THEMECOMMENTS')) {
 	define('THEMECOMMENTS', $htmlcomments);
 }
 
-// -------------------
-// Output HTML Comment
-// -------------------
-// 2.0.8: new function to reduce comment code clutter in templates
-// 2.1.1: added second argument for output or return
-if (!function_exists('bioship_html_comment')) {
- function bioship_html_comment($comment, $output = true) {
- 	if (!defined('THEMECOMMENTS') || !THEMECOMMENTS) {return '';}
-
-	// --- output HTML comment ---
-	$output = "<!-- ".$comment." -->".PHP_EOL;
- 	// 2.1.1: added handling echo or return
-	if ($output) {echo $output;} else {return $output;}
- }
-}
-
-// ---------------------------
-// Set Javascript Cachebusting
-// ---------------------------
+// -----------------------
+// Set Script Cachebusting
+// -----------------------
 global $vjscachebust; $cachebust = $vthemesettings['javascriptcachebusting'];
 // 1.9.5: clear stat cache for filemtime cachebusting
 if ( ($cachebust == 'yearmonthdate') || ($cachebust == '') ) {$vjscachebust = date('ymd').'0000';}
@@ -2263,9 +1529,9 @@ if ($vthemesettings['postformatsupport'] == '1') {
 	}
 }
 
-// -----------------------------
-// maybe Output Theme Debug Info
-// -----------------------------
+// --------------------------------
+// Output Theme Settings Debug Info
+// --------------------------------
 if (THEMEDEBUG) {
 	// 2.0.9: converted to bioship_debug calls
 	if (defined('THEMEDRIVE') && THEMEDRIVE) {bioship_debug("Theme Test Drive is ACTIVE");}
@@ -2389,7 +1655,7 @@ if (is_customize_preview() && ($pagenow != 'customize.php')) {
 		global $vthemedirs;
 		$loadingimage = bioship_file_hierarchy('url', 'customizer-loading.png', $vthemedirs['image']);
 		if ($loadingimage) {
-			echo "<style>.kirki-customizer-loading-wrapper {background-image: url('".$loadingimage."') !important;}</style>";
+			echo "<style>.kirki-customizer-loading-wrapper {background-image: url('".esc_url($loadingimage)."') !important;}</style>";
 		}
 	 }
 	}
@@ -2432,7 +1698,7 @@ if (in_array($loadhybrid, $valid)) {
 	// (note: if loading Hybrid from Child Theme, ALL of Hybrid Core must be there - not just hybrid.php!)
 	// 2.0.9: use file hierarchy to find Hybrid file path
 	$hybridpath = bioship_file_hierarchy('file', 'hybrid.php', $hybriddirs);
-	if (!$hybridpath) {wp_die(__('Uh oh, the required Hybrid Core Framework is missing!','bioship'));}
+	if (!$hybridpath) {wp_die(esc_attr(__('Uh oh, the required Hybrid Core Framework is missing!','bioship')));}
 	$hybriddir = trailingslashit(dirname($hybridpath));
 	define('HYBRID_DIR', $hybriddir);
 

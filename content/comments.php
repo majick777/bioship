@@ -58,27 +58,27 @@ if ( have_comments() ) : ?>
 		'fields' => apply_filters( 'comment_form_default_fields', array(
 				'author' => '<p class="comment-form-author">'.
 					( $req ? '<span class="required">*</span>' : '' ).
-					'<label for="author">'.__('Your Name', 'bioship').'</label><br />' .
+					'<label for="author">'.esc_attr(__('Your Name', 'bioship')).'</label><br />' .
 					'<input id="author" name="author" type="text" value="' .
 					esc_attr($commenter['comment_author']).'" size="30"'.$aria_req.' /></p>',
 				'email'  => '<p class="comment-form-email">'.
 					( $req ? '<span class="required">*</span>' : '' ).
-					'<label for="email">'.__('Your Email', 'bioship').'</label><br />'.
+					'<label for="email">'.esc_attr(__('Your Email', 'bioship')).'</label><br />'.
 					'<input id="email" name="email" type="text" value="'.esc_attr($commenter['comment_author_email']).'" size="30"'.$aria_req.' /></p>',
 				'url' =>
 					// 2.1.1: use esc_url instead of esc_attr for comment author URL
-					'<p class="comment-form-url"><label for="url">'.__('Website', 'bioship').':</label><br />'.
-					'<input id="url" name="url" type="text" value="'.esc_url( $commenter['comment_author_url']).'" size="30" /></p>' )
+					'<p class="comment-form-url"><label for="url">'.esc_attr(__('Website', 'bioship')).':</label><br />'.
+					'<input id="url" name="url" type="text" value="'.esc_url($commenter['comment_author_url']).'" size="30" /></p>' )
 			),
 			'comment_field' => '<p class="comment-form-comment">'.
-				'<label for="comment"><span class="required">*</span>'.__('Comment', 'bioship').':</label><br />' .
+				'<label for="comment"><span class="required">*</span>'.esc_attr(__('Comment', 'bioship')).':</label><br />' .
 				'<textarea id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>',
 			'comment_notes_after' => ''
 		);
 
 	// --- if registration required and not logged in ---
 	if ( get_option('comment_registration') && !is_user_logged_in() ) : ?>
-		<p><a href="<?php echo wp_login_url( get_permalink() ); ?>"><?php _e('You must be logged in to post a comment.', 'bioship'); ?></a></p>
+		<p><a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>"><?php echo esc_attr(__('You must be logged in to post a comment.', 'bioship')); ?></a></p>
 	<?php else : comment_form($comment_args); ?>
 	<?php endif; ?>
 

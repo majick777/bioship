@@ -6,7 +6,7 @@ License URI: http://www.opensource.org/licenses/gpl-license.php
 Donate Link: http://wordquest.org/contribute/
 Requires at least: 3.4
 Requires PHP: 5.3
-Tested up to: 5.2
+Tested up to: 5.2.2
 Stable tag: trunk
 
 BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
@@ -41,6 +41,21 @@ Or click the Docs link on your Theme Options page to view them in your WordPress
 
 
 == Changelog ==
+
+= 2.1.4 =
+- Updated: WordQuest Helper Library to v1.7.5
+- Added: accessibility skip link in header.php (just after wp_body_open)
+- Moved: Theme Options Editor Metabox to admin/metabox.php (from admin.php)
+- Improved: add file structure notes to all main theme function files
+- Improved: add option to show thumbnail in admin column for any CPTs
+- Improved: move selective resource build save triggers internally
+- Fixed: admin post thumbnail column image display for post lists
+- Fixed: duplicate title/description output for home blog page archive
+- Fixed: missing archive pagination for blog page (as front or blog page)
+- Fixed: various escape output messages throughout theme functions
+- Fixed: first comment meta spacing for buttons (to align with threaded)
+- Fixed: documentation popup thickbox links on Info Settings tab
+- Fixed: documentation includes for hooks and theme options pages
 
 = 2.1.3 = 
 - Added: license info and copy of GNU Public Licence 3 (license.txt)

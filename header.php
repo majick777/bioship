@@ -23,6 +23,7 @@ $language_attributes = get_language_attributes();
 </head><?php bioship_html_comment('/head'); ?>
 
 <?php bioship_html_comment('body'); ?><body <?php hybrid_attr('body'); ?>><?php wp_body_open(); ?>
+<a class="skip-link screen-reader-text" href="#content"><?php _e('Skip to Content', 'bioship'); ?></a>
 <?php bioship_html_comment('#bodycontent.inner'); ?><div id="bodycontent" class="inner">
 
 <?php

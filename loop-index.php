@@ -3,16 +3,17 @@
 // ============================
 // === BioShip Content Loop ===
 // ============================
+
 // note: orginally forked from Hybrid Base theme template
 
 if (THEMETRACE) {bioship_trace('T',__('Loop Index Template','bioship'),__FILE__,'loop');}
 
-// Note: For consistency, the improved Hybrid template/attribute functions
+// note: For consistency, the improved Hybrid template/attribute functions
 // are included and used whether full Hybrid Core library is active or not.
 
 // --- get post type(s) ---
 $posttypes = bioship_get_post_types();
-if (THEMEDEBUG) {echo "<!-- Post Types: "; print_r($posttypes); echo " -->";}
+if (THEMEDEBUG) {bioship_debug("Post Types", $posttypes);}
 if (is_string($posttypes)) {$posttype = $posttypes;}
 
 // --- Before Content ---
@@ -23,8 +24,12 @@ bioship_html_comment('#maincontent');
 $attributes = hybrid_get_attr('content');
 echo '<main '.$attributes.'>';
 
+	$showonfront = get_option('show_on_front');
+
 	// --- if viewing a multi-post page ---
-	if ( !is_front_page() && !is_singular() && !is_404() ) {
+	// 2.1.4: added check to prevent duplicate blog home title/description
+	if ( ( !is_front_page() && !is_home() && !is_singular() && !is_404() )
+	  || ( is_home() && ($showonfront != 'page') ) ) {
 		// Loads the content/loop-meta.php template
 		// 1.5.0: change from locate_template
 		bioship_locate_template('content/loop-meta.php', true);
@@ -32,7 +37,7 @@ echo '<main '.$attributes.'>';
 
 	// --- Frontpage Top ---
 	// 1.6.0: for front page 'blog' only, call top content action hook
-	if ( is_front_page() &&  (get_option('show_on_front') == 'posts') ) {
+	if ( is_front_page() && ($showonfront == 'posts') ) {
 		// no default here, just hook a function to use it
 		// 1.9.8: shorten action name from front_page_top_html
 		bioship_do_action('bioship_front_page_top');
@@ -42,7 +47,7 @@ echo '<main '.$attributes.'>';
 	// --- Homepage Top ---
 	// 1.6.0: for home 'blog' page only, to show page content above posts
 	// ref: http://zeo.my/wordpress-display-the-contents-of-static-page-posts-page/
-	if ( is_home() && (get_option('show_on_front') == 'page') ) {
+	if ( is_home() && ($showonfront == 'page') ) {
 		// 1.8.5: moved to skeleton.php and use action hook
 		// 1.9.8: shorten action name from home_page_top_html
 		bioship_do_action('bioship_home_page_top');

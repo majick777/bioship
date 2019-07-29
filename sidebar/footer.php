@@ -28,7 +28,7 @@ if ($footerwidgets > 0) {
 	// --- open footer div ---
 	bioship_html_comment('#sidebar-footer');
 	$attributes = hybrid_get_attr('sidebar', 'footer', $args);
-	echo '<div '.$attributes.'>'.PHP_EOL;
+	echo '<div '.$attributes.'>'.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 		// --- before widgets action hook ---
 		bioship_do_action('bioship_before_footer_widgets');

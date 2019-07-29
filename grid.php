@@ -1,37 +1,45 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * ====== Dynamic Grid Style Loader ======
- * - Create Grid CSS from Theme Settings -
- *
-**/
+// ===========================
+// ====== BioShip Grid =======
+// = Dynamic Grid Stylesheet =
+// ===========================
 
-// ----------------
-// Set Debug Option
-// ----------------
-// 2.0.5: moved to top to prevent possible undefined constant warning
-if (!defined('THEMEDEBUG')) {
-	// 2.0.5: removed unused option switch check here
-	$themedebug = false;
-	if (isset($_REQUEST['themedebug'])) {
-		$debug = $_REQUEST['themedebug'];
-		// note: no on/off switching allowed here
-		if ( ($debug == '2') || ($debug == 'yes') ) {$themedebug = true;}
-		if ( ($debug == '3') || ($debug == 'no') ) {$themedebug = false;}
-	}
-	define('THEMEDEBUG', $themedebug);
-}
+// --------------------------
+// === grid.php Structure ===
+// --------------------------
+// === Grid Helpers ===
+// - Set Start Time
+// - Set Grid Debug Switch
+// - Number to Word Helper
+// - Round Half Down
+// === Set Grid Values ===
+// - Set Layout Grid Columns
+// - Set Content Grid Columns
+// - Set Maximum Layout Width
+// - Set Content Width
+// - Set Content Padding Percent
+// - Set EM Pixels
+// - Set Column Spacing
+// - Set Content Spacing
+// - Grid Compatibility Classes
+// - Maybe Buffer Output
+// === CSS Output ===
+// - Output CSS Header
+// - Output Debug Lines
+// - Grid Static Common CSS
+// - Grid Dynamic Common CSS
+// - Generate Grid Column Rules
+// - Grid Rules Function
+// === Media Screen Width Queries ==
+// - Set Breakpoints
+// - Loop Breakpoints
+// - Grid Breakpoint Refernence
+// --------------------------
 
+// Development TODOs
 // -----------------
-// Output CSS Header
-// -----------------
-header("Content-type: text/css; charset: UTF-8");
-$starttime = microtime(true);
+// ? maybe distinguish grid padding from grid margins ?
 
 
 // --------------------
@@ -40,6 +48,28 @@ $starttime = microtime(true);
 // 2.0.5: removed WordPress (SHORTINIT) loading
 // 2.0.5: removed Theme Test Drive check
 // 2.0.5: removed theme settings loading
+
+// --------------
+// Set Start Time
+// --------------
+$starttime = microtime(true);
+
+// ---------------------
+// Set Grid Debug Switch
+// ---------------------
+// 2.0.5: moved to top to prevent possible undefined constant warning
+$debug = '';
+if (!defined('THEMEDEBUG')) {
+	// 2.0.5: removed unused option switch check here
+	$themedebug = false;
+	if (isset($_REQUEST['themedebug'])) {
+		$debug = $_REQUEST['themedebug'];
+		// note: no on/off switching is allowed here
+		if ( ($debug == '2') || ($debug == 'yes') ) {$themedebug = true;}
+		if ( ($debug == '3') || ($debug == 'no') ) {$themedebug = false;}
+	}
+	define('THEMEDEBUG', $themedebug);
+}
 
 // ---------------------
 // Number to Word Helper
@@ -90,7 +120,7 @@ if (isset($_REQUEST['gridcolumns'])) {
 	$columns = $_REQUEST['gridcolumns'];
 	if ( ($columns == 12) || ($columns == 20) || ($columns == 24) ) {$gridcolumns = $columns;}
 }
-if (THEMEDEBUG) {echo "/* Grid Columns: ".$gridcolumns." */".PHP_EOL;}
+if (THEMEDEBUG) {$debug .= "/* Grid Columns: ".$gridcolumns." */".PHP_EOL;}
 
 // ------------------------
 // Set Content Grid Columns
@@ -100,7 +130,7 @@ if (isset($_REQUEST['contentgridcolumns'])) {
 	$columns = $_REQUEST['contentgridcolumns'];
 	if ( ($columns == 12) || ($columns == 16) || ($columns == 20) ) {$contentcolumns = $columns;}
 }
-if (THEMEDEBUG) {echo "/* Content Grid Columns: ".$contentcolumns." */".PHP_EOL;}
+if (THEMEDEBUG) {$debug .= "/* Content Grid Columns: ".$contentcolumns." */".PHP_EOL;}
 
 // ------------------------
 // Set Maximum Layout Width
@@ -109,7 +139,7 @@ $maxwidth = '960'; // 960 is default
 if (isset($_REQUEST['maxwidth']) && (abs(intval($_REQUEST['maxwidth'])) > 0)) {
 	$maxwidth = abs(intval($_REQUEST['maxwidth']));
 }
-if (THEMEDEBUG) {echo "/* Max Width: ".$maxwidth." */".PHP_EOL;}
+if (THEMEDEBUG) {$debug .= "/* Max Width: ".$maxwidth." */".PHP_EOL;}
 
 // -----------------
 // Set Content Width
@@ -119,21 +149,21 @@ $contentwidth = 960; // no default, assume full width
 if (isset($_REQUEST['contentwidth']) && (abs(intval($_REQUEST['contentwidth'])) > 0)) {
 	$contentwidth = abs(intval($_REQUEST['contentwidth']));
 }
-if (THEMEDEBUG) {echo  "/* Content Width: ".$contentwidth." */".PHP_EOL;}
+if (THEMEDEBUG) {$debug .=  "/* Content Width: ".$contentwidth." */".PHP_EOL;}
 
-// ------------------------------
-// Set Content Padding Percentage
-// ------------------------------
+// ---------------------------
+// Set Content Padding Percent
+// ---------------------------
 // 2.0.5: use calculated rather than raw padding value
 $contentpadding = 0;
 if (isset($_REQUEST['contentpadding']) && (abs(intval($_REQUEST['contentpadding'])) > 0) ) {
 	$contentpadding = abs(intval($_REQUEST['contentpadding']));
 }
-if (THEMEDEBUG) {echo "/* Content Padding: ".$contentpadding." */".PHP_EOL;}
+if (THEMEDEBUG) {$debug .= "/* Content Padding: ".$contentpadding." */".PHP_EOL;}
 // 1.9.5: recalculate padding separately for each content width
 // 2.0.5: calculate content percentage (minus padding) once only
 $contentpercent = bioship_round_half_down(($contentwidth - $contentpadding) / $maxwidth);
-if (THEMEDEBUG) {echo "/* Content Percentage: ".$contentpercent." */".PHP_EOL;}
+if (THEMEDEBUG) {$debug .= "/* Content Percentage: ".$contentpercent." */".PHP_EOL;}
 
 // -------------
 // Set EM Pixels
@@ -150,13 +180,13 @@ if (isset($_REQUEST['fontpercent'])) {
 }
 $empixels = bioship_round_half_down(16 * ($fontpercent / 100));
 if (THEMEDEBUG) {
-	echo "/* Font Percent: ".$fontpercent." */".PHP_EOL;
-	echo "/* EM Pixels: ".$empixels." */".PHP_EOL;
+	$debug .= "/* Font Percent: ".$fontpercent." */".PHP_EOL;
+	$debug .= "/* EM Pixels: ".$empixels." */".PHP_EOL;
 }
 
-// --------------
-// Column Spacing
-// --------------
+// ------------------
+// Set Column Spacing
+// ------------------
 // note: it is actually padding acting as an internal margin now
 // 1.8.5: made array and added content margins
 // 1.9.5: changed variable name from margins to spacing
@@ -177,8 +207,9 @@ if (isset($_REQUEST['gridspacing'])) {
 	}
 }
 
-// Content Spacing
-// ---------------
+// -------------------
+// Set Content Spacing
+// -------------------
 // note 12px = ~0.75em as 1em ~= 16px
 // 2.0.5: set default to three quarter em pixel value
 $contentspacing['left'] = $contentspacing['right'] = $empixels * 0.75;
@@ -196,6 +227,7 @@ if (isset($_REQUEST['contentspacing'])) {
 	}
 }
 
+// --------------------------
 // Grid Compatibility Classes
 // --------------------------
 // 2.0.5: get grid compatibility from querystring only
@@ -205,7 +237,7 @@ if (isset($_REQUEST['compat'])) {
 	if (strstr($compat, '960gs')) {$gridcompat['960gs'] = 1;}
 	if (strstr($compat, 'blueprint')) {$gridcompat['blueprint'] = 1;}
 }
-if (THEMEDEBUG) {echo "/* Grid Compatibility: "; print_r($gridcompat); echo " */".PHP_EOL;}
+if (THEMEDEBUG) {$debug .= "/* Grid Compatibility: ".print_r($gridcompat,true)." */".PHP_EOL;}
 
 // -------------------
 // Maybe Buffer Output
@@ -218,8 +250,26 @@ if (isset($_REQUEST['buffer'])) {
 	}
 }
 
-// START CSS OUTPUT
-// ----------------
+
+// ------------------
+// === CSS Output ===
+// ------------------
+
+// -----------------
+// Output CSS Header
+// -----------------
+// 2.1.4: moved down for structure
+header("Content-type: text/css; charset: UTF-8");
+
+// ------------------
+// Output Debug Lines
+// ------------------
+// 2.1.4: output buffered debug lines
+if ($debug != '') {echo $debug;}
+
+// ---------------
+// Grid Common CSS
+// ---------------
 
 ?>
 
@@ -454,7 +504,10 @@ html, body {font-size: <?php echo $fontpercent; ?>%;}
 
 <?php
 
-// generate and output the default rules for the layout maxwidth
+// --------------------------
+// Generate Grid Column Rules
+// --------------------------
+// (for the layout maxwidth)
 $defaultcss = bioship_grid_css_rules($maxwidth, false, 'full');
 echo $defaultcss.PHP_EOL.PHP_EOL;
 
@@ -837,7 +890,8 @@ function bioship_grid_css_rules($totalwidth, $mobile, $offset) {
 // === Media Screen Width Queries ===
 // ----------------------------------
 
-// Get Breakpoints
+// ---------------
+// Set Breakpoints
 // ---------------
 // 2.0.5: check passed querystring only
 $breakpoints = '320, 400, 480, 640, 768, 959, 1140, 1200'; // defaults
@@ -859,6 +913,7 @@ else {
 	else {$numbreakpoints = 0;}
 }
 
+// ----------------
 // Loop Breakpoints
 // ----------------
 $i = 1;
@@ -926,27 +981,25 @@ if ($numbreakpoints > 0) {
 		$i++;
 	}
 }
-
 echo $mediaqueries.PHP_EOL.PHP_EOL;
 
-// Output Generation Time
-// ----------------------
+// --- output stylesheet generation time ---
 $endtime = microtime(true); $difference = $endtime - $starttime;
 echo "/* Generation Time: ".$difference." */".PHP_EOL;
 
-// maybe output buffered length
-// ----------------------------
+// --- maybe output buffered stylesheet length ---
 if ($buffer) {
 	$output = ob_get_contents(); ob_end_clean(); echo $output;
 	echo "/* Output Length: ".strlen($output)." */";
 }
 
+// --- finish script output ---
 exit;
 
 
-// ----------------------------------------
-// === Media Query Breakpoint Reference ===
-// ----------------------------------------
+// -------------------------
+// Grid Breakpoint Reference
+// -------------------------
 
 // ref: http://bradfrost.com/blog/post/7-habits-of-highly-effective-media-queries/
 

@@ -1,35 +1,122 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * === SKULL FUNCTIONS ===
- * .. brainzzz brainzzz ..
- *
-**/
+// =====================
+// === BioShip Skull ===
+// = brainzzz brainzzz =
+// =====================
 
-if (!function_exists('add_action')) {exit;}
+// --- no direct load ---
+if (!defined('ABSPATH')) {exit;}
 
-// ======================
-// === Skull Sections ===
-// ======================
-// --- Custom Theme Supports
-// ---- Custom Background Support
-// ---- Custom Logo Support
-// ---- Custom Header Support
-// --- Register Nav Menus
-// --- Register Sidebars
-// --- Layout Setup
-// --- Title Tag
-// --- Template Helpers
-// --- Theme Setup
-// --- Enqueue Scripts
-// --- Enqueue Styles
-// --- Site Icons
-// ======================
+// ---------------------------
+// === skull.php Structure ===
+// ---------------------------
+// === Custom Theme Supports ===
+// - Custom Background Support
+// - Custom Logo Support
+// - Custom Header Support
+// === Register Nav Menus ===
+// - Primary and Secondary
+// - Header and Footer
+// === Register Sidebars ===
+// - Register Sidebar Helper
+// - Register Sidebars
+// - Inactive Sidebars Message
+// - Add Active Widget Sidebars
+// - Add Inactive Widget Sidebars
+// - Init Active / Inactive Sidebars
+// - Count Footer Widgets
+// === Layout Setup ===
+// - Widget Shortcodes
+// - Widget Title Shortcodes
+// - Theme Layout Loader
+// - Set Page Context
+// - Set Layout Max Width
+// - Set Layout Grid Columns
+// - Set Sidebar Layout
+// - Set Sidebar for Position
+// - Set Sidebar Column Width
+// - Set SubSidebar Column Width
+// - Set Content Width
+// - Get Content Width
+// - Set Content Column Width
+// === Title Tag ===
+// - Title Tag Support
+// - Title Tag Filter
+// - Title Tag Theme Default
+// - wp_title Tag Output
+// - wp_title Title Filter
+// === Template Helpers ===
+// - WP Body Open
+// - Get Content Template
+// - Get Header Template
+// - Get Footer Template
+// - Check Sidebar Template
+// - Output Sidebar at Position
+// - Get Merged Sidebar Template Info
+// - Get Sidebar Template Info
+// - Get Loop Template
+// - Get Loop Title
+// - Get Loop Description
+// - Locate Template Wrapper
+// - Comments Template Filter
+// - Add Archive Templates to Hierarchy
+// - Content Directory Template Filter
+// - Get Author Avatar
+// - Get Author via Post ID
+// - Regenerate Thumbnail
+// - Formattable Entry Meta Output
+// === Setup Theme ===
+// - Language Translation
+// - Dynamic Editor Styles
+// - Post Thumbnail Support
+// - Set Default Thumbnail Size
+// - Add Image Sizes
+// === Site Meta Tags ===
+// - Meta Generator Tag
+// - Mobile Header Meta
+// === Site Icons ===
+// - Site Icons Loader
+// - Site Icon Size Filter
+// - Site Icon Generator
+// - Favicon Generator
+// - Apple Touch Icon Sizes
+// - Apple Startup Images
+// === Enqueue Scripts ===
+// - Enqueue Skeleton Scripts
+// - Load jQuery from Google CDN
+// - Fix Skip Link Focus (IE11)
+// === Enqueue Styles ===
+// - Enqueue Frontend Stylesheets
+// - Enqueue Admin Stylesheets
+// - Enqueue Heading Typography
+// - Font Resource Hints
+// - AJAX Skin Styles
+// - Print Skin Styles Inline
+// - AJAX Admin CSS Loader
+// - Print Admin Styles Inline
+// - Print Login Styles Inline
+// ---------------------------
+
+
+// Development TODOs
+// -----------------
+// - check page contexts agains /wp-includes/template-loader.php
+// ? recheck usage of document_title_parts filter ?
+// ? improve mobile sidebar button loading conditions ?
+// ? allow for more specific sidebar template names ?
+// ? retest blank sidebar output display behaviour ?
+// ? maybe use hybrid_post_format_link for post format meta ?
+// ? maybe add Gutenberg editor styles ?
+// - ref: https://robinroelofsen.com/editor-styling-gutenberg
+// ? maybe enqueue PIE for extra editor styles compatibility ?
+// ? add button hover styles to editor style rules ?
+// ? maybe add a 'post-thumbnail' image size (for the post writing screen) ?
+// - ref: _wp_post_thumbnail_html in /wp-admin/includes/post.php
+// ? test effect of specific-width mobile meta line ?
+// ? maybe auto-generate a favicon.ico from site icon ?
+// ? maybe distinguish grid padding from grid margins ?
+// ? check for internal skin theme value override ?
 
 
 // -----------------------------
@@ -65,7 +152,7 @@ if (!function_exists('bioship_custom_background_support')) {
 		// note: _custom_background_cb sets postMessage transport
 		'wp-head-callback'		 => '__return_false',
 
-		// TODO: customizer preview callbacks?
+		// TODO: maybe add customizer preview callbacks ?
 		// function to be called in preview page head section
 		'admin-head-callback'    => '__return_false',
 		// function to produce preview markup in the admin screen
@@ -107,7 +194,7 @@ if (!function_exists('bioship_custom_logo_support')) {
         // function to be called in theme head section
         'wp-head-callback'	=> '__return_false',
 
-		// TODO: customizer preview callbacks?
+		// TODO: maybe add customizer preview callbacks ?
         //  function to be called in preview page head section
         'admin-head-callback'       => '__return_false',
         // function to produce preview markup in the admin screen
@@ -124,7 +211,7 @@ if (!function_exists('bioship_custom_logo_support')) {
 	 add_filter('get_custom_logo', 'bioship_custom_logo_filter', 10, 2);
 
 	 function bioship_custom_logo_filter($html, $blogid) {
-		// TODO: handle partial_refresh output
+		// TODO: handle partial_refresh output ?
 		return $html;
 	 }
 	}
@@ -184,7 +271,7 @@ if (!function_exists('bioship_register_nav_menus ')) {
 	// ------------
 	// 1.5.0: moved template call to skeleton.php
 	if (isset($vthemesettings['primarymenu']) && ($vthemesettings['primarymenu'] == '1')) {
-		register_nav_menus(array('primary' => __('Primary Navigation','bioship')));
+		register_nav_menus(array('primary' => esc_attr(__('Primary Navigation','bioship'))));
 		if (has_nav_menu('primary')) {
 			// 2.0.9: use vthemelayout global subkey
 			$vthemelayout['menus']['primary'] = bioship_apply_filters('skeleton_menu_primary', true);
@@ -196,7 +283,7 @@ if (!function_exists('bioship_register_nav_menus ')) {
 	// note: though created, is not hooked anywhere
 	// 1.5.0: moved template call to skeleton.php
 	if (isset($vthemesettings['secondarymenu']) && ($vthemesettings['secondarymenu'] == '1')) {
-		register_nav_menus(array('secondary' => __('Secondary Navigation','bioship')));
+		register_nav_menus(array('secondary' => esc_attr(__('Secondary Navigation','bioship'))));
 		if (has_nav_menu('secondary')) {
 			// 2.0.9: use vthemelayout global subkey
 			$vthemelayout['menus']['secondary'] = bioship_apply_filters('skeleton_menu_secondary', true);
@@ -206,7 +293,7 @@ if (!function_exists('bioship_register_nav_menus ')) {
 	// Header Menu
 	// -----------
 	if (isset($vthemesettings['headermenu']) && ($vthemesettings['headermenu'] == '1')) {
-		register_nav_menus(array('header' => __('Header Navigation','bioship')));
+		register_nav_menus(array('header' => esc_attr(__('Header Navigation','bioship'))));
 		// 2.0.6: fix to function typo causing fatal error! (hav_nav_menu)
 		if (has_nav_menu('header')) {
 			// 2.0.9: use vthemelayout global subkey
@@ -217,7 +304,7 @@ if (!function_exists('bioship_register_nav_menus ')) {
 	// Footer Menu
 	// -----------
 	if (isset($vthemesettings['footermenu']) && ($vthemesettings['footermenu'] == '1')) {
-		register_nav_menus(array('footer' => __('Footer Navigation','bioship')));
+		register_nav_menus(array('footer' => esc_attr(__('Footer Navigation','bioship'))));
 		if (has_nav_menu('footer')) {
 			// 2.0.9: use vthemelayout global subkey
 			$vthemelayout['menus']['footer'] = bioship_apply_filters('skeleton_menu_footer', true);
@@ -254,9 +341,9 @@ if (!function_exists('bioship_register_sidebar')) {
  }
 }
 
-// -----------------
-// Register Sidebars
-// -----------------
+// -------------------------
+// Inactive Sidebars Message
+// -------------------------
 // 1.9.6: add widget page message regarding lowercase titles meaning inactive
 if (!function_exists('bioship_widget_page_message')) {
 
@@ -265,10 +352,11 @@ if (!function_exists('bioship_widget_page_message')) {
 
  function bioship_widget_page_message() {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
- 	// 2.1.1: add bold markup to note
-	$message = "<b>".__('Note', 'bioship')."</b>: ";
-	$message .= __('Inactive Theme Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars tab', 'bioship');
-	echo "<div class='message'>".esc_attr($message)."</div>";
+ 	// 2.1.1: add bold markup to note heading
+ 	echo "<div class='message'>";
+		echo "<b>".esc_attr(__('Note', 'bioship'))."</b>: ";
+		echo esc_attr(__('Inactive Theme Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars tab', 'bioship'));
+	echo "</div>";
  }
 }
 
@@ -302,9 +390,9 @@ if (!function_exists('bioship_widgets_init_inactive')) {
  }
 }
 
-// ---------------------------------------
-// Init Active or Inactive Widget Sidebars
-// ---------------------------------------
+// --------------------------------
+// Init Active or Inactive Sidebars
+// --------------------------------
 // 1.8.5: use bioship_register_sidebar helper abstract to reduce code bloat
 if (!function_exists('bioship_widgets_init')) {
  function bioship_widgets_init($active = true) {
@@ -317,81 +405,81 @@ if (!function_exists('bioship_widgets_init')) {
 	// 1.8.5: set sidebar labels separately first
 
 	// --- front and subfront sidebars ---
-	$labels['frontpage']['name'] = __('Frontpage Sidebar','bioship');
-	$labels['subfrontpage']['name'] = __('Frontpage SubSidebar','bioship');
-	$labels['frontpage']['desc'] = $labels['subfrontpage']['desc'] = __('Shown only on FrontPage','bioship');
+	$labels['frontpage']['name'] = esc_attr(__('Frontpage Sidebar','bioship'));
+	$labels['subfrontpage']['name'] = esc_attr(__('Frontpage SubSidebar','bioship'));
+	$labels['frontpage']['desc'] = $labels['subfrontpage']['desc'] = esc_attr(__('Shown only on FrontPage','bioship'));
 
 	// --- home and subhome sidebars ---
-	$labels['homepage']['name'] = __('Home (Blog) Sidebar','bioship');
-	$labels['subhomepage']['name'] = __('Home (Blog) SubSidebar','bioship');
-	$labels['homepage']['desc'] = $labels['subhomepage']['desc'] = __('Shown only on Home (Blog) Page','bioship');
+	$labels['homepage']['name'] = esc_attr(__('Home (Blog) Sidebar','bioship'));
+	$labels['subhomepage']['name'] = esc_attr(__('Home (Blog) SubSidebar','bioship'));
+	$labels['homepage']['desc'] = $labels['subhomepage']['desc'] = esc_attr(__('Shown only on Home (Blog) Page','bioship'));
 
 	// --- archive and subarchive sidebars ---
 	// 1.9.8: remove old unused variable
-	$labels['archive']['name'] = __('Archive Sidebar','bioship');
-	$labels['subarchive']['name'] = __('Archive Page SubSidebar','bioship');
-	$labels['archive']['desc'] = $labels['subarchive']['desc'] = __('Shown only on Archive Pages','bioship');
+	$labels['archive']['name'] = esc_attr(__('Archive Sidebar','bioship'));
+	$labels['subarchive']['name'] = esc_attr(__('Archive Page SubSidebar','bioship'));
+	$labels['archive']['desc'] = $labels['subarchive']['desc'] = esc_attr(__('Shown only on Archive Pages','bioship'));
 
-		$labels['category']['name'] = __('Category Archives Sidebar','bioship');
-		$labels['subcategory']['name'] = __('Category Archives SubSidebar','bioship');
-		$labels['category']['desc'] = $labels['subcategory']['desc'] = __('Shown only on Category Archives','bioship');
+		$labels['category']['name'] = esc_attr(__('Category Archives Sidebar','bioship'));
+		$labels['subcategory']['name'] = esc_attr(__('Category Archives SubSidebar','bioship'));
+		$labels['category']['desc'] = $labels['subcategory']['desc'] = esc_attr(__('Shown only on Category Archives','bioship'));
 
-		$labels['taxonomy']['name'] = __('Taxonomy Archives Sidebar','bioship');
-		$labels['subtaxonomy']['name'] = __('Taxonomy Archives SubSidebar','bioship');
-		$labels['taxonomy']['desc'] = $labels['subtaxonomy']['desc'] = __('Shown only on Taxonomy Archives','bioship');
+		$labels['taxonomy']['name'] = esc_attr(__('Taxonomy Archives Sidebar','bioship'));
+		$labels['subtaxonomy']['name'] = esc_attr(__('Taxonomy Archives SubSidebar','bioship'));
+		$labels['taxonomy']['desc'] = $labels['subtaxonomy']['desc'] = esc_attr(__('Shown only on Taxonomy Archives','bioship'));
 
-		$labels['tag']['name'] = __('Tag Archives Sidebar','bioship');
-		$labels['subtag']['name'] = __('Tag Archives SubSidebar','bioship');
-		$labels['tag']['desc'] = $labels['subtag']['desc'] = __('Shown only on Tag Archives','bioship');
+		$labels['tag']['name'] = esc_attr(__('Tag Archives Sidebar','bioship'));
+		$labels['subtag']['name'] = esc_attr(__('Tag Archives SubSidebar','bioship'));
+		$labels['tag']['desc'] = $labels['subtag']['desc'] = esc_attr(__('Shown only on Tag Archives','bioship'));
 
-		$labels['author']['name'] = __('Author Archives Sidebar','bioship');
-		$labels['subauthor']['name'] = __('Author Archives SubSidebar','bioship');
-		$labels['author']['desc'] = $labels['subauthor']['desc'] = __('Shown only on Author Archives','bioship');
+		$labels['author']['name'] = esc_attr(__('Author Archives Sidebar','bioship'));
+		$labels['subauthor']['name'] = esc_attr(__('Author Archives SubSidebar','bioship'));
+		$labels['author']['desc'] = $labels['subauthor']['desc'] = esc_attr(__('Shown only on Author Archives','bioship'));
 
-		$labels['date']['name'] = __('Date Archives Sidebar','bioship');
-		$labels['subdate']['name'] = __('Date Archives SubSidebar','bioship');
-		$labels['date']['desc'] = $labels['subdate']['desc'] = __('Shown only on Date Archives','bioship');
+		$labels['date']['name'] = esc_attr(__('Date Archives Sidebar','bioship'));
+		$labels['subdate']['name'] = esc_attr(__('Date Archives SubSidebar','bioship'));
+		$labels['date']['desc'] = $labels['subdate']['desc'] = esc_attr(__('Shown only on Date Archives','bioship'));
 
 	// --- search and subsearch sidebars ---
-	$labels['search']['name'] = __('Search Page Sidebar','bioship');
-	$labels['subsearch']['name'] = __('Search Page SubSidebar','bioship');
-	$labels['search']['desc'] = $labels['subsearch']['desc'] = __('Shown only on Search Pages','bioship');
+	$labels['search']['name'] = esc_attr(__('Search Page Sidebar','bioship'));
+	$labels['subsearch']['name'] = esc_attr(__('Search Page SubSidebar','bioship'));
+	$labels['search']['desc'] = $labels['subsearch']['desc'] = esc_attr(__('Shown only on Search Pages','bioship'));
 
 	// --- 404 notfound sidebars ---
-	$labels['notfound']['name'] = __('404 Page Sidebar','bioship');
-	$labels['subnotfound']['name'] = __('404 Page SubSidebar','bioship');
-	$labels['notfound']['desc'] = $labels['subnotfound']['desc'] = __('Shown only on 404 Not Found Pages','bioship');
+	$labels['notfound']['name'] = esc_attr(__('404 Page Sidebar','bioship'));
+	$labels['subnotfound']['name'] = esc_attr(__('404 Page SubSidebar','bioship'));
+	$labels['notfound']['desc'] = $labels['subnotfound']['desc'] = esc_attr(__('Shown only on 404 Not Found Pages','bioship'));
 
 	// --- post / page sidebars ---
-	$labels['primary']['name'] = __('Post/Page Sidebar','bioship');
-	$labels['primary']['desc'] = __( 'Shown for both Pages and Posts','bioship');
+	$labels['primary']['name'] = esc_attr(__('Post/Page Sidebar','bioship'));
+	$labels['primary']['desc'] = esc_attr(__( 'Shown for both Pages and Posts','bioship'));
 
-	$labels['posts']['name'] = __('Posts Sidebar','bioship');
-	$labels['posts']['desc'] = __('Shown only for Posts','bioship');
+	$labels['posts']['name'] = esc_attr(__('Posts Sidebar','bioship'));
+	$labels['posts']['desc'] = esc_attr(__('Shown only for Posts','bioship'));
 
-	$labels['pages']['name'] = __('Pages Sidebar','bioship');
-	$labels['pages']['desc'] = __('Shown only for Pages','bioship');
+	$labels['pages']['name'] = esc_attr(__('Pages Sidebar','bioship'));
+	$labels['pages']['desc'] = esc_attr(__('Shown only for Pages','bioship'));
 
-		$labels['subsidiary']['name'] = __('Post/Page SubSidebar','bioship');
-		$labels['subsidiary']['desc'] = __( 'Shown for both Pages and Posts','bioship');
+		$labels['subsidiary']['name'] = esc_attr(__('Post/Page SubSidebar','bioship'));
+		$labels['subsidiary']['desc'] = esc_attr(__( 'Shown for both Pages and Posts','bioship'));
 
-		$labels['subpost']['name'] = __( 'Posts SubSidebar','bioship');
-		$labels['subpost']['desc'] = __( 'Subsidiary Sidebar for Posts only','bioship');
+		$labels['subpost']['name'] = esc_attr(__( 'Posts SubSidebar','bioship'));
+		$labels['subpost']['desc'] = esc_attr(__( 'Subsidiary Sidebar for Posts only','bioship'));
 
-		$labels['subpage']['name'] = __( 'Pages SubSidebar','bioship');
-		$labels['subpage']['desc'] = __( 'Subsidiary Sidebar for Pages only','bioship');
+		$labels['subpage']['name'] = esc_attr(__( 'Pages SubSidebar','bioship'));
+		$labels['subpage']['desc'] = esc_attr(__( 'Subsidiary Sidebar for Pages only','bioship'));
 
 	// --- header / footer sidebars ---
-	$labels['header-widget-area']['name'] = __('Header Widget Area','bioship');
-	$labels['header-widget-area']['desc'] = __( 'Header Widget Area', 'bioship');
-	$labels['footer-widget-area-1']['name'] = __('First Footer Widget Area','bioship');
-	$labels['footer-widget-area-1']['desc'] = __( 'The first footer widget area', 'bioship');
-	$labels['footer-widget-area-2']['name'] = __('Second Footer Widget Area','bioship');
-	$labels['footer-widget-area-2']['desc'] = __( 'The second footer widget area','bioship');
-	$labels['footer-widget-area-3']['name'] = __('Third Footer Widget Area','bioship');
-	$labels['footer-widget-area-3']['desc'] = __( 'The third footer widget area','bioship');
-	$labels['footer-widget-area-4']['name'] = __('Fourth Footer Widget Area','bioship');
-	$labels['footer-widget-area-4']['desc'] = __( 'The fourth footer widget area','bioship');
+	$labels['header-widget-area']['name'] = esc_attr(__('Header Widget Area','bioship'));
+	$labels['header-widget-area']['desc'] = esc_attr(__( 'Header Widget Area', 'bioship'));
+	$labels['footer-widget-area-1']['name'] = esc_attr(__('First Footer Widget Area','bioship'));
+	$labels['footer-widget-area-1']['desc'] = esc_attr(__( 'The first footer widget area', 'bioship'));
+	$labels['footer-widget-area-2']['name'] = esc_attr(__('Second Footer Widget Area','bioship'));
+	$labels['footer-widget-area-2']['desc'] = esc_attr(__( 'The second footer widget area','bioship'));
+	$labels['footer-widget-area-3']['name'] = esc_attr(__('Third Footer Widget Area','bioship'));
+	$labels['footer-widget-area-3']['desc'] = esc_attr(__( 'The third footer widget area','bioship'));
+	$labels['footer-widget-area-4']['name'] = esc_attr(__('Fourth Footer Widget Area','bioship'));
+	$labels['footer-widget-area-4']['desc'] = esc_attr(__( 'The fourth footer widget area','bioship'));
 
 	// --- default sidebar widget wrappers ---
 	// 1.8.5: set defaults for all sidebars
@@ -416,7 +504,7 @@ if (!function_exists('bioship_widgets_init')) {
 	// 1.8.5: reorder all sidebars for improved display order
 	// 1.9.0: added [off] to inactive sidebar labels
 	// 1.9.5: removed [off] (new styling and lowercase is sufficient)
-	// $off = '['.__('off','bioship').'] ';
+	// $off = '['.esc_attr(__('off','bioship')).'] ';
 	$sidebarson = $sidebarsoff = array();
 
 	// Header Area Sidebar
@@ -584,9 +672,9 @@ if (!$widgettextshortcodes) {remove_filter('widget_text', 'do_shortcode');}
 $widgettextshortcodes = bioship_apply_filters('muscle_widget_title_shortcodes', true);
 if ($widgettextshortcodes) {add_filter('widget_title', 'do_shortcode');}
 
-// -------------
-// Layout Loader
-// -------------
+// -------------------
+// Theme Layout Loader
+// -------------------
 // 1.8.5: calls all layout global setup functions
 // 1. so layout can is filtered and passed to grid.php
 // 2. sidebars are precalculated for body tag classes
@@ -636,7 +724,7 @@ if (!function_exists('bioship_set_layout')) {
 // Set Page Context
 // ----------------
 // 1.8.5: added this page context helper
-// TODO: maybe match up more contexts like in /wp-includes/template-loader.php
+// TODO: check page contexts against /wp-includes/template-loader.php
 if (!function_exists('bioship_set_page_context')) {
  function bioship_set_page_context() {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
@@ -1088,12 +1176,11 @@ if (!function_exists('bioship_set_sidebar_layout')) {
 
 	if (THEMEDEBUG) {
 		if ($sidebaroverride || $subsidebaroverride) {
-			echo "<!-- Sidebar Meta Override Result: "; print_r($sidebars); echo "-->";
+			bioship_debug("Sidebar Meta Override Result", $sidebars);
 		}
-		echo "<!-- Sidebar Flag States: ";
-			if ($sidebar) {echo "Main Sidebar - ";} else {echo "No Main Sidebar - ";}
-			if ($subsidebar) {echo "Sub Sidebar";} else {echo "No Sub Sidebar";}
-		echo " -->";
+		if ($sidebar) {$states = "Main Sidebar - ";} else {$states = "No Main Sidebar - ";}
+		if ($subsidebar) {$states .= "Sub Sidebar";} else {$states .= "No Sub Sidebar";}
+		bioship_debug("Sidebar Flag States", $states);
 	}
 
 	// --- set global sidebar states ---
@@ -1240,7 +1327,7 @@ if (!function_exists('bioship_set_sidebar')) {
 	}
 
 	// maybe swap mobile button positions to match sidebars
-	// TODO: maybe improve mobile sidebar button loading conditions ?
+	// TODO: improve mobile sidebar button loading conditions ?
 	// ...as we could check for sidebar content not just positions?
 
 	// --- maybe move mobile subsidebar button to left ---
@@ -1377,9 +1464,10 @@ if (!function_exists('bioship_set_content_width')) {
  }
 }
 
-// ----------------------------------------------
-// Get Content Width (in pixels based on columns)
-// ----------------------------------------------
+// -----------------
+// Get Content Width
+// -----------------
+// (in pixels based on columns)
 // 1.8.0: non-hybrid content width set in functions.php
 // 1.8.5: moved from skeleton.php
 if (!function_exists('bioship_get_content_width')) {
@@ -1579,6 +1667,7 @@ if (!function_exists('bioship_get_content_padding_width')) {
 // === Title Tag ===
 // -----------------
 
+// -----------------
 // Title Tag Support
 // -----------------
 // 1.8.5: use new title-tag support
@@ -1683,7 +1772,7 @@ if (!function_exists('bioship_wp_title'))  {
 	// --- maybe add a page number ---
 	if ( ($paged >= 2) || ($page >= 2) ) {
 		// translators: replacement number is current page
-		$title .= " ".$sep." ".sprintf( __('Page %d','bioship'), max($paged, $page));
+		$title .= " ".$sep." ".sprintf( esc_attr(__('Page %d','bioship')), max($paged, $page));
 	}
 
 	// --- apply title filter and return ---
@@ -1696,6 +1785,15 @@ if (!function_exists('bioship_wp_title'))  {
 // ------------------------
 // === Template Helpers ===
 // ------------------------
+
+// ------------
+// WP Body Open
+// ------------
+// 2.1.2: added for backwards compatibility for WordPress < 5.2.0
+// 2.1.4: moved here from skeleton.php
+if (!function_exists( 'wp_body_open')) {
+    function wp_body_open() {do_action('wp_body_open');}
+}
 
 // --------------------
 // Get Content Template
@@ -1863,9 +1961,8 @@ if (!function_exists('bioship_sidebar_template_check')) {
 
 	// aiming to mirror WordPress page template hierarchy here (eventually)...
 	// handy mini ref: https://wphierarchy.com
-	// TODO: allow for specific post type ID sidebars?
-	// TODO: allow for specific author (nicename/ID) sidebars?
-	// TODO: allow for specific taxonomy-term (ID/slug) sidebars?
+	// TODO: allow for more specific sidebar template names ?
+	// (post ID, author, taxonomy / term ?)
 
 	// --- allow for post type archives ---
 	if ( ($context == 'archive') || ($subcontext == 'subarchive') ) {
@@ -1978,7 +2075,7 @@ if (!function_exists('bioship_sidebar_template_check')) {
 			}
 		}
 
-		// TODO: retest blank sidebar output behaviour ?
+		// TODO: retest blank sidebar output display behaviour ?
 		// if substr($template,0,3)) == 'sub') {$template = 'subblank';} else {$template = 'blank';}
 
 		$template = '';
@@ -1988,9 +2085,9 @@ if (!function_exists('bioship_sidebar_template_check')) {
  }
 }
 
-// ---------------------------
-// Output Sidebars at Position
-// ---------------------------
+// --------------------------
+// Output Sidebar at Position
+// --------------------------
 // 2.0.5: moved from skeleton.php
 if (!function_exists('bioship_get_sidebar')) {
  function bioship_get_sidebar($position) {
@@ -2004,7 +2101,8 @@ if (!function_exists('bioship_get_sidebar')) {
 	$subsidebar = $vthemesidebars['subsidebar'];
 	if (THEMEDEBUG) {
 		echo "<!-- Final Sidebar States: ";
-		$sidebarstate = $vthemesidebars; unset($sidebarstate['output']); echo esc_attr(print_r($sidebarstate,true));
+		$sidebarstate = $vthemesidebars; unset($sidebarstate['output']);
+		echo esc_attr(print_r($sidebarstate,true));
 		if ($sidebar) {echo "Main Sidebar";} else {echo "No Main Sidebar";}
 		if ($subsidebar) {echo " - SubSidebar";} else {echo " - No SubSidebar";}
 		echo " -->";
@@ -2327,9 +2425,9 @@ if (!function_exists('bioship_comments_template')) {
  }
 }
 
-// ------------------------------------------
-// Add Archive Content Templates to Hierarchy
-// ------------------------------------------
+// ----------------------------------
+// Add Archive Templates to Hierarchy
+// ----------------------------------
 // idea via Flagship Library: flagship_content_template_hierarchy
 // slight change in implementation but the idea remains the same...
 // split the templates into singular and archive to avoid conditionals
@@ -2485,10 +2583,49 @@ if (!function_exists('bioship_get_author_display_by_post')) {
 	}
 }
 
+// --------------------
+// Regenerate Thumbnail
+// --------------------
+// 2.0.5: added for on-the-fly regeneration of new image sizes
+// ref: https://gist.github.com/rnagle/2366998
+if (!function_exists('bioship_regenerate_thumbnails')) {
+ function bioship_regenerate_thumbnails($postid, $size=false) {
+ 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-// -----------------------------------
-// Formattable Meta Replacement Output
-// -----------------------------------
+	// --- get thumbnail attachment ---
+    $attachmentid = get_post_thumbnail_id($postid);
+    if ($attachmentid) {
+
+    	// --- get attachment meta ---
+	    $attachmentmeta = wp_get_attachment_metadata($attachmentid);
+	    bioship_debug("Thumbnail Metadata", $attachmentmeta);
+
+	    // --- check for image size ---
+	    // 2.0.9: added a fix here for when sizes array is not set
+	    if (isset($attachmentmeta['sizes'])) {
+			$sizes = array_keys($attachmentmeta['sizes']);
+
+			// 2.0.9: add check that sizes in an array
+			if (!$size || !is_array($sizes) || !in_array($size, $sizes)) {
+				// 2.1.4: fix to empty function exists argument
+				if (!function_exists('wp_generate_attachment_metadata')) {
+					include_once(ABSPATH.'/wp-admin/includes/image.php');
+				}
+				$attachedfile = get_attached_file($attachmentid);
+
+				// ---generate and update image size attachment ---
+				$regenerated = wp_generate_attachment_metadata($attachmentid, $attachedfile);
+				$updated = wp_update_attachment_metadata($attachmentid, $regenerated);
+				bioship_debug("Regenerated Thumbnail Metadata", $regenerated);
+			}
+		}
+	}
+ }
+}
+
+// -----------------------------
+// Formattable Entry Meta Output
+// -----------------------------
 // 2.0.5: moved here from skeleton.php
 if (!function_exists('bioship_get_entry_meta')) {
 	function bioship_get_entry_meta($postid, $posttype, $position) {
@@ -2558,7 +2695,7 @@ if (!function_exists('bioship_get_entry_meta')) {
 			$postformatlink = '';
 			$postformat = get_post_format();
 			if ($postformat) {
-				// TODO: maybe use hybrid_post_format_link here?
+				// TODO: maybe use hybrid_post_format_link for post format meta ?
 				$url = get_post_format_link($postformat);
 				$postformatlink = sprintf( '<a href="%s" class="post-format-link">%s</a>', esc_url($url), get_post_format_string($postformat) );
 			}
@@ -2582,8 +2719,8 @@ if (!function_exists('bioship_get_entry_meta')) {
 
 				// --- get edit link post type display ---
 				// 1.5.0: use the post type display label
-				if ($posttype == 'page') {$posttypedisplay = __('Page','bioship');}
-				elseif ($posttype == 'post') {$posttypedisplay = __('Post','bioship');}
+				if ($posttype == 'page') {$posttypedisplay = esc_attr(__('Page','bioship'));}
+				elseif ($posttype == 'post') {$posttypedisplay = esc_attr(__('Post','bioship'));}
 				else {
 					$posttypeobject = get_post_type_object($posttype);
 					$posttypedisplay = $posttypeobject->labels->singular_name;
@@ -2592,8 +2729,8 @@ if (!function_exists('bioship_get_entry_meta')) {
 
 				// --- set edit link ---
 				// 2.0.5: added missing link anchor translation wrapper
-				$editlink = '<span class="edit-link"><a href="'.$editurl.'">';
-				$editlink .= __('Edit this','bioship').' '.$posttypedisplay.'</a>.</span>';
+				$editlink = '<span class="edit-link"><a href="'.esc_url($editurl).'">';
+				$editlink .= esc_attr(__('Edit this','bioship')).' '.$posttypedisplay.'</a>.</span>';
 			}
 
 			// --- replace meta tags ---
@@ -2609,7 +2746,7 @@ if (!function_exists('bioship_get_entry_meta')) {
 			// 2.1.1: set default permalink replacement to empty
 			$thepermalink = '';
 			$permalink = get_permalink($postid);
-			if ($permalink) {$thepermalink = '<a href="'.$permalink.'" rel="bookmark">'.__('Permalink','bioship').'</a>';}
+			if ($permalink) {$thepermalink = '<a href="'.esc_url($permalink).'" rel="bookmark">'.esc_attr(__('Permalink','bioship')).'</a>';}
 
 			// --- replace meta tags ---
 			// 2.1.1: replace with thepermalink tag
@@ -2627,13 +2764,13 @@ if (!function_exists('bioship_get_entry_meta')) {
 			$permalink = get_permalink($postid);
 			if ($permalink) {
 				$timeformat = get_option('time_format');
-				$thetime = esc_attr(get_the_time($timeformat, $postid));
+				$thetime = get_the_time($timeformat, $postid);
 				$dateformat = get_option('date_format');
 				$postdate = get_the_date($dateformat, $postid);
-				$thedate = '<time '.hybrid_get_attr('entry-published').'>'.$postdate.'</time>';
+				$thedate = '<time '.hybrid_get_attr('entry-published').'>'.esc_attr($postdate).'</time>';
 
 				// --- set date link tag ---
-				$datelink = '<a href="'.$permalink.'" title="'.$thetime.'" rel="bookmark"><span class="entry-date">'.$thedate.'</span></a>';
+				$datelink = '<a href="'.esc_url($permalink).'" title="'.esc_attr($thetime).'" rel="bookmark"><span class="entry-date">'.$thedate.'</span></a>';
 			}
 
 			// --- replace meta tags ---
@@ -2658,15 +2795,15 @@ if (!function_exists('bioship_get_entry_meta')) {
 				// 2.1.1: simplified post parent check
 				if ($parentid > 0) {
 					$parentpermalink = get_permalink($parentid);
-					$pageparent = get_the_title($parentid);
-					$pageparentlink = '<a href="'.$parentpermalink.'">'.$pageparent.'</a>';
+					$parenttitle = get_the_title($parentid);
+					$parentlink = '<a href="'.esc_url($parentpermalink).'">'.esc_attr($parenttitle).'</a>';
 				}
 			}
 
 			// --- replace meta tags ---
 			// 1.9.9: shifted this outside page check
-			$format = str_replace('#PARENTPAGE#', $pageparent, $format);
-			$format = str_replace('#PARENTLINK#', $pageparentlink, $format);
+			$format = str_replace('#PARENTPAGE#', $parenttitle, $format);
+			$format = str_replace('#PARENTLINK#', $parentlink, $format);
 		}
 
 		// Category List / Taxonomy Cats (linked)
@@ -2706,7 +2843,7 @@ if (!function_exists('bioship_get_entry_meta')) {
 						$termlinks = array();
 						foreach ($categoryterms as $categoryterm) {
 							$termlink = get_term_link($categoryterm->slug, 'post_tag');
-							$termlinks[] = '<a href="'.esc_url($termlink).'">'.$categoryterm->name.'</a>';
+							$termlinks[] = '<a href="'.esc_url($termlink).'">'.esc_attr($categoryterm->name).'</a>';
 						}
 						$categorylist = implode(', ', $termlinks);
 					}
@@ -2730,8 +2867,8 @@ if (!function_exists('bioship_get_entry_meta')) {
 			$format = str_replace('#CATEGORIES#', $categorylist, $format);
 			if (strstr($format, '#CATSLIST#')) {
 				if ($categorylist != '') {
-					if ($numcats == 1) {$replace = __('Category: ','bioship').$categorylist.'<br>';}
-					else {$replace = __('Categories: ','bioship').$categorylist.'<br>';}
+					if ($numcats == 1) {$replace = esc_attr(__('Category: ','bioship')).$categorylist.'<br>';}
+					else {$replace = esc_attr(__('Categories: ','bioship')).$categorylist.'<br>';}
 				} else {$replace = '';}
 				$format = str_replace('#CATSLIST#', '', $format);
 			}
@@ -2754,19 +2891,19 @@ if (!function_exists('bioship_get_entry_meta')) {
 					foreach ($catparentids as $catparentid) {
 						$categoryname = get_cat_name($catparentid);
 						$categorylink = get_category_link($catparentid);
-						$categorylinks[] = '<a href="'.esc_url($categorylink).'">'.$categoryname.'</a>';
-						$catlinks[] = $categoryname;
+						$categorylinks[] = '<a href="'.esc_url($categorylink).'">'.esc_attr($categoryname).'</a>';
+						$catlinks[] = esc_attr($categoryname);
 					}
 
 					// --- parent categories prefix ---
 					if (count($categorylinks) > 0) {
 						if (count($categorylinks) == 1) {
-							$parentcategorylist = __('Parent Category: ','bioship').$categorylinks[0];
+							$parentcategorylist = esc_attr(__('Parent Category: ','bioship')).$categorylinks[0];
 						} else {
 							$parentcategories = implode(', ', $categorylinks);
-							$parentcategorylist = __('Parent Categories: ','bioship').$parentcategories;
+							$parentcategorylist = esc_attr(__('Parent Categories: ','bioship')).$parentcategories;
 							$parentcats = implode(', ', $catlinks);
-							$parentcatlist = __('Parent Categories: ','bioship').$parentcats;
+							$parentcatlist = esc_attr(__('Parent Categories: ','bioship')).$parentcats;
 						}
 					}
 				}
@@ -2812,7 +2949,7 @@ if (!function_exists('bioship_get_entry_meta')) {
 							$termlinks = array();
 							foreach ($tagterms as $tagterm) {
 								$termlink = get_term_link($tagterm->slug, 'post_tag');
-								$termlinks[] = '<a href="'.esc_url($termlink).'">'.$tagterm->name.'</a>';
+								$termlinks[] = '<a href="'.esc_url($termlink).'">'.esc_attr($tagterm->name).'</a>';
 							}
 							$posttags = implode(', ', $termlinks);
 						}
@@ -2838,8 +2975,8 @@ if (!function_exists('bioship_get_entry_meta')) {
 			if (strstr($format, '#TAGSLIST#')) {
 				if ($posttags != '') {
 					// 2.0.8: change display prefix for more than one tag
-					if ($numtags == 1) {$replace = __('Tagged: ','bioship').$posttags.'<br>';}
-					else {$replace = __('Tags: ','bioship').$posttags.'<br>';}
+					if ($numtags == 1) {$replace = esc_attr(__('Tagged: ','bioship')).$posttags.'<br>';}
+					else {$replace = esc_attr(__('Tags: ','bioship')).$posttags.'<br>';}
 				} else {$replace = '';}
 				$format = str_replace('#TAGSLIST#', $replace, $format);
 			}
@@ -2854,9 +2991,9 @@ if (!function_exists('bioship_get_entry_meta')) {
 			$commentsdisplay = '';
 			// 1.9.9: add possible missing argument for archives
 			if (comments_open($postid)) {
-				if ($numcomments === 0) {$commentsdisplay = number_format_i18n(0).' '.__('comments','bioship').'.';}
-				elseif ($numcomments === 1) {$commentsdisplay = number_format_i18n(1).' '.__('comment','bioship').'.';}
-				elseif ($numcomments > 1) {$commentsdisplay = number_format_i18n($numcomments).' '.__('comments','bioship').'.';}
+				if ($numcomments === 0) {$commentsdisplay = number_format_i18n(0).' '.esc_attr(__('comments','bioship')).'.';}
+				elseif ($numcomments === 1) {$commentsdisplay = number_format_i18n(1).' '.esc_attr(__('comment','bioship')).'.';}
+				elseif ($numcomments > 1) {$commentsdisplay = number_format_i18n($numcomments).' '.esc_attr(__('comments','bioship')).'.';}
 				$commentsdisplay = '<span class="comments-link">'.$commentsdisplay.'</span>';
 			}
 
@@ -2887,9 +3024,9 @@ if (!function_exists('bioship_get_entry_meta')) {
 				// --- get comments popup link ---
 				ob_start();
 				comments_popup_link(
-					number_format_i18n(0).' '.__('comments','bioship').'.',
-					number_format_i18n(1).' '.__('comment','bioship').'.',
-					number_format_i18n($numcomments).' '.__('comments','bioship').'.', // ? __('% comments','bioship').'.' ?
+					number_format_i18n(0).' '.esc_attr(__('comments','bioship')).'.',
+					number_format_i18n(1).' '.esc_attr(__('comment','bioship')).'.',
+					number_format_i18n($numcomments).' '.esc_attr(__('comments','bioship')).'.', // ? __('% comments','bioship').'.' ?
 					$commentscss, '' );
 				$comments = ob_get_contents();
 				ob_end_clean();
@@ -2917,8 +3054,8 @@ if (!function_exists('bioship_get_entry_meta')) {
 			$authorurl = get_author_posts_url($authorid);
 
 			// --- get post type display ---
-			if ($posttype == 'page') {$posttypedisplay = __('Pages','bioship');}
-			elseif ($posttype == 'post') {$posttypedisplay = __('Posts','bioship');}
+			if ($posttype == 'page') {$posttypedisplay = esc_attr(__('Pages','bioship'));}
+			elseif ($posttype == 'post') {$posttypedisplay = esc_attr(__('Posts','bioship'));}
 			else {
 				$posttypeobject = get_post_type_object($posttype);
 				$posttypedisplay = $posttypeobject->labels->name;
@@ -2926,8 +3063,8 @@ if (!function_exists('bioship_get_entry_meta')) {
 
 			// --- get author posts link ---
 			// 2.0.5: added missing translation wrappers
-			$authorpoststitle = __('View all','bioship').' '.$posttypedisplay.' '.__('by','bioship').' '.$authordisplay.'.';
-			$authoranchor = '<a href="'.$authorurl.'" title="'.$authorpoststitle.'">'.$authordisplay.'</a>';
+			$authorpoststitle = esc_attr(__('View all','bioship')).' '.$posttypedisplay.' '.esc_attr(__('by','bioship')).' '.$authordisplay.'.';
+			$authoranchor = '<a href="'.esc_url($authorurl).'" title="'.$authorpoststitle.'">'.esc_attr($authordisplay).'</a>';
 			$authorlink = bioship_skeleton_author_posts_link($authorurl);
 
 			// --- replace meta tags ---
@@ -3097,7 +3234,7 @@ if (!function_exists('bioship_setup')) {
 			// --- Buttons ---
 			// 2.0.8: add button style rules also (as in skin.php)
 			// 2.1.1: removed all line breaks (as breaking tinymcepreinit)
-			// TODO: maybe enqueue PIE for extra compatibility ?
+			// TODO: maybe enqueue PIE for extra editor styles compatibility ?
 			$buttons = "body.mce-content-body button, body.mce-content-body input[type='reset'], ";
 			$buttons .= "body.mce-content-body input[type='submit'], body.mce-content-body input[type='button'], ";
 			$buttons .= "body.mce-content-body a.button, body.mce-content-body .button";
@@ -3120,7 +3257,7 @@ if (!function_exists('bioship_setup')) {
 				// $buttonrules .= "behavior: url('".$pieurl."'); ";
 			}
 
-			// TODO: add button hover style rules ?
+			// TODO: add button hover styles to editor style rules ?
 			// $buttonrules .= '	'.$buttonhoverrules;
 
 			// --- WooCommerce Buttons ---
@@ -3162,7 +3299,6 @@ if (!function_exists('bioship_setup')) {
 	add_theme_support('post-thumbnails');
 
 	// 1.5.0: add custom post type thumbnail support override
-	// TODO: check if page thumbnails (featured images) are on by adding support
 	$thumbcpts = $vthemesettings['thumbnailcpts'];
 	if ($thumbcpts && is_array($thumbcpts) && (count($thumbcpts) > 0)) {
 		foreach ($thumbcpts as $cpt => $value) {
@@ -3175,7 +3311,7 @@ if (!function_exists('bioship_setup')) {
 	// Set Default Post Thumbnail Size
 	// -------------------------------
 	// TODO: maybe add a 'post-thumbnail' image size (for the post writing screen) ?
-	// (ref: _wp_post_thumbnail_html in /wp-admin/includes/post.php)
+	// ref: _wp_post_thumbnail_html in /wp-admin/includes/post.php
 
 	// --- get post thumbnail size ---
 	// get_option('thumbnail_image_w'); get_option('thumbnail_image_h');
@@ -3219,289 +3355,30 @@ if (!function_exists('bioship_setup')) {
 	$imagesizes[3] = array('name' => 'bioship-16-9', 'width' => 320, 'height' => 180, 'crop' => $crop);
 	// --- OpenGraph (560 x 292) ---
 	$imagesizes[4] = array('name' => 'bioship-opengraph', 'width' => 560, 'height' => 292, 'crop' => $crop);
+	// --- Admin Thumbnail ---
+	$imagesizes[5] = array('name' => 'admin-thumb', 'width' => 64, 'height' => 64, 'crop' => $crop);
 
 	// --- filter image sizes ---
 	$imagesizes = bioship_apply_filters('skeleton_image_sizes', $imagesizes);
 
-	// --- add image sizes ---
+	// Add Image Sizes
+	// ---------------
 	if (is_array($imagesizes) && count($imagesizes) > 0) {
 		foreach ($imagesizes as $size) {
 			add_image_size($size['name'], $size['width'], $size['height'], $size['crop']);
 		}
-	} elseif (THEMEDEBUG) {
-		echo "<!-- Image Sizes: ".esc_attr(print_r($imagesizes,true))." -->";
-	}
-
+	} elseif (THEMEDEBUG) {bioship_debug("Image Sizes Error!", $imagesizes);}
  }
 }
 
-// --------------------
-// Regenerate Thumbnail
-// --------------------
-// 2.0.5: added for on-the-fly regeneration of new image sizes
-// ref: https://gist.github.com/rnagle/2366998
-if (!function_exists('bioship_regenerate_thumbnails')) {
- function bioship_regenerate_thumbnails($postid, $size=false) {
- 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
 
-	// --- get thumbnail attachment ---
-    $attachmentid = get_post_thumbnail_id($postid);
-    if ($attachmentid) {
+// ----------------------
+// === Site Meta Tags ===
+// ----------------------
 
-    	// --- get attachment meta ---
-	    $attachmentmeta = wp_get_attachment_metadata($attachmentid);
-	    bioship_debug("Thumbnail Metadata", $attachmentmeta);
-
-	    // --- check for image size ---
-	    // 2.0.9: added a fix here for when sizes array is not set
-	    if (isset($attachmentmeta['sizes'])) {
-			$sizes = array_keys($attachmentmeta['sizes']);
-
-			// 2.0.9: add check that sizes in an array
-			if (!$size || !is_array($sizes) || !in_array($size, $sizes)) {
-				if (!function_exists('')) {
-					include_once(ABSPATH.'/wp-admin/includes/image.php');
-				}
-				$attachedfile = get_attached_file($attachmentid);
-
-				// ---generate and update image size attachment ---
-				$generated = wp_generate_attachment_metadata($attachmentid, $attachedfile);
-				$updated = wp_update_attachment_metadata($attachmentid, $generated);
-			}
-		}
-	}
- }
-}
-
-// ------------------------
-// Enqueue Skeleton Scripts
-// ------------------------
-// note: Styles moved to Skin Section
-// note: for Foundation loading functions see muscle.php
-// 1.8.0: added filemtime cache busting option
-// 2.0.2: use THEMESLUG instead of vthemename
-if (!function_exists('bioship_scripts')) {
-
- add_action('wp_enqueue_scripts', 'bioship_scripts');
-
- function bioship_scripts() {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
-	global $vthemename, $vthemesettings, $vjscachebust, $vthemedirs;
-
-	// --- check for file modified time cachebusting ---
-	// 1.9.5: check and set filemtime use just once
-	if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$filemtime = true;} else {$filemtime = false;}
-
-	// superfish.js
-	// ------------
-	// 1.8.5: conditionally load only if there is primary Nav Menu
-	// 1.9.5: fix to dashes in theme name slug for theme mods
-	// 2.0.9: added filter for superfish enqueuing override
-	$thememods = get_option('theme_mods_'.THEMESLUG);
-	if ( isset($vthememods['nav_menu_locations']['primary'])
-	 && ($vthememods['nav_menu_locations']['primary'] != '') ) {$loadsuperfish = true;} else {$loadsuperfish = false;}
-	$loadsuperfish = bioship_apply_filters('script_load_superfish', $loadsuperfish);
-
-	if ($loadsuperfish) {
-
-		// --- load hover intent (for Superfish) ---
-		// 2.1.3: added this script with Superfish update
-		$hoverintent = bioship_file_hierarchy('both', 'jquery.hoverIntent.js', $vthemedirs['script']);
-		if (is_array($hoverintent)) {
-			if ($filemtime) {$cachebust = date('ymdHi', filemtime($hoverintent['file']));} else {$cachebust = $vjscachebust;}
-			wp_enqueue_script('hover-intent', $hoverintent['url'], array('jquery'), $cachebust, true);
-		}
-
-		// --- enqueue superfish script ---
-		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
-		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
-		$superfish = bioship_file_hierarchy('both', 'superfish'.$suffix.'.js', $vthemedirs['script']);
-		if (is_array($superfish)) {
-			// 2.1.1: fix to cachebusting conditions
-			if ($filemtime) {$cachebust = date('ymdHi', filemtime($superfish['file']));} else {$cachebust = $vjscachebust;}
-			// 2.0.1: add theme name prefix to script handle
-			wp_enqueue_script(THEMESLUG.'-superfish', $superfish['url'], array('jquery'), $cachebust, true);
-		}
-
-		// --- get main menu ID ---
-		// 1.8.5: count and set main menu (not submenu) items
-		$menuid = $vthememods['nav_menu_locations']['primary'];
-		// $mainmenu = get_term($menuid, 'nav_menu');
-		bioship_debug("Main Menu ID", $menuid);
-
-		// -- get main menu items ---
-		$menuitems = wp_get_nav_menu_items($menuid, 'nav_menu');
-		// bioship_debug("Main Menu Items", $menuitems);
-		// 2.0.7: fix for undefined variable warning
-		$menumainitems = 0;
-
-		// --- count main menu items ---
-		foreach ($menuitems as $item) {
-			if ($item->menu_item_parent == 0) {$menumainitems++;}
-		}
-		bioship_debug("Menu Main Items", $menumainitems);
-
-		// --- cache menu items count ---
-		// note: menu item count is used in skin.php
-		if (get_option($vthemename.'_menumainitems') != $menumainitems) {
-			// 2.0.5: remove unnecessary add_option fallback
-			update_option($vthemename.'_menumainitems', $menumainitems);
-		}
-	}
-
-	// formalize.js
-	// ------------
-	// 2.0.9: added filter for load formalize
-	if ($vthemesettings['loadformalize']) {$loadformalize = true;} else {$loadformalize = true;}
-	$loadformalize = bioship_apply_filters('script_load_formalize', $loadformalize);
-	if ($loadformalize) {
-		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
-		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
-		$formalize = bioship_file_hierarchy('both', 'jquery.formalize'.$suffix.'.js', $vthemedirs['script']);
-		if (is_array($formalize)) {
-			// 2.1.1: fix to cachebusting conditions
-			if ($filemtime) {$cachebust = date('ymdHi', filemtime($formalize['file']));} else {$cachebust = $vjscachebust;}
-			wp_enqueue_script('formalize', $formalize['url'], array('jquery'), $cachebust, true);
-		}
-	}
-
-	// bioship-init.js
-	// ---------------
-	// 2.0.9: maintain backwards compatibility for child theme init.js override
-	$init = bioship_file_hierarchy('both', 'init.js', $vthemedirs['script']);
-	if (is_array($init)) {
-		// 2.1.1: fix to cachebusting conditions
-		if ($filemtime) {$cachebust = date('ymdHi', filemtime($init['file']));} else {$cachebust = $vjscachebust;}
-		// 2.0.1: add theme name prefix to script handle
-		wp_enqueue_script(THEMESLUG.'-init', $init['url'], array('jquery'), $cachebust, true);
-	} else {
-		// --- load theme init script ---
-		// 2.0.9: prefix all the things, change init.js filename to bioship-init.js
-		$themeinit = bioship_file_hierarchy('both', THEMEPREFIX.'-init.js', $vthemedirs['script']);
-		if (is_array($themeinit)) {
-			// 2.1.1: fix to cacebusting conditions
-			if ($filemtime) {$cachebust = date('ymdHi', filemtime($themeinit['file']));} else {$cachebust = $vjscachebust;}
-			wp_enqueue_script(THEMESLUG.'-init', $themeinit['url'], array('jquery'), $cachebust, true);
-		}
-	}
-
-	// custom.js
-	// ---------
-	$custom = bioship_file_hierarchy('both', 'custom.js', $vthemedirs['script']);
-	if (is_array($custom)) {
-		// 2.1.1: fix to cachebust conditions
-		if ($filemtime) {$cachebust = date('ymdHi', filemtime($custom['file']));} else {$cachebust = $vjscachebust;}
-		// 2.0.1: add theme name prefix to script handle
-		wp_enqueue_script(THEMESLUG.'-custom', $custom['url'], array('jquery'), $cachebust, true);
-	}
-
-	// Comment Reply Script
-	// --------------------
-	if (is_singular() && comments_open() && get_option('thread_comments')) {wp_enqueue_script('comment-reply');}
-
-	// Better WordPress Minify Integration
-	// -----------------------------------
-	// 2.0.2: added to make automatic script filtering possible
-	// (as bwp_minify_ignore filter has been missed)
-	global $bwp_minify;
-	if (is_object($bwp_minify) && property_exists($bwp_minify, 'print_positions')) {
-		$positions = $bwp_minify->print_positions;
-		if (is_array($positions) && isset($positions['ignore'])) {
-			$handles = $positions['ignore'];
-			$nominifyscripts = array(THEMESLUG.'-init', THEMESLUG.'-custom');
-			$nominifyscripts = bioship_apply_filters('bwp_nominify_scripts', $nominifyscripts);
-			foreach ($nominifyscripts as $handle) {
-				if (!in_array($handle, $handles)) {$handles[] = $handle;}
-			}
-
-			// 2.0.9: fix to incorrect array index (style)
-			if ($handles != $positions['ignore']) {
-				$positions['ignore'] = $handles;
-				$bwp_minify->print_positions = $positions;
-				bioship_debug("BWP Ignore Scripts", $handles);
-			}
-		}
-	}
-
- }
-}
-
-// ---------------------------
-// Load jQuery from Google CDN
-// ---------------------------
-// Ref: http://stackoverflow.com/questions/1014203/best-way-to-use-googles-hosted-jquery-but-fall-back-to-my-hosted-library-on-go
-// 1.5.0: added a jQuery fallback for if Google CDN fails
-// 1.9.5: only do this for frontend to prevent admin conflicts (with load-scripts.php)
-// 2.0.7: do this all via filter to avoid reregistering script
-// 2.1.1: moved function outside of bioship_scripts
-// 2.1.1: check trigger conditions internally
-if (!function_exists('bioship_jquery_fallback')) {
-
- add_filter('script_loader_tag', 'bioship_jquery_fallback', 10, 2);
-
- function bioship_jquery_fallback($scripttag, $handle) {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	global $vthemesettings, $vjscachebust, $wp_version, $wp_scripts;
-
-	// --- check trigger conditions ---
-	// 2.1.1: moved check internal to function
-	if (is_admin() || ($vthemesettings['jquerygooglecdn'] != '1')) {return $scripttag;}
-
-	// --- check jquery handle ---
-	// 1.8.5: added jquery handle check
-	// ref: http://stackoverflow.com/a/17431575/5240159
-	// Get jquery handle - WP 3.6 or newer changed the jQuery handle
-	// note: new jquery handle is a dependency handle with children of jquery-core and jquery-migrate
-	$jqueryhandle = (version_compare($wp_version, '3.6-alpha1', '>=') ) ? 'jquery-core' : 'jquery';
-	// 2.1.1: bug out early if handle does not match
-	if ($handle != $jqueryhandle) {return $scripttag;}
-
-	// --- get the built-in jQuery version for current WordPress install ---
-	// 1.9.5: fix to silly typo here to make it work again
-	// 2.0.7: use wp_scripts global name to get version directly
-	$wpjqueryversion = $wp_scripts->registered[$jqueryhandle]->ver;
-
-	$jqueryversion = bioship_apply_filters('skeleton_google_jquery_version', $wpjqueryversion);
-	$jquery = 'https://ajax.googleapis.com/ajax/libs/jquery/'.$jqueryversion.'/jquery.min.js';
-	// note: test with wp_remote_fopen pointless here as comes from server not client
-
-	// 2.0.7: change script source directly instead of reregistering
-	$srcstart = "src='"; $srcend = "'";
-	$posa = strpos($scripttag, $srcstart) + strlen($srcstart);
-	$posb = strpos($scripttag, $srcend);
-	$srctemp = substr($scripttag, $posa, ($posb - $posa));
-	$scripttag = str_replace($srctemp, $jquery, $scripttag);
-
-	if (THEMEDEBUG) {
-		echo "<!-- jQuery Handle: ".esc_attr($jqueryhandle)." -->";
-		echo "<!-- WP jQuery Version: ".esc_attr($wpjqueryversion)." -->";
-		echo "<!-- WP jQuery URL: ".esc_attr($srctemp)." -->";
-		echo "<!-- New jQuery URL: ".esc_attr($jquery)." -->";
-	}
-
-	if (strstr($scripttag, 'jquery.min.js')) {
-		// 2.1.2: fix to cachebust == typo in else condition
-		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {
-			$cachebust = date('ymdHi', filemtime(ABSPATH.WPINC.'/js/jquery/jquery.js'));
-		} else {$cachebust = $vjscachebust;}
-		$jquery = urlencode(site_url().'/wp-includes/js/jquery/jquery.js?ver='.$cachebust);
-		// 2.0.7: fix to undefined variable warning
-		if (THEMEDEBUG) {$consoledebug = "console.log('Loading jQuery from Google CDN failed. Loading jQuery from site.'); ";} else {$consoledebug = '';}
-		$fallback = "</script><script>if (!window.jQuery) {".$consoledebug."document.write(unescape('%3Cscript src=\"".$jquery."\"%3E%3C\/script%3E'));}</script>";
-		$scripttag = str_replace('</script>', $fallback, $scripttag);
-
-		// 2.1.1: remove filter to prevent further tests
-		remove_filter('script_loader_tag', 'bioship_jquery_fallback', 10, 2);
-	}
-	return $scripttag;
- }
-}
-
-// ------------------------------------
-// Change/Remove the Meta Generator Tag
-// ------------------------------------
+// -------------------------
+// Filter Meta Generator Tag
+// -------------------------
 // 1.8.5: moved here from muscle.php
 // changed name from muscle_meta_generator to skeleton_meta_generator
 if (!function_exists('bioship_meta_generator')) {
@@ -3534,9 +3411,9 @@ if (!function_exists('bioship_mobile_meta')) {
 
 	$mobilemeta = '';
 
-	// TODO: somehow test this specific-width mobile meta line has any effect?
+	// TODO: test effect of specific-width mobile meta line ?
 	// (320 is a good minimum width but not sure if this info helps mobiles)
-	// $mobilemeta .= '<meta name="MobileOptimized" content="320">'.PHP_EOL;
+	$mobilemeta .= '<meta name="MobileOptimized" content="320">'.PHP_EOL;
 
 	// --- add meta compatibility tags ---
 	$mobilemeta = "<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->".PHP_EOL;
@@ -3554,6 +3431,11 @@ if (!function_exists('bioship_mobile_meta')) {
 	echo $mobilemeta; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
  }
 }
+
+
+// ------------------
+// === Site Icons ===
+// ------------------
 
 // -----------------
 // Site Icons Loader
@@ -3801,7 +3683,7 @@ if (!function_exists('bioship_generate_favicon')) {
 	$phpico = bioship_file_hierarchy('file', 'class-php-ico.php', $vthemedirs['includes']);
 	if ($phpico) {require($phpico);} else {return '';}
 
-	// TODO: maybe auto-generate a favicon.ico from site icon?
+	// TODO: maybe auto-generate a favicon.ico from site icon ?
 	// ref: PHP ICO: https://github.com/chrisbliss18/php-ico
 	$iconid = get_option('site_icon');
 	$source = wp_get_attachment_image_url($iconid, 'full');
@@ -3944,6 +3826,253 @@ if (!function_exists('bioship_apple_startup_images')) {
 	}
 
 	return $images;
+ }
+}
+
+
+// -----------------------
+// === Enqueue Scripts ===
+// -----------------------
+
+// ------------------------
+// Enqueue Skeleton Scripts
+// ------------------------
+// note: Styles moved to Skin Section
+// note: for Foundation loading functions see muscle.php
+// 1.8.0: added filemtime cache busting option
+// 2.0.2: use THEMESLUG instead of vthemename
+if (!function_exists('bioship_scripts')) {
+
+ add_action('wp_enqueue_scripts', 'bioship_scripts');
+
+ function bioship_scripts() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	global $vthemename, $vthemesettings, $vjscachebust, $vthemedirs;
+
+	// --- check for file modified time cachebusting ---
+	// 1.9.5: check and set filemtime use just once
+	if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {$filemtime = true;} else {$filemtime = false;}
+
+	// superfish.js
+	// ------------
+	// 1.8.5: conditionally load only if there is primary Nav Menu
+	// 1.9.5: fix to dashes in theme name slug for theme mods
+	// 2.0.9: added filter for superfish enqueuing override
+	$thememods = get_option('theme_mods_'.THEMESLUG);
+	if ( isset($vthememods['nav_menu_locations']['primary'])
+	 && ($vthememods['nav_menu_locations']['primary'] != '') ) {$loadsuperfish = true;} else {$loadsuperfish = false;}
+	$loadsuperfish = bioship_apply_filters('script_load_superfish', $loadsuperfish);
+
+	if ($loadsuperfish) {
+
+		// --- load hover intent (for Superfish) ---
+		// 2.1.3: added this script with Superfish update
+		$hoverintent = bioship_file_hierarchy('both', 'jquery.hoverIntent.js', $vthemedirs['script']);
+		if (is_array($hoverintent)) {
+			if ($filemtime) {$cachebust = date('ymdHi', filemtime($hoverintent['file']));} else {$cachebust = $vjscachebust;}
+			wp_enqueue_script('hover-intent', $hoverintent['url'], array('jquery'), $cachebust, true);
+		}
+
+		// --- enqueue superfish script ---
+		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+		$superfish = bioship_file_hierarchy('both', 'superfish'.$suffix.'.js', $vthemedirs['script']);
+		if (is_array($superfish)) {
+			// 2.1.1: fix to cachebusting conditions
+			if ($filemtime) {$cachebust = date('ymdHi', filemtime($superfish['file']));} else {$cachebust = $vjscachebust;}
+			// 2.0.1: add theme name prefix to script handle
+			wp_enqueue_script(THEMESLUG.'-superfish', $superfish['url'], array('jquery'), $cachebust, true);
+		}
+
+		// --- get main menu ID ---
+		// 1.8.5: count and set main menu (not submenu) items
+		$menuid = $vthememods['nav_menu_locations']['primary'];
+		// $mainmenu = get_term($menuid, 'nav_menu');
+		bioship_debug("Main Menu ID", $menuid);
+
+		// -- get main menu items ---
+		$menuitems = wp_get_nav_menu_items($menuid, 'nav_menu');
+		// bioship_debug("Main Menu Items", $menuitems);
+		// 2.0.7: fix for undefined variable warning
+		$menumainitems = 0;
+
+		// --- count main menu items ---
+		foreach ($menuitems as $item) {
+			if ($item->menu_item_parent == 0) {$menumainitems++;}
+		}
+		bioship_debug("Menu Main Items", $menumainitems);
+
+		// --- cache menu items count ---
+		// note: menu item count is used in skin.php
+		if (get_option($vthemename.'_menumainitems') != $menumainitems) {
+			// 2.0.5: remove unnecessary add_option fallback
+			update_option($vthemename.'_menumainitems', $menumainitems);
+		}
+	}
+
+	// formalize.js
+	// ------------
+	// 2.0.9: added filter for load formalize
+	if ($vthemesettings['loadformalize']) {$loadformalize = true;} else {$loadformalize = true;}
+	$loadformalize = bioship_apply_filters('script_load_formalize', $loadformalize);
+	if ($loadformalize) {
+		// 2.1.3: honour SCRIPT_DEBUG constant for unminified scripts
+		if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {$suffix = '';} else {$suffix = '.min';}
+		$formalize = bioship_file_hierarchy('both', 'jquery.formalize'.$suffix.'.js', $vthemedirs['script']);
+		if (is_array($formalize)) {
+			// 2.1.1: fix to cachebusting conditions
+			if ($filemtime) {$cachebust = date('ymdHi', filemtime($formalize['file']));} else {$cachebust = $vjscachebust;}
+			wp_enqueue_script('formalize', $formalize['url'], array('jquery'), $cachebust, true);
+		}
+	}
+
+	// bioship-init.js
+	// ---------------
+	// 2.0.9: maintain backwards compatibility for child theme init.js override
+	$init = bioship_file_hierarchy('both', 'init.js', $vthemedirs['script']);
+	if (is_array($init)) {
+		// 2.1.1: fix to cachebusting conditions
+		if ($filemtime) {$cachebust = date('ymdHi', filemtime($init['file']));} else {$cachebust = $vjscachebust;}
+		// 2.0.1: add theme name prefix to script handle
+		wp_enqueue_script(THEMESLUG.'-init', $init['url'], array('jquery'), $cachebust, true);
+	} else {
+		// --- load theme init script ---
+		// 2.0.9: prefix all the things, change init.js filename to bioship-init.js
+		$themeinit = bioship_file_hierarchy('both', THEMEPREFIX.'-init.js', $vthemedirs['script']);
+		if (is_array($themeinit)) {
+			// 2.1.1: fix to cacebusting conditions
+			if ($filemtime) {$cachebust = date('ymdHi', filemtime($themeinit['file']));} else {$cachebust = $vjscachebust;}
+			wp_enqueue_script(THEMESLUG.'-init', $themeinit['url'], array('jquery'), $cachebust, true);
+		}
+	}
+
+	// custom.js
+	// ---------
+	$custom = bioship_file_hierarchy('both', 'custom.js', $vthemedirs['script']);
+	if (is_array($custom)) {
+		// 2.1.1: fix to cachebust conditions
+		if ($filemtime) {$cachebust = date('ymdHi', filemtime($custom['file']));} else {$cachebust = $vjscachebust;}
+		// 2.0.1: add theme name prefix to script handle
+		wp_enqueue_script(THEMESLUG.'-custom', $custom['url'], array('jquery'), $cachebust, true);
+	}
+
+	// Comment Reply Script
+	// --------------------
+	if (is_singular() && comments_open() && get_option('thread_comments')) {wp_enqueue_script('comment-reply');}
+
+	// Better WordPress Minify Integration
+	// -----------------------------------
+	// 2.0.2: added to make automatic script filtering possible
+	// (as bwp_minify_ignore filter has been missed)
+	global $bwp_minify;
+	if (is_object($bwp_minify) && property_exists($bwp_minify, 'print_positions')) {
+		$positions = $bwp_minify->print_positions;
+		if (is_array($positions) && isset($positions['ignore'])) {
+			$handles = $positions['ignore'];
+			$nominifyscripts = array(THEMESLUG.'-init', THEMESLUG.'-custom');
+			$nominifyscripts = bioship_apply_filters('bwp_nominify_scripts', $nominifyscripts);
+			foreach ($nominifyscripts as $handle) {
+				if (!in_array($handle, $handles)) {$handles[] = $handle;}
+			}
+
+			// 2.0.9: fix to incorrect array index (style)
+			if ($handles != $positions['ignore']) {
+				$positions['ignore'] = $handles;
+				$bwp_minify->print_positions = $positions;
+				bioship_debug("BWP Ignore Scripts", $handles);
+			}
+		}
+	}
+
+ }
+}
+
+// ---------------------------
+// Load jQuery from Google CDN
+// ---------------------------
+// Ref: http://stackoverflow.com/questions/1014203/best-way-to-use-googles-hosted-jquery-but-fall-back-to-my-hosted-library-on-go
+// 1.5.0: added a jQuery fallback for if Google CDN fails
+// 1.9.5: only do this for frontend to prevent admin conflicts (with load-scripts.php)
+// 2.0.7: do this all via filter to avoid reregistering script
+// 2.1.1: moved function outside of bioship_scripts
+// 2.1.1: check trigger conditions internally
+if (!function_exists('bioship_jquery_fallback')) {
+
+ add_filter('script_loader_tag', 'bioship_jquery_fallback', 10, 2);
+
+ function bioship_jquery_fallback($scripttag, $handle) {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+
+	global $vthemesettings, $vjscachebust, $wp_version, $wp_scripts;
+
+	// --- check trigger conditions ---
+	// 2.1.1: moved check internal to function
+	if (is_admin() || ($vthemesettings['jquerygooglecdn'] != '1')) {return $scripttag;}
+
+	// --- check jquery handle ---
+	// 1.8.5: added jquery handle check
+	// ref: http://stackoverflow.com/a/17431575/5240159
+	// Get jquery handle - WP 3.6 or newer changed the jQuery handle
+	// note: new jquery handle is a dependency handle with children of jquery-core and jquery-migrate
+	$jqueryhandle = (version_compare($wp_version, '3.6-alpha1', '>=') ) ? 'jquery-core' : 'jquery';
+	// 2.1.1: bug out early if handle does not match
+	if ($handle != $jqueryhandle) {return $scripttag;}
+
+	// --- get the built-in jQuery version for current WordPress install ---
+	// 1.9.5: fix to silly typo here to make it work again
+	// 2.0.7: use wp_scripts global name to get version directly
+	$wpjqueryversion = $wp_scripts->registered[$jqueryhandle]->ver;
+
+	$jqueryversion = bioship_apply_filters('skeleton_google_jquery_version', $wpjqueryversion);
+	$jquery = 'https://ajax.googleapis.com/ajax/libs/jquery/'.$jqueryversion.'/jquery.min.js';
+	// note: test with wp_remote_fopen pointless here as comes from server not client
+
+	// 2.0.7: change script source directly instead of reregistering
+	$srcstart = "src='"; $srcend = "'";
+	$posa = strpos($scripttag, $srcstart) + strlen($srcstart);
+	$posb = strpos($scripttag, $srcend);
+	$srctemp = substr($scripttag, $posa, ($posb - $posa));
+	$scripttag = str_replace($srctemp, $jquery, $scripttag);
+
+	if (THEMEDEBUG) {
+		bioship_debug("jQuery Handle", $jqueryhandle);
+		bioship_debug("WP jQuery Version", $wpjqueryversion);
+		bioship_debug("WP jQuery URL", $srctemp);
+		bioship_debug("New jQuery URL", $jquery);
+	}
+
+	if (strstr($scripttag, 'jquery.min.js')) {
+		// 2.1.2: fix to cachebust == typo in else condition
+		if ($vthemesettings['javascriptcachebusting'] == 'filemtime') {
+			$cachebust = date('ymdHi', filemtime(ABSPATH.WPINC.'/js/jquery/jquery.js'));
+		} else {$cachebust = $vjscachebust;}
+		$jquery = urlencode(site_url().'/wp-includes/js/jquery/jquery.js?ver='.$cachebust);
+		// 2.0.7: fix to undefined variable warning
+		if (THEMEDEBUG) {$consoledebug = "console.log('Loading jQuery from Google CDN failed. Loading jQuery from site.'); ";} else {$consoledebug = '';}
+		$fallback = "</script><script>if (!window.jQuery) {".$consoledebug."document.write(unescape('%3Cscript src=\"".$jquery."\"%3E%3C\/script%3E'));}</script>";
+		$scripttag = str_replace('</script>', $fallback, $scripttag);
+
+		// 2.1.1: remove filter to prevent further tests
+		remove_filter('script_loader_tag', 'bioship_jquery_fallback', 10, 2);
+	}
+	return $scripttag;
+ }
+}
+
+// --------------------------
+// Fix Skip Link Focus (IE11)
+// --------------------------
+// ref: https://make.wordpress.org/themes/2019/07/14/how-to-add-and-test-skip-links/
+// This does not enqueue the script because it is tiny and because it is only for IE11,
+// thus it does not warrant having an entire dedicated blocking script being loaded.
+// @link https://git.io/vWdr2
+if (!function_exists('bioship_skip_link_focus_fix')) {
+ add_action('wp_print_footer_scripts', 'bioship_skip_link_focus_fix');
+ function bioship_skip_link_focus_fix() {
+	echo '<script>';
+	echo '/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);';
+	echo '</script>';
  }
 }
 
@@ -4123,7 +4252,6 @@ if (!function_exists('bioship_skin_enqueue_styles')) {
 		// Grid URL for Customizer Preview
 		// -------------------------------
 		// 1.9.8: fix to declare pagenow global
-		// TODO: maybe move this to customizer.php ?
 		global $pagenow;
 		if (is_customize_preview() && ($pagenow != 'customize.php')) {
 
@@ -4131,7 +4259,7 @@ if (!function_exists('bioship_skin_enqueue_styles')) {
 			$vthemelayout['gridurl'] = $gridurl;
 
 			// For Customizer Preview Load in Header/Footer
-			// ...but somehow doing this breaks Customizer ..?
+			// ...but somehow doing this breaks Customizer ?
 			//	if ($vthemesettings['themecssmode'] == 'header') {
 			//		add_action('wp_head', 'bioship_grid_dynamic_css_inline');
 			//	} else {add_action('wp_footer', 'bioship_grid_dynamic_css_inline');}
@@ -4299,7 +4427,7 @@ if (!function_exists('bioship_skin_enqueue_styles')) {
 
 		// --- set skin theme ---
 		// 1.8.5: set anyway to allow for Multiple Themes/Theme Test Drive override
-		// TODO: check for internal stylesheet override ?
+		// TODO: check for internal skin theme value override ?
 		$skintheme = get_stylesheet();
 		if (isset($_REQUEST['theme'])) {
 			// 2.1.2: use sanitize_title on request input
@@ -4484,11 +4612,10 @@ if (!function_exists('bioship_skin_enqueue_admin_styles')) {
  }
 }
 
-
-// ------------------
-// Heading Typography
-// ------------------
-// autoload any requested fonts from Google Fonts
+// --------------------------
+// Enqueue Heading Typography
+// --------------------------
+// (autoload any requested fonts from Google Fonts)
 // 1.5.0: fix for Prefixfree and Google Fonts CORS conflict (see muscle.php)
 
 if (!function_exists('bioship_skin_typography_loader')) {

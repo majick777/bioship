@@ -1,51 +1,51 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * ==== Dynamic Style Skin Loader ===
- * - Outputs CSS from Theme Options -
- *
-**/
+// =============================
+// ==== BioShip Skin Loader ====
+// = Dynamic Stylesheet Output =
+// =============================
 
-// TODO: check for possible CSS fallback usage ?
-// ref: http://modernweb.com/2013/07/08/using-css-fallback-properties-for-better-cross-browser-compatibility/
-
-// TODO: when using Titan+Options Framework use rgba colour picker ?
-// ref: https://css-tricks.com/rgba-browser-support/
-
-// ==========================
+// --------------------------
 // === skin.php Structure ===
-// ==========================
-// --- Skin Load Setup
-// --- Skin Helpers
-// --- Direct Load Mode
-// --- Set Theme Paths
-// --- Get Theme Settings
-// --- Typography
-// --- Buttons
-// --- Hover Buttons
-// --- Inputs
-// --- Links
-// --- Body Background
-// --- Admin Styles
-// --- Login Styles
-// --- Compile Styles
-// ---- Body Styles
-// ---- Wrap Container Styles
-// ---- Header Background Styles
-// ---- Header Text Display Styles
-// ---- Background Colour Styles
-// ---- Navigation Menu Styles
-// ---- Buttons, Links, Inputs, Typography
-// ---- Content Padding Styles
-// --- Output Styles
-// --- Browser and Mobile Styles
-// --- Custom Dynamic CSS
-// --- Output Load Time
+// --------------------------
+// - Skin Load Setup
+// - Skin Helpers
+// - Direct Load Mode
+// - Set Theme Paths
+// - Get Theme Settings
+// - Typography
+// - Buttons
+// - Hover Buttons
+// - Inputs
+// - Links
+// - Body Background
+// - Admin Styles
+// - Login Styles
+// - Compile Styles
+// -- Body Styles
+// -- Wrap Container Styles
+// -- Header Background Styles
+// -- Header Text Display Styles
+// -- Background Colour Styles
+// -- Navigation Menu Styles
+// -- Buttons, Links, Inputs, Typography
+// -- Content Padding Styles
+// - Output Styles
+// - Browser and Mobile Styles
+// - Custom Dynamic CSS
+// - Output Load Time
+// --------------------------
+
+
+// Development TODOs
+// -----------------
+// ? maybe copy and use file hierarchy function
+// ? maybe use improved debug switching from functions.php
+// ? maybe recheck image size path for subdirectory installs
+// ? check for possible CSS fallback usage
+// ref: http://modernweb.com/2013/07/08/using-css-fallback-properties-for-better-cross-browser-compatibility/
+// ? convert to rgba when using Titan+Options Framework use rgba colour picker
+// ref: https://css-tricks.com/rgba-browser-support/
 
 
 // -----------------------
@@ -170,7 +170,7 @@ if (!function_exists('bioship_skin_get_image_size')) {
 			if (file_exists($imagepath)) {$imagesize = getimagesize($imagepath);}
 
 			if (THEMEDEBUG) {
-				// TODO: maybe check image path for subdirectory installs?
+				// TODO: maybe recheck image size path for subdirectory installs ?
 				// if ( (site_url()) == (home_url()) ) {}
 				echo "/* Site URL: ".esc_url(site_url())." */".PHP_EOL;
 				echo "/* Home URL: ".esc_url(home_url())." */".PHP_EOL;
@@ -524,12 +524,12 @@ if ($vthemeframework == 'options') {
 				$unserialized = unserialize($saveddata);
 				if ($unserialized) {$vthemesettings = $unserialized;}
 				else {
-					echo "/* Unserialize Error: "; print_r(error_get_last()); echo " */";
+					echo "/* Unserialize Error: ".esc_attr(print_r(error_get_last(),true)); echo " */";
 					// 1.9.6: added possible auto-serialization fix
 					$saveddata = bioship_skin_fix_serialized($saveddata);
 					$unserialized = unserialize($saveddata);
 					if ($unserialized) {$vthemesettings = $unserialized;}
-					else {echo "/* Unserialize Error: "; print_r(error_get_last()); echo " */";}
+					else {echo "/* Unserialize Error: ".esc_attr(print_r(error_get_last(),true)); echo " */";}
 				}
 			}
 		}
@@ -587,9 +587,9 @@ if (is_array($multicheck) && (count($multicheck) > 0)) {
 }
 
 if (THEMEDEBUG) {
-	// echo "/*".PHP_EOL; echo "Checkbox Options: "; print_r($checkboxes); echo "*/".PHP_EOL.PHP_EOL;
-	echo "/*".PHP_EOL; echo "Multicheck Options: "; print_r($multicheck); echo "*/".PHP_EOL.PHP_EOL;
-	echo "/*".PHP_EOL; echo "Theme Options (".esc_attr($vthemename)."): "; print_r($vts); echo "*/".PHP_EOL.PHP_EOL;
+	// echo "/*".PHP_EOL; echo "Checkbox Options: ".esc_attr(print_r($checkboxes,true))." */".PHP_EOL.PHP_EOL;
+	echo "/*".PHP_EOL; echo "Multicheck Options: ".esc_attr(print_r($multicheck,true))." */".PHP_EOL.PHP_EOL;
+	echo "/*".PHP_EOL; echo "Theme Options (".esc_attr($vthemename)."): ".esc_attr(print_r($vts,true))." */".PHP_EOL.PHP_EOL;
 }
 
 // ---------------------------------
@@ -636,7 +636,7 @@ foreach ($typographies as $key) {
 	if (isset($vts[$typekey])) {
 
 		$typography = maybe_unserialize($vts[$typekey]);
-		// echo "/* "; print_r($typography); echo " */"; // debug point
+		// echo "/* Typography: ".esc_attr(print_r($typography,true))." */"; // debug point
 
 		// 1.8.0: fix for font-sizes, target inside divs, fix content column inners
 		// 2.0.9: fix to navigation targeting for em font-size scaling
@@ -938,7 +938,6 @@ if ($adminstyles) {
 	.sidebar-on {background-color:#F0F0FF;} .sidebar-on h2 {font-size: 13pt;}
 	.sidebar-off {background-color:#F3F3FF;} .sidebar-off h2 {font-weight: normal; font-size: 10pt;}".PHP_EOL.PHP_EOL;
 
-	// TODO: maybe filter admin styles ?
 	echo $styles; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 
 	// 2.1.1: return here if no login styles
@@ -1145,7 +1144,7 @@ $styles .= PHP_EOL;
 // Header Text Display Styles
 // --------------------------
 // 1.8.5: add header text display rules
-// if (THEMEDEBUG) {echo '/*'; print_r($vts['header_texts']); echo '*/';}
+// if (THEMEDEBUG) {echo '/* Header Texts: '.esc_attr(print_r($vts['header_texts'],true)).' */';}
 
 // --- site title display ---
 if (isset($vts['header_texts']['sitetitle']) && ($vts['header_texts']['sitetitle'] != '1')) {
@@ -1241,7 +1240,9 @@ if (isset($vts['navmenuhoverbgcolor']) && ($vts['navmenuhoverbgcolor'] != '')) {
 // --- add hover menu item rules ---
 if ($navmenuhover != '') {
 	// 2.0.7: fix to text hover color targeting
-	$navmenurules .= "#navigation #mainmenu ul li:hover, #navigation #mainmenu ul li:hover a {".$navmenuhover."}".PHP_EOL;
+	// 2.1.4: add rules for menu element focus (keyboard tabbing)
+	$navmenurules .= "#navigation #mainmenu ul li:hover, #navigation #mainmenu ul li:hover a, ";
+	$navmenurules .= "#navigation #mainmenu ul li:focus, #navigation #mainmenu ul li a:focus {".$navmenuhover."}".PHP_EOL;
 }
 
 // --- submenu hover font colour ---
@@ -1369,7 +1370,7 @@ if (count($classes) > 0) {
 // --- output browser styles ---
 if ($browserstyles != '') {
 	echo PHP_EOL."/* Styles for Detected Browser/Device  */".PHP_EOL.PHP_EOL;
-	echo esc_attr($browserstyles).PHP_EOL;
+	echo $browserstyles.PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 }
 
 

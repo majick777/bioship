@@ -792,18 +792,19 @@ body.dark #comments {background: url(../images/dark/divider.png) repeat-x right 
 }
 #comments h6 {font-family: "Times New Roman", Times, serif;letter-spacing: normal;text-transform: uppercase;margin: 10px 0px;}
 
-#comments .comment-meta {margin:0px 0px 20px 0px; display:block;}
+#comments .comment-meta {margin:0px 0px 20px 10px; display:block;}
 #comments .commentlist {margin:0px; float:left; list-style:none; width:100%; margin-left:10px;}
 #comments .commentlist ul {list-style:none; margin:0; padding:0; clear:both;}
 #comments .commentlist li {margin:0; padding:0; display:block;}
+#comments .commentlist li .comment-meta {width:470px;}
 #comments .commentlist li li {margin:0 0 20px 25px;}
-#comments .commentlist li li .comment-meta{ width:445px;}
+#comments .commentlist li li .comment-meta {width:445px;}
 #comments .commentlist li li li {margin:0 0 20px 25px;}
-#comments .commentlist li li li .comment-meta{ width:420px;}
+#comments .commentlist li li li .comment-meta {width:420px;}
 #comments .commentlist li li li li {margin:0 0 20px 25px;}
-#comments .commentlist li li li li .comment-meta{width:395px;}
+#comments .commentlist li li li li .comment-meta {width:395px;}
 #comments .commentlist li li li li li {margin:0 0 20px 25px;}
-#comments .commentlist li li li li li .comment-meta{width:370px;}
+#comments .commentlist li li li li li .comment-meta {width:370px;}
 
 #comments .single-comment {margin-bottom:20px;}
 #comments .comment-author {float:left; margin: 0px 10px 6px 0px; display:inline; width:50px;}
@@ -820,17 +821,16 @@ body.dark #comments {background: url(../images/dark/divider.png) repeat-x right 
 	float:left;
 	clear:both;
 	display:block;
-	width:100px;
-	min-height: 100px;
-	padding:20px 0;
+	/* width:100px; */
+	/* min-height: 100px; */
+	/* padding:20px 0; */
+	/* background:url(../images/comment_author_bg.png) no-repeat top right; */
 }
 #comments .vcard img.avatar {
 	border: 1px solid #eee;
 	padding: 2px;
-	background:#f4f4f4;
+	background: #f4f4f4;
 }
-
-#comments .vcard {background:url(../images/comment_author_bg.png) no-repeat top right;}
 
 
 /* Pingbacks */
