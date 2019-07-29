@@ -4,19 +4,34 @@
 // === BioShip Theme Tools ===
 // ===========================
 
-// ==========================
-// === tools.php Sections ===
-// ==========================
-// --- Child Theme Install ---
-// --- Clone Child Theme ---
-// --- Theme Settings Transfers ---
-// --- Backup / Restore Theme Settings
-// --- Export / Import / Revert Theme Settings ---
-//
+// ---------------------------
+// === tools.php Structure ===
+// ---------------------------
+// == Child Theme Install ==
+// == Clone Child Theme ==
+// === Theme Settings Transfers ===
+// - Transfer Framework Settings
+// - Manually Copy Theme Settings
+// === Theme Tools Box ===
+// - Theme Tools Forms
+// === Backup / Restore Settings ===
+// - Backup Settings AJAX
+// - Backup Theme Settings
+// - Restore Theme Settings
+// === Export / Import Settings ===
+// - Export Theme Settings AJAX
+// - Export Theme Settings
+// - Import Theme Settings
+// - Revert to pre-Import Backup
+// - Array to XML Function (for Export)
+// - XML to Array Function (for Import)
+// - Verify Uploaded File
+// ---------------------------
+
 
 // Development TODOs
 // -----------------
-// TODO: fix format output for XML export (stopped working!?)
+// - fix format output for XML export (stopped working!?)
 
 
 // ---------------------------
@@ -33,9 +48,10 @@ if (!function_exists('bioship_admin_do_install_child')) {
 	global $wp_filesystem;
 
 	// --- match new Child Name, allowing for spaces ---
+	// 2.1.4: added esc_attr to message string outputs
 	$newchildname = trim($_REQUEST['newchildname']);
-	if ($newchildname == '') {return __('Error: Child Theme Name cannot be empty.','bioship');}
-	if (!preg_match('/^[0-9a-z ]+$/i', $newchildname)) {return __('Error. Letters, numbers and spaces only please!','bioship');}
+	if ($newchildname == '') {return esc_attr(__('Error: Child Theme Name cannot be empty.','bioship'));}
+	if (!preg_match('/^[0-9a-z ]+$/i', $newchildname)) {return esc_attr(__('Error. Letters, numbers and spaces only please!','bioship'));}
 	$newchildslug = preg_replace("/\W/", "-", strtolower($newchildname));
 
 	// 1.8.0: use directory separator, added debug dir
@@ -73,10 +89,11 @@ if (!function_exists('bioship_admin_do_install_child')) {
 
 	// Create Child Theme directory(s)
 	// -------------------------------
+	// 2.1.4: added esc_attr to message string outputs
 	if (is_dir($childdir)) {
 		// --- always avoid overwriting an existing Child Theme! ---
-		$message = __('Aborted! Child Theme directory of that name already exists!','bioship').'<br>';
-		$message .= __('Remove or rename the existing directory and try again.','bioship').'<br>';
+		$message = esc_attr(__('Aborted! Child Theme directory of that name already exists!','bioship')).'<br>';
+		$message .= esc_attr(__('Remove or rename the existing directory and try again.','bioship')).'<br>';
 		return $message;
 	} else {
 		// --- create child theme directory the WP Filesystem way ---
@@ -88,8 +105,9 @@ if (!function_exists('bioship_admin_do_install_child')) {
 			// 2.1.1: re-added this method as a fallback ---
 			wp_mkdir_p($childdir);
 			if (!is_dir($childdir)) {
-				$message = __('Aborted: Could not create Child Theme directory.','bioship').'<br>';
-				$message .= __('Check your permissions or do a','bioship').' <a href="http://bioship.space/documentation/" target=_blank>'.__('manual install','bioship').'</a>.';
+				$message = esc_attr(__('Aborted: Could not create Child Theme directory.','bioship')).'<br>';
+				$message .= esc_attr(__('Check your permissions or do a','bioship')).' ';
+				$message .= '<a href="http://bioship.space/documentation/" target=_blank>'.esc_attr(__('manual install','bioship')).'</a>.';
 				return $message;
 			}
 
@@ -152,7 +170,7 @@ if (!function_exists('bioship_admin_do_install_child')) {
 	// 1.8.5: change 'child-source' directory to 'child'
 	// 2.0.7: fix to changed variable typo (vmissing)
 	if (count($missingfiles) > 0) {
-		$message .= __('Error: Child Theme source files missing','bioship').':<br>';
+		$message .= esc_attr(__('Error: Child Theme source files missing','bioship')).':<br>';
 		foreach ($missingfiles as $missingfile) {
 			// 2.0.9: just display missing file paths from array
 			$message .= '/bioship/'.$missingfile.'<br>';
@@ -169,6 +187,7 @@ if (!function_exists('bioship_admin_do_install_child')) {
 	else {$parentsettings = get_option('bioship_options'); $childoptionsslug = $newchildslug.'_options';}
 
 	// --- get existing settings ---
+	// 2.1.4: added esc_attr to message string outputs
 	$settingsmessage = '';
 	$existingsettings = get_option($childoptionsslug);
 	if (!$existingsettings) {
@@ -177,13 +196,13 @@ if (!function_exists('bioship_admin_do_install_child')) {
 			// 1.9.5: set to default theme options
 			$defaultsettings = bioship_titan_theme_options(array());
 			add_option($childoptionsslug, $defaultsettings);
-			$settingsmessage .= __('No Parent Theme settings! Child Theme set to default settings.','bioship').'<br>';
-			$settingsmessage .= __('See documentation to manually transfer settings between themes.','bioship').'<br>';
+			$settingsmessage .= esc_attr(__('No Parent Theme settings! Child Theme set to default settings.','bioship')).'<br>';
+			$settingsmessage .= esc_attr(__('See documentation to manually transfer settings between themes.','bioship')).'<br>';
 		} else {
 			add_option($childoptionsslug, $parentsettings);
-			$settingsmessage .= __('Parent Theme settings transferred to new Child Theme.','bioship').'<br>';
+			$settingsmessage .= esc_attr(__('Parent Theme settings transferred to new Child Theme.','bioship')).'<br>';
 		}
-	} else {$message .= __('Child Theme settings exist, Parent Theme settings not transferred.','bioship').'<br>';}
+	} else {$message .= esc_attr(__('Child Theme settings exist, Parent Theme settings not transferred.','bioship')).'<br>';}
 
 	// --- copy widgets menus and menu locations ---
 	// 1.5.0: copy parent subsettings to child theme 'backup' options
@@ -206,13 +225,16 @@ if (!function_exists('bioship_admin_do_install_child')) {
 
 	// --- set Child creation output message ---
 	// 1.8.0: added translation strings to messages
-	if ($message != '') {$creationresult = '('.__('with errors','bioship').')';}
-	else {$creationresult = __('successfully','bioship').'<!-- SUCCESS -->';}
+	// 2.1.4: added esc_attr to message string outputs
+	if ($message != '') {$creationresult = '('.esc_attr(__('with errors','bioship')).')'.'<!-- FAILED -->';}
+	else {$creationresult = esc_attr(__('successfully','bioship')).'<!-- SUCCESS -->';}
 	$message .= $settingsmessage;
-	$message .= __('New Child Theme','bioship').' "'.$newchildname.'" '.__('created','bioship').' '.$creationresult.'.<br>';
-	$message .= __('Base Directory','bioship').': '.ABSPATH.'<br>';
-	$message .= __('Theme Subdirectory','bioship').': '.str_replace(ABSPATH, '', $childdir).'<br>';
-	$message .= __('Activate it on your','bioship').' <a href="'.admin_url('themes.php').'">'.__('Themes Page','bioship').'</a>.';
+	$message .= esc_attr(__('New Child Theme','bioship')).' "'.esc_attr($newchildname).'" ';
+	$message .= esc_attr(__('created','bioship')).' '.esc_attr($creationresult).'.<br>';
+	$message .= esc_attr(__('Base Directory','bioship')).': '.esc_attr(ABSPATH).'<br>';
+	$message .= esc_attr(__('Theme Subdirectory','bioship')).': '.esc_attr(str_replace(ABSPATH, '', $childdir)).'<br>';
+	$message .= esc_attr(__('Activate it on your','bioship')).' ';
+	$message .= '<a href="'.esc_url(admin_url('themes.php')).'">'.esc_attr(__('Themes Page','bioship')).'</a>.';
 
 	// One-Click Activation for New Child Theme
 	// ----------------------------------------
@@ -221,15 +243,19 @@ if (!function_exists('bioship_admin_do_install_child')) {
 	$activatelink = add_query_arg('action', 'activate', admin_url('themes.php'));
 	$activatelink = add_query_arg('stylesheet', $newchildslug, $activatelink);
 	$activatelink = add_query_arg('_wpnonce', $wpnonce, $activatelink);
-	$message .= '... '.__('or just','bioship').' <a href="'.$activatelink.'">'.__('click here to activate it','bioship').'</a>.';
+	// 2.1.4: added esc_url to sanitize link output
+	$message .= '... '.esc_attr(__('or just','bioship')).' ';
+	$message .= '<a href="'.esc_url($activatelink).'">'.esc_attr(__('click here to activate it','bioship')).'</a>.';
 
 	// --- theme drive integration ---
 	if (function_exists('themedrive_determine_theme')) {
 		// 1.8.0: link for Titan or Options Framework
-		// CHECKME: if this work
+		// CHECKME: if this is working
 		if (THEMETITAN) {$childthemeoptions = 'admin.php?page=bioship_options&theme='.$newchildslug;}
 		else {$childthemeoptions = 'themes.php?page=options-framework&theme='.$newchildslug;}
-		$message .= '<br>('.__('or','bioship').' <a href="'.$childthemeoptions.'">'.__('Theme Test Drive without activating','bioship').'</a>.)';
+		// 2.1.4: added esc_url to URL and esc_attr for message
+		$message .= '<br>('.esc_attr(__('or','bioship')).' ';
+		$message .= '<a href="'.esc_url($childthemeoptions).'">'.esc_attr(__('Theme Test Drive without activating','bioship')).'</a>.)';
 	}
 
 	return $message;
@@ -241,34 +267,35 @@ if (!function_exists('bioship_admin_do_install_child')) {
 // === Clone Child Theme ===
 // -------------------------
 // 1.9.5: added child theme cloning function
+// 2.1.4: added esc_attr to message string outputs
 if (!function_exists('bioship_admin_do_install_clone')) {
  function bioship_admin_do_install_clone() {
  	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
 	global $wp_filesystem;
 
 	// --- check Child Theme Source ---
-	if (!isset($_REQUEST['clonetheme'])) {return __('Error: Source Child Theme not specified.','bioship');}
-	elseif (trim($_REQUEST['clonetheme']) == '') {return __('Error: Source Child Theme not specified.','bioship');}
+	if (!isset($_REQUEST['clonetheme'])) {return esc_attr(__('Error: Source Child Theme not specified.','bioship'));}
+	elseif (trim($_REQUEST['clonetheme']) == '') {return esc_attr(__('Error: Source Child Theme not specified.','bioship'));}
 	else {$clonetheme = trim($_REQUEST['clonetheme']);}
 
 	// --- check for Child Theme Source settings ---
 	if (THEMEOPT) {$clonesettings = get_option($clonetheme);}
 	else {$clonesettings = get_option($clonetheme.'_options');}
-	if (!$clonesettings) {return __('Error: Source Child Theme Settings are empty!','bioship');}
+	if (!$clonesettings) {return esc_attr(__('Error: Source Child Theme Settings are empty!','bioship'));}
 
 	// --- check BioShip parent ---
 	// 2.1.1: match to THEMEPREFIX constant ---
 	$theme = wp_get_theme(get_stylesheet($clonetheme));
 	if (!isset($theme['Template']) || ($theme['Template'] != THEMEPREFIX)) {
-		return __('Cloning Aborted! Child Theme parent must be BioShip!','bioship');
+		return esc_attr(__('Cloning Aborted! Child Theme parent must be BioShip!','bioship'));
 	}
 
 	// --- check new Child Theme name ---
 	$newclonename = trim($_REQUEST['newclonename']);
-	if ($newclonename == '') {return __('Error: New Child Theme Name cannot be empty.','bioship');}
-	if (!preg_match('/^[0-9a-z ]+$/i', $newclonename)) {return __('Error. Letters, numbers and spaces only please!','bioship');}
+	if ($newclonename == '') {return esc_attr(__('Error: New Child Theme Name cannot be empty.','bioship'));}
+	if (!preg_match('/^[0-9a-z ]+$/i', $newclonename)) {return esc_attr(__('Error. Letters, numbers and spaces only please!','bioship'));}
 	$newcloneslug = preg_replace("/\W/", "-", strtolower($newclonename));
-	if (get_option($newcloneslug)) {return __('Aborted! Theme Settings already exist for this name!','bioship');}
+	if (get_option($newcloneslug)) {return esc_attr(__('Aborted! Theme Settings already exist for this name!','bioship'));}
 
 	// --- get/set Child Theme dirs ---
 	$themesdir = get_theme_root().DIRSEP;
@@ -276,12 +303,12 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 	$clonedir = $themesdir.$newcloneslug.DIRSEP;
 
 	// --- check Child Theme Source files ---
-	if (!is_dir($childdir)) {return __('Aborted! Source Child Theme directory does not exist!','bioship');}
+	if (!is_dir($childdir)) {return esc_attr(__('Aborted! Source Child Theme directory does not exist!','bioship'));}
 
 	// --- always avoid overwriting an existing Child Theme! ---
 	if (is_dir($clonedir)) {
-		$message = __('Aborted! Child Theme directory of that name already exists!','bioship').'<br>';
-		$message .= __('Remove or rename the existing directory and try again.','bioship').'<br>';
+		$message = esc_attr(__('Aborted! Child Theme directory of that name already exists!','bioship')).'<br>';
+		$message .= esc_attr(__('Remove or rename the existing directory and try again.','bioship')).'<br>';
 		return $message;
 	}
 
@@ -290,7 +317,7 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 	foreach ($childfiles as $childfile) {
 		$sourcefile = $childdir.$childfile;
 		$destfile = $clonedir.$childfile;
-		echo "<!-- Copying: ".$sourcefile." to ".$destfile." -->".PHP_EOL;
+		echo "<!-- Copying: ".esc_attr($sourcefile)." to ".esc_attr($destfile)." -->".PHP_EOL;
 		if (!is_dir(dirname($destfile))) {$wp_filesystem->mkdir(dirname($destfile));}
 		$filecontents = $wp_filesystem->get_contents($sourcefile);
 
@@ -344,10 +371,12 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 	update_option($newcloneslug.'_menu_locations_backup', $menulocations);
 
 	// --- set Clone Creation Output Message ---
-	$message = __('New Child Theme','bioship').' "'.$newclonename.'" '.__('cloned successfully.','bioship').'<br>';
-	$message .= __('Base Directory','bioship').': '.ABSPATH.'<br>';
-	$message .= __('Theme Subdirectory','bioship').': '.str_replace(ABSPATH, '', $clonedir).'<br>';
-	$message .= __('Activate it on your','bioship').' <a href="'.esc_url(admin_url('themes.php')).'">'.__('Themes Page','bioship').'</a>.';
+	$message = esc_attr(__('New Child Theme','bioship')).' "'.esc_attr($newclonename).'" ';
+	$message .= esc_attr(__('cloned successfully.','bioship')).'<br>';
+	$message .= esc_attr(__('Base Directory','bioship')).': '.esc_attr(ABSPATH).'<br>';
+	$message .= esc_attr(__('Theme Subdirectory','bioship')).': '.esc_attr(str_replace(ABSPATH, '', $clonedir)).'<br>';
+	$message .= esc_attr(__('Activate it on your','bioship')).' ';
+	$message .= '<a href="'.esc_url(admin_url('themes.php')).'">'.esc_attr(__('Themes Page','bioship')).'</a>.';
 
 	// --- One-Click Activation for New Cloned Theme ---
 	$wpnonce = wp_create_nonce('switch-theme_'.$newcloneslug);
@@ -355,9 +384,8 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 	$activatelink = add_query_arg('action', 'activate', $activatelink);
 	$activatelink = add_query_arg('stylesheet', $newcloneslug, $activatelink);
 	$activatelink = add_query_arg('_wpnonce', $wpnonce, $activatelink);
-
-	// --- set activation message ---
-	$message .= '... '.__('or just','bioship').' <a href="'.esc_url($activatelink).'">'.__('click here to activate it','bioship').'</a>.';
+	$message .= '... '.esc_attr(__('or just','bioship')).' ';
+	$message .= '<a href="'.esc_url($activatelink).'">'.esc_attr(__('click here to activate it','bioship')).'</a>.';
 
 	// --- theme drive integration ---
 	if (function_exists('themedrive_determine_theme')) {
@@ -365,7 +393,8 @@ if (!function_exists('bioship_admin_do_install_clone')) {
 		if (THEMETITAN) {$testdriveurl = add_query_arg('page', THEMEPREFIX.'-options', admin_url('admin.php'));}
 		else {$testdriveurl = add_query_arg('page', 'options-framework', admin_url('themes.php'));}
 		$testdriveurl = add_query_arg('theme', $newcloneslug, $testdriveurl);
-		$message .= '<br>('.__('or','bioship').' <a href="'.esc_url($testdriveurl).'">'.__('Theme Test Drive without activating','bioship').'</a>.)';
+		$message .= '<br>('.esc_attr(__('or','bioship')).' ';
+		$message .= '<a href="'.esc_url($testdriveurl).'">'.esc_attr(__('Theme Test Drive without activating','bioship')).'</a>.)';
 	}
 
 	// --- add hidden result indicator ---
@@ -421,7 +450,7 @@ if (!function_exists('bioship_admin_framework_settings_transfer')) {
 				if (file_exists($stylefile)) {$settingsfile = $stylefile;}
 				elseif (file_exists($templatefile)) {$settingsfile = $templatefile;}
 				else {
-					$message = __('Transfer Failed! Could not retrieve existing settings.','bioship');
+					$message = esc_attr(__('Transfer Failed! Could not retrieve existing settings.','bioship'));
 					global $vthemeadminmessages;
 					$vthemeadminmessages[] = $message;
 					bioship_admin_notices_enqueue(); return;
@@ -433,7 +462,7 @@ if (!function_exists('bioship_admin_framework_settings_transfer')) {
 				    $repaired = bioship_fix_serialized($filecontents);
     				$optionvalues = unserialize($repaired);
     				if (!$optionvalues) {
-    					echo __('Error! Could not unserialize settings from file!','bioship'); exit;
+    					echo esc_attr(__('Error! Could not unserialize settings from file!','bioship')); exit;
     				}
 				}
 			} else {
@@ -479,7 +508,7 @@ if (!function_exists('bioship_admin_framework_settings_transfer')) {
 				// echo serialize($optionvalues); exit; // for manual output
 
 				// --- set admin transferred message ---
-				$message = __('Transferred Existing Theme Settings to Titan Framework.','bioship');
+				$message = esc_attr(__('Transferred Existing Theme Settings to Titan Framework.','bioship'));
 				global $vthemeadminmessages;
 				$vthemeadminmessages[] = $message;
 				bioship_admin_notices_enqueue();
@@ -554,10 +583,10 @@ if (!function_exists('bioship_admin_copy_theme_settings')) {
  		if ($fromsettings) {
  			$copysettings = update_option($copytoslug, $fromsettings);
 			if ($copysettings) {
-	 		 	$message = __('Theme Settings have been copied from ','bioship').$copyfrom.' '.__('to','bioship').' '.$copyto;
-			} else {$message = __('Theme Settings failed to copy to ','bioship').$copyto;}
+	 		 	$message = esc_attr(__('Theme Settings have been copied from ','bioship')).$copyfrom.' '.esc_attr(__('to','bioship')).' '.$copyto;
+			} else {$message = esc_attr(__('Theme Settings failed to copy to ','bioship')).$copyto;}
  		} else {
- 		 	$message = __('Copy Theme Settings failed! Could not retrieve settings for ','bioship').$copyfrom;
+ 		 	$message = esc_attr(__('Copy Theme Settings failed! Could not retrieve settings for ','bioship')).$copyfrom;
  		}
 
  		// --- set theme admin messages ---
@@ -614,13 +643,20 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
 
 	// --- output javascript ---
 	echo "<script>
-	function confirmrestore() {var agree = '".$confirmrestore."'; if (confirm(agree)) {return true;} return false;}
+	function confirmrestore() {
+		var agree = '".esc_js($confirmrestore)."';
+		if (confirm(agree)) {return true;} return false;
+	}
 	function confirmimport() {
 		if (document.getElementById('textareaimport').checked == '1') {
 			if (document.getElementById('importtextarea').value == '') {return false;} }
-		var agree = '".$confirmimport."'; if (confirm(agree)) {return true;} return false;
+		var agree = '".esc_js($confirmimport)."';
+		if (confirm(agree)) {return true;} return false;
 	}
-	function confirmrevert() {var agree = '".$confirmrevert."'; if (confirm(agree)) {return true;} return false;}
+	function confirmrevert() {
+		var agree = '".esc_js($confirmrevert)."';
+		if (confirm(agree)) {return true;} return false;
+	}
 	function backupthemesettings() {document.getElementById('themetoolsframe').src = '".$adminajax."?action=backup_theme_settings';}
 	function exportthemesettings() {
 		if (document.getElementById('exportjson').checked == '1') {exportformat = 'json';}
@@ -695,14 +731,14 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
 		// wp_nonce_field('export_theme_settings_'.$vthemename);
 
 		// --- export format selection ---
-		echo "<tr><td><b>".__('Export Format','bioship').":</b></td><td width='20'></td>";
+		echo "<tr><td><b>".esc_attr(__('Export Format','bioship')).":</b></td><td width='20'></td>";
 		echo "<td width='80' align='right'><input type='radio' id='exportserial' name='exportformat' value='ser'> <b>".esc_attr(__('Serialized','bioship'))."</b></td><td width='40'></td>";
 		echo "<td width='80' align='right'><input type='radio' id='exportjson' name='exportformat' value='json'> <b>JSON</b></td><td width='40'></td>";
 		// TEMP: disabled while XML export format not working
 		// echo "<td width='80' align='right'><input type='radio' id='exportxml' name='exportformat' value='xml' checked> <b>XML</b></td><td width='40'></td>";
 
 		// --- export button ---
-		echo "<td><input type='button' class='button-primary' value='".__('Export','bioship')."' onclick='exportthemesettings();'></td>";
+		echo "<td><input type='button' class='button-primary' value='".esc_attr(__('Export','bioship'))."' onclick='exportthemesettings();'></td>";
 		echo "</tr></table></form>";
 
 	echo "</div></td></tr>";
@@ -722,7 +758,7 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
 		echo "<table><tr height='25'><td> </td></tr><tr>";
 
 			// --- select import method ---
-			echo "<td style='vertical-align:top; line-height:12px;'><b>".__('Import Method','bioship').":<b><br><br>";
+			echo "<td style='vertical-align:top; line-height:12px;'><b>".esc_attr(__('Import Method','bioship')).":<b><br><br>";
 			echo "<input type='radio' id='fileuploadimport' name='importmethod' value='fileupload' onchange='switchimportmethod(\"fileupload\")' checked> <a href='javascript:void(0);' onclick='switchimportmethod(\"fileupload\");' style='text-decoration:none;'>".esc_attr(__('File Upload','bioship'))."</a><br><br>";
 			echo "<input type='radio' id='textareaimport' name='importmethod' value='textarea' onchange='switchimportmethod(\"textarea\");'> <a href='javascript:void(0);' onclick='switchimportmethod(\"textarea\");' style='text-decoration:none;'>".esc_attr(__('Text Area','bioship'))."</a></td>";
 			echo "<td width='20'></td>";
@@ -752,9 +788,9 @@ if (!function_exists('bioship_admin_theme_tools_forms')) {
  }
 }
 
-// ---------------------------------------
-// === Backup / Restore Theme Settings ===
-// ---------------------------------------
+// ---------------------------------
+// === Backup / Restore Settings ===
+// ---------------------------------
 // Backup via URL querystring or Theme Tools UI
 // Restore via Theme Tools UI (requires nonce)
 
@@ -800,7 +836,7 @@ if (!function_exists('bioship_admin_backup_theme_settings')) {
 	update_option($backupkey, $currentsettings);
 
 	// --- set/alert admin message ---
-	$message = __('Current Theme Settings User Backup has been Created!','bioship');
+	$message = esc_attr(__('Current Theme Settings User Backup has been Created!','bioship'));
 	if (defined('DOING_AJAX') && DOING_AJAX) {
 		echo "<script>alert('".esc_js($message)."');</script>"; exit;
 	} else {
@@ -852,15 +888,15 @@ if (!function_exists('bioship_admin_restore_theme_settings')) {
 	// 1.9.5: update settings global to continue
 	global $vthemesettings;	$vthemesettings = $backupsettings;
 
-	$message = __('Theme Settings Backup Restored! (You can switch back by using this method again.)','bioship');
+	$message = esc_attr(__('Theme Settings Backup Restored! (You can switch back by using this method again.)','bioship'));
 	global $vadminmessages; $vadminmessages[] = $message;
 	bioship_admin_notices_enqueue();
  }
 }
 
-// -----------------------------------------------
-// === Export / Import / Revert Theme Settings ===
-// -----------------------------------------------
+// --------------------------------
+// === Export / Import Settings ===
+// --------------------------------
 // 1.5.0: added export / import / revert triggers
 // 1.8.0: changed prefix from muscle to bioship_admin, and restorepreimport to revert
 
@@ -989,7 +1025,6 @@ if (!function_exists('bioship_admin_import_theme_settings')) {
 
 		// --- import from textarea ---
 		$vimportdata = stripslashes(trim($_POST['importtextarea']));
-		// if (THEMEDEBUG) {echo "<!--|||".$vimportdata."|||-->";}
 		if ((substr($importdata, 0, 1) == '<') && (substr($importdata, -1, 1) == '>') ) {$format = 'xml';}
 		elseif ( (substr($importdata, 0, 1) == '{') && (substr($importdata, -1, 1) == '}') ) {$format = 'json';}
 		elseif (is_serialized($importdata)) {$format = 'serial';}
@@ -1116,10 +1151,10 @@ if (!function_exists('function bioship_admin_revert_theme_settings')) {
 	if (!empty($backupoptions) && is_array($backupoptions)) {
 		update_option(THEMEKEY, $backupoptions);
 		update_option($backupkey, $vthemesettings);
-		$message = __('Pre-Import Theme Settings have been reverted.','bioship')."<br>";
-		$message .= __('(You can switch back to the Imported Settings by using this method again.)','bioship');
+		$message = esc_attr(__('Pre-Import Theme Settings have been reverted.','bioship'))."<br>";
+		$message .= esc_attr(__('(You can switch back to the Imported Settings by using this method again.)','bioship'));
 	} else {
-		$message = __('Revert Failed! Pre-Import Theme Settings are empty or corrupt!','bioship');
+		$message = esc_attr(__('Revert Failed! Pre-Import Theme Settings are empty or corrupt!','bioship'));
 	}
 
 	// 2.0.5: enqueue admin notice message
@@ -1232,7 +1267,7 @@ if (!function_exists('bioship_admin_verify_file_upload')) {
 				array('xml' => 'text/xml', 'json' => 'text/json', 'ser' => 'text/plain'),
 				true
 			)) {
-				echo "<!-- File Info: ".print_r($finfo,true)." -->";
+				echo "<!-- File Info: ".esc_attr(print_r($finfo,true))." -->";
 				// echo "<!-- Tmp Name: ".esc_attr($finfo->file[$_FILES[$inputkey]['tmp_name']))." -->";
 				throw new RuntimeException(__('Invalid file format.','bioship'));
 			}

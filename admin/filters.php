@@ -1,16 +1,10 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * === Custom Value Filters ===
- * - for advanced customizing -
- * - and conditional overrides -
- *
-**/
+// ==============================
+// ====== BioShip Filters =======
+// == for advanced customizing ==
+// == and conditional overrides =
+// ==============================
 
 // Extensive List and EXAMPLES of all known available value filters can be found here.
 // (*except* for element position filtering - for that see hooks.php list instead.)
@@ -32,11 +26,17 @@
 // them there. Then remove or rename this file to .txt in your Child Theme directory
 // (cleaner) so it is not processed (it does nothing in this original form anyway.)
 
-// Note: Examples here are *NOT* Pluggable:
+// Note: The examples here are *NOT* Pluggable:
 // So you know if there is a possible duplicate filter, these examples have NOT been
 // made pluggable. Declare them only once or if needs be change the function name.
 
 // LEGEND: commented EXAMPLE CODE marked with hashes #, commented INFO marked with slashes //
+
+
+// Development TODOS
+// -----------------
+// - add missing filter examples
+// ? cleanup all filter examples
 
 
 // ====================
@@ -796,8 +796,8 @@ function muscle_list_thumbnail_align($valign) {
 // -------------------------
 // note: also used for page featured images
 // filter exists at priority 1 for theme options perpost metabox override
-add_filter('skeleton_post_thumbnail_size','muscle_post_thumbnail_size',10);
-function muscle_post_thumbnail_size($vsize) {
+add_filter('skeleton_post_thumbnail_size','muscle_post_thumbnail_size',10,2);
+function muscle_post_thumbnail_size($vsize, $vpostid) {
 	// eg. Set to full size for the 'images' category
 	# if (is_category('images')) {$vsize = 'full';}
 	// eg. Set to full size for custom post type of 'image'

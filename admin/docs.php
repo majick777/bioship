@@ -6,19 +6,22 @@
 
 // Load this file in your browser for documentation index.
 
-define('THEMEDOCDEBUG',false); // define('THEMEDOCDEBUG',true);
+// --- set documentation debug mode ---
+$vthemedocdebug = false; // $vthemedocdebug = true;
+define('THEMEDOCDEBUG', $vthemedocdebug);
 
+// --- maybe define Framework URL constants ---
 if (!defined('THEMEHOMEURL')) {define('THEMEHOMEURL', 'http://bioship.space');}
 if (!defined('THEMESUPPORT')) {define('THEMESUPPORT', 'http://wordquest.org');}
 
 
-// --------------
-// DOCS TODO LIST
-// --------------
+// Documentation TODOs
+// -------------------
+// - add documentation file structure
 // - Theme Tools backup/restore/import/export notes!
 // Frameworks
-// - add more extensive information on Hybrid Core
-// - add more extensive information on Foundation here
+// ? add more extensive information on Hybrid Core
+// ? add more extensive information on Foundation
 // Metabox
 // - double-check display override reference completeness
 // Sidebar Guide
@@ -29,11 +32,11 @@ if (!defined('THEMESUPPORT')) {define('THEMESUPPORT', 'http://wordquest.org');}
 // - add Page Elements for styling reference
 // - finish banner position notes
 // Theme Values
-// - vthemedisplay and vthemeoverride globals
+// - add vthemedisplay and vthemeoverride globals
 // Debugging
 // - better debug to file options and explanation
 // - better theme tracer explanation
-// --------------
+// -------------------
 
 
 // ----------------------------
@@ -104,6 +107,10 @@ function bioship_docs_index($wrap) {
 
 	// 2.1.1: use documentation links and titles globals
 	global $vthemedoclinks, $vthemedoctitles;
+
+	// 2.1.4: fix for documentation index page links
+	if (!isset($vthemedoclinks)) {$vthemedoclinks = bioship_docs_links($wrap);}
+
 	$html = '';
 	if ($wrap) {$html = bioship_docs_wrap_open('index'); $html .= '<br><h2>BioShip Documentation</h2>';}
 
@@ -641,6 +648,7 @@ function bioship_docs_option_list($wrap) {
 		if (!function_exists('__')) {function __($s, $d = 'bioship', $a = 'bioship') {return $s;} }
 		// 2.0.8: fix to missing prefixed function
 		if (!function_exists('bioship_apply_filters')) {function bioship_apply_filters($f,$v,$e=null) {return $v;} }
+		if (!file_exists(dirname(dirname(__FILE__)).'/options.php')) {echo dirname(dirname(__FILE__)).'/options.php';}
 		include(dirname(dirname(__FILE__)).'/options.php');
 	}
 

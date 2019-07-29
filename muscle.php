@@ -1,59 +1,110 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * === MUSCLE  FUNCTIONS ===
- * ...Extending WordPress...
- *
-**/
+// =========================
+// ==== BioShip Muscle =====
+// == Extending WordPress ==
+// =========================
 
-if (!function_exists('add_action')) {exit;}
+// --- no direct load ---
+if (!defined('ABSPATH')) {exit;}
 
-// ============================
+// ----------------------------
 // === muscle.php Structure ===
-// ============================
-//
+// ----------------------------
 // === Metabox Overrides ===
-// --- Get PerPost Display Overrides
-// --- Get PerPost Layout Overrides
-// --- Output PerPost Override Styles
-// --- PerPost Thumbnail Size Filter
-// --- Get Content Filter Overrides
-// --- Maybe Remove Content Filters
+// - Get PerPost Display Overrides
+// - Get PerPost Layout Overrides
+// - Output PerPost Override Styles
+// - PerPost Thumbnail Size Filter
+// - Get Content Filter Overrides
+// - Maybe Remove Content Filters
 //
 // === Muscle Settings ===
-// --- MISC
-// ---- Default Gravatar
-// ---- Classic Text Widget
-// ---- Discreet Text Widget
-// ---- Video Background
-// --- Scripts
-// --- Extras
-// --- Thumbnails
-// --- Reading
-// --- Excerpts
-// --- Read More
-// --- Writing
-// --- RSS
-// --- Admin
+// == Misc ==
+// - Default Gravatar
+// - Classic Text Widget
+// - Discreet Text Widget
+// - Video Background
+// == Scripts ==
+// - Internet Explorer
+// - PrefixFree
+// - NWWatcher
+// - NWEvents
+// - Media Queries
+// - FastClick
+// - MouseWheel
+// - CSS.Supports
+// - MatchMedia
+// - Modernizr
+// == Extras ==
+// - Smooth Scrolling
+// - MatchHeight
+// - StickyKit
+// - FitVids
+// - ScrollToFixed
+// - Logo Resize
+// - Site Text Resize
+// - Header Resize
+// - Script Variables
+// == Thumbnails ==
+// - JPEG Quality Filter
+// - CPT Thumbnail Size Overrides
+// - Fun with Fading Thumbnails
+// == Reading ==
+// - Include/Exclude Blog Categories
+// - Search Results per Page
+// - Make Custom Post Types Searchable
+// - Jetpack Infinite Scroll Support
+// == Excerpts ==
+// - Add Excerpt Support to Pages
+// - Enable Shortcodes in Excerpts
+// - Excerpt with Shortcodes
+// - Filter Excerpt Length
+// == Read More ==
+// - Read More Link
+// - Read More Wrapper
+// - Remove More Jump Link
+// = Writing =
+// - WP Subtitle CPT Support
+// == RSS ==
+// - Automatic Feed Links
+// - RSS Publish Delay
+// - Set Post Types in Feed
+// - Full Content Page Feeds
+// - Full Content Page Feed Filter
+// == User Admin ==
+// - Add Theme Options to Admin Bar
+// - Replace Welcome in Admin Bar
+// - Remove Update Notice
+// - Stop New User Notifications
+// - Disable Self Pings
+// - Cleaner Admin Bar
+// == Login ==
+// - Login Header URL
+// - Login Header Title
+// - Login Page Logo
 //
 // === Integrations ===
-// --- WooCommerce
-// --- Open Graph Protocol Framework
-// --- Hybrid Hook
-// --- Foundation
-// --- Theme My Login
-// --- Theme Switching
+// - WooCommerce
+// - Open Graph Protocol Framework
+// - Hybrid Hook
+// - Foundation
+// - Theme My Login
+// - Theme Switching
+// ----------------------------
 
 // --- Integration Notes ---
-// - AJAX Load More (see /templates/ajax-load-more/)
+// - AJAX Load More Templates (/templates/ajax-load-more/)
+// - Theme My Login Templates (/templates/theme-my-login/)
 // - Theme Test Drive (throughout theme)
 // - WP Subtitle (see skeleton.php)
 // - WP PageNavi (see skeleton.php)
+
+
+// Development TODOs
+// -----------------
+// - check/fix admin list thumbnail display
+// - retest Theme Switching functionality
 
 
 // -------------------------
@@ -455,11 +506,11 @@ if (!class_exists('WP_Widget_Classic_Text') && !THEMEWPORG) {
 	public function __construct() {
 		$widget_ops = array(
 			'classname' => 'widget_text',
-			'description' => __('Arbitrary text or HTML.','bioship'),
+			'description' => esc_attr(__('Arbitrary text or HTML.','bioship')),
 			'customize_selective_refresh' => true,
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
-		parent::__construct('text', __('Text','bioship'), $widget_ops, $control_ops);
+		parent::__construct('text', esc_attr(__('Text','bioship')), $widget_ops, $control_ops);
 	}
 
 	public function widget($args, $instance ){
@@ -467,10 +518,10 @@ if (!class_exists('WP_Widget_Classic_Text') && !THEMEWPORG) {
 		$widget_text = !empty($instance['text']) ? $instance['text'] : '';
 		$text = apply_filters('widget_text', $widget_text, $instance, $this);
 		echo $args['before_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
-		if (!empty($title)) {echo $args['before_title'].$title.$args['after_title'];}
+		if (!empty($title)) {echo $args['before_title'].$title.$args['after_title'];} // phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo '<div class="textwidget">';
 			if (!empty($instance['filter'])) {$text = wpautop($text);}
-			echo $text; // // phpcs:ignore WordPress.Security.OutputNotEscapedShortEcho
+			echo $text; // phpcs:ignore WordPress.Security.OutputNotEscapedShortEcho
 		echo '</div>';
 		echo $args['after_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
 	}
@@ -517,11 +568,14 @@ if (!function_exists('bioship_muscle_discreet_text_widget')) {
 	 // 2.0.8: extend classic text widget class
 	 class DiscreetTextWidget extends WP_Widget_Classic_Text {
 		function __construct() {
-			$widgetops = array('classname' => 'discreet_text_widget', 'description' => __('Arbitrary text or HTML, only shown if not empty.','bioship'));
+			$widgetops = array(
+				'classname' => 'discreet_text_widget',
+				'description' => esc_attr(__('Arbitrary text or HTML, only shown if not empty.','bioship'))
+			);
 			$controlops = array('width' => 400, 'height' => 350);
 			// 1.9.8: fix to deprecated class construction method
 			// 2.0.7: fix to incorrect text domain (csidebars)
-			call_user_func(array(get_parent_class(get_parent_class($this)), '__construct'), 'discrete_text', __('Discreet Text','bioship'), $widgetops, $controlops);
+			call_user_func(array(get_parent_class(get_parent_class($this)), '__construct'), 'discrete_text', esc_attr(__('Discreet Text','bioship')), $widgetops, $controlops);
 		}
 		function widget($args, $instance) {
 			// 1.9.8: removed usage of extract here
@@ -961,9 +1015,9 @@ if (!function_exists('bioship_muscle_load_csssupports')) {
  }
 }
 
-// -------------
-// MatchMedia.js
-// -------------
+// ----------
+// MatchMedia
+// ----------
 // 2.0.1: check themesettings internally to allow filtering
 if (!function_exists('bioship_muscle_match_media_script')) {
 
@@ -1104,6 +1158,7 @@ if (!function_exists('bioship_muscle_load_matchheight')) {
  }
 }
 
+// ---------------
 // Load Sticky Kit
 // ---------------
 // 1.5.0: Added Sticky Kit Loading
@@ -1333,7 +1388,7 @@ if (!function_exists('bioship_muscle_output_script_vars')) {
  	// 2.1.3: use global settings object
  	echo "<script>var bioship = {}; ";
 	foreach ($scriptvars as $scriptvar) {
-		echo $scriptvar; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo $scriptvar; // phpcs:ignore WordPress.Security.OutputNotEscaped,// phpcs:ignore WordPress.Security.OutputNotEscapedShortEcho
 	}
  	echo "</script>";
  }
@@ -1366,9 +1421,9 @@ if (!function_exists('bioship_muscle_jpeg_quality')) {
  }
 }
 
-// ------------------------------------------------
-// Allow Thumbnail Size override on upload for CPTs
-// ------------------------------------------------
+// ----------------------------
+// CPT Thumbnail Size Overrides
+// ----------------------------
 // (note: post type support for the CPT must be active via theme options)
 // each filter must be explicity set, ie. muscle_post_type_thumbsize_{size}
 // ref: http://wordpress.stackexchange.com/questions/6103/change-set-post-thumbnail-size-according-to-post-type-admin-page
@@ -1517,9 +1572,9 @@ if (!function_exists('bioship_muscle_select_home_categories')) {
  }
 }
 
-// ---------------------------------
-// Number of Search Results per Page
-// ---------------------------------
+// -----------------------
+// Search Results per Page
+// -----------------------
 // 2.0.1: filter themesettings internally
 if (!function_exists('bioship_muscle_search_results_per_page')) {
 
@@ -1732,6 +1787,11 @@ if (!function_exists('bioship_muscle_excerpt_length')) {
 	}
 }
 
+
+// -----------------
+// === Read More ===
+// -----------------
+
 // --------------
 // Read More Link
 // --------------
@@ -1775,7 +1835,7 @@ if (!function_exists('bioship_muscle_auto_excerpt_more')) {
 	if (function_exists('bioship_muscle_continue_reading_link')) {
 		$readmore = '<div class="readmore">'.$readmorebefore.bioship_muscle_continue_reading_link().'</div>';
 	} else {
-		$default = ' <a href="'.get_permalink().'">'.__('Continue reading','bioship').' <span class="meta-nav">&rarr;</span></a>';
+		$default = ' <a href="'.get_permalink().'">'.esc_attr(__('Continue reading','bioship')).' <span class="meta-nav">&rarr;</span></a>';
 		// 2.0.9: added default continue reading link back into readmore div
 		$readmore = '<div class="readmore">'.$readmorebefore.$default.'</div>';
 	}
@@ -1783,9 +1843,9 @@ if (!function_exists('bioship_muscle_auto_excerpt_more')) {
  }
 }
 
-// -----------------------
-// Remove More 'Jump' Link
-// -----------------------
+// ---------------------
+// Remove More Jump Link
+// ---------------------
 // TODO: maybe add a theme option for removing jump link?
 if (!function_exists( 'bioship_muscle_remove_more_jump_link')) {
 
@@ -1923,9 +1983,9 @@ if (!function_exists('bioship_muscle_custom_feed_request')) {
  }
 }
 
-// -------------------------------
-// Full Content RSS Feed for Pages
-// -------------------------------
+// -----------------------
+// Full Content Page Feeds
+// -----------------------
 // ref: http://wordpress.stackexchange.com/a/227455/76440
 // 1.8.5: added this option
 // 2.0.0: fix to query object typo
@@ -1962,9 +2022,9 @@ if (!function_exists('bioship_muscle_rss_page_feed_full_content')) {
  }
 }
 
-// --------------------------------
-// RSS Full Page Feed Option Filter
-// --------------------------------
+// -----------------------------
+// Full Content Page Feed Filter
+// -----------------------------
 // 2.0.0: fix to typo in funcname
 if (!function_exists('bioship_muscle_page_rss_excerpt_option')) {
 
@@ -2006,172 +2066,15 @@ if (!function_exists('bioship_muscle_page_rss_excerpt_option')) {
 // }
 
 
-// -----------------------
-// Load the Dashboard Feed
-// -----------------------
-if (!function_exists('bioship_muscle_add_bioship_dashboard_feed_widget')) {
-
-	$requesturi = $_SERVER['REQUEST_URI'];
-	// 2.0.1: fix for network string match typo
-	if ( (preg_match('|index.php|i', $requesturi))
-	  || (substr($requesturi, -(strlen('/wp-admin/'))) == '/wp-admin/')
-	  || (substr($requesturi, -(strlen('/wp-admin/network/'))) == '/wp-admin/network/') ) {
-		add_action('wp_dashboard_setup', 'bioship_muscle_add_bioship_dashboard_feed_widget');
-	}
-
-	function bioship_muscle_add_bioship_dashboard_feed_widget() {
-		if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
-		// 2.0.9: do not add the dashboard feed for WordPress.Org version
-		if (THEMEWPORG) {return;}
-
-		// --- check permissions ---
-		if ( (current_user_can('manage_options')) || (current_user_can('update_themes'))
-		  || (current_user_can('edit_theme_options')) ) {
-
-			// --- load dashboard feed widget ---
-			// 1.9.9: fix to undefined index warning
-			global $wp_meta_boxes; $feedloaded = false;
-			foreach (array_keys($wp_meta_boxes['dashboard']['normal']['core']) as $name) {
-				if ($name == 'bioship') {$feedloaded = true;}
-			}
-			if (!$feedloaded) {
-				wp_add_dashboard_widget('bioship', __('BioShip News','bioship'), 'bioship_muscle_bioship_dashboard_feed_widget');
-			}
-		}
-	}
-}
-
-// -----------------------------
-// BioShip Dashboard Feed Widget
-// -----------------------------
-// TODO: move this to admin.php
-// 1.9.5: added displayupdates argument
-// 2.0.0: added displaylinks argument
-if (!function_exists('bioship_muscle_bioship_dashboard_feed_widget')) {
- function bioship_muscle_bioship_dashboard_feed_widget($displayupdates=true, $displaylinks=false) {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemedirs;
-
-	// Display Updates Available
-	// -------------------------
-	if (!function_exists('admin_theme_updates_available')) {
-		// 2.0.0: fix to file hierarchy search dir
-		$admin = bioship_file_hierarchy('file', 'admin.php', $vthemedirs['admin']);
-		include_once($admin);
-	}
-	if ($displayupdates) {
-		echo admin_theme_updates_available(); // phpcs:ignore WordPress.Security.OutputNotEscaped
-	}
-
-	// Load the Update News Feed
-	// -------------------------
-	$baseurl = THEMEHOMEURL;
-	$rssurl = $baseurl."/feed/";
-
-	// --- maybe get feed transient ---
-	// 1.8.0: set transient for daily feed update only
-	// 2.0.0: clear feed transient for debugging
-	delete_transient('bioship_feed');
-	if (THEMEDEBUG) {$feed = ''; delete_transient('bioship_feed');}
-	else {$feed = trim(get_transient('bioship_feed'));}
-
-	// --- fetch feed ---
-	if (!$feed || ($feed == '')) {
-		$rssfeed = fetch_feed($rssurl); $feeditems = 4;
-		$feed = bioship_muscle_process_rss_feed($rssfeed, $feeditems);
-		if ($feed != '') {set_transient('bioship_feed', $feed, (24*60*60));}
-	}
-
-	// --- feed link styles ---
-	// 1.8.0: set link hover class
-	echo "<style>.themefeedlink {text-decoration:none;} .themefeedlink:hover {text-decoration:underline;}</style>";
-
-	// --- maybe display links ---
-	// 2.0.0: add documentation, development and extensions links
-	if ($displaylinks) {
-		echo "<center><b><a href='".esc_url(THEMEHOMEURL.'/documentation/')."' class='themefeedlink' target=_blank>".esc_attr(__('Documentation','bioship'))."</a></b> | ";
-		echo "<b><a href='".esc_url(THEMEHOMEURL.'/development/')."' class='themefeedlink' target=_blank>".esc_attr(__('Development','bioship'))."</a></b> | ";
-		echo "<b><a href='".esc_url(THEMEHOMEURL.'/extensions/')."' class='themefeedlink' target=_blank>".esc_attr(__('Extensions','bioship'))."</a></b></center><br>";
-	}
-
-	// --- output feed ---
-	// 1.8.5: fix to typo on close div ruining admin page
-	// 2.0.0: re-arrange display output and styles
-	echo "<div id='bioshipfeed'>";
-	echo "<div style='float:right;'>&rarr;<a href='".esc_url($baseurl.'/category/news/')."' class='themefeedlink' target=_blank> ".esc_attr(__('More','bioship'))."...</a></div>";
-	if ($feed != '') {echo $feed;} else {echo esc_attr(__('Feed currently unavailable.','bioship')); delete_transient('bioship_feed');}
-	echo "</div>";
-
- }
-}
-
-// ----------------
-// Process RSS Feed
-// ----------------
-if (!function_exists('bioship_muscle_process_rss_feed')) {
- function bioship_muscle_process_rss_feed($rss, $feeditems) {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	// --- bug out on error ---
-	if (is_wp_error($rss)) {return '';}
-
-	// --- get RSS items ---
-	$maxitems = $rss->get_item_quantity($feeditems);
-	$rssitems = $rss->get_items(0, $maxitems);
-
-	// --- create item list ---
-	// 1.8.0: fix to undefined index warning
-	$processed = '';
-	if (count($rssitems) > 0) {
-		$processed = "<ul style='list-style:none; margin:0px; text-align:left;'>";
-		foreach ($rssitems as $item ) {
-			$processed .= "<li>&rarr; <a href='".esc_url($item->get_permalink())."' target='_blank' ";
-			$processed .= "title='Posted ".$item->get_date('j F Y | g:i a')."' class='themefeedlink'>";
-			$processed .= esc_html($item->get_title())."</a></li>";
-		}
-		$processed .= "</ul>";
-	}
-	return $processed;
- }
-}
-
-
 // -------------
 // === Admin ===
 // -------------
 
-// Add Post Thumbnail Column to Post/Page list
-// -------------------------------------------
-// TODO: fix unworking admin thumbnail column display
-// 2.0.5: check setting internally to allow filtering
-if (!function_exists('bioship_muscle_admin_post_thumbnail_column')) {
-
- // add_filter('manage_posts_columns', 'bioship_muscle_admin_post_thumbnail_column', 5);
-
- function bioship_muscle_admin_post_thumbnail_column($cols){
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
-	// TODO: Add a filter for thumbnail column use with other CPTs?
-	// ...which would allow for post or page selection also...
-	$thumbcols = $vthemesettings['adminthumbnailcolumn'];
-	$thumbcols = bioship_apply_filters('muscle_post_thumbnail_column', $thumbcols);
-	if (!$thumbcols) {return $cols;}
-
-	add_action('manage_posts_custom_column', 'bioship_muscle_display_post_thumbnail_column', 5, 2);
-	// TODO: check featured image support for pages here ?
-	add_action('manage_pages_custom_column', 'bioship_muscle_display_post_thumbnail_column', 5, 2);
-
-	$cols['post_thumb'] = __('Thumbnail','bioship');
-	return $cols;
- }
-}
-
-// ---------------------------------------
-// Add Theme Options to the Admin Bar menu
-// ---------------------------------------
+// ------------------------------
+// Add Theme Options to Admin Bar
+// ------------------------------
 // 1.8.5: moved here from muscle.php, option changed to filter
-// 2.1.3: moved back to muscle.php (to work on frontend)
+// 2.1.3: moved back to muscle.php (so it works on frontend)
 if (!function_exists('bioship_muscle_adminbar_theme_options')) {
 
  // 2.0.5: check filter inside function for consistency
@@ -2223,16 +2126,16 @@ if (!function_exists('bioship_muscle_adminbar_theme_options')) {
 	} else {$iconspan = '<span class="ab-icon"></span>';}
 
 	// --- add admin bar link and title ---
-	$title = __('Theme Options','bioship');
+	$title = esc_attr(__('Theme Options','bioship'));
 	$title = bioship_apply_filters('admin_adminbar_theme_options_title', $title);
 	$menu = array('id' => 'theme-options', 'title' => $iconspan.$title, 'href' => $themelink);
 	$wp_admin_bar->add_menu($menu);
  }
 }
 
-// --------------------------------
-// Replace the Welcome in Admin bar
-// --------------------------------
+// ----------------------------
+// Replace Welcome in Admin Bar
+// ----------------------------
 // 1.8.5: moved here from muscle.php
 // 2.1.3: moved back to muscle.php (to work on frontend)
 if (!function_exists('bioship_muscle_adminbar_replace_howdy')) {
@@ -2254,21 +2157,10 @@ if (!function_exists('bioship_muscle_adminbar_replace_howdy')) {
 
 	// --- filter the new node title ---
 	// 1.5.5: fixed translation for Theme Check
-	$newtitle = __('Logged in as', 'bioship').' '.$username;
+	$newtitle = esc_attr(__('Logged in as', 'bioship')).' '.$username;
 	$newtitle = bioship_apply_filters('admin_adminbar_howdy_title', $newtitle);
 
 	$wp_admin_bar->add_node(array('id' => 'my-account', 'title' => $newtitle));
- }
-}
-
-// -------------------------------
-// Post Thumbnail Display Callback
-// -------------------------------
-if (!function_exists('bioship_muscle_display_post_thumbnail_column')) {
- function bioship_muscle_display_post_thumbnail_column($col, $id) {
-	if ($col == 'post_thumb') {
-		echo the_post_thumbnail('admin-list-thumb'); // phpcs:ignore WordPress.Security.OutputNotEscaped
-	}
  }
 }
 
@@ -2293,7 +2185,7 @@ if (!function_exists('bioship_muscle_all_options_link')) {
 
 	if ($addlink == '1') {
 		// 2.0.7: changed to use add_theme_page instead of add_options_page
-		add_theme_page(__('All Options','bioship'), __('All Options','bioship'), 'manage_options', 'options.php');
+		add_theme_page(esc_attr(__('All Options','bioship')), esc_attr(__('All Options','bioship')), 'manage_options', 'options.php');
 
 		// 2.0.7: then shift from themes to settings menu
 		// 2.1.0: check submenu key exists before looping
@@ -2432,69 +2324,10 @@ if (!function_exists('bioship_muscle_cleaner_adminbar')) {
  }
 }
 
-// -----------------------------------------
-// Include CPTs in the Dashboard 'Right Now'
-// -----------------------------------------
-// TODO: move to admin.php ?
-// 2.0.1: check themesettings internally to allow filtering
-if (!function_exists('bioship_muscle_right_now_content_table_end')) {
 
- add_action('right_now_content_table_end','bioship_muscle_right_now_content_table_end');
-
- function bioship_muscle_right_now_content_table_end() {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-	global $vthemesettings;
-
-	// --- check settings ---
-	if (isset($vthemesettings['cptsrightnow'])) {$modify = $vthemesettings['cptsrightnow'];} else {$modify = false;}
-	$modify = bioship_apply_filters('muscle_cpts_right_now', $modify);
-	if ($modify != '1') {return;}
-
-	// --- custom post type list ---
-	$args = array('public' => true, '_builtin' => false);
-	$output = 'object'; $operator = 'and';
-	$posttypes = get_post_types($args, $output, $operator);
-	foreach($posttypes as $posttype) {
-		$num_posts = wp_count_posts($posttype->name);
-		$num = number_format_i18n($num_posts->publish);
-		// 2.0.7: added missing text domain
-		$singular = $posttype->labels->singular_name;
-		$label = $posttype->labels->name;
-		$postcount = intval($num_posts->publish);
-		// 2.1.0: changed this as cannot translate variables
-		// $text = _n($singular, $label, $postcount, 'bioship');
-		if ($postcount == 1) {$text = $postcount.' '.$singular;}
-		else {$text = $postcount.' '.$label;}
-		if (current_user_can('edit_posts')) {
-			$num = "<a href='edit.php?post_type=".esc_attr($posttype->name)."'>".esc_attr($num)."</a>";
-			$text = "<a href='edit.php?post_type=".esc_attr($posttype->name)."'>".esc_attr($text)."</a>";
-		}
-		echo '<tr><td class="first num b b-'.esc_attr($posttype->name).'">'.esc_attr($num).'</td>';
-		echo '<td class="text t '.esc_attr($posttype->name).'">'.esc_attr($text).'</td></tr>';
-	}
-
-	// --- tag terms list ---
-	$taxonomies = get_taxonomies($args, $output, $operator);
-	foreach ($taxonomies as $taxonomy) {
-		$num_terms  = wp_count_terms($taxonomy->name);
-		$num = number_format_i18n($num_terms);
-		// 2.0.7: added missing text domain
-		$singular = $taxonomy->labels->singular_name;
-		$label = $taxonomy->labels->name;
-		$termcount = intval($num_terms);
-		// 2.1.0: changed as cannot translate variables
-		// $text = _n($singular, $label, $termcount, 'bioship');
-		if ($termcount == 1) {$text = $termcount.' '.$singular;}
-		else {$text = $termcount.' '.$label;}
-		if (current_user_can('manage_categories')) {
-			$num = "<a href='edit-tags.php?taxonomy=".esc_attr($taxonomy->name)."'>".esc_attr($num)."</a>";
-			$text = "<a href='edit-tags.php?taxonomy=".esc_attr($taxonomy->name)."'>".esc_attr($text)."</a>";
-		}
-		echo '<tr><td class="first b b-'.sec_attr($taxonomy->name).'">'.esc_attr($num).'</td>';
-		echo '<td class="t '.esc_attr($taxonomy->name).'">'.esc_attr($text).'</td></tr>';
-	}
- }
-}
+// -------------
+// === Login ===
+// -------------
 
 // ----------------
 // Login Header URL
@@ -2681,7 +2514,8 @@ if (!function_exists('bioship_muscle_woocommerce_template')) {
 		$newpath = bioship_apply_filters('skeleton_woocommerce_template_directory', 'templates/woocommerce');
 		$newtemplate = bioship_file_hierarchy('file', $template_name, array($newpath));
 
-		// write debug info (kept here as useful for finding templates)
+		// -- write debug info ---
+		// (not used but kept here as useful for finding templates)
 		// ob_start();
 		// echo "new template: "; print_r($newtemplate); echo PHP_EOL;
 		// echo "located: "; print_r($located); echo PHP_EOL;
@@ -2957,7 +2791,7 @@ if ($loadhybridhook == '1') {
 	$hybridhook = bioship_file_hierarchy('file', 'hybrid-hook.php', $hybridhookdirs);
 	if ($hybridhook) {
 		include($hybridhook);
-		if (THEMEDEBUG) {echo "<!-- Hybrid Hook Loaded -->".PHP_EOL;}
+		if (THEMEDEBUG) {bioship_debug("Hybrid Hook Loaded");}
 
 		// --- load setup now ---
 		// (as we have missed the plugins_loaded hook)
@@ -2983,7 +2817,7 @@ if ($loadhybridhook == '1') {
 			// 1.9.0: hooks now loaded by default in functions.php
 			global $vthemehooks;
 
-			if (THEMEDEBUG) {echo "<!-- Hybrid Hooks: ".esc_attr(print_r($vthemehooks['hybrid'],true))." -->";}
+			if (THEMEDEBUG) {bioship_debug("Hybrid Hooks", $vthemehooks['hybrid']);}
 
 			// 1.9.0: handle admin metabox defaults
 			if (is_admin()) {
@@ -3005,7 +2839,7 @@ if ($loadhybridhook == '1') {
 					update_user_option($userid, $optionkey, $closedboxes, true);
 				}
 
-				if (THEMEDEBUG) {echo "<!-- Closed Boxes: ".esc_attr(print_r($closedboxes,true))." -->";}
+				if (THEMEDEBUG) {bioship_debug("Closed Boxes", $closedboxes);}
 			}
 
 			return $vthemehooks['hybrid'];
@@ -3232,9 +3066,9 @@ if (!function_exists('bioship_muscle_login_form_image')) {
 }
 
 
-// ----------------------
-// Theme Switch Admin Fix
-// ----------------------
+// ===============
+// Theme Switching
+// ===============
 // TODO: retest this Theme Switching functionality
 
 // for Theme Test Drive and JonRadio Multiple Themes...
@@ -3324,6 +3158,8 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 
 			// set the referer path for URL matching
 			$referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
+			// 2.1.4: fix for undefined variable warning
+			$matchedurlpath = false;
 
 			// set some globals for the AJAX theme options
 			global $ajax_stylesheet, $ajax_template;
@@ -3503,9 +3339,9 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 
 				// --- maybe output debug info ---
 				if ($debug) {
-					echo "<!-- COOKIE DATA: "; print_r($cookiedata); echo " -->";
-					if ($datamethod != 'cookie') {echo "<!-- USERMETA DATA: "; print_r($usermetadata); echo " -->";}
-					echo "<!-- TRANSIENT DATA: ".$transientdebug." -->";
+					echo "<!-- COOKIE DATA: ".esc_attr(print_r($cookiedata,true))." -->";
+					if ($datamethod != 'cookie') {echo "<!-- USERMETA DATA: ".print_r($usermetadata,true)/" -->";}
+					echo "<!-- TRANSIENT DATA: ".esc_attr($transientdebug)." -->";
 				}
 			}
 
@@ -3528,7 +3364,7 @@ if (!function_exists('bioship_muscle_theme_switch_admin_fix')) {
 			// --- maybe output debug info ---
 			if (!is_admin() && $debug) {
 				echo "<!-- REQUEST URL: ".esc_url($requesturl)." -->";
-				echo "<!-- STORED URLS: ".esc_attr(print_r($requesturls))." -->";
+				echo "<!-- STORED URLS: ".esc_attr(print_r($requesturls,true))." -->";
 			}
 		}
 

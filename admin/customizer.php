@@ -1,16 +1,45 @@
 <?php
 
-if (!function_exists('add_action')) {exit;}
+// ==========================
+// === BioShip Customizer ===
+// ==========================
 
-// ======================================
-// === BioShip Customizer Integration ===
-// ======================================
+// --- no direct load ---
+if (!defined('ABSPATH')) {exit;}
 
-// TODO: popup thickbox customizer welcome message for new activations (where welcome=true)
+// --------------------------------
+// === customizer.php Structure ===
+// --------------------------------
+// === Customizer Load ===
+// - Control References
+// - Register Control Classes
+// - Kirki Library Loader
+// - Update Serialized Option
+// === Custom Controls ===
+// - Add Info Custom Control
+// - Font Customizer Control Script
+// - Add Multicheck Custom Control
+// - Multicheck Customizer Control Script
+// === Register Customizer Controls ===
+// === Customize Customizer ===
+// - Change the Customizer Description
+// - Main Options Panel Display Fix
+// - Callbacks for Customizer Live Preview
+// === Customizer Helpers ===
+// - Default Sanitization Fallbacks
+// - Translate Kirki Labels
+// - Set Control Types (Kirki 2)
+// --------------------------------
+
+// Development TODOs
+// -----------------
+// ? popup thickbox customizer welcome message for new activations (where welcome=true)
+// ? maybe synchronize custom CSS control with existing theme option ?
+
 
 // Development Note: Due to the difficulty in implementing the complex WordPress Customizer API,
-// feature requests and fixes for Customizer *Live Preview* will receive a *very low* priority.
-// On the other hand, options that are not saving properly however will receive a *high* priority.
+// feature requests and fixes for Customizer *Live Preview* will receive a *low* priority.
+// On the other hand, options that are not saving properly will receive a *high* priority.
 
 // That said, after much ado and crazy hackiness that has to be seen to be believed,  most of the
 // live preview options are working well at the time of writing this (v1.8.5) - fingers crossed.
@@ -36,6 +65,10 @@ if (!function_exists('add_action')) {exit;}
 // Note: Selective Refresh
 // https://make.wordpress.org/core/2016/02/16/selective-refresh-in-the-customizer/
 
+
+// -----------------------
+// === Customizer Load ===
+// -----------------------
 
 // ------------------
 // Control References
@@ -123,9 +156,9 @@ if (!function_exists('add_action')) {exit;}
 // also: http://wordpress.stackexchange.com/questions/130467/multiple-inputs-in-a-customizer-control
 
 
-// --------------------------------
-// === Register Control Classes ===
-// --------------------------------
+// ------------------------
+// Register Control Classes
+// ------------------------
 if (!function_exists('bioship_customizer_register_controls')) {
  function bioship_customizer_register_controls($wp_customize) {
 	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE,func_get_args());}
@@ -208,9 +241,9 @@ if (!function_exists('bioship_customizer_register_controls')) {
  }
 }
 
-// ----------------------------
-// === Kirki Library Loader ===
-// ----------------------------
+// --------------------
+// Kirki Library Loader
+// --------------------
 // ref: https://kirki.org/docs/advanced/integration.html
 // 2.0.9: separated loader for Kirki
 if (!function_exists('bioship_kirki_loader')) {
@@ -236,7 +269,6 @@ if (!function_exists('bioship_kirki_loader')) {
 
 		// --- find and initialize Kirki ---
 		$kirkiurlpath = str_replace('kirki.php', '', $kirki['url']);
-		echo "***".$kirkiurlpath."***";
 		define('THEMEKIRKIURL', $kirkiurlpath);
 		define('THEMEKIRKI', true);
 		include($kirki['file']);
@@ -388,6 +420,90 @@ if (!function_exists('bioship_kirki_loader')) {
  }
 }
 
+// ------------------------
+// Update Serialized Option
+// ------------------------
+// we need to save back to the correct option for Titan (serialized)...
+// as we created a temporary unserialized option for the Customizer
+if (!function_exists('bioship_customizer_save_serialized')) {
+
+ add_action('customize_save_after', 'bioship_customizer_save_serialized');
+
+ function bioship_customizer_save_serialized() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
+
+	global $vthemesettings;
+
+	// --- set customize key ---
+	if (THEMEOPT) {$previewkey = THEMEKEY.'_customize';}
+	else {$previewkey = str_replace('_options', '_customize', THEMEKEY);}
+
+	// --- maybe unserialize current preview settings ---
+ 	// 2.0.5: update theme options savedtime value
+ 	$updatedoptions = maybe_unserialize(get_option($previewkey));
+ 	$updatedoptions['savetime'] = time();
+
+ 	if ( (!$updateoptions != '') && is_array($updatedoptions)) {
+
+		// --- pass new options through standardization fix ---
+		$convertedoptions = bioship_titan_theme_options($updatedoptions);
+
+		// 2.0.9: maybe convert and save custom background, header and logo settings
+		if (THEMEWPORG) {
+
+			// --- Custom Background ---
+			$color = get_theme_mod('background_color', get_theme_support('custom-background', 'default-color'));
+			$image = get_theme_mod('background_image', get_theme_support('custom-background', 'default-image'));
+			$positionx = get_theme_mod('background_position_x', get_theme_support('custom-background', 'default-position-x'));
+			$positiony = get_theme_mod('background_position_y', get_theme_support('custom-background', 'default-position-y'));
+			$repeat = get_theme_mod('background_repeat', get_theme_support('custom-background', 'default-repeat'));
+			$size = get_theme_mod('background_size', get_theme_support('custom-background', 'default-size'));
+			$attachment = get_theme_mod('background_attachment', get_theme_support('custom-background', 'default-attachment'));
+			$convertedoptions['body_bg_color'] = $color;
+			$convertedoptions['background_image'] = $image;
+			$convertedoptions['background_position'] = $positionx.' '.$positiony;
+			$convertedoptions['background_repeat'] = $repeat;
+			$convertedoptions['background_size'] = $size;
+			$convertedoptions['background_attachment'] = $attachment;
+
+			// --- Custom Logo ---
+			$customlogo = get_theme_mod('custom_logo');
+			$convertedoptions['header_logo'] = $customlogo;
+
+			// --- Custom Header ---
+			// note: feature mismatch with header background*
+			// $headerimage = get_theme_mod('header_image', get_theme_support('custom-header', 'default-image'));
+			// $convertedoptions['header_background_image'] = $headerimage;
+		}
+
+		// --- Debug: Write new options to file ---
+		if (THEMEDEBUG) {
+			ob_start();
+			echo "Updated Options: ".print_r($updatedoptions,true).PHP_EOL.PHP_EOL;
+			echo "Converted Options: ".print_r($convertedoptions,true).PHP_EOL.PHP_EOL;
+			$data = ob_get_contents(); ob_end_clean();
+			$debugfile = 'customizer-options.txt';
+			bioship_write_debug_file($debugfile, $data);
+		}
+
+		// --- serialize and write back to the actual option ---
+		// CHECKME: use updateoptions or convertedoptions here?!
+		$serializedoptions = serialize($updatedoptions);
+		// $serializedoptions = serialize($convertedoptions);
+		update_option(THEMEKEY, $serializedoptions);
+
+		// --- clear preview key ---
+		delete_option($previewkey);
+	}
+
+ }
+}
+
+
+// -----------------------
+// === Custom Controls ===
+// -----------------------
+
 // -----------------------
 // Add Info Custom Control
 // -----------------------
@@ -401,16 +517,17 @@ if (!function_exists('bioship_customizer_register_info_control')) {
 	class Info_Custom_Control extends WP_Customize_Control {
 		public function render_content() {
 			echo '<label>';
-			if ($this->label != '') {echo '<span class="customize-control-title customize-info-title">'.esc_html($this->label).'</span>';}
+			if ($this->label != '') {echo '<span class="customize-control-title customize-info-title">'.esc_attr($this->label).'</span>';}
 			if ($this->description == 'typography_controller') {
 				$id = str_replace('[helper]', '', $this->id);
 				$pos = strpos($id, '[') + 1;
 				$id = substr($id, $pos, strlen($id));
 				$id = str_replace(']', '', $id);
-				echo '<span id="'.$id.'-expand"><a href="javascript:void(0);" onclick="expandoptions(\''.$id.'\');" style="text-decoration:none;">[+] Expand Typography Options</a></span>';
-				echo '<span id="'.$id.'-collapse" style="display:none;"><a href="javascript:void(0);" onclick="collapseoptions(\''.$id.'\');" style="text-decoration:none;">[-] Collapse Typography Options</a></span>';
+				echo '<span id="'.esc_attr($id).'-expand"><a href="javascript:void(0);" onclick="expandoptions(\''.$id.'\');" style="text-decoration:none;">[+] Expand Typography Options</a></span>';
+				echo '<span id="'.esc_attr($id).'-collapse" style="display:none;"><a href="javascript:void(0);" onclick="collapseoptions(\''.$id.'\');" style="text-decoration:none;">[-] Collapse Typography Options</a></span>';
+			} elseif ($this->description != '') {
+				echo '<p class="description">'.$this->description.'</p>'; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 			}
-			elseif ($this->description != '') {echo '<p class="description">'.$this->description.'</p>';}
 			echo '</label>';
 		}
 	}
@@ -432,6 +549,63 @@ if (!function_exists('bioship_customizer_register_info_control')) {
      }
     }
 
+ }
+}
+
+// ------------------------------
+// Font Customizer Control Script
+// ------------------------------
+if (!function_exists('bioship_customizer_font_script')) {
+ function bioship_customizer_font_script() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+ 	global $typocontrolids, $controllerids;
+ 	if (!is_array($typocontrolids) || !is_array($controllerids)) {return;}
+
+	// --- for the Typography expand/collapse javascript ---
+	// TODO: maybe animate expand/collapse display functions?
+	echo "<script>function expandoptions(divid) {
+		document.getElementById(divid+'-expand').style.display = 'none';
+		document.getElementById(divid+'-collapse').style.display = '';
+		var controlids = controllerids[divid].split(',');
+		for (i in controlids) {
+			if (document.getElementById(controlids[i])) {document.getElementById(controlids[i]).style.display = '';}
+		}
+	}
+    function collapseoptions(divid) {
+		document.getElementById(divid+'-collapse').style.display = 'none';
+		document.getElementById(divid+'-expand').style.display = '';
+		var controlids = controllerids[divid].split(',');
+		for (i in controlids) {
+			if (document.getElementById(controlids[i])) {document.getElementById(controlids[i]).style.display = 'none';}
+		}
+    }".PHP_EOL;
+
+	// --- output the typo controller id arrays to javascript ---
+	$j = 0;
+	echo "var typocontrols = new Array(); var controllerids = new Array;".PHP_EOL;
+	foreach ($typocontrolids as $typocontrolid) {
+		echo "typocontrols[".$j."] = '".esc_js($typocontrolid)."';".PHP_EOL;
+		echo "controllerids['".$typocontrolid."'] = '";
+		$k = 0;
+		foreach ($controllerids[$typocontrolid] as $controllerid) {
+			if ($k > 0) {echo ",";}
+			echo esc_js($controllerid); $k++;
+		}
+		echo "';".PHP_EOL;
+		$j++;
+	}
+
+    // --- hide all the typography subcontroller options by default ---
+    echo "jQuery(document).ready(function($) {setTimeout(hidetyposubcontrols,5000);});".PHP_EOL;
+    echo "function hidetyposubcontrols() {".PHP_EOL;
+    echo "var controlid; var controlids = new Array();
+    for (i in typocontrols) {
+    	controlid = typocontrols[i]; controlids = controllerids[controlid].split(',');
+    	for (i in controlids) {
+    		if (document.getElementById(controlids[i])) {document.getElementById(controlids[i]).style.display = 'none';}
+    	}
+    } }</script>";
  }
 }
 
@@ -467,22 +641,23 @@ if (!function_exists('bioship_customizer_register_multicheck_control')) {
 
 			$description = '';
 			if (!empty($this->description)) {
-				$description = '<p class="description">'.$this->description.'</p>';
+				$description = '<p class="description">'.esc_attr($this->description).'</p>';
 			}
 
 			echo '<label class="customize-multicheck-container">';
 			echo '	<span class="customize-control-title customize-multicheck-title">';
-			echo esc_html($this->label).'</span>'.$description;
-			echo '<!-- Multicheck Values: '; print_r($values); echo ' -->';
+			echo esc_attr($this->label).'</span>'.$description; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+			echo '<!-- Multicheck Values: '.esc_attr(print_r($values,true)).' -->';
 			foreach ($this->options as $value => $label) {
 				if	(in_array($value, $values)) {$checked = ' checked';} else {$checked = '';}
 				$id = $this->id.'['.$value.']';
-				echo '<label for="'.$id.'">';
-				echo '<input class="customize-multicheck" id="'.$id.'" type="checkbox" value="'.esc_attr($value).'"'.$checked.' /> '.$label.'</label><br>';
+				echo '<label for="'.esc_attr($id).'">';
+				echo '<input class="customize-multicheck" id="'.esc_attr($id).'" type="checkbox" value="'.esc_attr($value).'"'.$checked.' /> ';
+				echo $label.'</label><br>'; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
 			}
-			echo '<!--'.$savedValueCSV.'-->'.PHP_EOL;
-			echo '<input type="text" value="'.$savedValueCSV.'" style="display:none;">'.PHP_EOL;
-			echo '<input type="hidden" value="'.$savedValueCSV.'" ';
+			echo '<!-- '.esc_attr($savedValueCSV).' -->'.PHP_EOL;
+			echo '<input type="text" value="'.esc_attr($savedValueCSV).'" style="display:none;">'.PHP_EOL;
+			echo '<input type="hidden" value="'.esc_attr($savedValueCSV).'" ';
 				$this->link();
 			echo ' />'.PHP_EOL.'</label>';
 
@@ -505,6 +680,42 @@ if (!function_exists('bioship_customizer_register_multicheck_control')) {
     	return $controls;
      }
     }
+ }
+}
+
+// ------------------------------------
+// Multicheck Customizer Control Script
+// ------------------------------------
+if (!function_exists('bioship_customizer_multicheck_script')) {
+ function bioship_customizer_multicheck_script() {
+	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
+
+	?><script>
+	jQuery(document).ready(function($) {
+		"use strict";
+
+		$('input.customize-multicheck').parents('li:eq(0)').find('input[type=text]')
+		.each(function() {
+			var startvalue = $(this).val();
+			$(this).parent().find('input[type=hidden]').val(startvalue);
+		});
+
+		$('input.customize-multicheck').change(function(event) {
+			event.preventDefault();
+			var csvalue = '';
+
+			$(this).parents('li:eq(0)').find('input[type=checkbox]').each(function() {
+				if ($(this).is(':checked')) {csvalue += $(this).attr('value') + ',';}
+			});
+
+			csvalue = csvalue.replace(/,+$/, "");
+
+			// we need to trigger the field afterwards to enable the save button
+			$(this).parents('li:eq(0)').find('input[type=hidden]').val(csvalue).trigger('change');
+
+			return true;
+		});
+	});</script><?php
  }
 }
 
@@ -578,7 +789,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 					$optionvalues['class'] = $optionvalues['id'];
 					$optionvalues['id'] = $optionvalues['name'];
 				}
-				if (THEMEDEBUG) {echo "<!-- ID: ".$optionvalues['id']." - For Page: ".$forpage." -->";}
+				if (THEMEDEBUG) {bioship_debug("ID: ".$optionvalues['id']." - For Page: ".$forpage);}
 			}
 
 			// --- check page display ---
@@ -586,7 +797,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 			if (isset($optionvalues['page'])) {$forpage = $optionvalues['page'];}
 			else {
 				$forpage = 'both';
-				if (THEMEDEBUG) {echo '<!-- Missing page key for '.$optionvalues['id'].' -->';}
+				if (THEMEDEBUG) {bioship_debug("Missing Page Key for ".$optionvalues['id']);}
 			}
 
 			// --- check Customizer page conditions ---
@@ -680,7 +891,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	// Modify Customize Sections
 	// -------------------------
 	$wp_customize->get_section('themes')->priority = 999; // shift to bottom
-	$wp_customize->get_section('title_tagline')->title = __('Site Options', 'bioship'); // generalize
+	$wp_customize->get_section('title_tagline')->title = esc_attr(__('Site Options', 'bioship')); // generalize
 	$wp_customize->get_section('title_tagline')->priority = 10;
 	// set live preview transport to postMessage for title and tagline
 	$wp_customize->get_setting('blogname')->transport = 'postMessage';
@@ -694,7 +905,6 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 
 		// -- remove some sections ---
 		$wp_customize->remove_section('title_tagline');
-		$wp_customize->remove_section('themes');
 		// 2.0.8: only remove unused sections from advanced page (for WordPress.org compliance)
 		$wp_customize->remove_section('colors');
 		$wp_customize->remove_section('background_image');
@@ -723,7 +933,8 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 
 	// --- custom CSS section ---
 	if ( ($optionspage == 'advanced') || !THEMEWPORG) {
-		// 2.0.5: remove new custom CSS section (not implemented)
+		$wp_customize->remove_panel('themes');
+		// 2.0.5: remove new custom CSS section (as not implemented)
 		// TODO: maybe synchronize custom CSS control with existing theme option ?
 		$wp_customize->remove_section('custom_css');
 	}
@@ -763,18 +974,18 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 		if ($i == 0) {
 			$theseoptions = $skinoptions;
 			$panelslug = 'skinoptions';
-			$args = array('title' => __('Skin Options','bioship'), 'priority' => 180);
-			$args['description'] = __('All the Skin Layer Options','bioship');
+			$args = array('title' => esc_attr(__('Skin Options','bioship')), 'priority' => 180);
+			$args['description'] = esc_attr(__('All the Skin Layer Options','bioship'));
 		} elseif ($i == 1) {
 			$theseoptions = $muscleoptions;
 			$panelslug = 'muscleoptions';
-			$args = array('title' => __('Muscle Options','bioship'), 'priority' => 190);
-			$args['description'] = __('All the Muscle Layer Options','bioship');
+			$args = array('title' => esc_attr(__('Muscle Options','bioship')), 'priority' => 190);
+			$args['description'] = esc_attr(__('All the Muscle Layer Options','bioship'));
 		} elseif ($i == 2) {
 			$theseoptions = $skeletonoptions;
 			$panelslug = 'skeletonoptions';
-			$args = array('title' => __('Skeleton Options','bioship'), 'priority' => 200);
-			$args['description'] = __('All the Skeleton Layer Options','bioship');
+			$args = array('title' => esc_attr(__('Skeleton Options','bioship')), 'priority' => 200);
+			$args['description'] = esc_attr(__('All the Skeleton Layer Options','bioship'));
 		}
 		// note: no nede ti handle the hidden options as only changed values are saved
 		bioship_debug("Panel", $panelslug);
@@ -1063,7 +1274,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 						elseif ($type == 'text') {$callback = 'bioship_fallback_sanitize_unfiltered';}
 
 						if (THEMEDEBUG && ($callback == '')) {
-							echo "<!-- WARNING: Missing Sanitization Callback for ".$type." Settings -->";
+							echo "<!-- WARNING: Missing Sanitization Callback for ".esc_attr($type)." Settings -->";
 						}
 						$settingargs['sanitize_callback'] = $callback;
 					}
@@ -1154,7 +1365,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	bioship_debug("WP CUSTOMIZE OBJECT", $wp_customize);
 	if (isset($missingsanitize)) {bioship_debug("Missing Sanitization", $missingsanitize);}
 
-	// IDEA: maybe add Theme Pro Upgrade Link
+	// IDEA: maybe add Theme Pro Upgrade Link ?
 	// (if/when there is a Premium Theme version)
 	// $settingid = 'customizer_link';
 	// $wp_customize->add_setting($settingid, array(
@@ -1163,7 +1374,7 @@ if (!function_exists('bioship_customizer_load_control_options')) {
 	//	'default' => ''
 	//	'sanitize_callback' => 'bioship_fallback_sanitize_unfiltered'
 	// ) );
-	// $label = ''; $description = __('Upgrade Theme','bioship');
+	// $label = ''; $description = esc_attr(__('Upgrade Theme','bioship'));
 	// $args = array('type' => 'info', 'priority' => '210', 'label' => $label, 'description' => $description, 'setting' => $settingid);
 	// $wp_customize->add_control(new Info_Custom_Control($wp_customize, $settingid, $args));
 
@@ -1172,9 +1383,14 @@ if (!function_exists('bioship_customizer_load_control_options')) {
  }
 }
 
-// ---------------------------------
-// Update the Customizer Description
-// ---------------------------------
+
+// ----------------------------
+// === Customize Customizer ===
+// ----------------------------
+
+// -----------------------------
+// Change Customizer Description
+// -----------------------------
 // there really should be a core filter for this text... TRAC?
 if (!function_exists('bioship_customizer_text_script')) {
  function bioship_customizer_text_script() {
@@ -1191,7 +1407,9 @@ if (!function_exists('bioship_customizer_text_script')) {
 	}
 
 	// --- just some rogue panel separators and styling ---
-	$styles = "#accordion-panel-skinoptions, #accordion-section-title_tagline {border-top: 20px solid #F0F0F0 !important;}
+	// 2.1.4: prevent unecessary scrollbar appearing on info pane
+	$styles = "#customize-info {overflow:hidden;}
+	#accordion-panel-skinoptions, #accordion-section-title_tagline {border-top: 20px solid #F0F0F0 !important;}
 	#accordion-panel-skeletonoptions {border-bottom: 20px solid #F0F0F0 !important;}
 	#customize-theme-controls .accordion-section-content {background-color: #E0E0EE !important;}
 	#customize-info .customize-panel-description {background-color: #FDFDFF !important;}
@@ -1213,7 +1431,7 @@ if (!function_exists('bioship_customizer_text_script')) {
 
 	// --- change Customizer title message ---
 	// default: 'The Customizer allows you to preview changes to your site before publishing them. You can also navigate to different pages on your site to preview them.<br>';
-	$message = __('The Customizer lets you preview live style changes before applying them. You can also navigate to preview other pages on your site.','bioship').'<br>';
+	$message = esc_attr(__('The Customizer lets you preview live style changes before applying them. You can also navigate to preview other pages on your site.','bioship')).'<br>';
 
 	// --- add a link to the theme options page ---
 	// TODO: check if Titan framework plugin is installed but not active
@@ -1221,8 +1439,8 @@ if (!function_exists('bioship_customizer_text_script')) {
 	if (class_exists('TitanFramework') || $titan) {
 		// 1.9.9: fixed URL, shortened Titan Framework link message
 		$themesettingslink = admin_url('admin.php').'?page=bioship-options';
-		$custommessage = '<br>'.__('Feeling restricted?','bioship').'<br>';
-		$custommessage .= '<a href="'.$themesettingslink.'">'.__('Access All Options via Titan','bioship').'</a>.';
+		$custommessage = '<br>'.esc_attr(__('Feeling restricted?','bioship')).'<br>';
+		$custommessage .= '<a href="'.esc_url($themesettingslink).'">'.esc_attr(__('Access All Options via Titan','bioship')).'</a>.';
 	} else {
 		// --- generate Titan Framework install link ---
 		// (originally via TGM Plugin Activation)
@@ -1231,9 +1449,9 @@ if (!function_exists('bioship_customizer_text_script')) {
 		// 1.8.5: use direct install method via standalone admin function
 		// 1.9.9: shortened the Titan Framework install message
 		$titaninstalllink = admin_url('themes.php').'?admin_install_titan_framework=yes';
-		$custommessage = __('Feel restricted?','bioship').' <a href="'.$titaninstalllink.'">';
-		$custommessage .= __('Install Titan Framework','bioship').'</a>.<br>';
-		$custommessage .= __('To access All Options via Titan','bioship').'.';
+		$custommessage = esc_attr(__('Feel restricted?','bioship')).' <a href="'.esc_url($titaninstalllink).'">';
+		$custommessage .= esc_attr(__('Install Titan Framework','bioship')).'</a>.<br>';
+		$custommessage .= esc_attr(__('To access All Options via Titan','bioship')).'.';
 	}
 
 	// --- set combined Customizer message ---
@@ -1259,13 +1477,13 @@ if (!function_exists('bioship_customizer_text_script')) {
 		if (isset($_REQUEST['options']) && ($_REQUEST['options'] == 'all')) {$optionspage = 'all';}
 		if (isset($_REQUEST['return'])) {$return = 'return='.urlencode($_REQUEST['return']);}
 		else {$return = '';}
-		$custommessage = '<b>'.__('Options','bioship').'</b>:<br>';
-		if ($optionspage == 'basic') {$custommessage .= '<b>'.__('General','bioship').'</b><br>';}
-		else {$custommessage .= '<a href="customize.php?'.$return.'">'.__('General','bioship').'</a><br>';}
+		$custommessage = '<b>'.esc_attr(__('Options','bioship')).'</b>:<br>';
+		if ($optionspage == 'basic') {$custommessage .= '<b>'.esc_attr(__('General','bioship')).'</b><br>';}
+		else {$custommessage .= '<a href="customize.php?'.$return.'">'.esc_attr(__('General','bioship')).'</a><br>';}
 		if ($optionspage == 'advanced') {$custommessage .= '<b>'.__('Advanced','bioship').'</b><br>';}
-		else {$custommessage .= '<a href="customize.php?options=advanced&'.$return.'">'.__('Advanced','bioship').'</a><br>';}
-		if ($optionspage == 'all') {$custommessage .= '<b>'.__('All','bioship').'</b><br>';}
-		else {$custommessage .= '<a href="customize.php?options=all&'.$return.'">'.__('All','bioship').'</a><br>';}
+		else {$custommessage .= '<a href="customize.php?options=advanced&'.$return.'">'.esc_attr(__('Advanced','bioship')).'</a><br>';}
+		if ($optionspage == 'all') {$custommessage .= '<b>'.esc_attr(__('All','bioship')).'</b><br>';}
+		else {$custommessage .= '<a href="customize.php?options=all&'.$return.'">'.esc_attr(__('All','bioship')).'</a><br>';}
 		$extratext = '<span class="preview-notice" style="float:right; max-width:45%; line-height:16pt;">';
 		$extratext .= $custommessage.'</span>';
 	}
@@ -1276,9 +1494,10 @@ if (!function_exists('bioship_customizer_text_script')) {
 	// --- jQuery to update the customizer message ---
 	echo "<script>jQuery(document).ready(function($) {
 		$('#customize-info button.customize-help-toggle').click();
-		$('#customize-info .customize-panel-description').html('".$customizermessage."');";
-		if ($extratext != '') {echo "
-			var extratext = '".$extratext."'; $('#customize-info .accordion-section-title').append(extratext);";
+		$('#customize-info .customize-panel-description').html('".$customizermessage."');";  // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+		if ($extratext != '') {
+			echo "var extratext = '".$extratext."';";  // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+			echo "$('#customize-info .accordion-section-title').append(extratext);";
 		}
 	echo "});</script>";
 
@@ -1403,98 +1622,6 @@ if (!function_exists('bioship_customizer_text_script')) {
  }
 }
 
-// ---------------------------------------
-// Scripts for the Font Customizer Control
-// ---------------------------------------
-if (!function_exists('bioship_customizer_font_script')) {
- function bioship_customizer_font_script() {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
- 	global $typocontrolids, $controllerids;
- 	if (!is_array($typocontrolids) || !is_array($controllerids)) {return;}
-
-	// --- for the Typography expand/collapse javascript ---
-	// TODO: maybe animate expand/collapse display functions?
-	echo "<script>function expandoptions(divid) {
-		document.getElementById(divid+'-expand').style.display = 'none';
-		document.getElementById(divid+'-collapse').style.display = '';
-		var controlids = controllerids[divid].split(',');
-		for (i in controlids) {
-			if (document.getElementById(controlids[i])) {document.getElementById(controlids[i]).style.display = '';}
-		}
-	}
-    function collapseoptions(divid) {
-		document.getElementById(divid+'-collapse').style.display = 'none';
-		document.getElementById(divid+'-expand').style.display = '';
-		var controlids = controllerids[divid].split(',');
-		for (i in controlids) {
-			if (document.getElementById(controlids[i])) {document.getElementById(controlids[i]).style.display = 'none';}
-		}
-    }".PHP_EOL;
-
-	// --- output the typo controller id arrays to javascript ---
-	$j = 0;
-	echo "var typocontrols = new Array(); var controllerids = new Array;".PHP_EOL;
-	foreach ($typocontrolids as $typocontrolid) {
-		echo "typocontrols[".$j."] = '".$typocontrolid."';".PHP_EOL;
-		echo "controllerids['".$typocontrolid."'] = '";
-		$k = 0;
-		foreach ($controllerids[$typocontrolid] as $controllerid) {
-			if ($k > 0) {echo ",";}
-			echo $controllerid; $k++;
-		}
-		echo "';".PHP_EOL;
-		$j++;
-	}
-
-    // --- hide all the typography subcontroller options by default ---
-    echo "jQuery(document).ready(function($) {setTimeout(hidetyposubcontrols,5000);});".PHP_EOL;
-    echo "function hidetyposubcontrols() {".PHP_EOL;
-    echo "var controlid; var controlids = new Array();
-    for (i in typocontrols) {
-    	controlid = typocontrols[i]; controlids = controllerids[controlid].split(',');
-    	for (i in controlids) {
-    		if (document.getElementById(controlids[i])) {document.getElementById(controlids[i]).style.display = 'none';}
-    	}
-    } }</script>";
- }
-}
-
-// Script for the Multicheck Customizer Control
-// --------------------------------------------
-if (!function_exists('bioship_customizer_multicheck_script')) {
- function bioship_customizer_multicheck_script() {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__);}
-
-	?><script>
-	jQuery(document).ready(function($) {
-		"use strict";
-
-		$('input.customize-multicheck').parents('li:eq(0)').find('input[type=text]')
-		.each(function() {
-			var startvalue = $(this).val();
-			$(this).parent().find('input[type=hidden]').val(startvalue);
-		});
-
-		$('input.customize-multicheck').change(function(event) {
-			event.preventDefault();
-			var csvalue = '';
-
-			$(this).parents('li:eq(0)').find('input[type=checkbox]').each(function() {
-				if ($(this).is(':checked')) {csvalue += $(this).attr('value') + ',';}
-			});
-
-			csvalue = csvalue.replace(/,+$/, "");
-
-			// we need to trigger the field afterwards to enable the save button
-			$(this).parents('li:eq(0)').find('input[type=hidden]').val(csvalue).trigger('change');
-
-			return true;
-		});
-	});</script><?php
- }
-}
-
 // ------------------------------
 // Main Options Panel Display Fix
 // ------------------------------
@@ -1506,7 +1633,7 @@ if (!function_exists('bioship_customizer_panel_display_fix')) {
 
  function bioship_customizer_panel_display_fix() {
 	echo "<script>jQuery(document).ready(function($) {
-		console.log('LOADED');
+		console.log('Customizer Page Loaded');
 		setTimeout(function() {
 			\$('#accordion-panel-skinoptions').css('display','list-item');
 			\$('#accordion-panel-muscleoptions').css('display','list-item');
@@ -1517,88 +1644,9 @@ if (!function_exists('bioship_customizer_panel_display_fix')) {
  }
 }
 
-// ------------------------
-// Update Serialized Option
-// ------------------------
-// we need to save back to the correct option for Titan (serialized)...
-// as we created a temporary unserialized option for the Customizer
-if (!function_exists('bioship_customizer_save_serialized')) {
-
- add_action('customize_save_after', 'bioship_customizer_save_serialized');
-
- function bioship_customizer_save_serialized() {
-	if (THEMETRACE) {bioship_trace('F',__FUNCTION__,__FILE__,func_get_args());}
-
-	global $vthemesettings;
-
-	// --- set customize key ---
-	if (THEMEOPT) {$previewkey = THEMEKEY.'_customize';}
-	else {$previewkey = str_replace('_options', '_customize', THEMEKEY);}
-
-	// --- maybe unserialize current preview settings ---
- 	// 2.0.5: update theme options savedtime value
- 	$updatedoptions = maybe_unserialize(get_option($previewkey));
- 	$updatedoptions['savetime'] = time();
-
- 	if ( (!$updateoptions != '') && is_array($updatedoptions)) {
-
-		// --- pass new options through standardization fix ---
-		$convertedoptions = bioship_titan_theme_options($updatedoptions);
-
-		// 2.0.9: maybe convert and save custom background, header and logo settings
-		if (THEMEWPORG) {
-
-			// --- Custom Background ---
-			$color = get_theme_mod('background_color', get_theme_support('custom-background', 'default-color'));
-			$image = get_theme_mod('background_image', get_theme_support('custom-background', 'default-image'));
-			$positionx = get_theme_mod('background_position_x', get_theme_support('custom-background', 'default-position-x'));
-			$positiony = get_theme_mod('background_position_y', get_theme_support('custom-background', 'default-position-y'));
-			$repeat = get_theme_mod('background_repeat', get_theme_support('custom-background', 'default-repeat'));
-			$size = get_theme_mod('background_size', get_theme_support('custom-background', 'default-size'));
-			$attachment = get_theme_mod('background_attachment', get_theme_support('custom-background', 'default-attachment'));
-			$convertedoptions['body_bg_color'] = $color;
-			$convertedoptions['background_image'] = $image;
-			$convertedoptions['background_position'] = $positionx.' '.$positiony;
-			$convertedoptions['background_repeat'] = $repeat;
-			$convertedoptions['background_size'] = $size;
-			$convertedoptions['background_attachment'] = $attachment;
-
-			// --- Custom Logo ---
-			$customlogo = get_theme_mod('custom_logo');
-			$convertedoptions['header_logo'] = $customlogo;
-
-			// --- Custom Header ---
-			// note: feature mismatch with header background*
-			// $headerimage = get_theme_mod('header_image', get_theme_support('custom-header', 'default-image'));
-			// $convertedoptions['header_background_image'] = $headerimage;
-		}
-
-		// --- Debug: Write new options to file ---
-		if (THEMEDEBUG) {
-			ob_start();
-			echo "Updated Options: "; print_r($updatedoptions); echo PHP_EOL.PHP_EOL;
-			echo "Converted Options: "; print_r($convertedoptions); echo PHP_EOL.PHP_EOL;
-			$data = ob_get_contents(); ob_end_clean();
-			$debugfile = 'customizer-options.txt';
-			bioship_write_debug_file($debugfile, $data);
-		}
-
-		// --- serialize and write back to the actual option ---
-		// CHECKME: use updateoptions or convertedoptions here?!
-		$serializedoptions = serialize($updatedoptions);
-		// $serializedoptions = serialize($convertedoptions);
-		update_option(THEMEKEY, $serializedoptions);
-
-		// --- clear preview key ---
-		delete_option($previewkey);
-	}
-
- }
-}
-
-// ----------------------------------------------------
-// CSS Callbacks for Customizer Live Preview Javascript
-// ----------------------------------------------------
+// -------------------------------------
+// Callbacks for Customizer Live Preview
+// -------------------------------------
 // ref: http://ottopress.com/2012/how-to-leverage-the-theme-customizer-in-your-own-themes/
 // load via the customize preview init hook, but put scripts in the footer...
 // also this: https://github.com/aristath/kirki/wiki/Automating-CSS-output
@@ -1610,9 +1658,6 @@ if (!function_exists('bioship_customizer_preview')) {
 
 	global $vthemesettings, $vthemename, $vthemeoptions, $vcsscachebust, $vthemedirs;
 	$vthemesettings = maybe_unserialize(get_option(THEMEKEY));
-
-	// echo "<!-- THEME: ".$vthemename." - KEY: ".THEMEKEY." -->";
-	// echo "<!-- SETTINGS: "; print_r($vthemesettings); echo " -->";
 
 	// --- Set Skin URL ---
 	$cssmode = $vthemesettings['themecssmode'];
@@ -1657,8 +1702,7 @@ if (!function_exists('bioship_customizer_preview')) {
 			$settingid = $vthemename.'['.$option['id'].']';
 			echo "wp.customize('".$settingid."',function(value) {
 				value.bind(function(to) {
-					/* console.log(to); */
-					var skinhref = '".$skinurl."';
+					var skinhref = '".esc_url($skinurl)."';
 					if (document.getElementById('skin-css')) {newhref = \$('#skin-css').href;
 						if (newhref != null) {if (newhref.indexOf('livepreview=yes') == -1) {\$('#skin-css').href = newhref+'&livepreview=yes';} }
 					} else {
@@ -1716,7 +1760,7 @@ if (!function_exists('bioship_customizer_preview')) {
 						value.bind(function(to) {
 							\$('".$option['csselement']."').css('".$typooption."',to);
 							if (customizerdebug) {
-								console.log('Typography Change: ".$option['csselement']." -- ".$typooption." -- '+to);
+								console.log('Typography Change: ".$option['csselement']." - ".$typooption." - '+to);
 							}
 						});
 					});".PHP_EOL;
@@ -1753,12 +1797,12 @@ if (!function_exists('bioship_customizer_preview')) {
 				// --- button gradients ---
 				// 1.8.5: handle button gradient changes
 				if (!strstr($option['cssproperty'],':hover')) {
-					if ($option['cssproperty'] == 'backgroundtop') {$top = 'to'; $bottom = "'".$vthemesettings['button_bgcolor_bottom']."'";}
-					if ($option['cssproperty'] == 'backgroundbottom') {$bottom = 'to'; $top = "'".$vthemesettings['button_bgcolor_top']."'";}
+					if ($option['cssproperty'] == 'backgroundtop') {$top = 'to'; $bottom = $vthemesettings['button_bgcolor_bottom'];}
+					if ($option['cssproperty'] == 'backgroundbottom') {$bottom = 'to'; $top = $vthemesettings['button_bgcolor_top'];}
 
 					echo "wp.customize('".$settingid."',function(value) {
 						value.bind(function(to) {
-							buttons = \$('".$option['csselement']."'); btntop = ".$top."; btnbot = ".$bottom.";
+							buttons = \$('".$option['csselement']."'); btntop = '".$top."'; btnbot = '".$bottom."';
 							if (btntop == to) {buttontop = btntop; if (buttonbottom != '') {btnbot = buttonbottom;} else {buttonbottom = btnbot;} }
 							if (btnbot == to) {buttonbottom = btnbot; if (buttontop != '') {btntop = buttontop;} else {buttontop = btntop;} }
 							buttons.css({'background':btntop, 'background-color':btntop});
@@ -1770,7 +1814,7 @@ if (!function_exists('bioship_customizer_preview')) {
 							buttons.css('background','linear-gradient(top bottom, '+btntop+' 0%, '+btnbot+' 100%)');
 							buttons.css('-pie-background','linear-gradient(top, '+btntop+', '+btnbot+')');
 							if (customizerdebug) {
-								console.log('Button Style: ".$option['csselement']." -- '+btntop+' -- '+btnbot);
+								console.log('Button Style: ".$option['csselement']." - '+btntop+' - '+btnbot);
 							}
 						});
 					});".PHP_EOL;
@@ -1780,13 +1824,12 @@ if (!function_exists('bioship_customizer_preview')) {
 				// 1.8.5: hover button gradients preview...
 				if (strstr($option['cssproperty'],':hover')) {
 
-					if ($option['cssproperty'] == 'backgroundtop:hover') {$top = 'to'; $bottom = "'".$vthemesettings['button_hoverbg_bottom']."'";}
-					if ($option['cssproperty'] == 'backgroundbottom:hover') {$bottom = 'to'; $top = "'".$vthemesettings['button_hoverbg_top']."'";}
+					if ($option['cssproperty'] == 'backgroundtop:hover') {$top = 'to'; $bottom = $vthemesettings['button_hoverbg_bottom'];}
+					if ($option['cssproperty'] == 'backgroundbottom:hover') {$bottom = 'to'; $top = $vthemesettings['button_hoverbg_top'];}
 
 					echo "wp.customize('".$settingid."',function(value) {
 						value.bind(function(to) {
-							console.log(to);
-							btntop = ".$top."; btnbot = ".$bottom.";
+							btntop = '".$top."'; btnbot = '".$bottom."';
 							if (btntop == to) {buttontop = btntop; if (buttonbottom != '') {btnbot = buttonbottom;} else {buttonbottom = btnbot;} }
 							if (btnbot == to) {buttonbottom = btnbot; if (buttontop != '') {btntop = buttontop;} else {buttontop = btntop;} }
 							hoverclass = '.buttonhoverpreview:hover {';
@@ -1818,9 +1861,10 @@ if (!function_exists('bioship_customizer_preview')) {
 						from = \$('".$option['csselement']."').css('".$option['cssproperty']."');
 						\$('".$option['csselement']."').hover(
 							function() {\$(this).css('".$option['cssproperty']."',to);},
-							function() {\$(this).css('".$option['cssproperty']."',from)} );
+							function() {\$(this).css('".$option['cssproperty']."',from)
+						});
 						if (customizerdebug) {
-							console.log('Hover Style: ".$option['csselement']." -- ".$option['cssproperty']." -- '+to);
+							console.log('Hover Style: ".$option['csselement']." - ".$option['cssproperty']." - '+to);
 						}
 					});
 				});".PHP_EOL;
@@ -1834,7 +1878,7 @@ if (!function_exists('bioship_customizer_preview')) {
 					if ($option['cssproperty'] == 'background-image') {echo "to = 'url('+to+')';";}
 						echo "\$('".$option['csselement']."').css('".$option['cssproperty']."',to);
 						if (customizerdebug) {
-							console.log('Style Element: ".$option['csselement']." -- ".$option['cssproperty']." -- '+to);
+							console.log('Style Element: ".$option['csselement']." - ".$option['cssproperty']." - '+to);
 						}
 					});
 				});".PHP_EOL;
@@ -1842,11 +1886,18 @@ if (!function_exists('bioship_customizer_preview')) {
 		}
 	}
 
-	echo $typojs; // insert all typography javascript last
+	// --- insert all typography javascript last ---
+	echo $typojs; // phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+
+	// --- end jQuery live preview functions ---
 	echo "} )(jQuery)</script>";
-	// end jQuery live preview functions
  }
 }
+
+
+// --------------------------
+// === Customizer Helpers ===
+// --------------------------
 
 // ------------------------------
 // Default Sanitization Fallbacks
@@ -2027,9 +2078,9 @@ if (!function_exists('bioship_customizer_i10n')) {
 		'tamil'					=> esc_attr__( 'Tamil', 'bioship' ),
 		'telugu'				=> esc_attr__( 'Telugu', 'bioship' ),
 		'thai'					=> esc_attr__( 'Thai', 'bioship' ),
-		'serif'					=> _x( 'Serif', 'font style', 'bioship' ),
-		'sans-serif'			=> _x( 'Sans Serif', 'font style', 'bioship' ),
-		'monospace'				=> _x( 'Monospace', 'font style', 'bioship' ),
+		'serif'					=> esc_attr(_x( 'Serif', 'font style', 'bioship' )),
+		'sans-serif'			=> esc_attr(_x( 'Sans Serif', 'font style', 'bioship' )),
+		'monospace'				=> esc_attr(_x( 'Monospace', 'font style', 'bioship' )),
 		'font-family'			=> esc_attr__( 'Font Family', 'bioship' ),
 		'font-size'				=> esc_attr__( 'Font Size', 'bioship' ),
 		'font-weight'			=> esc_attr__( 'Font Weight', 'bioship' ),
@@ -2076,9 +2127,10 @@ if (!function_exists('bioship_customizer_i10n')) {
  }
 }
 
-// -----------------------------
-// Set Control Types for Kirki 2
-// -----------------------------
+// ---------------------------
+// Set Control Types (Kirki 2)
+// ---------------------------
+// TODO: deprecate as using Kirki 3 now ?
 if (!function_exists('bioship_kirki_control_types')) {
  function bioship_kirki_control_types() {
 

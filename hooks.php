@@ -1,16 +1,11 @@
 <?php
 
-/**
- * @package BioShip Theme Framework
- * @subpackage bioship
- * @author WordQuest - WordQuest.Org
- * @author DreamJester - DreamJester.Net
- *
- * === Layout Action Hook Definitions ===
- *
-**/
+// ===========================
+// ====== BioShip Hooks ======
+// = Layout Hook Definitions =
+// ===========================
 
-// This file is now a Hook Label Reference rather than a user guide.
+// Note: This file is now a Hook Label Reference rather than a user guide.
 // See the Layout Hooks section of docs.php for a more visual reference.
 
 // Content Sidebars Plugin Note
@@ -383,13 +378,11 @@ foreach ($vthemehooks['sections'] as $layoutsection) {
 // Beaver Themer Support
 // ---------------------
 // 2.0.9: added basic Beaver Themer support
-if (!function_exists('bioship_beaver_builder_support')) {
+// 2.1.1: added function_exists check (for docs.php loading)
+if (!function_exists('bioship_beaver_builder_support') && function_exists('add_action')) {
 
  // 2.1.1: moved add_action internally for consistency
- // 2.1.1: added function_exists check (for docs.php loading)
- if (function_exists('add_action')) {
-	add_action('after_setup_theme', 'bioship_beaver_builder_support');
- }
+ add_action('after_setup_theme', 'bioship_beaver_builder_support');
 
  function bioship_beaver_builder_support() {
 	add_theme_support('fl-theme-builder-headers');
@@ -402,13 +395,11 @@ if (!function_exists('bioship_beaver_builder_support')) {
 // Beaver Themer Parts Filter
 // --------------------------
 // (creates a hook array in Beaver Themer format)
-if (!function_exists('bioship_beaver_themer_register_parts')) {
+// 2.1.1: added function_exists check (for docs.php loading)
+if (!function_exists('bioship_beaver_themer_register_parts') && function_exists('add_filter')) {
 
  // 2.1.1: moved add_action internally for consistency
- // 2.1.1: added function_exists check (for docs.php loading)
- if (function_exists('add_filter')) {
-	add_filter('fl_theme_builder_part_hooks', 'bioship_beaver_themer_register_parts');
- }
+ add_filter('fl_theme_builder_part_hooks', 'bioship_beaver_themer_register_parts');
 
  function bioship_beaver_themer_register_parts() {
 	global $vthemehooks;
@@ -432,13 +423,11 @@ if (!function_exists('bioship_beaver_themer_register_parts')) {
 // -------------------------------------------
 // Beaver Themer Header and Footer Integration
 // -------------------------------------------
-if (!function_exists('bioship_beaver_themer_headers_footers')) {
+// 2.1.1: added function_exists check (for docs.php loading)
+if (!function_exists('bioship_beaver_themer_headers_footers') && function_exists('add_action')) {
 
  // 2.1.1: moved add_action internally for consistency
- // 2.1.1: added function_exists check (for docs.php loading)
- if (function_exists('add_action')) {
-	add_action('wp', 'bioship_beaver_themer_headers_footers');
- }
+ add_action('wp', 'bioship_beaver_themer_headers_footers');
 
  function bioship_beaver_themer_headers_footers() {
 
@@ -481,9 +470,10 @@ if (!function_exists('bioship_beaver_themer_headers_footers')) {
 // ----------------------------
 // Register Elementor Locations
 // ----------------------------
-// 2.1.2: added prototype code for Elementor locations
 // ref: https://developers.elementor.com/theme-locations-api/
-if (!function_exists('bioship_register_elementor_locations')) {
+// 2.1.2: added prototype code for Elementor locations
+// 2.1.4: added function_exists check (for docs.php loading)
+if (!function_exists('bioship_register_elementor_locations') && function_exists('add_action')) {
 
  add_action('elementor/theme/register_locations', 'bioship_register_elementor_locations');
 

@@ -3,7 +3,7 @@ Theme Name: BioShip
 Theme URI: http://bioship.space
 Details URI: http://bioship.space/news/
 Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
-Version: 2.1.3
+Version: 2.1.4
 Status: publish
 Author: majick
 Author URI: http://wordquest.org
@@ -17,11 +17,16 @@ GitHub Theme URI: majick777/bioship
 
 /* note: this file is enequeued after skeleton.css */
 
-/* @group BioShip Styles */
+
+/* Table of Contents
+==================================================
+	#Page / Sidebar 
+	#Bioship Style Fixes
+	#Accessibility
+*/
 
 
-/* Page / Sidebar Structure */
-/* ------------------------ */
+/* @group Page / Sidebar Structure */
 
 body #wrap #content.nosidebar {float: none;}
 #header, #footer, #navigation {width: 100%;}
@@ -32,9 +37,10 @@ body.sidebar-left #wrap #content, body.sidebar-right.subsidebar-left #wrap #cont
 #sidebar .widget-container, #subsidebar .widget-container {margin-left: 10px; margin-right: 10px;}
 #sidebar-primary, #sidebar-subsidiary {margin-top: -10px;}
 
+/* @end */
 
-/* Misc Style Fixes */
-/* ---------------- */
+
+/* @group BioShip Fixes */
 
 h1#site-title-text {font-size: initial;}
 #site-logo .site-logo-image, #site-logo .site-logo-text {display:inline-block;}
@@ -61,7 +67,50 @@ img.emoji {width: 16px;}
 /* Infinite Scroll Support */
 span.infinite-loader {url('../images/infinite-loader.gif');}
 
-/* ---------------------------------- */
+/* @end */
+
+
+/* @group Accesibility */
+
+/* ref: https://make.wordpress.org/themes/2019/07/14/how-to-add-and-test-skip-links/ */
+
+/* Text meant only for screen readers. */
+.screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+.screen-reader-text:focus {
+  background-color: #f1f1f1;
+  border-radius: 3px;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+  clip: auto !important;
+  clip-path: none;
+  color: #21759b;
+  display: block;
+  font-size: 14px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  height: auto;
+  right: 5px;
+  line-height: normal;
+  padding: 15px 23px 14px;
+  text-decoration: none;
+  top: 5px;
+  width: auto;
+  z-index: 100000;
+}
+
+/* Do not show the outline on the skip link target. */
+#content[tabindex="-1"]:focus {outline: 0;}
 
 /* @end */
 
@@ -82,9 +131,4 @@ span.infinite-loader {url('../images/infinite-loader.gif');}
 	font-style: normal; 
 }
 */
-
-/* ========================= */
-/* Child Theme Custom Styles */
-/* ========================= */
-/*   Ya gots da style brah?  */
 
