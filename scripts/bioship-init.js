@@ -1,16 +1,22 @@
-/* ======================= */
-/* === BioShip Scripts === */
-/* ======================= */
+/* =========================== */
+/* === BioShip Init Script === */
+/* =========================== */
 
 /* Mobile Button Functions */
 /* ----------------------- */
 // 1.8.0: use jQuery instead of plain javascript
 // 2.1.3: prefix show / hide functions
 function bioship_showmainmenu() {jQuery(function($) {
-	$('#mainmenushow').css('display','none'); $('#mainmenuhide').css('display','inline-block'); $('#mainmenu').css('display','block');
+	$('#mainmenushow').hide(); $('#mainmenuhide').css('display','inline-block'); 
+	$('body').addClass('has-mobile-menu');
+	$('#navigation').addClass('mobile-menu'); 
+	$('#navigation #primarymenu').show();
 }); }
 function bioship_hidemainmenu() {jQuery(function($) {
-	$('#mainmenuhide').css('display','none'); $('#mainmenushow').css('display','inline-block'); $('#mainmenu').css('display','none');
+	$('#mainmenuhide').hide(); $('#mainmenushow').css('display','inline-block');
+	$('body').removeClass('has-mobile-menu');
+	$('#navigation').removeClass('mobile-menu'); 
+	$('#navigation #primarymenu').hide();
 }); }
 
 function bioship_showsidebar() {jQuery(function($) {
@@ -130,7 +136,7 @@ function bioship_resizeheaderlogo() {
 function bioship_resizetitletexts() {
 
 	if (bioship.calculatedratios == false) {
-		console.log('Max Width: '+bioship.maxwidth);
+		/* console.log('Max Width: '+bioship.maxwidth); */
 		jQuery('#header').css('width', bioship.maxwidth+'px !important');
 		jQuery('#header').css('padding','0px !important').css('margin','0px !important');
 		titlesize = jQuery('#site-title-text a').css('font-size').replace('px', '');
@@ -148,7 +154,7 @@ function bioship_resizetitletexts() {
 
 	headerwidth = jQuery('#header').width();
 	resizeratio = headerwidth / bioship.maxwidth;
-	// console.log('Resize Ratio: '+resizeratio);
+	/* console.log('Resize Ratio: '+resizeratio); */
 	newtitlesize = headerwidth * bioship.titleratio;
 	newtitlelh = headerwidth * bioship.titlelratio;
 	newdescsize = headerwidth * bioship.descratio;
@@ -160,8 +166,8 @@ function bioship_resizetitletexts() {
 	newtitlesize += 'px'; newtitlelh += 'px'; newdescsize += 'px'; newdesclh += 'px';
 	jQuery('#site-title-text a').css('font-size', newtitlesize).css('line-height', newtitlelh);
 	jQuery('#site-description div').css('font-size', newdescsize).css('line-height', newdesclh);
-	// console.log('New Title Size: '+newtitlesize+' New Title Line Height: '+newtitlelh);
-	// console.log('New Desc Size: '+newdescsize+' New Desc Line Height: '+newdesclh);
+	/* console.log('New Title Size: '+newtitlesize+' New Title Line Height: '+newtitlelh); */
+	/* console.log('New Desc Size: '+newdescsize+' New Desc Line Height: '+newdesclh); */
 }
 
 // --- Header Resizing ---
@@ -173,12 +179,12 @@ function bioship_resizeheader() {
 		jQuery('#header').css('width', bioship.maxwidth+'px !important');
 		headerheight = $('#header').height();
 		headerratio = headerheight / bioship.maxwidth;
-		console.log('Header Ratio: '+headerratio);
+		/* console.log('Header Ratio: '+headerratio); */
 		jQuery('#header').css('width', startwidth+'px');
 	}
 	headerwidth = jQuery('#header').width();
 	newheaderheight = headerwidth * headerratio;
-	// console.log('New Header Height: '+newheaderheight);
+	/* console.log('New Header Height: '+newheaderheight); */
 	jQuery('#header').css('height', newheaderheight);
 }
 
@@ -188,12 +194,20 @@ function bioship_resizeheader() {
 function bioship_checkmobilebuttons() {
 
 	screenwidth = jQuery(window).width();
+	/* console.log('Screen Width: '+screenwidth); */
 
-	// --- show menu at 480 ---
-	if (document.getElementById('mainmenushow')) {
-		if (document.getElementById('mainmenushow').style.display == 'none') {
-			// hide == restore == show in this case
-			if (screenwidth > 479) {bioship_hidemainmenu();}
+	// --- show main menu at 480 ---
+	// 2.2.0: fix to primary menu targeting
+	if (document.getElementById('mainmenubutton')) {
+		if (screenwidth > 479) {
+			jQuery('#mainmenubutton').hide();
+			bioship_hidemainmenu(); // removes mobile menu
+			setTimeout(function() {jQuery('#navigation #primarymenu').show();}, 100);
+		} else {
+			if (!jQuery('#navigation').hasClass('mobile-menu')) {
+				jQuery('#navigation #primarymenu').hide();
+			}
+			jQuery('#mainmenubutton').show();
 		}
 	}
 
@@ -210,6 +224,48 @@ function bioship_checkmobilebuttons() {
 		if (document.getElementById('subsidebarshow').style.display == 'none') {
 			// hide == restore == show in this case
 			if (screenwidth > 767) {bioship_hidesubsidebar();}
+		}
+	}
+}
+
+/* --- Sticky Navigation Bar --- */
+/* 2.1.5: added sticky navbar option */
+if ( (typeof bioship.stickynavbar !== 'undefined') 
+  || (typeof bioship.stickylogo !== 'undefined') ) {
+	window.onscroll = function() {bioship_stickynavbar()};
+}
+function bioship_stickynavbar() {
+	if (typeof bioship.stickynavbar !== 'undefined') {
+		if (window.pageYOffset == 0) {
+			jQuery('#navigation').removeClass('sticky-navbar');
+			if (typeof bioship.stickylogo !== 'undefined') {
+				jQuery('#site-logo').removeClass('sticky-logo');
+			}
+			return;
+		}
+		navbar = document.getElementById('navigation');
+		stickytop = navbar.offsetTop;
+		if (window.pageYOffset >= stickytop) {
+			jQuery('#navigation').addClass('sticky-navbar');
+			if (typeof bioship.stickylogo !== 'undefined') {
+				jQuery('#site-logo').addClass('sticky-logo');
+			}
+		} else {
+			jQuery('#navigation').removeClass('sticky-navbar');
+			if (typeof bioship.stickylogo !== 'undefined') {
+				jQuery('#site-logo').removeClass('sticky-logo');
+			}
+		}
+	} else {
+		if (typeof bioship.stickylogo !== 'undefined') {
+			if (window.pageYOffset == 0) {
+				jQuery('#site-logo').removeClass('sticky-logo'); return;
+			}
+			sitelogo = document.getElementById('site-logo');
+			stickytop = sitelogo.offsetTop;
+			if (window.pageYOffset >= stickytop) {
+				jQuery('#site-logo').addClass('sticky-logo');
+			} else {jQuery('#site-logo').removeClass('sticky-logo');}
 		}
 	}
 }
@@ -232,104 +288,112 @@ var bioship_resizedebounce = (function () {
 /* ------------------- */
 jQuery(document).ready(function($) {
 
-	// --- Load Superfish Menu ---
-	// 1.8.5: added check if superfish function exists
-	$(function(){
-		if (typeof superfish === 'function') {
-			activclasses = 'li.current_page_item,li.current_page_parent,li.current_page_ancestor,li.current-cat,li.current-cat-parent,li.current-menu-item';
-			$('#navigation ul.menu').find(activeclasses).addClass('active').end().superfish({autoArrows: true});
+	// 2.2.0: added load delay for navigation glitch bypass
+	setTimeout(function() {
+
+		// --- Load Superfish Menu ---
+		// 1.8.5: added check if superfish function exists
+		$(function(){
+			if (typeof superfish === 'function') {
+				activclasses = 'li.current_page_item,li.current_page_parent,li.current_page_ancestor,li.current-cat,li.current-cat-parent,li.current-menu-item';
+				$('#navigation ul.menu').find(activeclasses).addClass('active').end().superfish({autoArrows: true});
+			}
+		});
+
+		// --- valid XHTML method of target_blank ---
+		$(function(){$('a[rel*="external"]').click( function() {window.open(this.href); return false;}); });
+
+		// --- Style Tags ---
+		$(function(){$('p.tags a').wrap('<span class="st_tag" />');});
+
+		// --- Focus on search form on 404 pages ---
+		$(function(){$("body.error404 #content #s").focus();});
+
+		// --- Smooth Hash Link Scrolling ---
+		// 2.0.9: use variable check instead of input check
+		if (typeof bioship.smoothscrolling !== 'undefined') {
+			if (bioship.smoothscrolling == 'yes') {bioship_smoothscrolling();}
 		}
-	});
 
-	// --- valid XHTML method of target_blank ---
-	$(function(){$('a[rel*="external"]').click( function() {window.open(this.href); return false;}); });
+		/* Sticky Kit */
+		/* ---------- */
+		// 1.5.0: maybe Trigger Sticky Page Elements
+		// 2.1.3: trigger separately and prefix function
+		if (typeof bioship.stickyelements !== 'undefined') {
+			bioship_stickyelements(bioship.stickyelements);
+		}
 
-	// --- Style Tags ---
-	$(function(){$('p.tags a').wrap('<span class="st_tag" />');});
+		/* FitVids */
+		/* ------- */
+		// 1.5.0: maybe Trigger FitVids Elements
+		// 1.9.9: optimized fitvids array code
+		// 2.0.9: use element array instead of input field
+		// 2.2.0: fix to missing object prefix
+		if (typeof bioship.fitvidselements !== 'undefined') {
+			bioship_fitvids(bioship.fitvidselements);
+		}
 
-	// --- Focus on search form on 404 pages ---
-	$(function(){$("body.error404 #content #s").focus();});
+		/* Modernizr */
+		/* --------- */
+		// 2.0.9: maybe initialize Modernizr
+		if (typeof bioship.loadmodernizr !== 'undefined') {
+			if (bioship.loadmodernizr == 'yes') {bioship_modernizr();}
+		}
 
-	// --- Smooth Hash Link Scrolling ---
-	// 2.0.9: use variable check instead of input check
-	if (typeof bioship.smoothscrolling !== 'undefined') {
-		if (bioship.smoothscrolling == 'yes') {bioship_smoothscrolling();}
-	}
+		/* Foundation */
+		/* ---------- */
+		if (typeof loadfoundation !== 'undefined') {
+			if (bioship.loadfoundation == 'yes') {bioship_foundation();}
+		}
 
-	/* Sticky Kit */
-	/* ---------- */
-	// 1.5.0: maybe Trigger Sticky Page Elements
-	// 2.1.3: trigger separately and prefix function
-	if (typeof bioship.stickyelements !== 'undefined') {
-		bioship_stickyelements(bioship.stickyelements);
-	}
+		/* MatchHeight */
+		/* ----------- */
+		// 1.9.9: maybe run jquery matchHeight
+		// 2.1.3: separate and prefix function
+		if (typeof loadmatchheights !== 'undefined') {
+			if (bioship.loadmatchheights == 'yes') {bioship_matchheights();}
+		}
 
-	/* FitVids */
-	/* ------- */
-	// 1.5.0: maybe Trigger FitVids Elements
-	// 1.9.9: optimized fitvids array code
-	// 2.0.9: use element array instead of input field
-	if (typeof bioship.fitvidselements !== 'undefined') {
-		bioship_fitvids(fitvidselements);
-	}
+		/* Check Mobile Buttons */
+		/* -------------------- */
+		bioship_checkmobilebuttons();
 
-	/* Modernizr */
-	/* --------- */
-	// 2.0.9: maybe initialize Modernizr
-	if (typeof bioship.loadmodernizr !== 'undefined') {
-		if (bioship.loadmodernizr == 'yes') {bioship_modernizr();}
-	}
+		/* Dynamic Resizing */
+		/* ---------------- */
 
-	/* Foundation */
-	/* ---------- */
-	if (typeof loadfoundation !== 'undefined') {
-		if (bioship.loadfoundation == 'yes') {bioship_foundation();}
-	}
+		// --- set start values ---
+		bioship.startheaderwidth = jQuery('#header').width();
+		bioship.startheaderheight = jQuery('#header').height();
+		bioship.logowidth = jQuery('#site-logo img.logo-image').width();
+		bioship.logoheight = jQuery('#site-logo img.logo-image').height();
+		bioship.calculatedratios = false;
 
-	/* MatchHeight */
-	/* ----------- */
-	// 1.9.9: maybe run jquery matchHeight
-	// 2.1.3: separate and prefix function
-	if (typeof loadmatchheights !== 'undefined') {
-		if (bioship.loadmatchheights == 'yes') {bioship_matchheights();}
-	}
+		// --- Logo Resizing ---
+		// 1.9.6: onload resize fix
+		// 2.1.3: separate and prefix function
+		// 1.9.8: fix to check for page element
+		if (typeof bioship.logoresize !== 'undefined') {
+			if (bioship.logoresize == 'yes') {bioship_resizeheaderlogo();}
+		}
 
-	/* Check Mobile Buttons */
-	/* -------------------- */
-	bioship_checkmobilebuttons();
+		// --- Title Resizing ---
+		// 2.0.9: maybe resize site title text
+		// 2.1.2: replace site-desc span with div
+		// 2.1.3: separate and prefix function
+		if (typeof bioship.sitetextresize !== 'undefined') {
+			if (bioship.sitetextresize == 'yes') {bioship_resizetitletexts();}
+		}
 
-	/* Dynamic Header Resizing */
-	/* ----------------------- */
+		// --- Header Resizing ---
+		// 2.1.3: separate and prefix function
+		if (typeof bioship.headerresize !== 'undefined') {
+			if (bioship.headerresize == 'yes') {bioship_resizeheader();}
+		}
 
-	// --- set start values ---
-	bioship.startheaderwidth = jQuery('#header').width();
-	bioship.startheaderheight = jQuery('#header').height();
-	bioship.logowidth = jQuery('#site-logo img.logo-image').width();
-	bioship.logoheight = jQuery('#site-logo img.logo-image').height();
-	bioship.calculatedratios = false;
-
- 	// --- Logo Resizing ---
- 	// 1.9.6: onload resize fix
- 	// 2.1.3: separate and prefix function
-	// 1.9.8: fix to check for page element
-	if (typeof logoresize !== 'undefined') {
-		if (logoresize == 'yes') {bioship_resizeheaderlogo();}
-	}
-
-	// --- Title Resizing ---
-	// 2.0.9: maybe resize site title text
-	// 2.1.2: replace site-desc span with div
-	// 2.1.3: separate and prefix function
-	if (typeof sitetextresize !== 'undefined') {
-		if (sitetextresize == 'yes') {bioship_resizetitletexts();}
-	}
-
-	// --- Header Resizing ---
-	// 2.1.3: separate and prefix function
-	if (typeof headerresize !== 'undefined') {
-		if (headerresize == 'yes') {bioship_resizeheader();}
-	}
-
+		/* console.log('a: '+jQuery('#navigation').css('display'));
+		setTimeout(function() {console.log('a: '+jQuery('#navigation').css('display'));}, 100); */
+		
+	}, 100);
 
 	/* On Window Resize */
 	/* ---------------- */
@@ -338,14 +402,29 @@ jQuery(document).ready(function($) {
 		// --- with resize debounce ---
 		bioship_resizedebounce(function(){
 
+			// --- recheck sticky navbar scroll position ---
+			if ( (typeof bioship.stickynavbar !== 'undefined') 
+			  || (typeof bioship.stickylogo !== 'undefined') ) {
+				bioship_stickynavbar();
+			}
+
 			// --- check mobile buttons on resize ---
 			bioship_checkmobilebuttons();
 
 			// --- maybe resize header logo ---
-			bioship_resizeheaderlogo();
+			if (typeof bioship.logoresize !== 'undefined') {
+				if (bioship.logoresize == 'yes') {bioship_resizeheaderlogo();}
+			}
 
 			// --- maybe resize site text ---
-			bioship_resizetitletexts();
+			if (typeof bioship.sitetextresize !== 'undefined') {
+				if (bioship.sitetextresize == 'yes') {bioship_resizetitletexts();}
+			}
+
+			// --- maybe resize header ---
+			if (typeof bioship.headerresize !== 'undefined') {
+				if (bioship.headerresize == 'yes') {bioship_resizeheader();}
+			}
 
 			// --- retrigger match heights ---
 			// 1.9.9: match heights as may have changed

@@ -3,10 +3,10 @@ Contributors: majick
 Tags: one-column, two-columns, three-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
 License: GPLv2 or later
 License URI: http://www.opensource.org/licenses/gpl-license.php
-Donate Link: http://wordquest.org/contribute/
+Donate Link: https://wordquest.org/contribute/
 Requires at least: 3.4
 Requires PHP: 5.3
-Tested up to: 5.2.2
+Tested up to: 6.0
 Stable tag: trunk
 
 BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
@@ -30,17 +30,66 @@ Plus it is now fully documented (with source code commented) for your reference,
 
 = So how do I...? =
 
-Please see the full documentation at http://bioship.space/documentation/
+Please see the full documentation at https://bioship.space/documentation/
 Or click the Docs link on your Theme Options page to view them in your WordPress Admin area.
 
 
 == Upgrade Notice ==
+
+= 2.2.0 =
+* Major overhaul update with multiple fixes and improved standards
 
 
 == Screenshots ==
 
 
 == Changelog ==
+
+= 2.2.0 =
+- Updated: Freemius SDK to 2.4.3
+- Updated: WordQuest Helper Library to v1.8.2
+- Disabled: Kirki (further update configuration testing needed)
+- Disabled: Split Customizer options (conflict testing needed)
+- Removed: Customizer Controls library (not used)
+- Removed: Foundation library (not used)
+- Feature: Admin Bar Style Editor dropdown (sitewide/admin/perpost)
+- Improved: set default subsection fonts to inherit color and size
+- Improved: group included files for plugins in template dropdown
+- Improved: integration loader and separate integrations directory
+- Added: Code Editor for admin option page and styles dropdown box
+- Added: login wrap box text colour styling option
+- Added: permission note to title attribute of edit post link
+- Added: first and last menu item classes to navigation items
+- Added: sticky navigation bar and sticky logo options
+- Added: reseter.css option to reset modern CSS browser styles
+- Added: filter for main menu mobile button icon to replace text
+- Fixed: main menu frontend display disappearing
+- Fixed: autospace main menu items count styling
+- Fixed: footer widget areas count to allow for empty areas
+- Fixed: redeclare wpColorPickerL10n variable for WP 5.5+
+- Fixed: Theme Info page redirection on activation slug mismatch
+- Fixed: load admin page styles on standalone Theme Info page
+- Fixed: thumbnail display comment string append typo
+- Fixed: possible function redeclarations in skin.php loading
+- Fixed: possible mixed content for image protocols in skin.php
+- Fixed: metabox per post CSS quicksave message ID for display
+- Fixed: jQuery version detection for jQuery via Google CDN option
+- Fixed: missing theme override global for sidebar columns width
+- Fixed: check if FS_CHMOD_FILE is defined when File System writing
+- Fixed: category list meta format for non-post CPT taxonomies
+- Fixed: fallback / empty / filtered sidebar templates for CPTs
+- Fixed: possible endless loop in get_the_excerpt shortcode
+- Fixed: primary navigation menu ID attribute (primarymenu)
+- Fixed: button styles affecting admin button styles
+- Fixed: integer detection in debug logging function
+- Fixed: font size conversion applying to em when already em
+- Fixed: include Block and Block Parser for skin.php direct load
+- Fixed: display comment and reply link/buttons as inline blocks
+- Fixed: missing javascript object prefix for fitvidselements
+- Fixed: image size theme options for post list displays
+- Fixed: declaration of post thumbnail theme support for CPTs
+- Fixed: Customizer item spacing for Advanced/All Options pages
+- Fixed: file edit link to Parent template in templates dropdown
 
 = 2.1.4 =
 - Updated: WordQuest Helper Library to v1.7.5

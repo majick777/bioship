@@ -8,43 +8,79 @@
 if (!function_exists('bioship_admin_get_recommended')) {
  function bioship_admin_get_recommended() {
 
-	$rec = false; $showrec = true;
+	$rec = false;
+	$css = '';
+
+	if ( THEMECHILD ) {
+		$themetext = __( 'BioShip Framework', 'bioship' );
+	} else {
+		$themetext = __( 'BioShip','bioship' );
+	}
 
 	// --- check whether to show recommendations ---
 	// 2.0.1: add a filter switch for show recommendations
-	$showrec = bioship_apply_filters('admin_show_recommendations', $showrec);
-	if (!$showrec) {return false;}
+	$showrec = bioship_apply_filters( 'admin_show_recommendations', false );
+	if ( !$showrec ) {
+		return false;
+	}
 
-	// --- check if CSS Hero is already installed ---
-	if (!is_plugin_active('css-hero/css-hero-main.php')) {
+	// --- check if Beaver Builder is already installed ---
+	// 2.2.0: add Beaver Builder recommendation
+	if ( !is_plugin_active( 'bb-plugin/fl-builder.php' ) ) {
 
 		// --- find CSS Hero recommendation image ---
-		$csshero = bioship_file_hierarchy('url','csshero.png',array('images'));
-		if ($csshero) {
-			if (THEMECHILD) {$themetext = __('BioShip Framework','bioship');} else {$themetext = __('BioShip','bioship');}
+		$bb_image = bioship_file_hierarchy( 'url', 'beaverbuilder.png', array( 'images' ) );
+		if ( $bb_image ) {
 
-			$rec = '<center><div style="font-size:12pt;"><b>'.esc_attr($themetext).' '.esc_attr(__('is CSS Hero Ready!','bioship')).'</b><br><br>';
-			$rec .= '<div id="csshero-ad"><a href="'.esc_url(THEMEHOMEURL.'/recommends/CSSHero/').'" target=_blank>';
-			$rec .= '<img src="'.esc_url($csshero).'" border="0"></a></div><br>';
-			$rec .= '&rarr; <a href="'.esc_url(THEMEHOMEURL.'/recommends/CSSHero/').'" style="font-size:12pt;" target=_blank>';
-			$rec .= esc_attr(__('Edit Styles Live with CSS Hero','bioship')).'</a> &larr;</div></center>';
+			$bb_link = 'https://bioship.space/recommends/BeaverBuilder/';
+			$rec = '<center><div style="font-size:12pt;"><b>' . esc_html( $themetext ) . ' ' . esc_html( __( 'is Beaver Builder Ready!', 'bioship' ) ) . '</b><br><br>';
+			$rec .= '<div id="bb-ad"><a href="' . esc_url( $bb_link ) . '" target=_blank>';
+			$rec .= '<img src="' . esc_url( $bb_image ) . '" border="0"></a></div><br>';
+			$rec .= '&rarr; <a href="' . esc_url( $bb_link ) . '" style="font-size:12pt;" target="_blank">';
+			$rec .= esc_html( __( 'Edit Pages with Beaver Builder', 'bioship' ) ) . '</a> &larr;</div></center>';
+			$css .= '#bb-ad {width:220px; height:220px;}';
 
 			// --- use CSS Hero background image ---
-			$cssherobg = bioship_file_hierarchy('url','csshero-hover.jpg',array('images'));
-			if ($cssherobg) {
-				$rec .= '<style>#csshero-ad {width:220px; height:220px;} ';
-				$rec .= '#csshero-ad:hover {background-image:url("'.esc_url($cssherobg).'"); background-size: 100% 100%;}</style>';
+			$bb_bg = bioship_file_hierarchy( 'url', 'beaverbuilder-hover.jpg', array( 'images' ) );
+			if ( $bb_bg ) {
+				$css .= '#bb-ad:hover {background-image:url("' . esc_url( $bb_bg ) . '"); background-size: 100% 100%;}';
+			}
+
+		}
+
+	}
+
+	// --- check if CSS Hero is already installed ---
+	if ( !is_plugin_active('css-hero/css-hero-main.php' ) ) {
+
+		// --- find CSS Hero recommendation image ---
+		$csshero_image = bioship_file_hierarchy( 'url', 'csshero.png', array( 'images' ) );
+		if ( $csshero_image ) {
+
+			$csshero_link = THEMEHOMEURL . '/recommends/CSSHero/';
+
+			$rec = '<center><div style="font-size:12pt;"><b>' . esc_html( $themetext ) . ' ' . esc_html( __( 'is CSS Hero Ready!', 'bioship' ) ) . '</b><br><br>';
+			$rec .= '<div id="csshero-ad"><a href="' . esc_url(  $csshero_link ) . '" target=_blank>';
+			$rec .= '<img src="' . esc_url( $csshero_image ) . '" border="0"></a></div><br>';
+			$rec .= '&rarr; <a href="' . esc_url(  $csshero_link ) . '" style="font-size:12pt;" target="_blank">';
+			$rec .= esc_html( __( 'Edit Styles Live with CSS Hero', 'bioship' ) ) . '</a> &larr;</div></center>';
+			$css .= '#csshero-ad {width:220px; height:220px;}';
+
+			// --- use CSS Hero background image ---
+			$csshero_bg = bioship_file_hierarchy( 'url', 'csshero-hover.jpg', array( 'images' ) );
+			if ( $csshero_bg ) {
+				$css .= '#csshero-ad:hover {background-image:url("' . esc_url( $csshero_bg ) . '"); background-size: 100% 100%;}';
 			}
 		}
 	}
 
-	// if (!$rec) {
-		// TODO: maybe add a fallback recommendation ?
-	// }
+	if ( '' != $css ) {
+		$rec .= '<style>' . $css . '</style>';
+	}
 
 	// --- filter and return ---
 	// 2.0.1: add filter override for recommendation
-	$rec = bioship_apply_filters('admin_page_recommendations', $rec);
+	$rec = bioship_apply_filters( 'admin_page_recommendations', $rec );
 	return $rec;
 
  }

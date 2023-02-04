@@ -792,8 +792,8 @@ body.dark #comments {background: url(../images/dark/divider.png) repeat-x right 
 }
 #comments h6 {font-family: "Times New Roman", Times, serif;letter-spacing: normal;text-transform: uppercase;margin: 10px 0px;}
 
-#comments .comment-meta {margin:0px 0px 20px 10px; display:block;}
-#comments .commentlist {margin:0px; float:left; list-style:none; width:100%; margin-left:10px;}
+#comments .comment-meta {margin: 0px 0px 20px 10px; display: inline-block;}
+#comments .commentlist {margin: 0px; float: left; list-style: none; width: 100%; margin-left: 10px;}
 #comments .commentlist ul {list-style:none; margin:0; padding:0; clear:both;}
 #comments .commentlist li {margin:0; padding:0; display:block;}
 #comments .commentlist li .comment-meta {width:470px;}
@@ -806,12 +806,17 @@ body.dark #comments {background: url(../images/dark/divider.png) repeat-x right 
 #comments .commentlist li li li li li {margin:0 0 20px 25px;}
 #comments .commentlist li li li li li .comment-meta {width:370px;}
 
-#comments .single-comment {margin-bottom:20px;}
-#comments .comment-author {float:left; margin: 0px 10px 6px 0px; display:inline; width:50px;}
-#comments .comment-author cite {clear:both; font-weight:bold;}
+#comments .single-comment {margin-bottom: 20px;}
+#comments .comment-author {float: left; margin: 0px 10px 6px 0px; display:inline; width:50px;}
+#comments .comment-author cite {clear: both; font-weight:bold;}
 
-.comment .comment-author, .comment .comment-meta, .comment .comment-reply, .comment .comment-edit 
-	{float:left; margin-right:30px; line-height:1.8em;}
+.comment .comment-author, .comment .comment-meta, .comment .comment-reply, .comment .comment-edit {
+	float: left; margin-right: 30px; line-height:1.8em;
+}
+
+#comments .comment-edit.button, #comments .comment-reply.button {
+    display: inline-block; margin-left: 10px; margin-right: 10px; vertical-align: top;
+}
 
 .comment .comment-edit.button a, .comment .comment-reply.button a {margin:0;}
 
