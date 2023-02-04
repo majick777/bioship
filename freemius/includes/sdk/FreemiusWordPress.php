@@ -14,6 +14,9 @@
 	 * License for the specific language governing permissions and limitations
 	 * under the License.
 	 */
+    if ( ! defined( 'ABSPATH' ) ) {
+        exit;
+    }
 
 	require_once dirname( __FILE__ ) . '/FreemiusBase.php';
 
@@ -58,6 +61,10 @@
 			define( 'FS_SDK__HAS_CURL', $has_curl );
 		}
 	}
+
+    if ( ! defined( 'FS_SDK__SSLVERIFY' ) ) {
+        define( 'FS_SDK__SSLVERIFY', false );
+    }
 
 	$curl_version = FS_SDK__HAS_CURL ?
 		curl_version() :
@@ -228,10 +235,13 @@
 			$now          = ( time() - self::$_clock_diff );
 			$date         = date( 'r', $now );
 
-			if ( in_array( $pMethod, array( 'POST', 'PUT' ) ) && ! empty( $pPostParams ) ) {
-				$content_md5  = md5( $pPostParams );
-				$content_type = 'application/json';
-			}
+			if ( in_array( $pMethod, array( 'POST', 'PUT' ) ) ) {
+                $content_type = 'application/json';
+
+                if ( ! empty( $pPostParams ) ) {
+                    $content_md5 = md5( $pPostParams );
+                }
+            }
 
 			$string_to_sign = implode( $eol, array(
 				$pMethod,
@@ -263,6 +273,8 @@
 
 		/**
 		 * Get API request URL signed via query string.
+         *
+         * @since 1.2.3 Stopped using http_build_query(). Instead, use urlencode(). In some environments the encoding of http_build_query() can generate a URL that once used with a redirect, the `&` querystring separator is escaped to `&amp;` which breaks the URL (Added by @svovaf).
 		 *
 		 * @param string $pPath
 		 *
@@ -270,20 +282,19 @@
 		 *
 		 * @return string
 		 */
-		function GetSignedUrl( $pPath ) {
-			$resource     = explode( '?', $this->CanonizePath( $pPath ) );
-			$pResourceUrl = $resource[0];
+        function GetSignedUrl( $pPath ) {
+            $resource     = explode( '?', $this->CanonizePath( $pPath ) );
+            $pResourceUrl = $resource[0];
 
-			$auth = $this->GenerateAuthorizationParams( $pResourceUrl );
+            $auth = $this->GenerateAuthorizationParams( $pResourceUrl );
 
-			return Freemius_Api_WordPress::GetUrl(
-				$pResourceUrl . '?' .
-				( 1 < count( $resource ) && ! empty( $resource[1] ) ? $resource[1] . '&' : '' ) .
-				http_build_query( array(
-					'auth_date'     => $auth['date'],
-					'authorization' => $auth['authorization']
-				) ), $this->_isSandbox );
-		}
+            return Freemius_Api_WordPress::GetUrl(
+                $pResourceUrl . '?' .
+                ( 1 < count( $resource ) && ! empty( $resource[1] ) ? $resource[1] . '&' : '' ) .
+                'authorization=' . urlencode( $auth['authorization'] ) .
+                '&auth_date=' . urlencode( $auth['date'] )
+                , $this->_isSandbox );
+        }
 
 		/**
 		 * @author Vova Feldman
@@ -379,22 +390,25 @@
 			}
 
 			if ( in_array( $pMethod, array( 'POST', 'PUT' ) ) ) {
-				if ( is_array( $pParams ) && 0 < count( $pParams ) ) {
-					$pWPRemoteArgs['headers']['Content-type'] = 'application/json';
-					$pWPRemoteArgs['body']                    = json_encode( $pParams );
-				}
+                $pWPRemoteArgs['headers']['Content-type'] = 'application/json';
+
+                if ( is_array( $pParams ) && 0 < count( $pParams ) ) {
+                    $pWPRemoteArgs['body'] = json_encode( $pParams );
+                }
 			}
 
 			$request_url = self::GetUrl( $pCanonizedPath, $pIsSandbox );
 
 			$resource = explode( '?', $pCanonizedPath );
 
-			// Disable the 'Expect: 100-continue' behaviour. This causes cURL to wait
-			// for 2 seconds if the server does not support this header.
-			$pWPRemoteArgs['headers']['Expect'] = '';
+            if ( FS_SDK__HAS_CURL ) {
+                // Disable the 'Expect: 100-continue' behaviour. This causes cURL to wait
+                // for 2 seconds if the server does not support this header.
+                $pWPRemoteArgs['headers']['Expect'] = '';
+            }
 
 			if ( 'https' === substr( strtolower( $request_url ), 0, 5 ) ) {
-				$pWPRemoteArgs['sslverify'] = false;
+				$pWPRemoteArgs['sslverify'] = FS_SDK__SSLVERIFY;
 			}
 
 			if ( false !== $pBeforeExecutionFunction &&
@@ -420,13 +434,19 @@
 					$matches = array();
 					$regex   = '/Failed to connect to ([^:].*): Network is unreachable/';
 					if ( preg_match( $regex, $result->get_error_message( 'http_request_failed' ), $matches ) ) {
-						if ( strlen( @inet_pton( $matches[1] ) ) === 16 ) {
+						/**
+						 * Validate IP before calling `inet_pton()` to avoid PHP un-catchable warning.
+						 * @author Vova Feldman (@svovaf)
+						 */
+						if ( filter_var( $matches[1], FILTER_VALIDATE_IP ) ) {
+							if ( strlen( inet_pton( $matches[1] ) ) === 16 ) {
 //						    error_log('Invalid IPv6 configuration on server, Please disable or get native IPv6 on your server.');
-							// Hook to an action triggered just before cURL is executed to resolve the IP version to v4.
-							add_action( 'http_api_curl', 'Freemius_Api_WordPress::CurlResolveToIPv4', 10, 1 );
+								// Hook to an action triggered just before cURL is executed to resolve the IP version to v4.
+								add_action( 'http_api_curl', 'Freemius_Api_WordPress::CurlResolveToIPv4', 10, 1 );
 
-							// Re-run request.
-							$result = self::ExecuteRequest( $request_url, $pWPRemoteArgs );
+								// Re-run request.
+								$result = self::ExecuteRequest( $request_url, $pWPRemoteArgs );
+							}
 						}
 					}
 				}
@@ -561,7 +581,7 @@
 			} catch ( Exception $e ) {
 				// Map to error object.
 				$result = (object) array(
-					'error' => array(
+					'error' => (object) array(
 						'type'    => 'Unknown',
 						'message' => $e->getMessage() . ' (' . $e->getFile() . ': ' . $e->getLine() . ')',
 						'code'    => 'unknown',
@@ -640,7 +660,7 @@
 				$message = ( 1 < count( $parts ) ) ? $parts[1] : $message;
 
 				$e = new Freemius_Exception( array(
-					'error' => array(
+					'error' => (object) array(
 						'code'    => $code,
 						'message' => $message,
 						'type'    => 'CurlException',
@@ -648,7 +668,7 @@
 				) );
 			} else {
 				$e = new Freemius_Exception( array(
-					'error' => array(
+					'error' => (object) array(
 						'code'    => $pError->get_error_code(),
 						'message' => $pError->get_error_message(),
 						'type'    => 'WPRemoteException',

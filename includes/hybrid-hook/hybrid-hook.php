@@ -30,7 +30,7 @@
 
 // MODIFIED: for BioShip Theme Compatibility (search 'MOD')
 // --------------------------------------------------------
-// @author Tony Hayes http://dreamjester.net
+// @author Tony Hayes https://dreamjester.net
 // ! Please do not expect original author to support this modified plugin! Thanks!
 // - changed plugindir to dirname to include via theme options
 // - added a filter to the hook array so it can use theme hooks

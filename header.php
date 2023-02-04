@@ -4,47 +4,76 @@
 // === BioShip Main Header Template ===
 // ====================================
 
-if (THEMETRACE) {bioship_trace('T',__('Header Template','bioship'),__FILE__,'header');}
+if ( THEMETRACE) {bioship_trace( 'T', 'Header Template', __FILE__, 'header' );}
 
+// --- Doctype  ---
+echo '<!doctype html>' . PHP_EOL;
+
+// --- HTML Tag ---
 // 2.1.1: get language attributes once only
-$language_attributes = get_language_attributes();
+// 2.2.0: revert to individual calls for direct escaped output
+echo '<!--[if lt IE 7 ]><html class="ie ie6" ';
+language_attributes();
+echo '><![endif]-->' . PHP_EOL;
+echo '<!--[if IE 7 ]><html class="ie ie7" ';
+language_attributes();
+echo '><![endif]-->' . PHP_EOL;
+echo '<!--[if IE 8 ]><html class="ie ie8" ';
+language_attributes();
+echo '><![endif]-->' . PHP_EOL;
+echo '<!--[if IE 9 ]><html class="ie ie9" ';
+language_attributes() . '><![endif]-->' . PHP_EOL;
+// note: the next line actually means 'not IE5-9' rather than just "not IE"
+echo '<!--[if !IE]>--><html ';
+language_attributes();
+echo '> <!--<![endif]-->' . PHP_EOL;
 
-?><!doctype html>
-<!--[if lt IE 7 ]><html class="ie ie6" <?php echo $language_attributes; ?>><![endif]-->
-<!--[if IE 7 ]><html class="ie ie7" <?php echo $language_attributes; ?>><![endif]-->
-<!--[if IE 8 ]><html class="ie ie8" <?php echo $language_attributes; ?>><![endif]-->
-<!--[if IE 9 ]><html class="ie ie9" <?php echo $language_attributes; ?>><![endif]-->
-<?php /* note: the next line actually means 'not IE5-9' rather than just 'not IE' */ ?>
-<!--[if !IE]>--><html <?php echo $language_attributes; ?>> <!--<![endif]-->
+	// --- Head Tag ---
+	bioship_html_comment( 'head' );
+	echo '<head ';
+	hybrid_attr( 'head' );
+	echo '>' . PHP_EOL;
 
-<?php bioship_html_comment('head'); ?><head <?php hybrid_attr('head'); ?>>
-<link rel="profile" href="http://gmpg.org/xfn/11">
-<?php wp_head(); ?>
-</head><?php bioship_html_comment('/head'); ?>
+		echo '<link rel="profile" href="http://gmpg.org/xfn/11">' . PHP_EOL;
+		wp_head();
 
-<?php bioship_html_comment('body'); ?><body <?php hybrid_attr('body'); ?>><?php wp_body_open(); ?>
-<a class="skip-link screen-reader-text" href="#content"><?php _e('Skip to Content', 'bioship'); ?></a>
-<?php bioship_html_comment('#bodycontent.inner'); ?><div id="bodycontent" class="inner">
+	echo '</head>';
+	bioship_html_comment( '/head' );
 
-<?php
+	// --- Body Tag ---
+	bioship_html_comment( 'body' );
+	echo '<body ';
+	hybrid_attr( 'body' );
+	echo '>' . PHP_EOL;
 
-	if (THEMEDEBUG) {global $vthemehooks; bioship_debug("Layout Positions", $vthemehooks['functions']);}
+		// --- body open action ---
+		wp_body_open();
 
-	// --- Wrap Container ---
-	bioship_do_action('bioship_before_container');
-	bioship_do_action('bioship_container_open');
+		// --- screen reader skip link ---
+		echo '<a class="skip-link screen-reader-text" href="#content">' . esc_html( __( 'Skip to Content', 'bioship' ) ) . '</a>' . PHP_EOL;
 
-	// --- Header ---
-	bioship_do_action('bioship_before_header');
+		// --- bodycontent inner div ---
+		bioship_html_comment( '#bodycontent.inner' );
+		echo '<div id="bodycontent" class="inner">' . PHP_EOL;
 
-		// --- Elementor Header Location Support -
-		// 2.1.2: allow possible replacing of bioship_header action
-		if (function_exists('elementor_theme_do_location')) {$doneheader = elementor_theme_do_location('header');}
-		if (!isset($doneheader) || !$doneheader) {bioship_do_action('bioship_header');}
+			// --- Wrap Container ---
+			bioship_do_action( 'bioship_before_container' );
+			bioship_do_action( 'bioship_container_open' );
 
-	bioship_do_action('bioship_after_header');
+				// --- Header ---
+				bioship_do_action( 'bioship_before_header' );
 
-	// --- Navigation Menu ---
-	bioship_do_action('bioship_before_navbar');
-	bioship_do_action('bioship_navbar');
-	bioship_do_action('bioship_after_navbar');
+					// --- Elementor Header Location Support -
+					// 2.1.2: allow possible replacing of bioship_header action
+					// 2.2.0: converted to filter usage for elementor integration
+					$doneheader = bioship_apply_filters( 'elementor_location_output', false, 'header' );
+					if ( !$doneheader ) {
+						bioship_do_action( 'bioship_header' );
+					}
+
+				bioship_do_action( 'bioship_after_header' );
+
+				// --- Navigation Menu ---
+				bioship_do_action( 'bioship_before_navbar' );
+					bioship_do_action( 'bioship_navbar' );
+				bioship_do_action( 'bioship_after_navbar' );
