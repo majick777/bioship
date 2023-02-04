@@ -52,19 +52,19 @@
 			$json['theme_title'] = $this->fs->get_plugin_name();
 
 			if ( $is_contact_visible && $is_support_visible ) {
-				$json['theme_title'] .= ' ' . $this->fs->get_text( 'support' );
+				$json['theme_title'] .= ' ' . $this->fs->get_text_inline( 'Support', 'support' );
 			}
 
 			if ( $is_contact_visible ) {
 				$json['contact'] = array(
-					'label' => $this->fs->get_text( 'contact-us' ),
+					'label' => $this->fs->get_text_inline( 'Contact Us', 'contact-us' ),
 					'url'   => $this->fs->contact_url(),
 				);
 			}
 
 			if ( $is_support_visible ) {
 				$json['support'] = array(
-					'label' => $this->fs->get_text( 'support-forum' ),
+					'label' => $this->fs->get_text_inline( 'Support Forum', 'support-forum' ),
 					'url'   => $this->fs->get_support_forum_url()
 				);
 			}
@@ -87,10 +87,10 @@
 					<div class="button-group">
 					<# } #>
 						<# if ( data.contact ) { #>
-							<a class="button" href="{{ data.contact.url }}" target="_blank">{{ data.contact.label }} </a>
+							<a class="button" href="{{ data.contact.url }}" target="_blank" rel="noopener noreferrer">{{ data.contact.label }} </a>
 							<# } #>
 						<# if ( data.support ) { #>
-							<a class="button" href="{{ data.support.url }}" target="_blank">{{ data.support.label }} </a>
+							<a class="button" href="{{ data.support.url }}" target="_blank" rel="noopener noreferrer">{{ data.support.label }} </a>
 							<# } #>
 					<# if ( data.contact && data.support ) { #>
 					</div>

@@ -2,23 +2,24 @@
 
 /* Primary Sidebar: Category Archive */
 
-if (THEMETRACE) {bioship_trace('T','Category Archive Sidebar Template',__FILE__,'sidebar');}
+if ( THEMETRACE ) {bioship_trace( 'T', 'Category Archive Sidebar Template', __FILE__, 'sidebar' );}
 
-$template = str_replace('.php', '', basename(__FILE__));
-$args = array('class' => 'sidebar sidebar-primary sidebar-'.$template);
+$template = str_replace( '.php', '', basename( __FILE__ ) );
+$args = array( 'class' => 'sidebar sidebar-primary sidebar-' . $template );
 
-if (is_active_sidebar('category')) {
+if ( is_active_sidebar( 'category' ) ) {
 
-	bioship_do_action('bioship_before_sidebar'); ?>
+	bioship_do_action( 'bioship_before_sidebar', 'category', $template );
 
-		<?php bioship_html_comment('#sidebar-primary'); ?>
-		<aside <?php hybrid_attr('sidebar', 'primary', $args); ?>>
+		bioship_html_comment( '#sidebar-primary' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped,WordPress.Security.OutputNotEscapedShortEcho
+		echo '<aside ' . hybrid_get_attr( 'sidebar', 'primary', $args ) . '>' . PHP_EOL;
+			dynamic_sidebar( 'category' );
+		echo '</aside>';
+		bioship_html_comment( '/#sidebar-primary' );
+		echo PHP_EOL;
 
-			<?php dynamic_sidebar('category'); ?>
-
-		</aside><?php bioship_html_comment('/#sidebar-primary'); ?>
-
-	<?php bioship_do_action('bioship_after_sidebar');
+	bioship_do_action( 'bioship_after_sidebar', 'category', $template );
 
 }
 

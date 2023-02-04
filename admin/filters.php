@@ -725,7 +725,9 @@ function muscle_google_jquery_version($vversion) {
 // skeleton_thumbnail_height
 // skeleton_image_sizes
 // skeleton_post_thumbnail_size
+// skeleton_post_thumbnail_align
 // skeleton_list_thumbnail_size
+// skeleton_list_thumbnail_align
 // skeleton_thumbnail_wrapper_classes
 // skeleton_thumbnail_classes
 // skeleton_thumbnail_override
@@ -772,83 +774,83 @@ function muscle_image_sizes($vimagesizes) {
 	return $vimagesizes;
 }
 
+// /= Post Thumbnail Size (srting) =/
+// ----------------------------------
+// note: also used for page featured images
+// filter exists at priority 1 for theme options perpost metabox override
+add_filter('skeleton_post_thumbnail_size','muscle_post_thumbnail_size',10,2);
+function muscle_post_thumbnail_size($size, $postid) {
+	// eg. Set to full size for the 'images' category
+	# if (is_category('images')) {$size = 'full';}
+	// eg. Set to full size for custom post type of 'image'
+	# if (get_post_type(get_the_ID()) == 'image') {$size = 'full';}
+	# OR alternatively
+	# if (is_singular('image')) {$size = 'full';}
+	return $size;
+}
+
+// /= Post Thumbnail Alignment (string) =/
+// ---------------------------------------
+add_filter('skeleton_post_thumbnail_align','muscle_post_thumbnail_align');
+function muscle_post_thumbnail_align($align) {
+	// change the post thumbnail alignment
+	# if (get_post_type(get_the_ID()) == 'video')) {$align = 'alignright';}
+	return $align;
+}
+
 // /= Post List Thumbnail Size =/
 // ------------------------------
 add_filter('skeleton_list_thumbnail_size','muscle_list_thumbnail_size');
-function muscle_list_thumbnail_size($vsize) {
+function muscle_list_thumbnail_size($size) {
 	// eg. Set to 4:3 video size for custom post type of 'video'
-	# if (is_post_type_archive('video')) {$vsize = 'video43';}
+	# if (is_post_type_archive('video')) {$size = 'video43';}
 	// eg. Set to squared150 for search pages
-	# if (is_search()) {$vsize = 'squared150';}
-	return $vsize;
+	# if (is_search()) {$size = 'squared150';}
+	return $size;
 }
 
 // /= Post List Thumbnail Alignment =/
 // -----------------------------------
 add_filter('skeleton_list_thumbnail_align','muscle_list_thumbnail_align');
-function muscle_list_thumbnail_align($valign) {
+function muscle_list_thumbnail_align($align) {
 	// change the thumbnail list alignment
-	# if (is_post_type_archive('video')) {$valign = 'alignright';}
-	return $valign;
+	# if (is_post_type_archive('video')) {$align = 'alignright';}
+	return $align;
 }
 
-// /= Post Thumbnail Size =/
-// -------------------------
-// note: also used for page featured images
-// filter exists at priority 1 for theme options perpost metabox override
-add_filter('skeleton_post_thumbnail_size','muscle_post_thumbnail_size',10,2);
-function muscle_post_thumbnail_size($vsize, $vpostid) {
-	// eg. Set to full size for the 'images' category
-	# if (is_category('images')) {$vsize = 'full';}
-	// eg. Set to full size for custom post type of 'image'
-	# if (get_post_type(get_the_ID()) == 'image') {$vsize = 'full';}
-	# OR alternatively
-	# if (is_singular('image')) {$vsize = 'full';}
-	return $vsize;
-}
-
-// /= Post Thumbnail Alignment =/
-// ------------------------------
-add_filter('skeleton_post_thumbnail_align','muscle_post_thumbnail_align');
-function muscle_post_thumbnail_align($valign) {
-	// change the post thumbnail alignment
-	# if (get_post_type(get_the_ID()) == 'video')) {$valign = 'alignright';}
-	return $valign;
-}
-
-// /= Thumbnail Wrapper Classes =/
-// -------------------------------
+// /= Thumbnail Wrapper Classes (string) =/
+// ----------------------------------------
 add_filter('skeleton_thumbnail_wrapper_classes','muscle_thumbnail_wrapper_classes');
-function muscle_thumbnail_wrapper_classes($vclasses) {
+function muscle_thumbnail_wrapper_classes($classes) {
 	// eg. change the default alignment to right for a particular post ID
-	# if (get_the_ID() == '100') {$vclasses = str_replace('alignleft','alignright',$vclasses);}
-	return $vclasses;
+	# if (get_the_ID() == '100') {$classes = str_replace('alignleft','alignright',$classes);}
+	return $classes;
 }
 
-// /= Thumbnail Image Classes =/
-// -----------------------------
+// /= Thumbnail Image Classes (string) =/
+// --------------------------------------
 add_filter('skeleton_thumbnail_classes','muscle_thumbnail_classes');
-function muscle_thumbnail_classes($vclasses) {
+function muscle_thumbnail_classes($classes) {
 	// eg. add an additional class for all archive type pages
-	# if (is_archive()) {$vclasses .= ' archive-thumbnail';}
-	return $vclasses;
+	# if (is_archive()) {$classes .= ' archive-thumbnail';}
+	return $classes;
 }
 
 // /= Thumbnail Override =/
 // ------------------------
 add_filter('skeleton_thumbnail_override','muscle_thumbnail_override');
-function muscle_thumbnail_override($vhtml) {
+function muscle_thumbnail_override($html,$postid,$posttype,$size) {
 	// completely override the outputted thumbnail HTML
 	// eg. do not show thumbnails at all on search pages
-	# if (is_search()) {$vhtml = '';}
+	# if (is_search()) {$html = '';}
 	// eg. set a different thumbnail size for the first thumbnail
 	// if on the homepage or frontpage, here medium (300x300)
 	# if ( (is_home()) || (is_front_page()) ) {
-	# 	if (strstr($vhtml,'<!-- .thumbnail1 -->')) {
-	#		$vhtml = skeleton_get_thumbnail(get_the_ID(),get_post_type(get_the_ID()),'medium');
+	# 	if (strstr($html,'<!-- .thumbnail-1 -->')) {
+	#		$html = skeleton_get_thumbnail($postid,$posttype,'medium');
 	# 	}
 	# }
-	return $vhtml;
+	return $html;
 }
 
 
@@ -864,13 +866,26 @@ function muscle_thumbnail_override($vhtml) {
 // skeleton_blog_display_name
 // skeleton_blog_description
 // skeleton_site_title_display
-// skeleton_site_title_description
+// skeleton_site_description_display
+// skeleton_header_logo_title_separator
+// skeleton_home_link_title
+// skeleton_title_link_url
+// skeleton_logo_link_url
 // skeleton_header_logo_url
 // skeleton_header_logo_override
 // skeleton_logo_resize
 // skeleton_header_menu_settings
-// skeleton_header_html_extras
+// skeleton_header_menu
+// skeleton_header_extras
+// skeleton_header_extras_classes
 // skeleton_navigation_remove
+// skeleton_primary_menu_settings
+// skeleton_primary_menu
+// skeleton_secondary_menu_settings
+// skeleton_secondary_menu
+// skeleton_mobile_menu_buttons
+// skeleton_home_page_title
+// skeleton_home_page_content
 // skeleton_content_classes
 // skeleton_content_columns
 // skeleton_content_columns_override
@@ -878,6 +893,7 @@ function muscle_thumbnail_override($vhtml) {
 // skeleton_content_padding_width
 // skeleton_footer_classes
 // skeleton_footer_menu_settings
+// skeleton_footer_menu
 // skeleton_footer_html_extras
 // /==============/
 
@@ -885,21 +901,21 @@ function muscle_thumbnail_override($vhtml) {
 // -------------------------------------
 // 1.8.5: added this filter
 add_filter('skeleton_html_comments', 'muscle_html_comments');
-function muscle_html_comments($vhtmlcomments) {
+function muscle_html_comments($htmlcomments) {
 	// show HTML element comment wrappers on pages only
-	# if (is_page()) {$vhtmlcomments = 1;}
-	return $vhtmlcomments;
+	# if (is_page()) {$htmlcomments = 1;}
+	return $htmlcomments;
 }
 
 // /= Maximum Layout Width (integer) =/
 // ------------------------------------
 add_filter('skeleton_layout_width', 'muscle_layout_width');
-function muscle_layout_width($vwidth) {
+function muscle_layout_width($width) {
 	// maximum width to scale up to via media queries
 	// 1.5.0: original layout width maximums were 960, 1140 or 1200
 	// but now this can be set to anything in theme options
-	# $vwidth = 1200;
-	return $vwidth;
+	# $width = 1200;
+	return $width;
 }
 
 // /= Grid Columns Override (integer) =/
@@ -987,8 +1003,48 @@ function muscle_site_description_display($display) {
 	return $display;
 }
 
-// /= Header Logo URL (url) =/
-// ---------------------------
+// /= Header Logo Title Separator (string) */
+// ------------------------------------------
+add_filter('skeleton_header_logo_title_separator', 'muscle_header_logo_title_separator');
+function muscle_header_logo_title_separator($sep) {
+	// Change separator used in home link title
+	# eg. change to - instead of |
+	# $sep = '-';
+	return $sep;
+}
+
+// /= Header Logo Title (string) */
+// --------------------------------
+add_filter('skeleton_home_link_title', 'muscle_home_link_title');
+function muscle_home_link_title($title) {
+	// Change link title used for home link
+	# eg. change to return home page text
+	# $title = __('Return to Home Page');
+	return $title;
+}
+
+// /= Title Link (url) */
+// ----------------------
+add_filter('skeleton_title_link_url', 'muscle_title_link_url');
+function muscle_title_link_url($url) {
+	// Change the URL the title links to
+	# eg. link to blog page
+	# $url = site_url('/blog/');
+	return $url;
+}
+
+// /= Logo Link (url) */
+// ---------------------
+add_filter('skeleton_logo_link_url', 'muscle_logo_link_url');
+function muscle_logo_link_url($url) {
+	// Change the URL the logo links to
+	# eg. link to about page
+	# $url = site_url('/about/');
+	return $url;
+}
+
+// /= Header Logo Image URL (url) =/
+// ---------------------------------
 add_filter('skeleton_header_logo_url', 'muscle_header_logo_url');
 function muscle_header_logo_url($url) {
 	// to override the logo URL on a per page basis
@@ -1003,7 +1059,7 @@ function muscle_header_logo_url($url) {
 add_filter('skeleton_header_logo_override', 'muscle_header_logo_override');
 function muscle_header_logo_override($html) {
 	// override the entire HTML logo area output
-	# if (is_front_page()) {$html = my_custom_header_html_function();}
+	# if (is_front_page()) {$html = my_custom_logo_html_function();}
 	return $html;
 }
 
@@ -1026,15 +1082,32 @@ function muscle_header_menu_settings($args) {
 	return $args;
 }
 
+// /= Header Menu Settings (html) =/
+// ---------------------------------
+// 2.2.0: added missing html override example
+add_filter('skeleton_header_menu', 'muscle_header_menu');
+function muscle_header_meun($menu) {
+	// You can change the header menu output, eg.
+	# $menu = my_custom_menu_function();
+	return $menu;
+}
+
 // /= Header Extras Output Override (html) =/
 // ------------------------------------------
 add_filter('skeleton_header_extras', 'muscle_header_extras');
 function muscle_header_extras($html) {
 	// You can set header extra text here as HTML, eg.
-	# $extras = '<div id="welcome">Welcome!</div>';
+	# $html = '<div id="welcome">Welcome!</div>';
 	// or maybe add shortcode output, eg.
-	# $extras .= do_shortcode('[header-html]');
-	return $extras;
+	# $html .= do_shortcode('[header-html]');
+	return $html;
+}
+
+// /= Header Extras Classes (array) =/
+// -----------------------------------
+add_filter('skeleton_header_extras_classes', 'muscle_header_extras_classes');
+function muscle_header_extras_classes($classes) {
+	return $classes;
 }
 
 // /= Navigation Hide Override (boolean) =/
@@ -1048,12 +1121,63 @@ function muscle_navigation_remove($removenav) {
 	return $removenav;
 }
 
-// /= Navigation Menu (html) =/
-// ----------------------------
+// /= Primary Navigation Menu Settings (array) =/
+// ----------------------------------------------
+add_filter('skeleton_primary_menu_settings', 'muscle_primary_menu_settings');
+function muscle_primary_menu_settings($args) {
+	return $args;
+}
+
+// /= Primary Navigation Menu (html) =/
+// --------------------------------------
+add_filter('skeleton_primary_menu', 'muscle_primary_menu');
+function muscle_primary_menu($html) {
+	// override the primary navigation output
+	return $html;
+}
+
+// /= Secondary Navigation Menu Settings (array) =/
+// ------------------------------------------------
+add_filter('skeleton_secondary_menu_settings', 'muscle_secondary_menu_settings');
+function muscle_secondary_menu_settings($args) {
+	return $args;
+}
+
+// /= Secondary Navigation Menu (html) =/
+// --------------------------------------
 add_filter('skeleton_secondary_menu', 'muscle_secondary_menu');
 function muscle_secondary_menu($html) {
 	// override the secondary navigation output
-	# example
+	return $html;
+}
+
+// /= Mobile Menu Button Output Override (html) =/
+// -----------------------------------------------
+add_filter('skeleton_mobile_menu_buttons', 'muscle_mobile_menu_buttons');
+function muscle_mobile_menu_buttons($buttons) {
+	// eg. change the mobile menu button output
+	# $buttons = my_custom_mobile_buttons_function();
+	return $buttons;
+}
+
+// /= Home Page Title (string) =/
+// ------------------------------
+add_filter('skeleton_home_page_title', 'muscle_home_page_title');
+function muscle_home_page_title($title) {
+	return $title;
+}
+
+// /= Home Page Content (html) =/
+// ------------------------------
+add_filter('skeleton_home_page_content', 'muscle_home_page_content');
+function muscle_home_page_content($html) {
+	return $html;
+}
+
+// /= Home Page Footnote (html) =/
+// -------------------------------
+add_filter('skeleton_home_page_footnote', 'muscle_home_page_footnote');
+function muscle_home_page_footnote($html) {
 	return $html;
 }
 
@@ -1123,106 +1247,119 @@ function muscle_footer_menu_settings($settings) {
 	return $settings;
 }
 
-// /= Footer Extras HTML Override (html) =/
-// ----------------------------------------
+// /= Footer Menu Override (html) =/
+// ----------------------------------
+add_filter('skeleton_footer_menu', 'muscle_footer_menu');
+function muscle_footer_menu($html) {
+	return $html;
+}
+
+// /= Footer Extras Override (html) =/
+// -----------------------------------
 add_filter('skeleton_footer_html_extras','muscle_footer_extras');
 function muscle_footer_extras($extras) {
 	// You can set footer extra text as HTML, eg. copyright year
 	# $extras = '<div id="copyright">Copyright '.date('Y').'</div>';
 	// or maybe add shortcode output, eg.
 	# $extras .= do_shortcode('[footer-html]');
-	return $vextras;
+	return $extras;
 }
 
 
 // /===============
 // === SIDEBARS ===
 // ===============/
+// skeleton_header_sidebar
 // skeleton_sidebar_widget_wrappers
 // skeleton_sidebar_settings
 // skeleton_sidebar_layout_override
-// skeleton_header_sidebar
 // skeleton_sidebar_position
 // skeleton_sidebar_mode
 // skeleton_sidebar_columns
+// skeleton_sidebar_classes
 // skeleton_sidebar_hide
+// skeleton_sidebar_output
+// skeleton_sidebar_labels
+// skeleton_sidebar_display_buttons
 // skeleton_subsidebar_position
 // skeleton_subsidebar_mode
 // skeleton_subsidebar_columns
+// skeleton_subsidebar_classes
 // skeleton_subsidebar_hide
+// skeleton_subsidebar_output
+// skeleton_subsidebar_labels
+// skeleton_subsidebar_display_buttons
 // skeleton_footer_sidebar
 // /==============/
 
 
-// /= Sidebar Widget Wrappers =/
-// -----------------------------
-// 1.9.0: added this filter
-add_filter('skeleton_sidebar_widget_wrappers','muscle_sidebar_widget_wrappers');
-function muscle_sidebar_widget_wrappers($vwrappers) {
-	// this sets the widget wrappers for all sidebars
-	// eg. change widget titles from <h3> to <h4> headings
-	# $vwrappers['beforetitle'] = '<h4 class="widget-title">';
-	# $vwrappers['aftertitle'] = '</h4>';
-	return $vwrappers;
+// /= Change the Header Sidebar Template (string) =/
+// -------------------------------------------------
+add_filter('skeleton_header_sidebar', 'muscle_header_sidebar_template');
+function muscle_header_sidebar_template($template) {
+	// eg, look for header-page.php sidebar template for pages
+	// (note: template file and corresponding widget will need to be created)
+	# if (get_post_type(get_the_ID()) == 'page') {$template = 'header-page';}
+	return $template;
 }
 
-// /= Sidebar Labels Override =/
-// -----------------------------
-add_filter('skeleton_sidebar_settings','muscle_sidebar_settings');
-function muscle_sidebar_settings($vsettings) {
+// /= Sidebar Widget Wrappers (html) =/
+// ------------------------------------
+// 1.9.0: added this filter
+add_filter('skeleton_sidebar_widget_wrappers', 'muscle_sidebar_widget_wrappers');
+function muscle_sidebar_widget_wrappers($wrappers) {
+	// this sets the widget wrappers for all sidebars
+	// eg. change widget titles from <h3> to <h4> headings
+	# $wrappers['beforetitle'] = '<h4 class="widget-title">';
+	# $wrappers['aftertitle'] = '</h4>';
+	return $wrappers;
+}
+
+// /= Sidebar Settings Override =/
+// -------------------------------
+add_filter('skeleton_sidebar_settings', 'muscle_sidebar_settings');
+function muscle_sidebar_settings($settings) {
 	// can change the registered sidebar label array
 	// for individual sidebar labels and wrappers by sidebar id
-	// eg. add a title class to a particular sidebar type
-	# foreach ($vsettings as $vid => $vsetting) {
-	#	if ($vid == 'search') {
-	#		$vsettings[$vid]['beforetitle'] = '<h3 class="widget-title search-widget-title">';
+	// eg. add a title class to search sidebar
+	# foreach ($settings as $id => $setting) {
+	#	if ('search' == $id) {
+	#		$settings[$id]['beforetitle'] = '<h3 class="widget-title search-widget-title">';
 	#	}
 	# }
-	return $vsettings;
+	return $settings;
 }
 
 // /= Sidebar Layout Override =/
 // -----------------------------
-add_filter('skeleton_sidebar_layout_override','muscle_sidebar_layout_override');
-function muscle_sidebar_layout_override($vsidebars) {
+add_filter('skeleton_sidebar_layout_override', 'muscle_sidebar_layout_override');
+function muscle_sidebar_layout_override($sidebars) {
 	# extensive examples and explanation needed for this in guide
-	return $vsidebars;
+	return $sidebars;
 }
 
-
-// /= Change the Header Sidebar Template =/
-// ----------------------------------------
-add_filter('skeleton_header_sidebar','muscle_header_sidebar_template');
-function muscle_header_sidebar_template($vtemplate) {
-	// eg, look for header-page.php sidebar template for pages
-	// (note: template file and corresponding widget will need to be created)
-	# if (get_post_type(get_the_ID()) == 'page') {return 'header-page';}
-	return $vtemplate;
-}
-
-// /= Sidebar Position =/
-// ----------------------
+// /= Sidebar Position (string) =/
+// -------------------------------
 // 1.5.0: added this filter
 // Valid Values: left, right
-add_filter('skeleton_sidebar_position','muscle_sidebar_position');
-function muscle_sidebar_position($vposition) {
+add_filter('skeleton_sidebar_position', 'muscle_sidebar_position');
+function muscle_sidebar_position($position) {
 	// eg. swap the from left to right for pages
-	# if ( (is_page()) && ($vposition == 'left') ) {$vposition = 'right';}
-	return $vposition;
+	# if ( (is_page()) && ($vposition == 'left') ) {$position = 'right';}
+	return $position;
 }
 
-// /= Sidebar Mode =/
-// ------------------
+// /= Sidebar Mode (string) =/
+// ---------------------------
 // 1.8.5: added missing example
 // Valid Values: off, postsonly, pagesonly, dual, unified
-add_filter('skeleton_sidebar_mode','muscle_sidebar_mode');
-function muscle_sidebar_mode($vmode) {
-
-	return $vmode;
+add_filter('skeleton_sidebar_mode', 'muscle_sidebar_mode');
+function muscle_sidebar_mode($mode) {
+	return $mode;
 }
 
-// /= Sidebar Column Width =/
-// --------------------------
+// /= Sidebar Column Width (string) =/
+// -----------------------------------
 // 1.5.0: moved here from old skeleton_set_sidebarwidth function
 add_filter('skeleton_sidebar_columns', 'muscle_sidebar_columns');
 function muscle_sidebar_columns($vcolumns) {
@@ -1237,10 +1374,10 @@ function muscle_sidebar_columns($vcolumns) {
 // --------------------------
 // 1.8.0: allow sidebar classes to be filtered
 add_filter('skeleton_sidebar_classes', 'muscle_sidebar_classes');
-function muscle_sidebar_classes($vclasses) {
+function muscle_sidebar_classes($classes) {
 	// eg. add an alpha or omega class to fix margins
-	# $vclasses[] = 'alpha';
-	return $vclasses;
+	# $classes[] = 'alpha';
+	return $classes;
 }
 
 // /= Sidebar Hide =/
@@ -1248,49 +1385,49 @@ function muscle_sidebar_classes($vclasses) {
 // 1.5.5: allow the sidebar to be hidden conditionally
 // (perpost meta is checked for this also)
 add_filter('skeleton_sidebar_hide', 'muscle_sidebar_hide');
-function muscle_sidebar_hide($vhidesidebar) {
+function muscle_sidebar_hide($hidesidebar) {
 	// eg. hide the sidebar for a specific category
-	# is (is_category('articles')) {$vhidesidebar = true;}
-	return $vhidesidebar;
+	# is (is_category('articles')) {$hidesidebar = true;}
+	return $hidesidebar;
 }
 
 // /= Sidebar Output =/
 // --------------------
 // 1.9.5: allow the sidebar to be removed conditionally
 add_filter('skeleton_sidebar_output', 'muscle_sidebar_output');
-function muscle_sidebar_output($voutputsidebar) {
-	// eg. remove the sidebar for a specific category
-	# is (is_category('articles')) {$voutputsidebar = false;}
-	return $voutputsidebar;
+function muscle_sidebar_output($outputsidebar) {
+	// eg. remove the sidebar on a specific post category
+	# is (is_category('articles')) {$outputsidebar = false;}
+	return $outputsidebar;
 }
 
 // /= Sidebar Display Buttons (html) =/
 // ------------------------------------
 add_filter('skeleton_sidebar_display_buttons', 'muscle_sidebar_display_buttons');
 function muscle_sidebar_display_buttons($html) {
-	// HTML output for sidebar show/hide buttons
+	// override output for sidebar show/hide buttons
+	# $html = my_custom_sidebar_buttons();
 	return $html;
 }
 
-// /= Subsidebar Position =/
-// -------------------------
+// /= Subsidebar Position (string) =/
+// ----------------------------------
 // 1.5.0: added this filter
 // Valid Values: internal, external, opposite
 add_filter('skeleton_subsidebar_position','muscle_subsidebar_position');
-function muscle_subsidebar_position($vposition) {
+function muscle_subsidebar_position($position) {
 	// eg. swap the from internal to opposite for pages
-	# if ( (is_page()) && ($vposition == 'internal') ) {$vposition = 'opposite';}
-	return $vposition;
+	# if ( (is_page()) && ($vposition == 'internal') ) {$position = 'opposite';}
+	return $position;
 }
 
 // /= SubSidebar Mode =/
 // ------------------
 // 1.8.5: added missing example
 // Valid Values: off, postsonly, pagesonly, dual, unified
-add_filter('skeleton_subsidebar_mode','muscle_subsidebar_mode');
-function muscle_subsidebar_mode($vmode) {
-
-	return $vmode;
+add_filter('skeleton_subsidebar_mode', 'muscle_subsidebar_mode');
+function muscle_subsidebar_mode($mode) {
+	return $mode;
 }
 
 // /= SubSidebar Column Width =/
@@ -1320,10 +1457,10 @@ function muscle_subsidebar_classes($vclasses) {
 // 1.5.5: allow the subsidebar to be hidden conditionally
 // (perpost meta is checked for this also)
 add_filter('skeleton_subsidebar_hide', 'muscle_subsidebar_hide');
-function muscle_subsidebar_hide($vhidesubsidebar) {
+function muscle_subsidebar_hide($hidesubsidebar) {
 	// eg. hide the subsidebar for a specific category
-	# is (is_category('articles')) {$vhidesubsidebar = true;}
-	return $vhidesubsidebar;
+	# is (is_category('articles')) {$hidesubsidebar = true;}
+	return $hidesubsidebar;
 }
 
 // /= SubSidebar Output =/
@@ -1336,11 +1473,20 @@ function muscle_subsidebar_output($voutputsubsidebar) {
 	return $voutputsubsidebar;
 }
 
+// /= SubSidebar Button Labels (html) =/
+// -------------------------------------
+add_filter('skeleton_subsidebar_button_labels', 'muscle_subsidebar_button_labels');
+function muscle_subsidebar_button_labels($labels) {
+	// Keys: 'show', 'hide', 'text'
+	return $labels;
+}
+
 // /= SubSidebar Display Buttons (html) =/
 // ---------------------------------------
 add_filter('skeleton_subsidebar_display_buttons', 'muscle_subsidebar_display_buttons');
 function muscle_subsidebar_display_buttons($html) {
-	// HTML output for subsidebar show/hide buttons
+	// override output for subsidebar show/hide buttons
+	# $html = my_custom_subsidebar_buttons();
 	return $html;
 }
 
@@ -2143,7 +2289,7 @@ function muscle_infinite_scroll_settings($vsettings) {
 // opinion of course, you can compare ecommerce extension costs yourself.)
 
 // So if you have NOT already setup an online store with it, I recommend looking
-// at alternatives such as eStore: http://bioship.space/recommends/eStore/
+// at alternatives such as eStore: https://bioship.space/recommends/eStore/
 // Even though it is not "free", it is better value overall considering extensions
 // that come with it, and it has just as many, actually many more options in-built.
 
@@ -2297,5 +2443,3 @@ function muscle_open_graph_override_image_custom($vimage) {
 }
 
 // /===== END FILTERS ===== DOC BOUNDARY =====/ //
-
-?>

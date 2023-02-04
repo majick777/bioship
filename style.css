@@ -1,12 +1,12 @@
 /*
 Theme Name: BioShip
-Theme URI: http://bioship.space
-Details URI: http://bioship.space/news/
+Theme URI: https://bioship.space
+Details URI: https://bioship.space/news/
 Description: BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
-Version: 2.1.4
+Version: 2.2.0
 Status: publish
 Author: majick
-Author URI: http://wordquest.org
+Author URI: https://wordquest.org
 Tags: one-column, two-columns, three-columns, left-sidebar, right-sidebar, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, post-formats, theme-options, threaded-comments
 License: GPLv2 or later
 License URI: http://www.opensource.org/licenses/gpl-license.php
@@ -41,6 +41,7 @@ body.sidebar-left #wrap #content, body.sidebar-right.subsidebar-left #wrap #cont
 
 
 /* @group BioShip Fixes */
+/* TODO: merge some of these with skeleton.css */
 
 h1#site-title-text {font-size: initial;}
 #site-logo .site-logo-image, #site-logo .site-logo-text {display:inline-block;}

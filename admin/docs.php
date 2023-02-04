@@ -8,11 +8,15 @@
 
 // --- set documentation debug mode ---
 $vthemedocdebug = false; // $vthemedocdebug = true;
-define('THEMEDOCDEBUG', $vthemedocdebug);
+define( 'THEMEDOCDEBUG', $vthemedocdebug );
 
 // --- maybe define Framework URL constants ---
-if (!defined('THEMEHOMEURL')) {define('THEMEHOMEURL', 'http://bioship.space');}
-if (!defined('THEMESUPPORT')) {define('THEMESUPPORT', 'http://wordquest.org');}
+if ( !defined( 'THEMEHOMEURL' ) ) {
+	define('THEMEHOMEURL', 'https://bioship.space');
+}
+if ( !defined( 'THEMESUPPORT' ) ) {
+	define( 'THEMESUPPORT', 'https://wordquest.org');
+}
 
 
 // Documentation TODOs
@@ -67,35 +71,53 @@ $vthemedoctitles = array(
 // (if not included on documentation site)
 if (!isset($includeddocs)) {
 
-	if (isset($_REQUEST['page'])) {$page = $_REQUEST['page'];} else {$page = '';}
+	$page = isset( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
 
 	// --- Documentation Index ---
-	if ( ($page == 'home') || ($page == 'index') || ($page == '') ) {
-		echo bioship_docs_index(true);
+	if ( ( 'home' == $page ) || ( 'index' == $page ) || ( '' == $page ) ) {
+		echo bioship_docs_index( true );
 	}
 
 	// === Installation ===
-	if ($page == 'install') {echo bioship_docs_install_guide(true);}
-	if ($page == 'child') {echo bioship_docs_child_themes(true);}
-	if ($page == 'frameworks') {echo bioship_docs_framework_guide(true);}
+	if ( 'install' == $page ) {
+		echo bioship_docs_install_guide( true );
+	} elseif ( 'child' == $page ) {
+		echo bioship_docs_child_themes( true );
+	} elseif ( 'frameworks' == $page ) {
+		echo bioship_docs_framework_guide( true );
+	}
 
 	// === Theme Options ===
-	if ($page == 'options') {echo bioship_docs_option_list(true);}
-	if ($page == 'metabox') {echo bioship_docs_metabox_guide(true);}
+	if ( 'options' == $page ) {
+		echo bioship_docs_option_list( true );
+	} elseif ( 'metabox' == $page ) {
+		echo bioship_docs_metabox_guide( true );
+	}
 
 	// === Hierarchies ===
-	if ($page == 'files') {echo bioship_docs_file_hierarchy(true);}
-	if ($page == 'templates') {echo bioship_docs_template_hierarchy(true);}
+	if ( 'files' == $page ) {
+		echo bioship_docs_file_hierarchy( true );
+	} elseif ( 'templates' == $page ) {
+		echo bioship_docs_template_hierarchy( true );
+	}
 
 	// === Layout ===
-	if ($page == 'sidebars') {echo bioship_docs_sidebar_guide(true);}
-	if ($page == 'grid') {echo bioship_docs_grid_system(true);}
-	if ($page == 'hooks') {echo bioship_docs_layout_hooks(true);}
+	if ( 'sidebars' == $page ) {
+		echo bioship_docs_sidebar_guide( true );
+	} elseif ( 'grid' == $page ) {
+		echo bioship_docs_grid_system( true );
+	} elseif ( 'hooks' == $page ) {
+		echo bioship_docs_layout_hooks( true );
+	}
 
 	// === Development ===
-	if ($page == 'filters') {echo bioship_docs_filter_list(true);}
-	if ($page == 'values') {echo bioship_docs_theme_values(true);}
-	if ($page == 'debug') {echo bioship_docs_debug_guide(true);}
+	if ( 'filters' == $page ) {
+		echo bioship_docs_filter_list( true );
+	} elseif ( 'values' == $page ) {
+		echo bioship_docs_theme_values( true );
+	} elseif ( 'debug' == $page ) {
+		echo bioship_docs_debug_guide( true );
+	}
 
 }
 
@@ -103,53 +125,60 @@ if (!isset($includeddocs)) {
 // Documentation Index
 // -------------------
 // 2.0.5: added table markers for admin page
-function bioship_docs_index($wrap) {
+function bioship_docs_index( $wrap ) {
 
 	// 2.1.1: use documentation links and titles globals
 	global $vthemedoclinks, $vthemedoctitles;
 
 	// 2.1.4: fix for documentation index page links
-	if (!isset($vthemedoclinks)) {$vthemedoclinks = bioship_docs_links($wrap);}
+	if ( !isset( $vthemedoclinks ) ) {
+		$vthemedoclinks = bioship_docs_links( $wrap );
+	}
 
 	$html = '';
-	if ($wrap) {$html = bioship_docs_wrap_open('index'); $html .= '<br><h2>BioShip Documentation</h2>';}
+	if ( $wrap ) {
+		$html = bioship_docs_wrap_open( 'index' );
+		$html .= '<br><h2>BioShip Documentation</h2>';
+	}
 
-	$html .= '<div id="bioshipdocindex">'.PHP_EOL;
+	$html .= '<div id="bioshipdocindex">' . PHP_EOL;
 
 		$html .= '<!-- START -->';
 
-		$html .= '<h3>Setup</h3>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['install'].'">'.$vthemedoctitles['install'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['child'].'">'.$vthemedoctitles['child'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['frameworks'].'">'.$vthemedoctitles['frameworks'].'</a><br>'.PHP_EOL;
+		$html .= '<h3>Setup</h3>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['install'] . '">' . $vthemedoctitles['install'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['child'] . '">' . $vthemedoctitles['child'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['frameworks'] . '">' . $vthemedoctitles['frameworks'] . '</a><br>' . PHP_EOL;
 
 		$html .= '<!-- SPLIT -->';
 
-		$html .= '<h3>Options</h3>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['options'].'">'.$vthemedoctitles['options'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['metabox'].'">'.$vthemedoctitles['metabox'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['filters'].'">'.$vthemedoctitles['filters'].'</a><br>'.PHP_EOL;
+		$html .= '<h3>Options</h3>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['options'] . '">' . $vthemedoctitles['options'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['metabox'] . '">' . $vthemedoctitles['metabox'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['filters'] . '">' . $vthemedoctitles['filters'] . '</a><br>' . PHP_EOL;
 
-		$html .= '<h3>Hierarchies</h3>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['files'].'">'.$vthemedoctitles['files'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['templates'].'">'.$vthemedoctitles['templates'].'</a><br>'.PHP_EOL;
+		$html .= '<h3>Hierarchies</h3>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['files'] . '">' . $vthemedoctitles['files'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['templates'] . '">' . $vthemedoctitles['templates'] . '</a><br>' . PHP_EOL;
 
 		$html .= '<!-- SPLIT -->';
 
-		$html .= '<h3>Layout</h3>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['sidebars'].'">'.$vthemedoctitles['sidebars'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['grid'].'">'.$vthemedoctitles['grid'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['hooks'].'">'.$vthemedoctitles['hooks'].'</a><br>'.PHP_EOL;
+		$html .= '<h3>Layout</h3>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['sidebars'] . '">' . $vthemedoctitles['sidebars'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['grid'].'">' . $vthemedoctitles['grid'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['hooks'].'">' . $vthemedoctitles['hooks'] . '</a><br>' . PHP_EOL;
 
-		$html .= '<h3>Development</h3>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['values'].'">'.$vthemedoctitles['values'].'</a><br>'.PHP_EOL;
-		$html .= '<a href="'.$vthemedoclinks['debug'].'">'.$vthemedoctitles['debug'].'</a><br>'.PHP_EOL;
+		$html .= '<h3>Development</h3>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['values'] . '">' . $vthemedoctitles['values'] . '</a><br>' . PHP_EOL;
+		$html .= '<a href="' . $vthemedoclinks['debug'] . '">' . $vthemedoctitles['debug'] . '</a><br>' . PHP_EOL;
 
 		$html .= '<!-- END -->';
 
-	$html .= '</div>'.PHP_EOL;
+	$html .= '</div>' . PHP_EOL;
 
-	if ($wrap) {$html .= bioship_docs_wrap_close('index');}
+	if ( $wrap ) {
+		$html .= bioship_docs_wrap_close( 'index' );
+	}
 
 	return $html;
 }
@@ -176,12 +205,16 @@ function bioship_docs_links($wrap) {
 
 	// --- set doc links URLs ---
 	$vthemedoclinks = array();
-	if ($wrap) {
+	if ( $wrap ) {
 		$vthemedoclinks['index'] = 'docs.php';
-		foreach ($pages as $page) {$vthemedoclinks[$page] = 'docs.php?page='.$page;}
+		foreach ( $pages as $page ) {
+			$vthemedoclinks[$page] = 'docs.php?page=' . $page;
+		}
 	} else {
 		$vthemedoclinks['index'] = '/documentation/';
-		foreach ($pages as $page) {$vthemedoclinks[$page] = '/documentation/'.$page.'/';}
+		foreach ( $pages as $page ) {
+			$vthemedoclinks[$page] = '/documentation/' . $page . '/';
+		}
 	}
 
 	return $vthemedoclinks;
@@ -190,7 +223,7 @@ function bioship_docs_links($wrap) {
 // ----------------------------
 // Standalone Body Wrapper Open
 // -----------------------------
-function bioship_docs_wrap_open($page) {
+function bioship_docs_wrap_open( $page ) {
 
 	global $vthemedoclinks;
 
@@ -205,10 +238,11 @@ function bioship_docs_wrap_open($page) {
 	</style>';
 
 	// --- enqueue normalize.css ---
-	$parseurl = parse_url($_SERVER['SCRIPT_NAME']);
-	$path = str_replace('/admin/docs.php', '/styles/normalize.css', $parseurl['path']);
-	$normalizeurl = 'http://'.$_SERVER['HTTP_HOST'].$path;
-	$html .= '<link rel="stylesheet" href="'.$normalizeurl.'">';
+	// 2.2.0: removed protocol prefix from normalize URL
+	$parseurl = parse_url( $_SERVER['SCRIPT_NAME'] );
+	$path = str_replace( '/admin/docs.php', '/styles/normalize.css', $parseurl['path'] );
+	$normalizeurl = '//' . $_SERVER['HTTP_HOST'] . $path;
+	$html .= '<link rel="stylesheet" href="' . $normalizeurl . '">';
 
 	// --- autoscroll to hash script';
 	$html .= '<script>function scrolltohash(hashName) {location.hash = "#"+hashName;}</script>';
@@ -233,8 +267,8 @@ function bioship_docs_wrap_open($page) {
 	$html .= '</head><body bgcolor="#F0EFFF">';
 
 	// --- add top navigation link table ---
-	if ( ($page != 'index') && ($page != 'quickstart') ) {
-		$html .= bioship_docs_navigation($page);
+	if ( ( $page != 'index' ) && ( $page != 'quickstart' ) ) {
+		$html .= bioship_docs_navigation( $page );
 	}
 
 	return $html;
@@ -243,21 +277,23 @@ function bioship_docs_wrap_open($page) {
 // -----------------------------
 // Standalone Body Wrapper Close
 // -----------------------------
-function bioship_docs_wrap_close($page) {
+function bioship_docs_wrap_close( $page ) {
 
 	global $vthemedoclinks;
 
-	if ( ($page != 'index') && ($page != 'quickstart') ) {
+	if ( ( $page != 'index' ) && ( $page != 'quickstart' ) ) {
 
 		$html = '<div style="padding-top:40px; padding-bottom:40px;">';
 
 			// --- add bottom navigation link table ---
 			// 2.1.1: added better documentation navigation
-			$html .= bioship_docs_navigation($page);
+			$html .= bioship_docs_navigation( $page );
 
 		$html .= '</div>';
 
-	} else {$html = '<div style="padding-top:40px;"></div>';}
+	} else {
+		$html = '<div style="padding-top:40px;"></div>';
+	}
 
 	// --- close body and html ---
 	$html .= '</body></html>';
@@ -269,28 +305,41 @@ function bioship_docs_wrap_close($page) {
 // Documentation Navigation Box
 // ----------------------------
 // 2.1.1: added for better docs navigation
-function bioship_docs_navigation($page) {
+function bioship_docs_navigation( $page ) {
 
 	global $vthemedoclinks, $vthemedoctitles, $docnav;
-	if (isset($docnav)) {return $docnav;}
+	if ( isset( $docnav ) ) {
+		return $docnav;
+	}
 
 	// --- loop to get previous and next links / titles ---
 	$found = false;
 	$prevlink = $prevtitle = $nextlink = $nexttitle = '';
-	foreach ($vthemedoctitles as $key => $title) {
-		if ($found && ($nextlink == '')) {$nextlink = $vthemedoclinks[$key]; $nexttitle = $title;}
-		if ($key == $page) {$found = true; $prevlink = $previouslink; $prevtitle = $previoustitle;}
-		$previouslink = $vthemedoclinks[$key]; $previoustitle = $title;
+	foreach ( $vthemedoctitles as $key => $title ) {
+		if ( $found && ( '' == $nextlink ) ) {
+			$nextlink = $vthemedoclinks[$key]; $nexttitle = $title;
+		}
+		if ( $key == $page ) {
+			$found = true;
+			$prevlink = $previouslink;
+			$prevtitle = $previoustitle;
+		}
+		$previouslink = $vthemedoclinks[$key];
+		$previoustitle = $title;
 	}
 
 	// --- generate navigation html ---
 	$html = '<table width="100%">';
 		$html .= '<tr><td width="33%" align="left">';
-			if ($prevlink != '') {$html .= '<a href="'.$prevlink.'">&larr; Previous: '.$prevtitle.'</a>';}
+			if ( '' != $prevlink ) {
+				$html .= '<a href="' . $prevlink . '">&larr; Previous: ' . $prevtitle . '</a>';
+			}
 		$html .= '</td><td width="33%" align="center">';
 			$html .= '<a href="'.$vthemedoclinks['index'].'">Back to Documentation Index</a>';
 		$html .= '</td><td width="33%" align="right">';
-			if ($nextlink != '') {$html .= '<a href="'.$nextlink.'">Next: '.$nexttitle.' &rarr;</a>';}
+			if ( '' == $nextlink ) {
+				$html .= '<a href="' . $nextlink . '">Next: ' . $nexttitle . ' &rarr;</a>';
+			}
 		$html .= '</td></tr>';
 	$html .= '</table>';
 
@@ -578,7 +627,7 @@ function bioship_docs_framework_guide($wrap) {
 	// TODO: add more extensive information on Hybrid Core here..?
 	$html .= "<h4>Hybrid Core</h4>";
 	$html .= "<i>/includes/hybrid2/</i> or <i>/includes/hybrid3/</i><br>";
-	$html .- "<a href='http://themehybrid.com/hybrid-core' target=_blank>Hybrid Core Framework</a> is included with BioShip for a number of useful in-built function and extensions,
+	$html .= "<a href='http://themehybrid.com/hybrid-core' target='_blank'>Hybrid Core Framework</a> is included with BioShip for a number of useful in-built function and extensions,
 		such as content template hierarchy, page element attributes and inbuilt Schema.org markup<br>
 		<p>Hybrid Core is activated via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Hybrid</i> tab.<br>
 		Note: for consistency, Hybrid Content Template Hierarchy and attributes are implemented regardless of this.</p>";
@@ -593,7 +642,7 @@ function bioship_docs_framework_guide($wrap) {
 
 	$html .= "<h4>Foundation</h4>";
 	$html .= "<i>/includes/foundation5/</i> or <i>/includes/foundation6/</i><br>";
-	$html .= "<p>Foundation by Zurb loading is activated via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Foundation</i> tab.</p\>";
+	$html .= "<p>Foundation by Zurb loading is activated via <i>Theme Options</i> -> <i>Skeleton</i> -> <i>Foundation</i> tab.</p>";
 	// TODO: add more extensive information on Foundation here...
 
 	$html .= "<h3>BioShip Extensions</h3>";
@@ -729,7 +778,7 @@ function bioship_docs_option_list($wrap) {
 				if ($option['std'] == '') {$option['std'] = '<i>none</i>';}
 				$html .= "<b>Default</b>: ".$option['std']."<br>".PHP_EOL;
 			} else {
-				$html .- "<b>Defaults</b>: ".implode(', ',array_keys($option['std']))."<br>".PHP_EOL;
+				$html .= "<b>Defaults</b>: ".implode(', ',array_keys($option['std']))."<br>".PHP_EOL;
 			}
 
 			// if (isset($option['options']) && is_array($option['options']) ) {
@@ -919,7 +968,7 @@ function bioship_docs_filter_list($wrap) {
 	// print_r($sections);
 
 	// 2.1.1: use simple section index
-	foreach ($sections as $i => $section) {
+	foreach ( $sections as $i => $section ) {
 
 		$list = $section['filters'];
 		$content = $section['content'];
@@ -1324,7 +1373,7 @@ function bioship_docs_sidebar_guide($wrap) {
 	$html .= "Post with left Sidebar and opposite SubSidebar: Array ( [0] => 'post', [1] => '', [2] => 'subpost', [3] => '' )<br>";
 	$html .= "Post with left Sidebar and opposite SubSidebar: Array ( [0] => 'post', [1] => '', [2] => 'subpost', [3] => '' )<br>";
 	$html .= "Post with left Sidebar and internal SubSidebar: Array ( [0] => 'post', [1] => 'subpost', [2] => '', [3] => '' )<br>";
-	$tml .= "Post with left Sidebar and external SubSidebar: Array ( [0] => 'subpost', [1] => 'post', [2] => '', [3] => '' )<br>";
+	$html .= "Post with left Sidebar and external SubSidebar: Array ( [0] => 'subpost', [1] => 'post', [2] => '', [3] => '' )<br>";
 	$html .= "Page with right sidebar only: Array ( [0] => '', [1] => '', [2] => 'page', [3] => '' )<br>";
 
 	$html .= "<h6>Override Filter Example</h6>";
@@ -1574,10 +1623,12 @@ function bioship_docs_layout_hooks($wrap) {
 		$hookfile = dirname(dirname(__FILE__)).'/hooks.php';
 		if (!file_exists($hookfile)) {
 			$html .= "<b>Error: Layout Hooks file was not found!?</b>";
-			$html .= "</body></html>"; echo $html; return;
+            // 2.2.0: fix to inconsistent wrap and return value
+			if ($wrap) {$html .= "</body></html>";}
+            return $html;
 		}
 		if (!function_exists('__')) {function __($s, $d = 'bioship', $a = 'bioship') {return $s;} }
-		include($hookfile);
+		include $hookfile;
 	}
 
 	global $vthemehooks;

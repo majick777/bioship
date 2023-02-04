@@ -12,7 +12,7 @@
 
 // This file is automatically copied to your Child Theme via the one-click creation.
 // For manual Child Theme installation and creation options, see Documentation:
-// http://bioship.space/documentation/
+// https://bioship.space/documentation/
 
 // Note: If you have existing widgets and menus in your Parent Theme, they will be copied
 // to your Child Theme automatically upon creating it. (If you created your Child Theme
@@ -23,7 +23,7 @@
 
 // The BioShip file hierarchy ensures if the file exists in the child theme
 // that it is used in preference to the parent theme file - whether PHP, CSS, JS etc.
-// see http://bioship.space/documentation/ for more detailed file information.
+// see https://bioship.space/documentation/ for more detailed file information.
 
 
 // ========================
@@ -133,9 +133,11 @@ function bioship_theme_layout_wrapper() {
 // you can see the exact theme names directly. eg. child-theme.php
 // 2.0.9: added autoload PHP file of same slug as Child Theme
 // 2.1.0: fix to directory separator constant
-$vstylesheet = get_stylesheet();
-$vchildthemefunctions = dirname(__FILE__).DIRECTORY_SEPARATOR.$vstylesheet.'.php';
-if (file_exists($vchildthemefunctions)) {include($vchildthemefunctions);}
+$stylesheet = get_stylesheet();
+$childthemefunctions = dirname( __FILE__ ) . '/' . $stylesheet . '.php';
+if ( file_exists( $childthemefunctions ) ) {
+    include $childthemefunctions;
+}
 
 // -- For adjusting custom value filters you can see your Child Theme filters.php
 // As there are many existing examples available there, you just might find something

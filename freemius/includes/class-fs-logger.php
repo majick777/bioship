@@ -142,7 +142,7 @@
 			return $this->_file_start;
 		}
 
-		private function _log( &$message, $type = 'log', $wrapper ) {
+		private function _log( &$message, $type, $wrapper = false ) {
 			if ( ! $this->is_on() ) {
 				return;
 			}
@@ -220,7 +220,10 @@
 		 */
 		function api_error( $api_result, $wrapper = false ) {
 			$message = '';
-			if ( is_object( $api_result ) && isset( $api_result->error ) ) {
+			if ( is_object( $api_result ) &&
+			     ! empty( $api_result->error ) &&
+			     ! empty( $api_result->error->message )
+			) {
 				$message = $api_result->error->message;
 			} else if ( is_object( $api_result ) ) {
 				$message = var_export( $api_result, true );
