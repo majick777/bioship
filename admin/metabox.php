@@ -1681,6 +1681,10 @@ if ( !function_exists( 'bioship_admin_quicksave_perpost_settings_form' ) ) {
 	global $post;
 	$postid = $post->ID;
 	$adminajax = admin_url( 'admin-ajax.php' );
+	// 2.2.1: fix to ensure save still works when theme test driving
+	if ( isset( $_GET['theme'] ) ) {
+		$adminajax = add_query_arg( 'theme', sanitize_text_field( $_GET['theme'] ), $adminajax );
+	}
 	echo '<form action="' . esc_url( $adminajax ) . '" method="post" id="quicksave-settings-form" target="quicksave-settings-frame">';
 	$nonce = wp_create_nonce( 'quicksave-perpost-settings-' . $postid );
 	echo '<input type="hidden" name="_wpnonce" id="quicksave-settings-nonce" value="' . esc_attr( $nonce ) . '">';

@@ -94,10 +94,12 @@ if ( !function_exists( 'bioship_admin_do_install_child' ) ) {
 	// -------------------------------
 	// 2.1.4: added esc_attr to message string outputs
 	if ( is_dir( $childdir ) ) {
+
 		// --- always avoid overwriting an existing Child Theme! ---
 		$message = esc_html( __( 'Aborted! Child Theme directory of that name already exists!', 'bioship' ) ) . '<br>';
 		$message .= esc_html( __( 'Remove or rename the existing directory and try again.', 'bioship' ) ) . '<br>';
 		return $message;
+
 	} else {
 		// --- create child theme directory the WP Filesystem way ---
 		$wp_filesystem->mkdir( $childdir );
@@ -350,7 +352,7 @@ if ( !function_exists( 'bioship_admin_do_install_clone' ) ) {
 	foreach ( $childfiles as $childfile ) {
 		$sourcefile = $childdir . $childfile;
 		$destfile = $clonedir . $childfile;
-		echo "<!-- Copying: " . esc_attr( $sourcefile ) . " to " . esc_attr( $destfile ) . " -->" . PHP_EOL;
+		echo "<!-- Copying: " . esc_attr( $sourcefile ) . " to " . esc_attr( $destfile ) . " -->" . "\n";
 		if ( !is_dir( dirname( $destfile ) ) ) {
 			$wp_filesystem->mkdir( dirname( $destfile ) );
 		}
@@ -752,33 +754,35 @@ if ( !function_exists( 'bioship_admin_theme_tools_forms' ) ) {
 	$confirmrevert = __( 'Are you sure you want to Revert to Theme Settings prior to Import?', 'bioship' );
 
 	// --- output javascript ---
+	// 2.2.1: prefix javascript functions
 	echo "<script>
-	function confirmrestore() {
+	function bioship_confirmrestore() {
 		var agree = '" . esc_js( $confirmrestore ) . "';
 		if (confirm(agree)) {return true;} return false;
 	}
-	function confirmimport() {
+	function bioship_confirmimport() {
 		if (document.getElementById('textareaimport').checked == '1') {
 			if (document.getElementById('importtextarea').value == '') {return false;} }
 		var agree = '" . esc_js( $confirmimport ) . "';
 		if (confirm(agree)) {return true;} return false;
 	}
-	function confirmrevert() {
+	function bioship_confirmrevert() {
 		var agree = '".esc_js( $confirmrevert ) . "';
 		if (confirm(agree)) {return true;} return false;
 	}
-	function backupthemesettings() {document.getElementById('themetoolsframe').src = '" . esc_url( $adminajax ) . "?action=backup_theme_settings';}
-	function exportthemesettings() {
+	function bioship_backupthemesettings() {document.getElementById('themetoolsframe').src = '" . esc_url( $adminajax ) . "?action=backup_theme_settings';}
+	function bioship_exportthemesettings() {
 		if (document.getElementById('exportjson').checked == '1') {exportformat = 'json';}
 		if (document.getElementById('exportserial').checked == '1') {exportformat = 'ser';}
 		/* if (document.getElementById('exportxml').checked == '1') {exportformat = 'xml';} */
 		document.getElementById('themetoolsframe').src = '" . esc_url( $adminajax ) . "?action=export_theme_settings&format='+exportformat;
 	}
-	function switchexportformat(format) {
+	function bioship_switchexportformat(format) {
 		if (format == 'json') {document.getElementById('exportjson').checked = '1';}
+		if (format == 'ser') {document.getElementById('exportserial').checked = '1';}
 		if (format == 'xml') {document.getElementById('exportxml').checked = '1';}
 	}
-	function switchimportmethod(importmethod) {
+	function bioship_switchimportmethod(importmethod) {
 		if (importmethod == 'fileupload') {
 			document.getElementById('fileuploadimport').checked = '1';
 			document.getElementById('importtextareas').style.display = 'none';
@@ -790,42 +794,49 @@ if ( !function_exists( 'bioship_admin_theme_tools_forms' ) ) {
 			document.getElementById('importtextareas').style.display = '';
 		}
 	}
-	</script>";
+	</script>" . "\n";
 
 	// Theme Tools Interface
 	// ---------------------
 
 	// --- backup button ---
 	// 2.2.0: fix to mismatching quotes
-	echo '<table><tr><td style="vertical-align:middle;">';
-		echo '<input type="button" class="button-primary" value="' . esc_attr( __( 'Backup', 'bioship' ) ) . '" onclick="backupthemesettings();">';
+	echo '<table><tr>' . "\n";
+		echo '<td style="vertical-align:middle;">';
+		echo '<input type="button" class="button-primary" value="' . esc_attr( __( 'Backup', 'bioship' ) ) . '" onclick="bioship_backupthemesettings();">';
+	echo '</td><td width="75"></td>' . "\n";
+	
 	// --- restore button ---
-	echo '</td><td width="75"></td><td style="vertical-align:middle;">';
-		echo '<form action="' . esc_url( $actionurl ) . '" method="post">';
-		echo '<input type="hidden" name="restore_theme_settings" value="yes">';
+	echo '<td style="vertical-align:middle;">';
+		echo '<form action="' . esc_url( $actionurl ) . '" method="post">' . "\n";
+		echo '<input type="hidden" name="restore_theme_settings" value="yes">' . "\n";
 		wp_nonce_field( 'restore_theme_settings_' . $vthemename );
-		echo '<input type="submit" class="button-primary" value="' . esc_attr( __( 'Restore', 'bioship' ) ) . '" onclick="return confirmrestore();"></form>';
+		echo '<input type="submit" class="button-primary" value="' . esc_attr( __( 'Restore', 'bioship' ) ) . '" onclick="return bioship_confirmrestore();"></form>' . "\n";
+	echo '</td><td width="75"></td>' . "\n";
+
 	// --- export button ---
-	echo '</td><td width="75"></td><td style="vertical-align:middle;">';
-		echo '<span id="exportform-arrow">&#9662;</span>';
-		echo '<input type="button" class="button-secondary" value="' . esc_attr( __( 'Export', 'bioship' ) ) . '" onclick="togglethemebox(\"exportform\");">';
+	echo '<td style="vertical-align:middle;">' . "\n";
+		echo '<span id="exportform-arrow">&#9662;</span>' . "\n";
+		echo '<input type="button" class="button-secondary" value="' . esc_attr( __( 'Export', 'bioship' ) ) . '" onclick="togglethemebox(\'exportform\');">' . "\n";
+	echo '</td><td width="75"></td>' . "\n";
+	
 	// --- import button ---
-	echo '</td><td width="75"></td><td style="vertical-align:middle;">';
-		echo '<span id="importform-arrow">&#9662;</span>';
-		echo '<input type="button" class="button-secondary" value="' . esc_attr( __( 'Import', 'bioship' ) ) . '" onclick="togglethemebox(\"importform\");">';
+	echo '<td style="vertical-align:middle;">' . "\n";
+		echo '<span id="importform-arrow">&#9662;</span>' . "\n";
+		echo '<input type="button" class="button-secondary" value="' . esc_attr( __( 'Import', 'bioship' ) ) . '" onclick="togglethemebox(\'importform\');">' . "\n";
 
 	// --- revert button ---
 	if ( isset( $vthemesettings['importtime'] ) ) {
 		if ( '' != $vthemesettings['importtime'] ) {
-			echo '</td><td width="75"></td><td>';
+			echo '</td><td width="75"></td><td>' . "\n";
 			echo '<form action="' . esc_url( $actionurl ) . '" target="themetoolsframe" method="post">';
-			echo '<input type="hidden" name="revert_theme_settings" value="yes">';
+			echo '<input type="hidden" name="revert_theme_settings" value="yes">' . "\n";
 			wp_nonce_field( 'revert_theme_settings_' . $vthemename );
 			// 2.1.2: added missing translation wrapper
-			echo '<input type="submit" value="' . esc_attr( __( 'Revert', 'bioship' ) ) . '" onclick="return confirmrevert();"></form>';
+			echo '<input type="submit" value="' . esc_attr( __( 'Revert', 'bioship' ) ) . '" onclick="return bioship_confirmrevert();"></form>' . "\n";
 		}
 	}
-	echo '</center></td></tr>';
+	echo '</td></tr>' . "\n";
 
 	// Backup Form
 	// -----------
@@ -839,69 +850,70 @@ if ( !function_exists( 'bioship_admin_theme_tools_forms' ) ) {
 
 	// Export Form
 	// -----------
-	echo '<tr><td colspan="7" align="center"><div id="exportform-inside" style="display:none;">';
-		echo '<center><form><table><tr height="25"><td> </td></tr>';
+	echo '<tr><td colspan="7" align="center"><div id="exportform-inside" style="display:none;">' . "\n";
+		echo '<center><form><table><tr height="25"><td> </td></tr>' . "\n";
 		// wp_nonce_field( 'export_theme_settings_' . $vthemename );
 
 		// --- export format selection ---
-		echo '<tr><td><b>' . esc_html( __( 'Export Format', 'bioship' ) ) . ':</b></td><td width="20"></td>';
-		echo '<td width="80" align="right"><input type="radio" id="exportserial" name="exportformat" value="ser" checked="checked"> <b>' . esc_html( __( 'Serialized', 'bioship' ) ) . '</b></td><td width="40"></td>';
-		echo '<td width="80" align="right"><input type="radio" id="exportjson" name="exportformat" value="json"> <b>JSON</b></td><td width="40"></td>';
+		// 2.2.1: added missing onclicks for labels
+		echo '<tr><td><b>' . esc_html( __( 'Export Format', 'bioship' ) ) . ':</b></td><td width="20"></td>' . "\n";
+		echo '<td width="80" align="right"><input type="radio" id="exportserial" name="exportformat" value="ser" checked="checked"> <a href="javascript:void(0);" onclick="bioship_switchexportformat(\'ser\');" style="text-decoration:none;">' . esc_html( __( 'Serialized', 'bioship' ) ) . '</a></td><td width="40"></td>' . "\n";
+		echo '<td width="80" align="right"><input type="radio" id="exportjson" name="exportformat" value="json"> <a href="javascript:void(0);" onclick="bioship_switchexportformat(\'json\');" style="text-decoration:none;">JSON</a></td><td width="40"></td>' . "\n";
 		// TEMP: disabled while XML export format not working
-		// echo '<td width="80" align="right"><input type="radio" id="exportxml" name="exportformat" value="xml"> <b>XML</b></td><td width="40"></td>';
+		// echo '<td width="80" align="right"><input type="radio" id="exportxml" name="exportformat" value="xml"> <b>XML</b></td><td width="40"></td>' . "\n";
 
 		// --- export button ---
-		echo '<td><input type="button" class="button-primary" value="' . esc_attr( __( 'Export', 'bioship' ) ) . '" onclick="exportthemesettings();"></td>';
-		echo '</tr></table></form>';
+		echo '<td><input type="button" class="button-primary" value="' . esc_attr( __( 'Export', 'bioship' ) ) . '" onclick="bioship_exportthemesettings();"></td>' . "\n";
+		echo '</tr></table></form>' . "\n";
 
-	echo '</div></td></tr>';
+	echo '</div></td></tr>' . "\n";
 
 	// Import Form
 	// -----------
-	echo '<tr><td colspan="7" align="center"><div id="importform-inside" style="display:none;">';
+	echo '<tr><td colspan="7" align="center"><div id="importform-inside" style="display:none;">' . "\n";
 
 		// --- start import form ---
 		// 2.0.7: remove form target='themetoolsframe'
-		echo '<form action="' . esc_url( $actionurl ) . '" enctype="multipart/form-data" method="post">';
-		echo '<input type="hidden" name="import_theme_settings" value="yes">';
+		echo '<form action="' . esc_url( $actionurl ) . '" enctype="multipart/form-data" method="post">' . "\n";
+		echo '<input type="hidden" name="import_theme_settings" value="yes">' . "\n";
 		wp_nonce_field( 'import_theme_settings_' . $vthemename );
 		// for import debugging switch passthrough
 		if ( THEMEDEBUG ) {
-			echo '<input type="hidden" name="themedebug" value="2">';
+			echo '<input type="hidden" name="themedebug" value="2">' . "\n";
 		}
 
-		echo '<table><tr height="25"><td> </td></tr><tr>';
+		echo '<table><tr height="25"><td> </td></tr><tr>' . "\n";
 
 			// --- select import method ---
-			echo '<td style="vertical-align:top; line-height:12px;"><b>' . esc_html( __( 'Import Method', 'bioship' ) ) . ':<b><br><br>';
-			echo '<input type="radio" id="fileuploadimport" name="importmethod" value="fileupload" onchange="switchimportmethod(\'fileupload\');" checked="checked"> ';
-			echo '<a href="javascript:void(0);" onclick="switchimportmethod(\'fileupload\');" style="text-decoration:none;">' . esc_html( __( 'File Upload', 'bioship' ) ) . '</a><br><br>';
-			echo '<input type="radio" id="textareaimport" name="importmethod" value="textarea" onchange="switchimportmethod(\'textarea\');"> ';
-			echo '<a href="javascript:void(0);" onclick="switchimportmethod(\'textarea\');" style="text-decoration:none;">' . esc_html( __( 'Text Area', 'bioship' ) ) . '</a></td>';
-			echo '<td width="20"></td>';
+			echo '<td style="vertical-align:top; line-height:12px;"><b>' . esc_html( __( 'Import Method', 'bioship' ) ) . ':<b><br><br>' . "\n";
+			echo '<input type="radio" id="fileuploadimport" name="importmethod" value="fileupload" onchange="bioship_switchimportmethod(\'fileupload\');" checked="checked"> ' . "\n";
+			echo '<a href="javascript:void(0);" onclick="bioship_switchimportmethod(\'fileupload\');" style="text-decoration:none;">' . esc_html( __( 'File Upload', 'bioship' ) ) . '</a><br><br>' . "\n";
+			echo '<input type="radio" id="textareaimport" name="importmethod" value="textarea" onchange="bioship_switchimportmethod(\'textarea\');"> ' . "\n";
+			echo '<a href="javascript:void(0);" onclick="bioship_switchimportmethod(\'textarea\');" style="text-decoration:none;">' . esc_html( __( 'Text Area', 'bioship' ) ) . '</a></td>' . "\n";
+			echo '<td width="20"></td>' . "\n";
 
 			// --- textarea import fields ---
-			echo '<td align="center" style="vertical-align:middle;"><div id="importtextareas" style="display:none;">';
-			echo '(' . esc_html( __( 'XML, JSON or Serialized', 'bioship' ) ) . '<br>' . esc_html( __( 'are auto-detected.', 'bioship' ) ) . ")<br>";
-			echo '<textarea name="importtextarea" id="importtextarea" style="width:300px; height:80px;"></textarea>';
-			echo '</div></td>';
+			echo '<td align="center" style="vertical-align:middle;"><div id="importtextareas" style="display:none;">' . "\n";
+			echo '(' . esc_html( __( 'XML, JSON or Serialized', 'bioship' ) ) . '<br>' . esc_html( __( 'are auto-detected.', 'bioship' ) ) . ')<br>' . "\n";
+			echo '<textarea name="importtextarea" id="importtextarea" style="width:300px; height:80px;"></textarea>' . "\n";
+			echo '</div></td>' . "\n";
 
 			// --- file upload import field ---
-			echo '<td align="center" style="vertical-align:middle;"><div id="importfileselect" style="width:300px;">';
-			echo esc_html( __( 'Select Theme Options file to Import', 'bioship' ) ) . ':<br><br>';
-			echo '<input type="file" name="importthemeoptions" size="30"></div></td>';
+			echo '<td align="center" style="vertical-align:middle;"><div id="importfileselect" style="width:300px;">' . "\n";
+			echo esc_html( __( 'Select Theme Options file to Import', 'bioship' ) ) . ':<br><br>' . "\n";
+			echo '<input type="file" name="importthemeoptions" size="30"></div></td>' . "\n";
 
 			// --- import submit button ---
-			echo '</td><td width="20"></td><td style="vertical-align:bottom;">';
-			echo '<input type="submit" class="button-primary" value="' . esc_attr( __( 'Import', 'bioship' ) ) . '" onclick="return confirmimport();"></td>';
+			echo '</td><td width="20"></td><td style="vertical-align:bottom;">' . "\n";
+			echo '<input type="submit" class="button-primary" value="' . esc_attr( __( 'Import', 'bioship' ) ) . '" onclick="return bioship_confirmimport();"></td>' . "\n";
 
-		echo '</tr></table></form>';
+		echo '</tr></table></form>' . "\n";
 
-	echo '</div></td></tr></table>';
+	echo '</div></td></tr></table>' . "\n";
 
 	// Theme Tools Iframe
 	// ------------------
-	echo '<iframe style="display:none;" src="javascript:void(0);" name="themetoolsframe" id="themetoolsframe"></iframe>';
+	echo '<iframe style="display:none;" src="javascript:void(0);" name="themetoolsframe" id="themetoolsframe"></iframe>' . "\n";
  }
 }
 

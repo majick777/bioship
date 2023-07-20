@@ -1137,7 +1137,8 @@ if ( '' != $extrabuttons ) {
 // 2.0.8: added missing body prefix to number input selector
 // 2.0.9: added missing input type email for consistent styling
 if ( isset( $vts['inputcolor'] ) || isset( $vts['inputbgcolor'] ) ) {
-	$inputs = "body input[type='text'], body input[type='checkbox'], body input[type='password'], body input[type='number'], body input[type='email'], body select, body select option, body select optgroup, body textarea {";
+	// 2.2.1: fix to not change background color of selected options
+	$inputs = "body input[type='text'], body input[type='checkbox'], body input[type='password'], body input[type='number'], body input[type='email'], body select, body select option:not(:checked), body select optgroup, body textarea {";
 	if ( isset( $vts['inputcolor'] ) && ( '' != $vts['inputcolor'] ) ) {
 		$inputs .= "color: " . $vts['inputcolor'] . "; ";
 	}

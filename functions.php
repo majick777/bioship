@@ -1015,11 +1015,12 @@ if ( !function_exists( 'bioship_get_theme_settings' ) ) {
 			// 2.2.0: added trim to remove possible whitespace or line breaks
 			bioship_debug( "Checking Found File Settings" );
 			$saveddata = trim( bioship_file_get_contents( $savedfile ) );
-			if ( ( strlen( $saveddata ) > 0 ) && is_serialized( $saveddata ) ) {
-				$unserialized = @unserialize( $saveddata );
+			// if ( ( strlen( $saveddata ) > 0 ) && is_serialized( $saveddata ) ) {
+			if ( strlen( $saveddata ) > 0 ) {
+				$unserialized = unserialize( $saveddata );
 				if ( !$unserialized ) {
 					$repaired = bioship_fix_serialized( $saveddata );
-					$fixedsettings = @unserialize( $repaired );
+					$fixedsettings = unserialize( $repaired );
 					if ( $fixedsettings ) {
 						bioship_debug( "Fixed Serialized File Settings" );
 						$unserialized = $fixedsettings;

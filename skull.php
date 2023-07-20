@@ -4553,6 +4553,9 @@ if ( !function_exists( 'bioship_site_icon_tags' ) ) {
  function bioship_site_icon_tags( $tags ) {
 	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__ );}
 
+	// 2.2.1: fix for missing globals
+	global $vthemesettings, $vthemedirs;
+	
 	// ---- Apple Touch, use the 144x144 default, then optional sizes ---
 	$wintile = bioship_file_hierarchy( 'url', 'win8tile.png', $vthemedirs['image'] );
 	if ( !$wintile ) {
@@ -5213,14 +5216,18 @@ if ( !function_exists( 'bioship_skin_enqueue_styles' ) ) {
 			// 2.0.1: add themename prefix to style handle
 			// 2.1.1: fix to core dependency array (removed -styles suffix)
 			// 2.1.1: direct enqueue without registering first
+			// 2.2.1: fix to incorrect coredep concatenation
 			wp_enqueue_style( THEMESLUG . '-core', $corestyles['url'], array(), $cachebust );
-			$coredep = array( THEMESLUG . -'core' );
+			$coredep = array( THEMESLUG . '-core' );
 
 			// --- enqueue theme style.css ---
 			// (note: must be enqueued separate or CSS breaks)
-			$csscachebust = $filemtime ? date( 'ymdHi', filemtime( get_stylesheet( THEMESLUG ) ) ) : $vcsscachebust;
+			// 2.2.1: fix to styleshhet path for filemtime
+			$theme_root = get_theme_root( THEMESLUG );
+			$stylesheet_path = $theme_root . '/' . THEMESLUG . '/style.css';
+			$csscachebust = $filemtime ? date( 'ymdHi', filemtime( $stylesheet_path ) ) : $vcsscachebust;
 			// 2.0.1: add themename prefix to style handle
-			wp_enqueue_style( THEMESLUG . '-styles', get_stylesheet_uri( THEMESLUG ), $coredep, $cachebust );
+			wp_enqueue_style( THEMESLUG . '-styles', get_stylesheet_uri( THEMESLUG ), $coredep, $csscachebust );
 		}
 	}
 
