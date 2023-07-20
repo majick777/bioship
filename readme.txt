@@ -6,7 +6,7 @@ License URI: http://www.opensource.org/licenses/gpl-license.php
 Donate Link: https://wordquest.org/contribute/
 Requires at least: 3.4
 Requires PHP: 5.3
-Tested up to: 6.0
+Tested up to: 6.2.2
 Stable tag: trunk
 
 BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
@@ -44,6 +44,12 @@ Or click the Docs link on your Theme Options page to view them in your WordPress
 
 
 == Changelog ==
+
+= 2.2.1 =
+- Updated: Freemius SDK 2.5.10
+- Fixed: PHPMailer class not found (WP class_alias failure)
+- Fixed: mismatched label for post type object author display
+- Changed: prefix admin javascript functions
 
 = 2.2.0 =
 - Updated: Freemius SDK to 2.4.3

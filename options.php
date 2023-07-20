@@ -385,6 +385,10 @@ if ( !function_exists( 'bioship_optionsframework_to_titan' ) ) {
 	 	}
 	 	$adminajax = admin_url( 'admin-ajax.php' );
 	 	$refreshurl = add_query_arg( 'action', 'bioship_theme_options_refresh_titan_nonce', $adminajax );
+		// 2.2.1: maybe add theme test drive argument
+		if ( isset( $_GET['theme'] ) ) {
+			$refreshurl = add_query_arg( 'theme', sanitize_text_field( 'theme' ), $refreshurl );
+		}
 	 	echo "<script>jQuery(document).ready(function() {
 	 		setInterval(function() {
 	 			document.getElementById('titan-nonce-refresh').src = '" . esc_url( $refreshurl ) . "';

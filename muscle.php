@@ -2882,12 +2882,16 @@ if ( !function_exists( 'bioship_muscle_stop_new_user_notifications' ) ) {
 	// note: handling translation wrappers in subject line is not working,
 	// so this feature may not work with multi-language translations
 	global $phpmailer;
+
+	// 2.2.1: fix to use namespaced PHP Mailer class
+	// (throwing class not found error despite WP class_alias declaration!)
+	$phpmailer_class = class_exists( 'PHPMailer' ) ? 'PHPMailer' : 'PHPMailer\PHPMailer\PHPMailer';
 	if ( is_multisite() ) {
 		// 2.0.7: added missing translation wrapper
 		// 2.0.9: duh, removed translation wrapper
 		$subject = 'New User Registration';
 		if ( $phpmailer->Subject == $subject ) {
-			$phpmailer = new PHPMailer( true );
+			$phpmailer = new $phpmailer_class( true );
 		}
 	} else {
 		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
@@ -2899,7 +2903,7 @@ if ( !function_exists( 'bioship_muscle_stop_new_user_notifications' ) ) {
 			sprintf( '[%s] Password Lost/Changed', $blogname ),
 		);
 		if ( in_array( $phpmailer->Subject, $subject ) ) {
-			$phpmailer = new PHPMailer( true );
+			$phpmailer = new $phpmailer_class( true );
 		}
 	}
  }

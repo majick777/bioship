@@ -2597,7 +2597,12 @@ if ( !function_exists( 'bioship_skeleton_author_bio_box' ) ) {
 
 			// --- check whether global show is on and filter ---
 			// 1.8.0: fix to showbox filter variable
-			$show_box = $vthemesettings['authorbiocpts'][$posttype];
+			// 2.2.1: add check if showbox set for this post type
+			// 2.2.1: fix posttype variable to post_type
+			$show_box = false;
+			if ( isset( $vthemesettings['authorbiocpts'][$post_type] ) ) {
+				$show_box = $vthemesettings['authorbiocpts'][$post_type];
+			}
 			$show_box = bioship_apply_filters( 'skeleton_author_bio_box', $show_box );
 			if ( !$show_box ) {
 				return false;
@@ -2720,8 +2725,9 @@ if ( !function_exists( 'bioship_skeleton_author_posts_link' ) ) {
 		} elseif ( $post_type ) {
 			// 1.8.0: use the plural name not the singular one
 			// $posttypedisplay = $posttypeobject->labels->singular_name;
+			// 2.2.1: fix to posttypeobject variable mismatch
 			$post_type_object = get_post_type_object( $post_type );
-			$post_type_display = $posttypeobject->labels->name;
+			$post_type_display = $post_type_object->labels->name;
 		} else {
 			$post_type_display = __( 'Writings', 'bioship' );
 		}

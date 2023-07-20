@@ -720,11 +720,13 @@ if ( !function_exists( 'bioship_admin_freemius_connect' ) ) {
  }
  function bioship_admin_freemius_connect( $message, $user_first_name, $plugin_title, $user_login, $site_link, $freemius_link ) {
  	// 2.2.0: fix to remove unused replacement arguments
-	return sprintf(
-		__fs( 'hey-x' ) . '<br>'.
-		__( 'Show your appreciation for %1$s by helping us improve it! Opt in to diagnostic tracking and receive security and feature notifications.', 'bioship' ),
-		'<b>' . $plugin_title . '</b>'
-	);
+	$connect_message = '';
+	// 2.2.1: added function_exists check for Freemius translation function
+	if ( function_exists( '__fs' ) ) {
+		$connect_message .= __fs( 'hey-x' ) . '<br>';
+	}
+	$connect_message .= sprintf( __( 'Show your appreciation for %1$s by helping us improve it! Opt in to diagnostic tracking and receive security and feature notifications.', 'bioship' ), '<b>' . $plugin_title . '</b>' );
+	return $connect_message;
  }
 }
 
