@@ -392,6 +392,86 @@ if ( !function_exists( 'bioship_allowed_html' ) ) {
 	}
 }
 
+// ---------------------------
+// Filter Allowed Sidebar HTML
+// ---------------------------
+// 2.2.1: fix sidebars for search forms etc.
+if ( !function_exists( 'bioship_allowed_sidebar_html' ) ) {
+ add_filter( 'bioship_skeleton_allowed_html', 'bioship_allowed_sidebar_html', 10, 3 );
+ function bioship_allowed_sidebar_html( $allowed, $type, $context ) {
+	if ( 'sidebar' == $type ) {
+		
+		// --- form ---
+		$allowed['form'] = array(
+			'accept-charset' => array(),
+			'action'		=> array(),
+			'autocomplete'	=> array(),
+			'enctype'		=> array(),
+			'id'			=> array(),
+			'method'		=> array(),
+			'name'			=> array(),
+			'rel'			=> array(),
+			'target'		=> array(),
+		);
+
+		// --- inputs ---
+		$allowed['input'] = array(
+			'id'			=> array(),
+			'class'			=> array(),
+			'name'			=> array(),
+			'value'			=> array(),
+			'type'			=> array(),
+			'data'			=> array(),
+			'placeholder'	=> array(),
+			'style'         => array(),
+			'checked'       => array(),
+			'onclick'       => array(),
+		);
+
+		// --- textarea ---
+		$allowed['textarea'] = array(
+			'id'			=> array(),
+			'class'			=> array(),
+			'name'			=> array(),
+			'value'			=> array(),
+			'type'			=> array(),
+			'placeholder'	=> array(),
+			'style'         => array(),
+		);
+
+		// --- select ---
+		$allowed['select'] = array(
+			'id'			=> array(),
+			'class'			=> array(),
+			'name'			=> array(),
+			'value'			=> array(),
+			'type'			=> array(),
+			'multiselect'	=> array(),
+			'style'         => array(),
+			'onchange'      => array(),
+		);
+
+		// --- select option ---
+		$allowed['option'] = array(
+			'selected' => array(),
+			'value'    => array(),
+		);
+
+		// --- option group ---
+		$allowed['optgroup'] = array(
+			'label' => array(),
+			'style' => array(),
+		);
+
+		// --- button onclick attributes ---
+		$allowed['a']['onclick'] = array();
+		$allowed['button']['onclick'] = array();
+	}
+
+	return $allowed;
+ }
+}
+
 // --------------------------------
 // Filter Allowed Button Attributes
 // --------------------------------
@@ -401,6 +481,8 @@ if ( !function_exists( 'bioship_allowed_html_buttons' ) ) {
  function bioship_allowed_html_buttons( $allowed, $type, $context ) {
 	if ( 'buttons' == $type ) {
 		$allowed['a']['onclick'] = array();
+		// 2.2.1: added button tag onclick attribute
+		$allowed['button']['onclick'] = array();
 	}
 	return $allowed;
  }
@@ -1050,6 +1132,9 @@ if ( !function_exists( 'bioship_file_get_contents' ) ) {
 	}
 
 	// --- get file contents ---
+	if ( THEMEDEBUG ) {
+		echo '<span style="display:none;">Get Contents for Filepath: ' . $filepath . '</span>' . "\n";
+	}
 	$contents = $wp_filesystem->get_contents( $filepath );
 	if ( $contents ) {
 		return $contents;

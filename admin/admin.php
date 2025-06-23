@@ -75,6 +75,7 @@ if ( !defined( 'ABSPATH' ) ) {exit;}
 // - Admin Theme Options Page Scripts
 // - Admin Theme Options Page Styles
 // - Floating Sidebar Output
+// - Save Button Click Script
 // - AJAX QuickSave CSS
 // - AJAX Refresh Titan Nonce
 // - AJAX Session Timeout Alert
@@ -1204,6 +1205,7 @@ if ( !function_exists( 'bioship_add_theme_info_page' ) ) {
 if ( !function_exists( 'bioship_admin_theme_options_page_redirect' ) ) {
 
  add_action( 'admin_init', 'bioship_admin_theme_options_page_redirect' );
+ add_action( 'admin_page_access_denied', 'bioship_admin_theme_options_page_redirect' );
 
  function bioship_admin_theme_options_page_redirect($updated = '') {
  	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__, func_get_args() );}
@@ -1211,7 +1213,7 @@ if ( !function_exists( 'bioship_admin_theme_options_page_redirect' ) ) {
 	// ---- check conditions for page redirection ---
 	// 2.0.5: make this redirect available for admin.php also
 	if ( !strstr( $_SERVER['REQUEST_URI'], '/themes.php' ) && !strstr( $_SERVER['REQUEST_URI'], '/admin.php' ) ) {
-		return;
+	 	return;
 	}
  	if ( !isset( $_REQUEST['page'] ) || ( 'theme-options' != $_REQUEST['page'] ) ) {
  		return;
@@ -2244,24 +2246,26 @@ if ( !function_exists( 'bioship_admin_theme_options_scripts' ) ) {
 	// 2.1.2: added missing translation wrappers to save button/message
 	$savecss = __( 'Save CSS', 'bioship' );
 	$csssaved = __( 'CSS Saved!', 'bioship' );
+	// 2.2.3: removed float right style and margin-left
+	// quicksavebutton.setAttribute('style', 'float:right;');
 	echo "
 		quicksavebutton = document.createElement('a');
 		quicksavebutton.setAttribute('class', 'button button-primary');
-		quicksavebutton.setAttribute('style', 'margin-left:-80px; float:right;');
+		
 		quicksavebutton.innerHTML = '" . esc_attr( $savecss ) . "';
 		quicksavebutton.href = 'javascript:void(0);';
 		quicksavebutton.id = 'quicksavebutton';
 
 		quicksavesaved = document.createElement('div');
-		quicksavesaved.id = 'quicksavesaved';
+		quicksavesaved.id = 'quicksavecsssaved';
 		quicksavesaved.innerHTML = '" . esc_attr( $csssaved ) . "';
-
-		function quicksavedshow() {
-			quicksaved = document.getElementById('quicksavesaved');
-			quicksaved.style.display = 'block';
-			setTimeout(function() {jQuery(quicksaved).fadeOut(5000,function(){});}, 5000);
-		}
 	" . PHP_EOL;
+	/* function quicksavedshow() {
+		quicksaved = document.getElementById('quicksavecsssaved');
+		quicksaved.style.display = 'inline-block';
+		setTimeout(function() {jQuery(quicksaved).fadeOut(5000,function(){});}, 5000);
+	}
+	*/
 	// if (document.getElementById('dynamiccustomcss')) {jQuery('#dynamiccustomcss').parent.addClass('nolabel');}
 
 	// Call Document Ready Functions
@@ -2277,12 +2281,18 @@ if ( !function_exists( 'bioship_admin_theme_options_scripts' ) ) {
 
 		// CSS Quicksave Button
 		// --------------------
+		// 2.2.3: use insertAdjecentElement instead of insertBefore
+		// csstextarea.insertAdjacentElement('afterend', quicksavebutton);
+		// csstextarea.insertAdjacentElement('afterend', quicksavesaved);
+		// 2.2.3: get new CSS value via Code Mirror
 		echo "csstextarea = document.getElementById(dynamiccssareaid);
 		textareaparent = csstextarea.parentNode;
-		textareaparent.insertBefore(quicksavebutton, csstextarea);
-		textareaparent.insertBefore(quicksavesaved, csstextarea);
+		textareaparent.insertBefore(quicksavesaved, csstextarea.nextSibling);
+		textareaparent.insertBefore(quicksavebutton, csstextarea.nextSibling);
 		jQuery('#quicksavebutton').click(function() {
-			newcss = document.getElementById(dynamiccssareaid).value;
+			console.log('Quicksaving CSS');
+			/* newcss = document.getElementById(dynamiccssareaid).value; */
+			newcss = jQuery('#'+dynamiccssareaid).parent().find('.CodeMirror')[0].CodeMirror.getValue();
 			jQuery('#quicksavecss').val(newcss);
 			jQuery('#quicksavecssform').submit();
 		});" . PHP_EOL;
@@ -2393,8 +2403,9 @@ if ( !function_exists( 'bioship_admin_theme_options_styles' ) ) {
 		#themeoptionsheader, #extendwrapper {float:left;}
 		#optionsframework {max-width:100% !important;} /* O.F. */
 		.titan-framework-panel-wrap {float:left;} .options-container .tf-font iframe {height:75px;} /* Titan */
-		#quicksavesaved {display:none; float:right; margin-left:-50px; margin-top:50px; padding:3px 6px; max-width:80px;
-			font-size:10pt; color: #333; font-weight:bold; 	background-color: lightYellow; border: 1px solid #E6DB55;}
+		#quicksavebutton {display:inline-block; margin-top:3px;}
+		#quicksavecsssaved {display:none; margin-left:30px; margin-top:8px; padding:3px 6px; max-width:80px;
+			font-size:14px; color: #333; font-weight:bold; 	background-color: lightYellow; border: 1px solid #E6DB55;}
 		#setting-error-tgmpa button.notice-dismiss {display:none !important;} /* TGM fix */
 
 		#exportform-arrow, #importform-arrow {font-size:24px; font-weight:bold; line-height:24px;}
@@ -2454,20 +2465,8 @@ if ( !function_exists( 'bioship_admin_floating_sidebar' ) ) {
 			$button .= '</a></font></div>';
 		$button .= '</td></tr></table>';
 
-		// --- jQuery click and submit functions ---
-		// 2.2.0: output script directly instead of returning
-		// TODO: maybe add these to admin_footer instead ?
-		echo "<script>jQuery('#sidebarsavebutton').click(function() {" . PHP_EOL;
-		if ( THEMETITAN ) {
-			// --- Titan Framework ---
-			echo "jQuery('.options-container form button[name=\"action\"]').each(function() {" . PHP_EOL;
-			echo "	if (jQuery(this).hasClass('button-primary')) {jQuery(this).trigger('click');}" . PHP_EOL;
-			echo "});" . PHP_EOL;
-		} elseif ( THEMEOPT ) {
-			// --- Options Framework ---
-			echo  "jQuery('#optionsframework form').submit();" . PHP_EOL;
-		}
-		echo "});</script>" . PHP_EOL;
+		// 2.2.3: add save button script to footer
+		add_action( 'admin_footer', 'bioship_admin_save_button_script' );
 
 		return $button;
 	 }
@@ -2486,6 +2485,29 @@ if ( !function_exists( 'bioship_admin_floating_sidebar' ) ) {
  }
 }
 
+// ------------------------
+// Save Button Click Script
+// ------------------------
+// 2.2.3: added script to admin_footer action instead
+if ( !function_exists( 'bioship_admin_save_button_script' ) ) {
+ function bioship_admin_save_button_script() {
+
+	// --- jQuery click and submit functions ---
+	// 2.2.0: output script directly instead of returning
+	echo "<script>jQuery('#sidebarsavebutton').click(function() {" . PHP_EOL;
+	if ( THEMETITAN ) {
+		// --- Titan Framework ---
+		echo "jQuery('.options-container form button[name=\"action\"]').each(function() {" . PHP_EOL;
+		echo "	if (jQuery(this).hasClass('button-primary')) {console.log(jQuery(this)); jQuery(this).trigger('click');}" . PHP_EOL;
+		echo "});" . PHP_EOL;
+	} elseif ( THEMEOPT ) {
+		// --- Options Framework ---
+		echo  "jQuery('#optionsframework form').submit();" . PHP_EOL;
+	}
+	echo "});</script>" . PHP_EOL;
+ }
+}
+		
 // ------------------
 // AJAX QuickSave CSS
 // ------------------
@@ -2499,7 +2521,7 @@ if ( !function_exists( 'bioship_admin_quicksave_css' ) ) {
  	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__ );}
 
 	if ( current_user_can( 'edit_theme_options' ) ) {
-		$vthemename = $_POST['theme'];
+		$vthemename = sanitize_text_field( $_POST['theme'] );
 		// 2.0.9: use wp_verify_nonce not check_admin_referer here
 		$checknonce = wp_verify_nonce( $_REQUEST['_wpnonce'], 'quicksave_css_' . $vthemename );
 		if ( $checknonce ) {
@@ -2521,8 +2543,9 @@ if ( !function_exists( 'bioship_admin_quicksave_css' ) ) {
 		echo "<script>alert('" . esc_js( $error ) . "');</script>";
 	} else {
 		// 2.1.2: moved from parent quicksave function
-		echo "<script>parent.document.getElementById('quicksavesaved').style.display = 'block';
-		setTimeout(function() {parent.jQuery('#quicksavesaved').fadeOut(5000,function(){});}, 5000);</script>";
+		// 2.2.3: fix to missing open script tag
+		echo "<script>el = parent.document.getElementById('quicksavecsssaved'); el.style.display = 'inline-block'; console.log(el);
+		setTimeout(function() {parent.jQuery('#quicksavecsssaved').fadeOut(5000,function(){});}, 5000);</script>";
 	}
 	exit;
  }

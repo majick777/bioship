@@ -1432,10 +1432,13 @@ if ( !function_exists( 'bioship_admin_quicksave_styles' ) ) {
 	echo '<textarea id="new-styles">' . esc_textarea( $newstyles ) . '</textarea>';
 
 	// --- script output and exit ---
-	echo "<script>";
+	
 	if ( isset( $error ) ) {
-		echo "alert('" . esc_js( $error ) . "');";
+		echo "<script>alert('" . esc_js( $error ) . "');</script>" . "\n";
 	} else {
+		
+		echo "<script>";
+		
 		// --- show updated message in parent window ---
 		echo "parent.bioship_quicksave_styles('" . esc_js( $type ) . "');" . PHP_EOL;
 
@@ -1446,47 +1449,65 @@ if ( !function_exists( 'bioship_admin_quicksave_styles' ) ) {
 		el = parent.document.getElementById(originalid);
 		el.removeAttribute('readonly');
 		el.value = newstyles;
-		el.setAttribute('readonly','');" . PHP_EOL;
+		el.setAttribute('readonly','');
+		</script>" . "\n";
 
-		if ( 'admin' != $type ) {
-			// 2.2.0: reload current stylesheet in parent frame
-			echo "id = '" . THEMESLUG . "-skin-css';
-			el = parent.document.getElementById(id);
-			if (el) {href = el.href; byid = true;}
-			else {
-				/* fix for PrefixFree link to style tag conversions */
-				els = parent.document.getElementsByTagName('style');
-				for (i = 0; i < els.length; i++ ) {
-					data = els[i].getAttribute('data-href');
-					if ( data != null ) {
-						if ( (data.indexOf('skin.php') > -1) || (data.indexOf('skin_dynamic') > -1) ) {
-							el = els[i]; href = data; byid = false;
+		// 2.2.3: add handling of inline CSS mode
+		$cssmode = $vthemesettings['cssmode'];
+		if ( ( 'header' == $cssmode ) || ( 'footer' == $cssmode ) ) {
+			if ( 'admin' == $type ) {
+				bioship_skin_dynamic_admin_css();
+				echo "<script>el = parent.document.getElementById('dynamic-admin-styles');
+				el.innerHTML = document.getElementById('dynamic-admin-styles');</script>";
+			} else {
+				bioship_skin_dynamic_css_inline();
+				echo "<script>el = parent.document.getElementById('dynamic-styles');
+				el.innerHTML = document.getElementById('dynamic-styles');</script>";
+			}
+		} else {
+			if ( 'admin' != $type ) {
+				// TODO: handle admin style reload
+
+			} else {
+				// 2.2.0: reload current stylesheet in parent frame
+				echo "id = '" . THEMESLUG . "-skin-css';
+				el = parent.document.getElementById(id);
+				if (el) {href = el.href; byid = true;}
+				else {
+					/* fix for PrefixFree link to style tag conversions */
+					els = parent.document.getElementsByTagName('style');
+					for (i = 0; i < els.length; i++ ) {
+						data = els[i].getAttribute('data-href');
+						if ( data != null ) {
+							if ( (data.indexOf('skin.php') > -1) || (data.indexOf('skin_dynamic') > -1) ) {
+								el = els[i]; href = data; byid = false;
+							}
 						}
 					}
 				}
+				if (typeof href != 'undefined') {
+					console.log('Reloading Style URL: '+href);
+					pos = href.indexOf('ver=');
+					newtime = (new Date()).getTime();
+					newhref = href.substr(0, pos) + 'ver=' + newtime;
+					if (byid) {el.href = newhref;}
+					else {
+						parentnode = el.parentNode;
+						link = document.createElement('link');
+						link.setAttribute('id', id);
+						link.setAttribute('rel', 'stylesheet');
+						link.setAttribute('type', 'text/css');
+						link.setAttribute('media', 'all');
+						link.setAttribute('href', newhref);
+						parentnode.appendChild(link);
+						parentnode.removeChild(el);
+					}
+				}";
 			}
-			if (typeof href != 'undefined') {
-				console.log('Reloading Style URL: '+href);
-				pos = href.indexOf('ver=');
-				newtime = (new Date()).getTime();
-				newhref = href.substr(0, pos) + 'ver=' + newtime;
-				if (byid) {el.href = newhref;}
-				else {
-					parentnode = el.parentNode;
-					link = document.createElement('link');
-					link.setAttribute('id', id);
-					link.setAttribute('rel', 'stylesheet');
-					link.setAttribute('type', 'text/css');
-					link.setAttribute('media', 'all');
-					link.setAttribute('href', newhref);
-					parentnode.appendChild(link);
-					parentnode.removeChild(el);
-				}
-			}";
 		}
 		
 	}
-	echo "</script>";
+	
 
 	exit;
  }

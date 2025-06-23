@@ -86,7 +86,14 @@ if ( !defined( 'ABSPATH' ) ) {
 // - Cleaner Admin Bar
 // - Enqueue Code Editor for Style Box
 // - Admin Bar Style Link
+// - Add Style Button to Beaver Builder
 // - Style Editor Box
+// == FreeStyler Integration ==
+// - Filter Freestyler Custom CSS Value
+// - Filter Freestyler Style Key
+// - Freestyler Update Theme Styles
+// - Freestyler Update Admin Styles
+// - Freestyler Styles Reload
 // == Login ==
 // - Login Header URL
 // - Login Header Title
@@ -1013,6 +1020,10 @@ if ( !function_exists( 'bioship_muscle_load_prefixfree' ) ) {
 	global $vthemesettings, $vjscachebust, $vthemedirs;
 	$load = isset( $vthemesettings['prefixfree'] ) ? $vthemesettings['prefixfree'] : false;
 	$load = bioship_apply_filters( 'muscle_load_prefixfree', $load );
+	// 2.2.3: always disable in beaver builder (conflict fix)
+	if ( isset( $_REQUEST['fl_builder'] ) ) {
+		$load = false;
+	}
 	if ( !$load ) {
 		return;
 	}
@@ -2668,9 +2679,9 @@ if ( !function_exists( 'bioship_muscle_page_rss_excerpt_option' ) ) {
 // }
 
 
-// -------------
-// === Admin ===
-// -------------
+// ------------------
+// === User Admin ===
+// ------------------
 
 // ------------------------------
 // Add Theme Options to Admin Bar
@@ -3061,6 +3072,7 @@ if ( !function_exists( 'bioship_muscle_adminbar_style_editor' ) ) {
 
 	// --- filter adding of theme options link ---
 	$styleeditor = bioship_apply_filters( 'admin_adminbar_style_editor', true );
+	// echo '<span style="display:none;">Style Editor Box: ' . print_r( $styleeditor, true ) . '</span>';
 	if ( !$styleeditor ) {
 		return;
 	}
@@ -3083,13 +3095,56 @@ if ( !function_exists( 'bioship_muscle_adminbar_style_editor' ) ) {
 
 	// --- add admin bar link and title ---
 	// 2.2.0: add ab-label class wrapper to title anchor
-	$title = '<span class="ab-label">' . esc_html( __( 'Styles', 'bioship' ) ) . '</span>';
-	$title = bioship_apply_filters( 'admin_adminbar_style_editor_title', $title );
+	// 2.3.3: change link anchor and filter from title to label
+	$label = '<span class="ab-label">' . esc_html( __( 'Styles', 'bioship' ) ) . '</span>';
+	$label = bioship_apply_filters( 'admin_adminbar_style_editor_label', $label );
 	$menu = array( 'id' => 'theme-styles', 'title' => $iconspan . $title, 'href' => $stylelink );
 	$wp_admin_bar->add_menu( $menu );
 
 	// --- load the style editor after admin bar rendered ---
 	add_action( 'wp_after_admin_bar_render', 'bioship_muscle_style_editor_box' );
+ }
+}
+
+// ----------------------------------
+// Add Style Button to Beaver Builder
+// ----------------------------------
+if ( !function_exists( 'bioship_add_bb_bar_button' ) ) {
+ add_filter( 'fl_builder_ui_bar_buttons', 'freestyler_add_bb_bar_button' );
+ function bioship_add_bb_bar_button( $buttons ) {
+	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__ );}
+
+	// --- add theme options link icon ---
+	$icon = bioship_file_hierarchy( 'url', 'style-icon.png', $vthemedirs['image'] );
+	$icon = bioship_apply_filters( 'admin_adminbar_style_editor_icon', $icon );
+	if ( $icon ) {
+		$iconspan = '<span class="theme-options-icon" style="';
+		$iconspan .= 'float:left; width:22px !important; height:22px !important;';
+		$iconspan .= 'margin-left: 5px !important; margin-top: 5px !important;';
+		$iconspan .= 'background-image:url(\'' . esc_url( $icon ) . '\');"></span>';
+	} else {
+		// $iconspan = '<span class="ab-icon"></span>';
+		$iconspan = '<span class="dashicons dashicons-admin-appearance"></span> ';
+	}
+	
+	$label = '<span class="ab-label">' . esc_html( __( 'Styles', 'bioship' ) ) . '</span>';
+	$label = apply_filters( 'admin_adminbar_style_editor_label', $label );
+	$title = __( 'Edit Global Stylesheet', 'bioship' );
+	$title = apply_filters( 'admin_adminbar_style_editor_title', $title );
+	$add_button['bioship'] = array(
+		'id'		=> 'bioship-style-box-toggle',
+		'class'		=> 'fl-builder-button-silent',
+		'label'		=> $iconspan . $label,
+		'title'		=> $title,
+		'show'		=> true,
+		'onclick'	=> "return bioship_toggle_bb_style_box(this);"
+	);
+	$buttons = array_merge( $buttons, $add_button );
+	
+	// --- load the style editor in the footer ---
+	add_action( 'wp_footer', 'bioship_muscle_style_editor_box' );
+	
+	return $buttons;
  }
 }
 
@@ -3250,6 +3305,133 @@ if ( !function_exists( 'bioship_muscle_style_editor_box' ) ) {
 
  }
 }
+
+
+// ------------------------------
+// === FreeStyler Integration ===
+// ------------------------------
+// 2.2.3: added for compatibility with upcoming (standalone) FreeStyler plugin
+
+// ----------------------------------
+// Filter Freestyler Custom CSS Value
+// ----------------------------------
+if ( !function_exists( 'bioship_freestyler_custom_css' ) ) {
+ add_filter( 'freestyler_custom_css', 'bioship_freestyler_custom_css', 10, 3 );
+ function bioship_freestyler_custom_css( $styles, $stylesheet, $pre_processed ) {
+	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__, func_get_args() );}
+	global $vthemesettings;
+	$styles = $vthemesettings['dynamiccustomcss'];
+	return $styles;
+ }
+}
+
+// ---------------------------
+// Filter Freestyler Style Key
+// ---------------------------
+if ( !function_exists( 'bioship_per_post_style_key' ) ) {
+ add_filter( 'freestyler_per_post_style_key', 'bioship_per_post_style_key' );
+ function bioship_per_post_style_key( $key ) {
+	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__, func_get_args() );}
+	return '_' . THEMEPREFIX . '_perpoststyles';
+ }
+}
+
+// ------------------------------
+// Freestyler Update Theme Styles
+// ------------------------------
+if ( !function_exists( 'bioship_freestyler_update_theme_styles' ) ) {
+	add_action( 'freestyler_theme_styles_updated', 'bioship_freestyler_update_theme_styles', 10, 4 );
+	function bioship_freestyler_update_theme_styles( $updated, $new_styles, $pre_processed, $stylesheet ) {
+		if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__, func_get_args() );}
+		global $vthemesettings;
+		$vthemesettings['dynamiccustomcss'] = $new_styles;
+		if ( THEMETITAN ) {
+			$vthemesettings = serialize( $vthemesettings );
+		}
+		update_option( THEMEKEY, $vthemesettings );
+		return true;
+	}
+}
+
+// ------------------------------
+// Freestyler Update Admin Styles
+// ------------------------------
+if ( !function_exists( 'bioship_freestyler_update_admin_styles' ) ) {
+	add_action( 'freestyler_admin_styles_updated', 'bioship_freestyler_update_admin_styles', 10, 3 );
+	function bioship_freestyler_update_admin_styles( $updated, $new_styles, $pre_processed ) {
+		if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__, func_get_args() );}
+		global $vthemesettings;
+		$vthemesettings['dynamicadmincss'] = $new_styles;
+		if ( THEMETITAN ) {
+			$vthemesettings = serialize( $vthemesettings );
+		}
+		update_option( THEMEKEY, $vthemesettings );
+		return true;
+	}
+}
+
+// ------------------------
+// Freestyler Styles Reload
+// ------------------------
+add_action( 'freestyler_styles_reload', 'bioship_freestyler_styles_reload', 10, 3 );
+function bioship_freestyler_styles_reload( $reloaded, $new_styles, $type ) {
+	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__, func_get_args() );}
+
+	global $vthemesettings;
+	$cssmode = $vthemesettings['themecssmode'];
+
+	if ( ( 'header' == $cssmode ) || ( 'footer' == $cssmode ) ) {
+		if ( 'admin' == $type ) {
+			bioship_skin_dynamic_admin_css();
+			echo "<script>el = parent.document.getElementById('dynamic-admin-styles');
+			el.innerHTML = document.getElementById('dynamic-admin-styles');</script>";
+		} else {
+			bioship_skin_dynamic_css_inline();
+			echo "<script>el = parent.document.getElementById('dynamic-styles');
+			el.innerHTML = document.getElementById('dynamic-styles');</script>";
+		}
+	} else {
+		
+		// --- reload dynamic skin CSS ---
+		$id = ( 'admin' == $type ) ? THEMESLUG . '-admin-skin-css' : THEMESLUG . '-skin-css';
+		echo "<script>id = '" . esc_js( $id ) . "';
+		el = parent.document.getElementById(id);
+		if (el) {href = el.href; byid = true;}
+		else {
+			/* fix for PrefixFree link to style tag conversions */
+			els = parent.document.getElementsByTagName('style');
+			for (i = 0; i < els.length; i++ ) {
+				data = els[i].getAttribute('data-href');
+				if ( data != null ) {
+					if ( (data.indexOf('skin.php') > -1) || (data.indexOf('skin_dynamic') > -1) ) {
+						el = els[i]; href = data; byid = false;
+					}
+				}
+			}
+		}
+		if (typeof href != 'undefined') {
+			console.log('Reloading Style URL: '+href);
+			pos = href.indexOf('ver=');
+			newtime = (new Date()).getTime();
+			newhref = href.substr(0, pos) + 'ver=' + newtime;
+			if (byid) {el.href = newhref;}
+			else {
+				parentnode = el.parentNode;
+				link = document.createElement('link');
+				link.setAttribute('id', id);
+				link.setAttribute('rel', 'stylesheet');
+				link.setAttribute('type', 'text/css');
+				link.setAttribute('media', 'all');
+				link.setAttribute('href', newhref);
+				parentnode.appendChild(link);
+				parentnode.removeChild(el);
+			}
+		}</script>";
+	}
+	
+	return true;
+}
+
 
 // -------------
 // === Login ===
