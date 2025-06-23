@@ -1772,6 +1772,11 @@ if ( is_admin() ) {
 			$loadadmin = true;
 		}
 	}
+	
+	// 2.2.3: 
+	if ( isset( $_REQUEST['page'] ) && ( 'theme-options' == $_REQUEST['page'] ) ) {
+		$loadadmin = true;
+	}
 }
 if ( $loadadmin ) {
 	$themeadmin = bioship_file_hierarchy( 'file', 'admin.php', $vthemedirs['admin'] );

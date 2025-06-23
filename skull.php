@@ -520,7 +520,7 @@ if ( !function_exists( 'bioship_widget_page_message' ) ) {
  	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__ );}
  	// 2.1.1: add bold markup to note heading
  	echo '<div class="message">';
-		echo '<b>' . esc_html( __( 'Note', 'bioship' ) ) . '</b>: ';
+		echo '<b>' . esc_html( __( 'Theme Note', 'bioship' ) ) . '</b>: ';
 		echo esc_html( __( 'Inactive Theme Sidebars are listed with lowercase titles. Activate them via Theme Options -&gt; Skeleton -&gt; Sidebars tab', 'bioship' ) );
 	echo '</div>';
  }
@@ -922,6 +922,9 @@ if ( !function_exists( 'bioship_set_layout' ) ) {
  	if ( THEMETRACE ) {bioship_trace( 'F', __FUNCTION__, __FILE__ );}
  	global $vthemelayout, $vthemesidebars, $vthemedisplay, $vthemeoverride;
 
+	// 2.2.2: set page context before checking for (archive) overrides
+ 	bioship_set_page_context();
+
 	// --- get display overrides ---
 	// 1.9.5: initialize theme display and templating overrides
 	// 2.1.1: optimized get overrides logic
@@ -947,7 +950,6 @@ if ( !function_exists( 'bioship_set_layout' ) ) {
 	}
 
 	// --- setup all layout globals ---
- 	bioship_set_page_context();
  	bioship_set_max_width();
  	bioship_set_grid_columns();
 	bioship_set_sidebar_layout();
@@ -5556,12 +5558,15 @@ if ( !function_exists( 'bioship_skin_enqueue_styles' ) ) {
 						continue;
 					}
 				}
-				$skinpath = substr( $skin['file'], 0, strlen( $loadpath ) );
-				if ( $skinpath === $loadpath ) {
-					$skinurl = $skin['url'];
+				// 2.2.1: added check if loadpath is set
+				if ( isset( $loadpath ) ) {
+					$skinpath = substr( $skin['file'], 0, strlen( $loadpath ) );
+					if ( $skinpath === $loadpath ) {
+						$skinurl = $skin['url'];
+					}
+					bioship_debug( "WP Load Directory", $loadpath );
+					bioship_debug( "Skin Directory to Match", $skinpath );
 				}
-				bioship_debug( "WP Load Directory", $loadpath );
-				bioship_debug( "Skin Directory to Match", $skinpath );
 			}
 		}
 		bioship_debug( "Skin URL", $skinurl );

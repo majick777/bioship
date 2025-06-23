@@ -6,7 +6,7 @@ License URI: http://www.opensource.org/licenses/gpl-license.php
 Donate Link: https://wordquest.org/contribute/
 Requires at least: 3.4
 Requires PHP: 5.3
-Tested up to: 6.2.2
+Tested up to: 6.5.5
 Stable tag: trunk
 
 BioShip is an extended Hybrid Skeleton Theme Framework. Responsive, flexible, cross-browser friendly, easily skinnable and customizable.
@@ -45,10 +45,27 @@ Or click the Docs link on your Theme Options page to view them in your WordPress
 
 == Changelog ==
 
+= 2.2.3 = 
+- Updated: Freemius SDK 2.7.2
+- Fixed: Do not load PrefixFree with Beaver Builder editor (conflict)
+- Fixed: Missing h2 close tag on single entry titles
+- Fixed: CSS Quicksave get CSS in textarea via Code Mirror
+- Fixed: CSS Quicksave save and button position on options page
+- Fixed: Options page sidebar click Save Settings button
+
+= 2.2.2 =
+- Updated: Freemius SDK 2.6.0
+- Deprecated: Options Framework
+- Deprecated: Hybrid Core 2
+- Fixed: set layout context before checking (archive) overrides
+- Fixed: remove href attribute on mobile menu buttons
+- Disabled: Hybrid 3 GetTheImage image caching
+
 = 2.2.1 =
 - Updated: Freemius SDK 2.5.10
 - Fixed: PHPMailer class not found (WP class_alias failure)
 - Fixed: mismatched label for post type object author display
+- Fixed: wp_kses sidebar filter to allow for forms (eg. search)
 - Changed: prefix admin javascript functions
 
 = 2.2.0 =

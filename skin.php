@@ -870,7 +870,8 @@ foreach ( $typographies as $key ) {
 			$selector = "#subsidebar .sidebar";
 		} elseif ( 'content' == $key ) {
 			// 2.2.0: added #woocommercecontent selector
-			$selector = "#content .entry-content, #content .column .inner, #content .columns .inner, , #woocommercecontent";
+			// 2.2.3: remove extraneous comma
+			$selector = "#content .entry-content, #content .column .inner, #content .columns .inner, #woocommercecontent";
 		} elseif ( 'footer' == $key ) {
 			$selector = "#footer #mainfooter";
 		} elseif ( 'button' == $key ) {
@@ -1326,12 +1327,12 @@ if ( $adminstyles && $loginstyles ) {
 	// Login Wrap Text Colour
 	// ----------------------
 	// 2.2.0: added login wrap box text colour option
+	// 2.2.1: ensure logincolor variable is defined
 	if ( isset( $vts['loginwrapcolor'] ) && ( '' != $vts['loginwrapcolor'] ) ) {
 		$logincolor = 'color: ' . $vts['loginwrapcolor'] . ';';
+	} else {
+		$logincolor = '';
 	}
-	// else {
-	//	$logincolor = 'color: inherit;';
-	// }
 
 	// Add Login Background and Text Colours
 	// -------------------------------------

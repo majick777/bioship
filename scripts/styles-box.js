@@ -22,6 +22,17 @@ function bioship_toggle_theme_style_box() {
 	return false;
 }
 
+/* --- toggle BB theme style box --- */
+// 2.2.3: added for Beaver Builder compatibility
+function bioship_toggle_bb_style_box(stylebutton) {
+	classes = stylebutton.classList;
+	console.log(classes);
+	inactive = 'fl-builder-button-silent';
+	if (stylebutton.classList.contains(inactive)) {stylebutton.classList.remove(inactive);}
+	else {stylebutton.classList.add(inactive);}
+	return freestyler_toggle_theme_style_box();
+}
+
 /* --- change style type --- */
 // 2.2.0: show/hide textarea container instead of textarea
 // 2.2.0: maybe initialize code editor for second textarea

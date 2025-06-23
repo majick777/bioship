@@ -710,16 +710,17 @@ if ( !function_exists( 'bioship_skeleton_main_menu_button' ) ) {
 		// 2.1.3: prefix javascript functions
 		// 2.2.0: added extra mainmenubutton class
 		// 2.2.0: add filter to allow for possible menu icon HTML instead of text
+		// 2.2.2: remove href attribute completely as filtered out to void(0)
 		// TODO: add this filter to filter list documentation
 		$main_menu_icon = bioship_apply_filters( 'skeleton_main_menu_icon', false );
 		$buttons = '<div id="mainmenubutton" class="mobilebutton">' . PHP_EOL;
 		if ( $main_menu_icon ) {
-			$buttons .= '	<a id="mainmenushow" class="button mainmenubutton icon" href="javascript:void(0);" onclick="bioship_showmainmenu();" title="' . esc_attr( $show_menu_text ) . '">' . $main_menu_icon . '</a>' . PHP_EOL;
-			$buttons .= '	<a id="mainmenuhide" class="button mainmenubutton icon" href="javascript:void(0);" onclick="bioship_hidemainmenu();" title="' . esc_attr( $hide_menu_text ) . '" style="display:none;">' . $main_menu_icon . '</a>' . PHP_EOL;
+			$buttons .= '	<a id="mainmenushow" class="button mainmenubutton icon" onclick="bioship_showmainmenu();" title="' . esc_attr( $show_menu_text ) . '">' . $main_menu_icon . '</a>' . PHP_EOL;
+			$buttons .= '	<a id="mainmenuhide" class="button mainmenubutton icon" onclick="bioship_hidemainmenu();" title="' . esc_attr( $hide_menu_text ) . '" style="display:none;">' . $main_menu_icon . '</a>' . PHP_EOL;
 		} else {
 			// 2.2.0: use esc_html instead of esc_attr for labels
-			$buttons .= '	<a id="mainmenushow" class="button mainmenubutton" href="javascript:void(0);" onclick="bioship_showmainmenu();">' . esc_html( $show_menu_text ) . '</a>' . PHP_EOL;
-			$buttons .= '	<a id="mainmenuhide" class="button mainmenubutton" href="javascript:void(0);" onclick="bioship_hidemainmenu();" style="display:none;">' . esc_html( $hide_menu_text ) . '</a>' . PHP_EOL;
+			$buttons .= '	<a id="mainmenushow" class="button mainmenubutton" onclick="bioship_showmainmenu();">' . esc_html( $show_menu_text ) . '</a>' . PHP_EOL;
+			$buttons .= '	<a id="mainmenuhide" class="button mainmenubutton" onclick="bioship_hidemainmenu();" style="display:none;">' . esc_html( $hide_menu_text ) . '</a>' . PHP_EOL;
 		}
 		$buttons .= '</div>' . PHP_EOL;
 
@@ -2053,7 +2054,8 @@ if ( !function_exists( 'bioship_skeleton_entry_header_title' ) ) {
 		if ( is_archive() || is_search() || !is_singular( $post_type ) ) {
 			echo '</h3>';
 		} else {
-			echo '</h2';
+			// 2.2.3: fix to broken heading close tag
+			echo '</h2>';
 		}
 		bioship_html_comment( '/.entry-title' );
 		echo PHP_EOL;
@@ -2757,9 +2759,10 @@ if ( !function_exists( 'bioship_skeleton_author_posts_link' ) ) {
 
 		// --- set author link ---
 		// 1.8.5: class attribute override fix
+		// 2.2.3: use wp_kses_post on anchor as contains html (span tag)
 		$attributes = hybrid_get_attr( 'entry-author', '', array( 'class' => 'author vcard entry-author' ) );
 		$author_link = '<span ' . $attributes . '>' . PHP_EOL;
-		$author_link .= '	<a class="url fn n" href="' . esc_url( $author_url ) . '">' . esc_html( $anchor ) . '</a>' . PHP_EOL;
+		$author_link .= '	<a class="url fn n" href="' . esc_url( $author_url ) . '">' . wp_kses_post( $anchor ) . '</a>' . PHP_EOL;
 		$author_link .= '</span>' . PHP_EOL;
 
 		// --- filter and return ---
